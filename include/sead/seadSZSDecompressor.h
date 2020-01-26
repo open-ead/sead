@@ -1,6 +1,10 @@
 #ifndef SEAD_SZS_DECOMPRESSOR_H_
 #define SEAD_SZS_DECOMPRESSOR_H_
 
+#include <sead/seadResource.h>
+#include <sead/seadResourceMgr.h>
+#include <sead/seadDecompressor.h>
+
 namespace sead {
 
 class SZSDecompressor : public Decompressor

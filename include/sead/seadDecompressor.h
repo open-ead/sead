@@ -1,6 +1,12 @@
 #ifndef SEAD_DECOMPRESSOR_H_
 #define SEAD_DECOMPRESSOR_H_
 
+#include <sead/seadDisposer.h>
+#include <sead/seadListImpl.h>
+#include <sead/seadResource.h>
+#include <sead/seadResourceMgr.h>
+#include <sead/seadSafeString.h>
+
 namespace sead {
 
 class Decompressor : public UnkList, public IDisposer
