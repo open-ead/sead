@@ -13,7 +13,7 @@ class Decompressor : public UnkList, public IDisposer
 {
 public:
     Decompressor(SafeString& name)
-        : UnkBase()
+        : UnkList()
         , IDisposer()
         , mName(name)
     {
@@ -25,7 +25,7 @@ public:
             ResourceMgr::sInstance->unregisterDecompressor(this);
     }
 
-    virtual u8* tryDecompFromDevice(ResourceMgr::LoadArg& loadArg, Resource& resource, u32* outSize, u32* outAllocSize, bool* success) = 0;
+    virtual u8* tryDecompFromDevice(const ResourceMgr::LoadArg& loadArg, Resource* resource, u32* outSize, u32* outAllocSize, bool* success) = 0;
 
     FixedSafeString<32> mName;
 }

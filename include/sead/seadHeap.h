@@ -10,15 +10,22 @@ namespace sead {
 class Heap : public IDisposer
 {
 public:
-    enum HeapDirection { };
+    enum HeapDirection
+    {
+        DirectionHead = 0,
+        DirectionTail = 1
+    };
 
-    Heap(SafeString& name, Heap* parent, void* address, u32 size, HeapDirection direction, bool);
+    Heap(const SafeString& name, Heap* parent, void* address, u32 size, HeapDirection direction, bool);
     virtual ~Heap() { }
+
+    SEAD_RTTI_BASE(Heap)
+
     // ...
 
     void appendDisposer_(IDisposer* disposer);
     void removeDisposer_(IDisposer* disposer);
-    Heap* findContainHeap_(void*);
+    Heap* findContainHeap_(const void*);
 
     SafeString name;
     u32 addr;

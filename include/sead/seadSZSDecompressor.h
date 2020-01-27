@@ -17,7 +17,7 @@ public:
             ResourceMgr::sInstance->unregisterDecompressor(this);
     }
 
-    virtual u8* tryDecompFromDevice(ResourceMgr::LoadArg& loadArg, Resource& resource, u32* outSize, u32* outAllocSize, bool* success);
+    virtual u8* tryDecompFromDevice(const ResourceMgr::LoadArg& loadArg, Resource* resource, u32* outSize, u32* outAllocSize, bool* success);
 
     u32 mWorkSize;
     u8* mWorkBuffer;

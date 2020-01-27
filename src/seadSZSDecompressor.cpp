@@ -8,7 +8,7 @@ SZSDecompressor::SZSDecompressor(u32 workSize, u8* workBuffer)
     if (workBuffer == nullptr)
     {
         mWorkBuffer = nullptr;
-        mWorkSize = workSize + FileDevice::cBufferMinAlignment - 1 & -FileDevice::cBufferMinAlignment; // workSize + 0x3F & 0xFFFFFFC0 // align(workSize, FileDevice::cBufferMinAlignment)
+        mWorkSize = workSize + FileDevice::cBufferMinAlignment - 1 & -FileDevice::cBufferMinAlignment;
     }
 
     else
@@ -20,7 +20,7 @@ SZSDecompressor::SZSDecompressor(u32 workSize, u8* workBuffer)
 
 u8*
 SZSDecompressor::tryDecompFromDevice(
-    ResourceMgr::LoadArg& loadArg, Resource& resource,
+    const ResourceMgr::LoadArg& loadArg, Resource* resource,
     u32* outSize, u32* outAllocSize, bool* success
 )
 {
@@ -42,7 +42,7 @@ SZSDecompressor::tryDecompFromDevice(
     u8* src = mWorkBuffer;
     if (src == nullptr)
     {
-        src = new[](mWorkSize, heap, -FileDevice::cBufferMinAlignment); // src = new[](mWorkSize, heap, -0x40)
+        src = new[](mWorkSize, heap, -FileDevice::cBufferMinAlignment);
         if (src == nullptr)
             return nullptr;
     }
@@ -61,7 +61,7 @@ SZSDecompressor::tryDecompFromDevice(
         decompSize = allocSize;
 
     bool decompressed = false;
-    allocSize = decompSize + 0x1F & -0x20; // align(decompSize, 0x20)
+    allocSize = decompSize + 0x1F & -0x20;
 
     if (dst == nullptr)
     {
