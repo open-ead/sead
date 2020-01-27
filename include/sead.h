@@ -1,6 +1,7 @@
 #ifndef SEAD_H_
 #define SEAD_H_
 
+#include <sead/seadCriticalSection.h>
 #include <sead/seadDecompressor.h>
 #include <sead/seadDisposer.h>
 #include <sead/seadFileDevice.h>

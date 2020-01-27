@@ -1,0 +1,17 @@
+#ifndef SEAD_CRITICAL_SECTION_H_
+#define SEAD_CRITICAL_SECTION_H_
+
+#include <coreinit/mutex.h>
+#include <sead/seadDisposer.h>
+
+namespace sead {
+
+class CriticalSection : public IDisposer
+{
+public:
+    OSMutex mutex;
+};
+
+} // namespace sead
+
+#endif // SEAD_CRITICAL_SECTION_H_
