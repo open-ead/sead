@@ -1,5 +1,5 @@
-#ifndef SEAD_FILE_DEVICE_H_
-#define SEAD_FILE_DEVICE_H_
+#ifndef SEAD_FILEDEVICE_H_
+#define SEAD_FILEDEVICE_H_
 
 #include <sead/seadDisposer.h>
 #include <sead/seadListImpl.h>
@@ -76,6 +76,37 @@ public:
     u8 _4C;
 };
 
+class CafeFSAFileDevice : public FileDevice
+{
+    SEAD_RTTI_OVERRIDE(CafeFSAFileDevice, FileDevice)
+
+public:
+    CafeFSAFileDevice();
+    virtual ~CafeFSAFileDevice() { }
+
+    u8 _54[24];
+};
+
+class CafeContentFileDevice : public CafeFSAFileDevice
+{
+    SEAD_RTTI_OVERRIDE(CafeContentFileDevice, CafeFSAFileDevice)
+
+public:
+    CafeContentFileDevice();
+    virtual ~CafeContentFileDevice() { }
+};
+
+class MainFileDevice : public FileDevice
+{
+    SEAD_RTTI_OVERRIDE(MainFileDevice, FileDevice)
+
+public:
+    MainFileDevice();
+    virtual ~MainFileDevice();
+
+    CafeContentFileDevice* mFileDevice;
+};
+
 } // namespace sead
 
-#endif // SEAD_FILE_DEVICE_H_
+#endif // SEAD_FILEDEVICE_H_
