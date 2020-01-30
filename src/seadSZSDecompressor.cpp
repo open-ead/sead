@@ -52,7 +52,7 @@ SZSDecompressor::tryDecompFromDevice(
         goto return_deleteSrc;
 
     u32 decompSize = getDecompSize(src);
-    u32 decompAlignment = getDecompAlignment(src);
+    s32 decompAlignment = getDecompAlignment(src);
 
     u32 allocSize = loadArg.bufferSize;
     u8* dst = loadArg.buffer;
@@ -63,10 +63,58 @@ SZSDecompressor::tryDecompFromDevice(
     bool decompressed = false;
     allocSize = decompSize + 0x1F & -0x20;
 
+    s32 alignSign;
+    s32 alignment;
+
     if (dst == nullptr)
     {
-        // TODO: allocate dst
-        goto return_deleteSrc;
+        if (!(IsDerivedFrom<DirectResource, Resource>(resource) && resource != nullptr))
+        {
+            alignSign = 1;
+            if (loadArg.alignment < 0)
+                alignSign = -1;
+
+            dst = new[](allocSize, heap, alignSign * -0x20);
+        }
+
+        else
+        {
+            DirectResource* directResource = reinterpret_cast<DirectResource*>(resource);
+            alignment = loadArg.bufferSizeAlignment;
+            if (alignment == 0)
+            {
+                if (decompAlignment == 0)
+                {
+                    decompAlignment = directResource->getLoadDataAlignment();
+                    alignment = loadArg.alignment;
+                }
+
+                else
+                    alignment = loadArg.alignment;
+
+                alignSign = 1;
+                if (alignment < 0)
+                    alignSign = -1;
+
+                if (decompAlignment < 0x20)
+                    decompAlignment = 0x20;
+
+                dst = new[](allocSize, heap, alignSign * decompAlignment);
+            }
+
+            else
+            {
+                if (alignment < 0x20)
+                    alignment = 0x20;
+
+                dst = new[](allocSize, heap, alignment);
+            }
+        }
+
+        if (dst == nullptr)
+            goto return_deleteSrc;
+
+        decompressed = true;
     }
 
     s32 error;

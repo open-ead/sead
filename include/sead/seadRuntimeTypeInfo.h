@@ -16,6 +16,14 @@ public:
     };
 };
 
+template <typename BaseType, typename Type>
+inline bool
+IsDerivedFrom(const Type* obj)
+{
+    const RuntimeTypeInfo::Interface* typeInfo = BaseType::getRuntimeTypeInfoStatic();
+    return obj != nullptr && obj->checkDerivedRuntimeTypeInfo(typeInfo);
+}
+
 } // namespace sead
 
 // TODO: Finish this and add sead::RuntimeTypeInfo::Derive
