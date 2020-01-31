@@ -71,7 +71,7 @@ SZSDecompressor::tryDecompFromDevice(
         if (!(IsDerivedFrom<DirectResource, Resource>(resource) && resource != nullptr))
         {
             alignSign = 1;
-            if (loadArg.alignment < 0)
+            if (loadArg.resourceAlignment < 0)
                 alignSign = -1;
 
             dst = new[](allocSize, heap, alignSign * -0x20);
@@ -86,11 +86,11 @@ SZSDecompressor::tryDecompFromDevice(
                 if (decompAlignment == 0)
                 {
                     decompAlignment = directResource->getLoadDataAlignment();
-                    alignment = loadArg.alignment;
+                    alignment = loadArg.resourceAlignment;
                 }
 
                 else
-                    alignment = loadArg.alignment;
+                    alignment = loadArg.resourceAlignment;
 
                 alignSign = 1;
                 if (alignment < 0)
