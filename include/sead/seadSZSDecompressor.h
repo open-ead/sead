@@ -11,9 +11,10 @@ class SZSDecompressor : public Decompressor
 {
 public:
     SZSDecompressor(u32 workSize, u8* workBuffer);
-    virtual ~SZSDecompressor
+
+    virtual ~SZSDecompressor()
     {
-        if (ResourceMgr::sInstance != nullptr)
+        if (ResourceMgr::sInstance != NULL)
             ResourceMgr::sInstance->unregisterDecompressor(this);
     }
 
@@ -21,7 +22,7 @@ public:
 
     u32 mWorkSize;
     u8* mWorkBuffer;
-}
+};
 
 } // namespace sead
 

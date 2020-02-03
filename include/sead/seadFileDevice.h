@@ -7,14 +7,43 @@
 
 namespace sead {
 
-class FileDevice;
+class FileHandle;
+
+class FileDevice : public UnkList, public IDisposer
+{
+    SEAD_RTTI_BASE(FileDevice)
+
+public:
+    enum FileOpenFlag { };
+
+public:
+    FileDevice()
+        : UnkList()
+        , IDisposer()
+        , name()
+        , _4C(1)
+    {
+    }
+
+    virtual ~FileDevice();
+
+    // ...
+
+    FileDevice* tryOpen(FileHandle*, const SafeString&, FileOpenFlag, u32);
+    bool tryClose(FileHandle*);
+
+    static const s32 cBufferMinAlignment = 0x40;
+
+    FixedSafeString<32> name;
+    u8 _4C;
+};
 
 class HandleBase : public IDisposer
 {
 public:
     HandleBase()
-        : device(nullptr)
-        , originalDevice(nullptr)
+        : device(NULL)
+        , originalDevice(NULL)
     {
     }
 
@@ -37,43 +66,13 @@ public:
     virtual ~FileHandle()
     {
         FileDevice* _device = originalDevice;
-        if (_device != nullptr)
+        if (_device != NULL)
             _device->tryClose(this);
     }
 
     u32 tryRead(u8* outBuffer, u32 bytesToRead);
 
     u32 filesize;
-};
-
-class FileDevice : public UnkList, public IDisposer
-{
-    SEAD_RTTI_BASE(FileDevice)
-
-public:
-    FileDevice()
-        : UnkList()
-        , IDisposer()
-        , name()
-        , _4C(1)
-    {
-    }
-
-    virtual ~FileDevice()
-    {
-        if (FileDeviceMgr::sInstance != nullptr)
-            FileDeviceMgr::sInstance->unmount(this);
-    }
-
-    // ...
-
-    FileDevice* tryOpen(FileHandle*, const SafeString&, FileOpenFlag, u32);
-    bool tryClose(FileHandle*);
-
-    static const s32 cBufferMinAlignment = 0x40;
-
-    FixedSafeString<32> name;
-    u8 _4C;
 };
 
 class CafeFSAFileDevice : public FileDevice

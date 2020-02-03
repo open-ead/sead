@@ -5,6 +5,8 @@
 #include <sead/seadDisposer.h>
 #include <sead/seadHeap.h>
 #include <sead/seadListImpl.h>
+#include <sead/seadNew.h>
+#include <sead/seadResourceMgr.h>
 
 namespace sead {
 
@@ -46,9 +48,9 @@ public:
     {
     }
 
-    virtual ~ResourceFactory
+    virtual ~ResourceFactory()
     {
-        if (ResourceMgr::sInstance != nullptr)
+        if (ResourceMgr::sInstance != NULL)
             ResourceMgr::sInstance->unregisterFactory(this);
     }
 
@@ -75,11 +77,11 @@ public:
     {
     }
 
-    virtual ~DirectResourceFactory { }
+    virtual ~DirectResourceFactory() { }
 
     virtual T* newResource_(Heap* heap, s32 alignment)
     {
-        return new(sizeof(T), heap, alignment) T;
+        return new(heap, alignment) T;
     }
 };
 

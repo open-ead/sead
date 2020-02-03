@@ -1,7 +1,7 @@
 #ifndef SEAD_FILEDEVICEMGR_H_
 #define SEAD_FILEDEVICEMGR_H_
 
-#include <coreinit/fs.h>
+#include <cafe.h>
 #include <sead/seadFileDevice.h>
 #include <sead/seadListImpl.h>
 #include <sead/seadSafeString.h>

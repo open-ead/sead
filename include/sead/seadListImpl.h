@@ -23,8 +23,8 @@ public:
     UnkList()
     {
         ptrToSelf = this;
-        root.next = nullptr;
-        root.previous = nullptr;
+        root.next = NULL;
+        root.previous = NULL;
         _C = 0;
     }
 

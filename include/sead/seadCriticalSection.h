@@ -1,7 +1,7 @@
 #ifndef SEAD_CRITICAL_SECTION_H_
 #define SEAD_CRITICAL_SECTION_H_
 
-#include <coreinit/mutex.h>
+#include <cafe.h>
 #include <sead/seadDisposer.h>
 
 namespace sead {

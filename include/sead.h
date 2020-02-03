@@ -9,6 +9,7 @@
 #include <sead/seadHeap.h>
 #include <sead/seadHeapMgr.h>
 #include <sead/seadListImpl.h>
+#include <sead/seadNew.h>
 #include <sead/seadResource.h>
 #include <sead/seadResourceMgr.h>
 #include <sead/seadRuntimeTypeInfo.h>

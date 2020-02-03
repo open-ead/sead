@@ -4,6 +4,8 @@
 #include <sead/seadCriticalSection.h>
 #include <sead/seadDisposer.h>
 #include <sead/seadListImpl.h>
+#include <sead/seadRuntimeTypeInfo.h>
+#include <sead/seadSafeString.h>
 
 namespace sead {
 

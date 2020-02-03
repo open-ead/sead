@@ -12,6 +12,8 @@ public:
     class Interface
     {
     public:
+        Interface() { } // Temporary
+
         void* isDeriveFunc;
     };
 };
@@ -21,7 +23,7 @@ inline bool
 IsDerivedFrom(const Type* obj)
 {
     const RuntimeTypeInfo::Interface* typeInfo = BaseType::getRuntimeTypeInfoStatic();
-    return obj != nullptr && obj->checkDerivedRuntimeTypeInfo(typeInfo);
+    return obj != NULL && obj->checkDerivedRuntimeTypeInfo(typeInfo);
 }
 
 } // namespace sead

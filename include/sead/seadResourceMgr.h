@@ -1,14 +1,20 @@
 #ifndef SEAD_RESOURCEMGR_H_
 #define SEAD_RESOURCEMGR_H_
 
-#include <sead/seadDecompressor.h>
 #include <sead/seadDisposer.h>
 #include <sead/seadFileDevice.h>
 #include <sead/seadHeap.h>
-#include <sead/seadResource.h>
 #include <sead/seadSafeString.h>
 
 namespace sead {
+
+class DirectResource;
+class ResourceFactory;
+class Decompressor;
+
+template <typename T>
+class DirectResourceFactory;
+
 
 class ResourceMgr
 {

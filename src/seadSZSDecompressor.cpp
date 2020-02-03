@@ -5,10 +5,10 @@ namespace sead {
 SZSDecompressor::SZSDecompressor(u32 workSize, u8* workBuffer)
     : Decompressor("szs")
 {
-    if (workBuffer == nullptr)
+    if (workBuffer == NULL)
     {
-        mWorkBuffer = nullptr;
-        mWorkSize = workSize + FileDevice::cBufferMinAlignment - 1 & -FileDevice::cBufferMinAlignment;
+        mWorkBuffer = NULL;
+        mWorkSize = workSize + FileDevice::cBufferMinAlignment - 1 & (u32)-FileDevice::cBufferMinAlignment;
     }
 
     else
@@ -25,26 +25,26 @@ SZSDecompressor::tryDecompFromDevice(
 )
 {
     Heap* heap = loadArg.resourceLoadHeap;
-    if (heap == nullptr)
+    if (heap == NULL)
         heap = HeapMgr::sInstancePtr->getCurrentHeap();
 
-    FileHandle handle();
+    FileHandle handle;
     FileDevice* device;
 
-    if (loadArg.device == nullptr)
-        device = FileDeviceMgr::sInstance->tryOpen(handle, loadArg.name, 0, loadArg.divSize);
+    if (loadArg.device == NULL)
+        device = FileDeviceMgr::sInstance->tryOpen(&handle, loadArg.name, (FileDevice::FileOpenFlag)0, loadArg.divSize);
     else
-        device = loadArg.device->tryOpen(handle, loadArg.name, 0, loadArg.divSize);
+        device = loadArg.device->tryOpen(&handle, loadArg.name, (FileDevice::FileOpenFlag)0, loadArg.divSize);
 
-    if (device == nullptr)
-        return;
+    if (device == NULL)
+        return NULL;
 
     u8* src = mWorkBuffer;
-    if (src == nullptr)
+    if (src == NULL)
     {
-        src = new[](mWorkSize, heap, -FileDevice::cBufferMinAlignment);
-        if (src == nullptr)
-            return nullptr;
+        src = new(heap, -FileDevice::cBufferMinAlignment) u8[mWorkSize];
+        if (src == NULL)
+            return NULL;
     }
 
     u32 bytesRead = handle.tryRead(src, mWorkSize);
@@ -61,20 +61,20 @@ SZSDecompressor::tryDecompFromDevice(
         decompSize = allocSize;
 
     bool decompressed = false;
-    allocSize = decompSize + 0x1F & -0x20;
+    allocSize = decompSize + 0x1F & (u32)-0x20;
 
     s32 alignSign;
     s32 alignment;
 
-    if (dst == nullptr)
+    if (dst == NULL)
     {
-        if (!(IsDerivedFrom<DirectResource, Resource>(resource) && resource != nullptr))
+        if (!(IsDerivedFrom<DirectResource, Resource>(resource) && resource != NULL))
         {
             alignSign = 1;
             if (loadArg.resourceAlignment < 0)
                 alignSign = -1;
 
-            dst = new[](allocSize, heap, alignSign * -0x20);
+            dst = new(heap, alignSign * -0x20) u8[allocSize];
         }
 
         else
@@ -99,7 +99,7 @@ SZSDecompressor::tryDecompFromDevice(
                 if (decompAlignment < 0x20)
                     decompAlignment = 0x20;
 
-                dst = new[](allocSize, heap, alignSign * decompAlignment);
+                dst = new(heap, alignSign * decompAlignment) u8[allocSize];
             }
 
             else
@@ -107,11 +107,11 @@ SZSDecompressor::tryDecompFromDevice(
                 if (alignment < 0x20)
                     alignment = 0x20;
 
-                dst = new[](allocSize, heap, alignment);
+                dst = new(heap, alignment) u8[allocSize];
             }
         }
 
-        if (dst == nullptr)
+        if (dst == NULL)
             goto return_deleteSrc;
 
         decompressed = true;
@@ -133,16 +133,16 @@ SZSDecompressor::tryDecompFromDevice(
         while (error > 0 && (bytesRead = handle.tryRead(src, mWorkSize), bytesRead != 0));
 
 return_success:
-        if (mWorkBuffer == nullptr)
+        if (mWorkBuffer == NULL)
             delete[] src;
 
-        if (pOutSize != nullptr)
+        if (pOutSize != NULL)
             *pOutSize = decompSize;
 
-        if (pOutAllocSize != nullptr)
+        if (pOutAllocSize != NULL)
             *pOutAllocSize = allocSize;
 
-        if (pSuccess != nullptr)
+        if (pSuccess != NULL)
             *pSuccess = decompressed;
 
         return dst;
@@ -157,10 +157,10 @@ return_deleteDst:
         delete[] dst;
 
 return_deleteSrc:
-    if (mWorkBuffer == nullptr)
+    if (mWorkBuffer == NULL)
         delete[] src;
 
-    return nullptr;
+    return NULL;
 }
 
 } // namespace sead

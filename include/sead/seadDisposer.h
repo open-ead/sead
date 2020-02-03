@@ -1,6 +1,8 @@
 #ifndef SEAD_DISPOSER_H_
 #define SEAD_DISPOSER_H_
 
+#include <sead/seadListImpl.h>
+
 namespace sead {
 
 class Heap;

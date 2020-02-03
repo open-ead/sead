@@ -2,6 +2,7 @@
 #define SEAD_SAFE_STRING_H_
 
 #include <stdarg.h>
+#include <string>
 
 namespace sead {
 
@@ -13,7 +14,13 @@ public:
     SafeStringBase(const T* str) : mStringTop(str) { }
     virtual ~SafeStringBase() { }
 
-    virtual void assureTerminationImpl_() { }
+    virtual void assureTerminationImpl_() const { }
+
+    inline const T* c_str() const
+    {
+        assureTerminationImpl_();
+        return mStringTop;
+    }
 
     static const T cNullChar;
     static const T cNullString[1];
@@ -49,10 +56,10 @@ public:
 
     virtual ~BufferedSafeStringBase() { }
 
-    virtual void assureTerminationImpl_()
+    virtual void assureTerminationImpl_() const
     {
         BufferedSafeStringBase<T>* mutableSafeString = const_cast<BufferedSafeStringBase<T>*>(this);
-        getMutableStringTop_()[mBufferSize - 1] = mutableSafeString->cNullChar;
+        mutableSafeString->getMutableStringTop_()[mBufferSize - 1] = mutableSafeString->cNullChar;
     };
 
     void formatV(T const*, va_list);
@@ -70,6 +77,12 @@ public:
         getMutableStringTop_()[0] = this->cNullChar;
     }
 
+    inline void copy(const SafeStringBase<T>& src)
+    {
+        std::char_traits<T>::copy(getMutableStringTop_(), src.c_str(), cMaximumLength);
+        //...
+    }
+
     s32 mBufferSize;
 };
 
@@ -77,7 +90,7 @@ template <typename T, s32 L>
 class FixedSafeStringBase : public BufferedSafeStringBase<T>
 {
 public:
-    FixedSafeStringBase() : BufferedSafeStringBase(mBuffer, L)
+    FixedSafeStringBase() : BufferedSafeStringBase<T>(mBuffer, L)
     {
         clear();
     }
@@ -91,13 +104,21 @@ typedef SafeStringBase<char> SafeString;
 typedef BufferedSafeStringBase<char> BufferedSafeString;
 
 template <s32 L>
-typedef FixedSafeStringBase<char, L> FixedSafeString<L>;
-
-template <s32 L>
-class FormatFixedSafeString : public FixedSafeString<L>
+class FixedSafeString : public FixedSafeStringBase<char, L>
 {
 public:
-    FormatFixedSafeString() : FixedSafeStringBase() { }
+    FixedSafeString() : FixedSafeStringBase<char, L>() { }
+
+    explicit FixedSafeString(const SafeString& str) : FixedSafeStringBase<char, L>()
+    {
+        copy(str);
+    }
+};
+
+template <s32 L>
+class FormatFixedSafeString : public FixedSafeStringBase<char, L>
+{
+public:
     FormatFixedSafeString(const char* str, ...);
     virtual ~FormatFixedSafeString() { }
 };
