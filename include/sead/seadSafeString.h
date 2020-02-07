@@ -22,6 +22,30 @@ public:
         return mStringTop;
     }
 
+    inline s32 calcLength() const
+    {
+        assureTerminationImpl_();
+
+        char* c_str = const_cast<char*>(mStringTop);
+        char c;
+
+        s32 length = 0;
+
+        for (;;)
+        {
+            if (length > cMaximumLength || (c = *c_str, c == cNullChar))
+                break;
+
+            length++;
+            c_str++;
+        }
+
+        if (length > cMaximumLength)
+            return 0;
+
+        return length;
+    }
+
     static const T cNullChar;
     static const T cNullString[1];
     static const T cLineBreakChar;
@@ -47,10 +71,18 @@ template <typename T>
 class BufferedSafeStringBase : public SafeStringBase<T>
 {
 public:
-    BufferedSafeStringBase(const T* buffer, s32 size)
+    BufferedSafeStringBase(T* buffer, s32 size)
+        : SafeStringBase<T>(buffer)
     {
-        mStringTop = buffer;
         mBufferSize = size;
+        assureTerminationImpl_();
+    }
+
+    template <s32 N>
+    __attribute__((always_inline)) BufferedSafeStringBase(T (&buffer)[N])
+        : SafeStringBase<T>(buffer)
+    {
+        mBufferSize = N;
         assureTerminationImpl_();
     }
 
@@ -60,7 +92,7 @@ public:
     {
         BufferedSafeStringBase<T>* mutableSafeString = const_cast<BufferedSafeStringBase<T>*>(this);
         mutableSafeString->getMutableStringTop_()[mBufferSize - 1] = mutableSafeString->cNullChar;
-    };
+    }
 
     void formatV(T const*, va_list);
     void format(T const*, ...);
@@ -79,8 +111,15 @@ public:
 
     inline void copy(const SafeStringBase<T>& src)
     {
-        std::char_traits<T>::copy(getMutableStringTop_(), src.c_str(), cMaximumLength);
-        //...
+        T* dst = getMutableStringTop_();
+        s32 copyLength = src.calcLength();
+
+        if (copyLength >= mBufferSize)
+            copyLength = mBufferSize - 1;
+
+        std::char_traits<T>::copy(dst, src.c_str(), copyLength);
+
+        dst[copyLength] = SafeStringBase<T>::cNullChar;
     }
 
     s32 mBufferSize;
@@ -90,9 +129,16 @@ template <typename T, s32 L>
 class FixedSafeStringBase : public BufferedSafeStringBase<T>
 {
 public:
-    FixedSafeStringBase() : BufferedSafeStringBase<T>(mBuffer, L)
+    FixedSafeStringBase()
+        : BufferedSafeStringBase<T>(mBuffer)
     {
         clear();
+    }
+
+    explicit FixedSafeStringBase(const SafeStringBase<T>& str)
+        : BufferedSafeStringBase<T>(mBuffer, L)
+    {
+        copy(str);
     }
 
     virtual ~FixedSafeStringBase() { }
@@ -107,11 +153,14 @@ template <s32 L>
 class FixedSafeString : public FixedSafeStringBase<char, L>
 {
 public:
-    FixedSafeString() : FixedSafeStringBase<char, L>() { }
-
-    explicit FixedSafeString(const SafeString& str) : FixedSafeStringBase<char, L>()
+    FixedSafeString()
+        : FixedSafeStringBase<char, L>()
     {
-        copy(str);
+    }
+
+    explicit FixedSafeString(const SafeString& str)
+        : FixedSafeStringBase<char, L>(str)
+    {
     }
 };
 
