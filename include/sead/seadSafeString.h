@@ -26,8 +26,8 @@ public:
     {
         assureTerminationImpl_();
 
-        char* c_str = const_cast<char*>(mStringTop);
-        char c;
+        T* c_str = const_cast<T*>(mStringTop);
+        T c;
 
         s32 length = 0;
 
@@ -55,34 +55,26 @@ public:
     const T* mStringTop;
 };
 
-template<typename T>
+template <typename T>
 const T SafeStringBase<T>::cNullChar = 0;
 
-template<typename T>
+template <typename T>
 const T SafeStringBase<T>::cLineBreakChar = static_cast<T>('\n');
 
-template<typename T>
+template <typename T>
 const T SafeStringBase<T>::cNullString[1] = { SafeStringBase<T>::cNullChar };
 
-template<typename T>
+template <typename T>
 const SafeStringBase<T> SafeStringBase<T>::cEmptyString;
 
 template <typename T>
 class BufferedSafeStringBase : public SafeStringBase<T>
 {
 public:
-    BufferedSafeStringBase(T* buffer, s32 size)
+    __attribute__((always_inline)) BufferedSafeStringBase(T* buffer, s32 size)
         : SafeStringBase<T>(buffer)
     {
         mBufferSize = size;
-        assureTerminationImpl_();
-    }
-
-    template <s32 N>
-    __attribute__((always_inline)) BufferedSafeStringBase(T (&buffer)[N])
-        : SafeStringBase<T>(buffer)
-    {
-        mBufferSize = N;
         assureTerminationImpl_();
     }
 
@@ -94,10 +86,10 @@ public:
         mutableSafeString->getMutableStringTop_()[mBufferSize - 1] = mutableSafeString->cNullChar;
     }
 
-    void formatV(T const*, va_list);
-    void format(T const*, ...);
-    void appendWithFormatV(T const*, va_list);
-    void appendWithFormat(T const*, ...);
+    s32 format(const T* formatStr, ...);
+    s32 formatV(const T* formatStr, va_list args);
+    s32 appendWithFormat(const T* formatStr, ...);
+    s32 appendWithFormatV(const T* formatStr, va_list args);
 
     inline T* getMutableStringTop_()
     {
@@ -130,7 +122,7 @@ class FixedSafeStringBase : public BufferedSafeStringBase<T>
 {
 public:
     FixedSafeStringBase()
-        : BufferedSafeStringBase<T>(mBuffer)
+        : BufferedSafeStringBase<T>(mBuffer, L)
     {
         clear();
     }
@@ -147,7 +139,26 @@ public:
 };
 
 typedef SafeStringBase<char> SafeString;
+typedef SafeStringBase<char16> SafeString16;
 typedef BufferedSafeStringBase<char> BufferedSafeString;
+typedef BufferedSafeStringBase<char16> BufferedSafeString16;
+
+template <>
+s32 BufferedSafeStringBase<char>::format(const char* formatStr, ...);
+template <>
+s32 BufferedSafeStringBase<char16>::format(const char16* formatStr, ...);
+template <>
+s32 BufferedSafeStringBase<char>::formatV(const char* formatStr, va_list args);
+template <>
+s32 BufferedSafeStringBase<char16>::formatV(const char16* formatStr, va_list args);
+template <>
+s32 BufferedSafeStringBase<char>::appendWithFormat(const char* formatStr, ...);
+template <>
+s32 BufferedSafeStringBase<char16>::appendWithFormat(const char16* formatStr, ...);
+template <>
+s32 BufferedSafeStringBase<char>::appendWithFormatV(const char* formatStr, va_list args);
+template <>
+s32 BufferedSafeStringBase<char16>::appendWithFormatV(const char16* formatStr, va_list args);
 
 template <s32 L>
 class FixedSafeString : public FixedSafeStringBase<char, L>
@@ -165,11 +176,34 @@ public:
 };
 
 template <s32 L>
+class WFixedSafeString : public FixedSafeStringBase<char16, L>
+{
+public:
+    WFixedSafeString()
+        : FixedSafeStringBase<char16, L>()
+    {
+    }
+
+    explicit WFixedSafeString(const SafeString16& str)
+        : FixedSafeStringBase<char16, L>(str)
+    {
+    }
+};
+
+template <s32 L>
 class FormatFixedSafeString : public FixedSafeStringBase<char, L>
 {
 public:
     FormatFixedSafeString(const char* str, ...);
     virtual ~FormatFixedSafeString() { }
+};
+
+template <s32 L>
+class WFormatFixedSafeString : public FixedSafeStringBase<char16, L>
+{
+public:
+    WFormatFixedSafeString(const char16* str, ...);
+    virtual ~WFormatFixedSafeString() { }
 };
 
 } // namespace sead
