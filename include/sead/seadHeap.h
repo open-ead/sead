@@ -1,6 +1,8 @@
 #ifndef SEAD_HEAP_H_
 #define SEAD_HEAP_H_
 
+#include <stddef.h>
+
 #include <sead/seadCriticalSection.h>
 #include <sead/seadDisposer.h>
 #include <sead/seadListImpl.h>
@@ -22,6 +24,11 @@ public:
     virtual ~Heap() { }
 
     SEAD_RTTI_BASE(Heap)
+
+    virtual void destroy() = 0;
+    virtual u32 adjust() = 0;
+    virtual void* tryAlloc(size_t size, s32 alignment) = 0;
+    virtual void free(void* ptr) = 0;
 
     // ...
 

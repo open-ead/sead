@@ -10,6 +10,7 @@ public:
     virtual ~HeapMgr() { }
 
     Heap* getCurrentHeap();
+    Heap* findContainHeap(void*);
 
     static HeapMgr sInstance;
     static HeapMgr* sInstancePtr;
