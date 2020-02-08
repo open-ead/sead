@@ -31,12 +31,7 @@ public:
 
 public:
     SZSDecompressor(u32 workSize, u8* workBuffer);
-
-    virtual ~SZSDecompressor()
-    {
-        if (ResourceMgr::sInstance != NULL)
-            ResourceMgr::sInstance->unregisterDecompressor(this);
-    }
+    virtual ~SZSDecompressor() { }
 
     virtual u8* tryDecompFromDevice(const ResourceMgr::LoadArg& loadArg, Resource* resource, u32* outSize, u32* outAllocSize, bool* success);
 
