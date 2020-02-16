@@ -35,8 +35,8 @@ public:
 
     virtual u8* tryDecompFromDevice(const ResourceMgr::LoadArg& loadArg, Resource* resource, u32* outSize, u32* outAllocSize, bool* success);
 
-    static u32 getDecompAlignment(const void*);
-    static u32 getDecompSize(const void*);
+    static u32 getDecompAlignment(const void* src);
+    static u32 getDecompSize(const void* src);
     static s32 streamDecomp(DecompContext* context, const void* src, u32 srcSize);
     static s32 decomp(void* dst, u32 dstSize, const void* src, u32 srcSize);
 

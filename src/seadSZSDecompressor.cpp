@@ -160,4 +160,16 @@ SZSDecompressor::tryDecompFromDevice(
     return NULL;
 }
 
+u32
+SZSDecompressor::getDecompAlignment(const void* src)
+{
+    return Endian::readU32(src + 8);
+}
+
+u32
+SZSDecompressor::getDecompSize(const void* src)
+{
+    return Endian::readU32(src + 4);
+}
+
 } // namespace sead
