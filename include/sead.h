@@ -4,6 +4,7 @@
 #include <sead/seadCriticalSection.h>
 #include <sead/seadDecompressor.h>
 #include <sead/seadDisposer.h>
+#include <sead/seadEndian.h>
 #include <sead/seadFileDevice.h>
 #include <sead/seadFileDeviceMgr.h>
 #include <sead/seadHeap.h>
