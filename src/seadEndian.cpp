@@ -1,26 +1,26 @@
 #include <sead.h>
 
-u8 swap8BE(u8 val)
+u8 Swap8(u8 val)
 {
     return val;
 }
 
-u8 swap8LE(u8 val)
+u8 Null8(u8 val)
 {
     return val;
 }
 
-u16 swap16BE(u16 val)
+u16 Swap16(u16 val)
 {
     return (val << 8 | val >> 8) & 0xFFFF;
 }
 
-u16 swap16LE(u16 val)
+u16 Null16(u16 val)
 {
     return val;
 }
 
-u32 swap32BE(u32 val)
+u32 Swap32(u32 val)
 {
     return val << 24 |
           (val & 0xFF00) << 8 |
@@ -28,12 +28,12 @@ u32 swap32BE(u32 val)
            val >> 8 & 0xFF00;
 }
 
-u32 swap32LE(u32 val)
+u32 Null32(u32 val)
 {
     return val;
 }
 
-u64 swap64BE(u64 val)
+u64 Swap64(u64 val)
 {
     // Couldn't make an implementation that matches the original assembly
     // But this should be much more efficient
@@ -47,7 +47,7 @@ u64 swap64BE(u64 val)
            val >> 8 & 0xFF000000;
 }
 
-u64 swap64LE(u64 val)
+u64 Null64(u64 val)
 {
     return val;
 }
@@ -55,6 +55,6 @@ u64 swap64LE(u64 val)
 namespace sead { namespace Endian {
 
 Types cHostEndian = Type_Big; // Temporary
-ConvFuncTable cConvFuncTable = { &swap8LE, &swap8BE, &swap16LE, &swap16BE, &swap32LE, &swap32BE, &swap64LE, &swap64BE };
+ConvFuncTable cConvFuncTable = { &Null8, &Swap8, &Null16, &Swap16, &Null32, &Swap32, &Null64, &Swap64 };
 
 } } // namespace sead::Endian

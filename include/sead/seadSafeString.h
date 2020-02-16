@@ -2,7 +2,6 @@
 #define SEAD_SAFE_STRING_H_
 
 #include <stdarg.h>
-#include <string>
 
 namespace sead {
 
@@ -22,29 +21,7 @@ public:
         return mStringTop;
     }
 
-    inline s32 calcLength() const
-    {
-        assureTerminationImpl_();
-
-        T* c_str = const_cast<T*>(mStringTop);
-        T c;
-
-        s32 length = 0;
-
-        for (;;)
-        {
-            if (length > cMaximumLength || (c = *c_str, c == cNullChar))
-                break;
-
-            length++;
-            c_str++;
-        }
-
-        if (length > cMaximumLength)
-            return 0;
-
-        return length;
-    }
+    inline s32 calcLength() const;
 
     static const T cNullChar;
     static const T cNullString[1];
@@ -101,18 +78,7 @@ public:
         getMutableStringTop_()[0] = this->cNullChar;
     }
 
-    inline void copy(const SafeStringBase<T>& src)
-    {
-        T* dst = getMutableStringTop_();
-        s32 copyLength = src.calcLength();
-
-        if (copyLength >= mBufferSize)
-            copyLength = mBufferSize - 1;
-
-        std::char_traits<T>::copy(dst, src.c_str(), copyLength);
-
-        dst[copyLength] = SafeStringBase<T>::cNullChar;
-    }
+    inline s32 copy(const SafeStringBase<T>& src, s32 copyLength=-1);
 
     s32 mBufferSize;
 };

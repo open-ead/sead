@@ -10,11 +10,17 @@
 #include <sead/seadHeap.h>
 #include <sead/seadHeapMgr.h>
 #include <sead/seadListImpl.h>
+#ifdef __cplusplus
+#include <sead/seadMemUtilCafe.hpp>
+#endif // __cplusplus
 #include <sead/seadNew.h>
 #include <sead/seadResource.h>
 #include <sead/seadResourceMgr.h>
 #include <sead/seadRuntimeTypeInfo.h>
 #include <sead/seadSafeString.h>
+#ifdef __cplusplus
+#include <sead/seadSafeString.hpp>
+#endif // __cplusplus
 #include <sead/seadSZSDecompressor.h>
 
 #endif // SEAD_H_
