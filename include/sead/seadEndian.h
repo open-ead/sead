@@ -27,7 +27,7 @@ extern ConvFuncTable cConvFuncTable;
 
 inline u8 readU8(const void* ptr)
 {
-    return cConvFuncTable.int8[Endian::cHostEndian](*static_cast<u8*>(ptr));
+    return cConvFuncTable.int8[Endian::cHostEndian](*static_cast<const u8*>(ptr));
 }
 
 inline s8 readS8(const void* ptr)
@@ -37,7 +37,7 @@ inline s8 readS8(const void* ptr)
 
 inline u16 readU16(const void* ptr)
 {
-    return cConvFuncTable.int16[Endian::cHostEndian](*static_cast<u16*>(ptr));
+    return cConvFuncTable.int16[Endian::cHostEndian](*static_cast<const u16*>(ptr));
 }
 
 inline s16 readS16(const void* ptr)
@@ -47,7 +47,7 @@ inline s16 readS16(const void* ptr)
 
 inline u32 readU32(const void* ptr)
 {
-    return cConvFuncTable.int32[Endian::cHostEndian](*static_cast<u32*>(ptr));
+    return cConvFuncTable.int32[Endian::cHostEndian](*static_cast<const u32*>(ptr));
 }
 
 inline s32 readS32(const void* ptr)
@@ -57,7 +57,7 @@ inline s32 readS32(const void* ptr)
 
 inline u64 readU64(const void* ptr)
 {
-    return cConvFuncTable.int64[Endian::cHostEndian](*static_cast<u64*>(ptr));
+    return cConvFuncTable.int64[Endian::cHostEndian](*static_cast<const u64*>(ptr));
 }
 
 inline s64 readS64(const void* ptr)
