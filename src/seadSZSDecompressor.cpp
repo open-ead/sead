@@ -3,7 +3,7 @@
 namespace {
 
 #ifdef cafe
-s32 decodeSZSCafeAsm_(void* dst, const void* src)
+__attribute__((aligned(0x20))) s32 decodeSZSCafeAsm_(void* dst, const void* src)
 {
     asm ("lwz r5, 0x4(r4)\n");
     asm ("li r11, 0x20\n");
