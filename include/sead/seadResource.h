@@ -61,7 +61,7 @@ public:
     FixedSafeString<32> mName;
 };
 
-class DirectResourceFactoryBase : ResourceFactory
+class DirectResourceFactoryBase : public ResourceFactory
 {
 public:
     virtual Resource* tryCreate(const ResourceMgr::LoadArg& loadArg);

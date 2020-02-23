@@ -3,8 +3,11 @@
 
 namespace sead {
 
-struct ListNode
+class ListNode
 {
+public:
+    void erase_();
+
     ListNode* previous;
     ListNode* next;
 };

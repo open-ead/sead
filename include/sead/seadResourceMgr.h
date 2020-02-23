@@ -18,6 +18,8 @@ class DirectResourceFactory;
 
 class ResourceMgr
 {
+    SEAD_SINGLETON_DISPOSER(ResourceMgr, sInstance)
+
 public:
     struct CreateArg;
 
@@ -37,13 +39,13 @@ public:
 
 public:
     ResourceMgr();
+    ~ResourceMgr();
 
-    void unregisterFactory(ResourceFactory*);
-    void unregisterDecompressor(Decompressor*);
+    void unregisterFactory(ResourceFactory* factory);
+    void unregisterDecompressor(Decompressor* decompressor);
 
     static ResourceMgr* sInstance;
 
-    IDisposer staticDisposer;
     u32 _10[3];
     u32 _1C[3];
     u32 _28[3];

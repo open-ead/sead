@@ -118,14 +118,14 @@ SZSDecompressor::SZSDecompressor(u32 workSize, u8* workBuffer)
 {
     if (workBuffer == NULL)
     {
-        mWorkBuffer = NULL;
         mWorkSize = workSize + FileDevice::cBufferMinAlignment - 1 & (u32)-FileDevice::cBufferMinAlignment;
+        mWorkBuffer = NULL;
     }
 
     else
     {
-        mWorkBuffer = workBuffer;
         mWorkSize = workSize;
+        mWorkBuffer = workBuffer;
     }
 }
 

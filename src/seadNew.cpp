@@ -3,6 +3,12 @@
 
 #include <cafe.h>
 
+/*
+    This file should actually be implemented
+    by the application using sead.
+    I am implementing it myself for convenience.
+*/
+
 void* operator new(size_t size)
 {
     if (sead::HeapMgr::sInstancePtr != NULL)
