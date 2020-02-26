@@ -9,6 +9,9 @@ namespace sead {
 class CriticalSection : public IDisposer
 {
 public:
+    CriticalSection();
+    virtual ~CriticalSection() { }
+
     OSMutex mutex;
 };
 

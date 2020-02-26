@@ -1,6 +1,7 @@
 #ifndef SEAD_H_
 #define SEAD_H_
 
+#include <sead/seadArena.h>
 #include <sead/seadCriticalSection.h>
 #include <sead/seadDecompressor.h>
 #include <sead/seadDisposer.h>
@@ -14,6 +15,7 @@
 #include <sead/seadMemUtilCafe.hpp>
 #endif // __cplusplus
 #include <sead/seadNew.h>
+#include <sead/seadPtrArray.h>
 #include <sead/seadResource.h>
 #include <sead/seadResourceMgr.h>
 #include <sead/seadRuntimeTypeInfo.h>
