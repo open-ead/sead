@@ -50,7 +50,7 @@ public:
     static ResourceMgr* sInstance;
 
     ListImpl factories;
-    ListImpl _1C;
+    ListImpl postCreateResources;
     ListImpl decompressors;
     DirectResourceFactory<DirectResource>* factory;
 };

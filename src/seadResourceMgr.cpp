@@ -7,7 +7,7 @@ ResourceMgr::SingletonDisposer_* ResourceMgr::SingletonDisposer_::sStaticDispose
 
 ResourceMgr::ResourceMgr()
     : factories()
-    , _1C()
+    , postCreateResources()
     , decompressors()
     , factory(NULL)
 {
