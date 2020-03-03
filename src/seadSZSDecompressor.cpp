@@ -109,7 +109,7 @@ __attribute__((aligned(0x20))) s32 decodeSZSCafeAsm_(void* dst, const void* src)
 }
 #endif // cafe
 
-} // namespace sead::{no-name}
+} // namespace {no-name}
 
 namespace sead {
 

@@ -3,7 +3,7 @@
 
 #include <cafe.h>
 #include <sead/seadFileDevice.h>
-#include <sead/seadListImpl.h>
+#include <sead/seadOffsetList.h>
 #include <sead/seadSafeString.h>
 
 namespace sead {
@@ -18,7 +18,7 @@ public:
     static FileDeviceMgr* sInstance;
 
     IDisposer staticDisposer;
-    ListImpl mountedDevices;
+    OffsetList mountedDevices;
     MainFileDevice* device;
     FSClient client;
     u8 _1724[128];

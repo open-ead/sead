@@ -15,6 +15,7 @@
 #include <sead/seadMemUtilCafe.hpp>
 #endif // __cplusplus
 #include <sead/seadNew.h>
+#include <sead/seadOffsetList.h>
 #include <sead/seadPtrArray.h>
 #include <sead/seadResource.h>
 #include <sead/seadResourceMgr.h>

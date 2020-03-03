@@ -64,6 +64,12 @@ public:
 class DirectResourceFactoryBase : public ResourceFactory
 {
 public:
+    DirectResourceFactoryBase()
+        : ResourceFactory()
+    {
+    }
+
+    virtual Resource* create(const ResourceMgr::CreateArg& createArg);
     virtual Resource* tryCreate(const ResourceMgr::LoadArg& loadArg);
     virtual Resource* tryCreateWithDecomp(const ResourceMgr::LoadArg& loadArg, Decompressor* decompressor);
 };
@@ -73,7 +79,7 @@ class DirectResourceFactory : public DirectResourceFactoryBase
 {
 public:
     DirectResourceFactory()
-        : ResourceFactory()
+        : DirectResourceFactoryBase()
     {
     }
 

@@ -41,14 +41,17 @@ public:
     ResourceMgr();
     ~ResourceMgr();
 
+    void registerFactory(ResourceFactory* factory, const SafeString& name);
+    void registerDecompressor(Decompressor* decompressor, const SafeString& name);
+
     void unregisterFactory(ResourceFactory* factory);
     void unregisterDecompressor(Decompressor* decompressor);
 
     static ResourceMgr* sInstance;
 
-    u32 _10[3];
-    u32 _1C[3];
-    u32 _28[3];
+    ListImpl factories;
+    ListImpl _1C;
+    ListImpl decompressors;
     DirectResourceFactory<DirectResource>* factory;
 };
 

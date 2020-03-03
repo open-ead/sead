@@ -20,10 +20,30 @@ SafeStringBase<T>::calcLength() const
         length++;
     }
 
-    if ( length > cMaximumLength )
+    if (length > cMaximumLength)
         return 0;
 
     return length;
+}
+
+template <typename T>
+inline bool
+SafeStringBase<T>::isEqual(const SafeStringBase<T>& str) const
+{
+    assureTerminationImpl_();
+    if (c_str() == str.c_str())
+        return true;
+
+    for (s32 i = 0; i <= cMaximumLength; i++)
+    {
+        if (unsafeAt_(i) != str.unsafeAt_(i))
+            return false;
+
+        else if (unsafeAt_(i) == cNullChar)
+            return true;
+    }
+
+    return false;
 }
 
 template <typename T>

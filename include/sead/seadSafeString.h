@@ -21,7 +21,13 @@ public:
         return mStringTop;
     }
 
+    inline const T& unsafeAt_(s32 idx) const
+    {
+        return mStringTop[idx];
+    }
+
     inline s32 calcLength() const;
+    inline bool isEqual(const SafeStringBase<T>& str) const;
 
     static const T cNullChar;
     static const T cNullString[1];

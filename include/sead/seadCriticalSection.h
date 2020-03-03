@@ -12,6 +12,9 @@ public:
     CriticalSection();
     virtual ~CriticalSection() { }
 
+    void lock();
+    void unlock();
+
     OSMutex mutex;
 };
 

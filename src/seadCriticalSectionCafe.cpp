@@ -1,13 +1,22 @@
 #include <sead.h>
-#include <ppc_edge.h>
 
 namespace sead {
 
 CriticalSection::CriticalSection()
     : IDisposer()
+    , mutex()
 {
-    __memzero(&mutex, sizeof(mutex));
     OSInitMutex(&mutex);
+}
+
+void CriticalSection::lock()
+{
+    OSLockMutex(&mutex);
+}
+
+void CriticalSection::unlock()
+{
+    OSUnlockMutex(&mutex);
 }
 
 } // namespace sead

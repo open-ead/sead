@@ -15,7 +15,7 @@ public:
     virtual ~HeapMgr() { }
 
     Heap* getCurrentHeap();
-    Heap* findContainHeap(void*);
+    Heap* findContainHeap(const void* ptr) const;
 
     static HeapMgr sInstance;
     static HeapMgr* sInstancePtr;

@@ -5,11 +5,15 @@
 
 #include <sead/seadCriticalSection.h>
 #include <sead/seadDisposer.h>
-#include <sead/seadListImpl.h>
+#include <sead/seadOffsetList.h>
 #include <sead/seadRuntimeTypeInfo.h>
 #include <sead/seadSafeString.h>
 
-namespace sead {
+namespace sead { namespace hostio {
+
+class Context;
+
+} // namespace sead::hostio
 
 class Heap : public IDisposer
 {
@@ -29,21 +33,39 @@ public:
     virtual u32 adjust() = 0;
     virtual void* tryAlloc(size_t size, s32 alignment) = 0;
     virtual void free(void* ptr) = 0;
+    virtual void* resizeFront(void*, size_t) = 0;
+    virtual void* resizeBack(void*, size_t) = 0;
+    virtual void freeAll() = 0;
+    virtual u32 getStartAddress() const = 0;
+    virtual u32 getEndAddress() const = 0;
+    virtual u32 getSize() const = 0;
+    virtual u32 getFreeSize() const = 0;
+    virtual u32 getMaxAllocatableSize(int) const = 0;
+    virtual bool isInclude(const void*) const = 0;
+    virtual bool isFreeable() const = 0;
+    virtual bool isResizable() const = 0;
+    virtual bool isAdjustable() const = 0;
 
-    // ...
+    virtual void dump() const
+    {
+    }
+
+    virtual void genInformation_(hostio::Context*)
+    {
+    }
 
     void appendDisposer_(IDisposer* disposer);
     void removeDisposer_(IDisposer* disposer);
-    Heap* findContainHeap_(const void*);
+    Heap* findContainHeap_(const void* ptr);
 
     SafeString name;
     u32 addr;
     u32 size;
     Heap* parent;
-    ListImpl children;
+    OffsetList children;
     u32 _34;
     u32 _38;
-    ListImpl disposers;
+    OffsetList disposers;
     u32 direction;
     CriticalSection mutex;
     u32 flags;

@@ -16,7 +16,12 @@ public:
 private:
     friend class Heap;
 
-    Heap* containHeap;
+    union
+    {
+        u32 destructFlag;
+        Heap* containHeap;
+    };
+
     ListNode listNode;
 };
 

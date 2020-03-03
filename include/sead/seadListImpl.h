@@ -6,18 +6,31 @@ namespace sead {
 class ListNode
 {
 public:
+    __attribute__((always_inline)) ListNode()
+        : mPrev(NULL)
+        , mNext(NULL)
+    {
+    }
+
+    void insertFront_(ListNode* node);
     void erase_();
 
-    ListNode* previous;
-    ListNode* next;
+    ListNode* mPrev;
+    ListNode* mNext;
 };
 
 class ListImpl
 {
 public:
-    ListNode root;
-    s32 count;
-    u32 nodeOffset;
+    __attribute__((always_inline)) ListImpl()
+        : mStartEnd(), mCount(0)
+    {
+        mStartEnd.mNext = &mStartEnd;
+        mStartEnd.mPrev = &mStartEnd;
+    }
+
+    ListNode mStartEnd;
+    s32 mCount;
 };
 
 class UnkList
@@ -26,14 +39,14 @@ public:
     UnkList()
     {
         ptrToSelf = this;
-        root.next = NULL;
-        root.previous = NULL;
-        _C = 0;
+        root.mNext = NULL;
+        root.mPrev = NULL;
+        parent = NULL;
     }
 
     ListNode root;
     void* ptrToSelf;
-    u32 _C;
+    ListImpl* parent;
 };
 
 } // namespace sead
