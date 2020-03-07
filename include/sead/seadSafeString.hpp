@@ -12,6 +12,7 @@ SafeStringBase<T>::calcLength() const
 {
     assureTerminationImpl_();
     s32 length = 0;
+
     for (;;)
     {
         if (length > cMaximumLength || mStringTop[length] == cNullChar)
@@ -48,6 +49,52 @@ SafeStringBase<T>::isEqual(const SafeStringBase<T>& str) const
 
 template <typename T>
 inline s32
+SafeStringBase<T>::comparen(const SafeStringBase<T>& str, s32 n) const
+{
+    assureTerminationImpl_();
+    if (c_str() == str.c_str())
+        return 0;
+
+    if (n > cMaximumLength)
+        n = cMaximumLength;
+
+    for (s32 i = 0; i < n; i++)
+    {
+        if (unsafeAt_(i) == cNullChar && str.unsafeAt_(i) == cNullChar)
+            return 0;
+
+        else if (unsafeAt_(i) == cNullChar)
+            return -1;
+
+        else if (str.unsafeAt_(i) == cNullChar)
+            return 1;
+
+        else if (unsafeAt_(i) < str.unsafeAt_(i))
+            return -1;
+
+        else if (unsafeAt_(i) > str.unsafeAt_(i))
+            return 1;
+    }
+
+    return 0;
+}
+
+template <typename T>
+inline s32
+SafeStringBase<T>::findIndex(const SafeStringBase<T>& str) const
+{
+    s32 len = calcLength();
+    s32 subStrLen = str.calcLength();
+
+    for (s32 i = 0; i <= len - subStrLen; i++)
+        if (SafeStringBase<T>(&mStringTop[i]).comparen(str, subStrLen) == 0)
+            return i;
+
+    return -1;
+}
+
+template <typename T>
+inline s32
 BufferedSafeStringBase<T>::copy(const SafeStringBase<T>& src, s32 copyLength)
 {
     T* dst = getMutableStringTop_();
@@ -61,6 +108,52 @@ BufferedSafeStringBase<T>::copy(const SafeStringBase<T>& src, s32 copyLength)
     dst[copyLength] = SafeStringBase<T>::cNullChar;
 
     return copyLength;
+}
+
+template <typename T>
+inline s32
+BufferedSafeStringBase<T>::copyAt(s32 at, const SafeStringBase<T>& src, s32 copyLength)
+{
+    T* dst = getMutableStringTop_();
+    s32 len = this->calcLength();
+
+    if (at < 0)
+    {
+        at = len + at + 1;
+        if (at < 0)
+            at = 0;
+    }
+
+    if (copyLength < 0)
+        copyLength = src.calcLength();
+
+    if (at + copyLength >= mBufferSize)
+        copyLength = mBufferSize - at - 1;
+
+    if (copyLength <= 0)
+        return 0;
+
+    std::char_traits<T>::copy(dst + at, src.c_str(), copyLength);
+    if (at + copyLength > len)
+        dst[at + copyLength] = SafeStringBase<T>::cNullChar;
+
+    return copyLength;
+}
+
+template <typename T>
+inline s32
+BufferedSafeStringBase<T>::trim(s32 trimLength)
+{
+    if (trimLength >= mBufferSize)
+        return calcLength();
+
+    if (trimLength < 0)
+        trimLength = 0;
+
+    T* mutableString = getMutableStringTop_();
+    mutableString[trimLength] = SafeStringBase<T>::cNullChar;
+
+    return trimLength;
 }
 
 } // namespace sead

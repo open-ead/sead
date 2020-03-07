@@ -19,7 +19,7 @@ public:
 
     virtual bool isDerived(const Interface* typeInfo) const
     {
-        return static_cast<const Interface*>(this) == typeInfo;
+        return typeInfo == static_cast<const Interface*>(this);
     }
 };
 

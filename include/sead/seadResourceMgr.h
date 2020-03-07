@@ -5,9 +5,11 @@
 #include <sead/seadFileDevice.h>
 #include <sead/seadHeap.h>
 #include <sead/seadSafeString.h>
+#include <sead/seadTList.h>
 
 namespace sead {
 
+class Resource;
 class DirectResource;
 class ResourceFactory;
 class Decompressor;
@@ -21,7 +23,16 @@ class ResourceMgr
     SEAD_SINGLETON_DISPOSER(ResourceMgr, sInstance)
 
 public:
-    struct CreateArg;
+    struct CreateArg
+    {
+        u8* buffer;
+        u32 bufferSize;
+        u32 allocSize;
+        bool isValid;
+        u32 _10[3];
+        Heap* resourceCreateHeap;
+        s32 resourceAlignment;
+    };
 
     struct LoadArg
     {
@@ -49,9 +60,9 @@ public:
 
     static ResourceMgr* sInstance;
 
-    ListImpl factories;
-    ListImpl postCreateResources;
-    ListImpl decompressors;
+    TList<ResourceFactory> factories;
+    TList<Resource> postCreateResources;
+    TList<Decompressor> decompressors;
     DirectResourceFactory<DirectResource>* factory;
 };
 

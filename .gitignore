@@ -33,6 +33,7 @@
 
 # GreenHills files
 *.gpj
+*.ii
 *.opt
 *.ti
 tgt/*

@@ -42,15 +42,14 @@ void ResourceMgr::registerFactory(ResourceFactory* factory, const SafeString& na
         parent->mCount -= 1;
     }
 
-    parent = &factories;
-    factory->parent = parent;
-    parent->mStartEnd.insertFront_(&factory->root);
-    factories.mCount += 1;
+    factories.setParentFor(factory);
+    factories.insertFront(factory);
+    factories.getCountRef() += 1;
 }
 
 void ResourceMgr::registerDecompressor(Decompressor* decompressor, const SafeString& name)
 {
-    if (!name.isEqual(sead::SafeString::cEmptyString))
+    if (!name.isEqual(SafeString::cEmptyString))
         decompressor->mName.copy(name);
 
     ListImpl* parent = decompressor->parent;
@@ -61,10 +60,9 @@ void ResourceMgr::registerDecompressor(Decompressor* decompressor, const SafeStr
         parent->mCount -= 1;
     }
 
-    parent = &decompressors;
-    decompressor->parent = parent;
-    parent->mStartEnd.insertFront_(&decompressor->root);
-    decompressors.mCount += 1;
+    decompressors.setParentFor(decompressor);
+    decompressors.insertFront(decompressor);
+    decompressors.getCountRef() += 1;
 }
 
 void ResourceMgr::unregisterFactory(ResourceFactory* factory)
@@ -74,7 +72,7 @@ void ResourceMgr::unregisterFactory(ResourceFactory* factory)
 
     factory->parent = NULL;
     factory->root.erase_();
-    factories.mCount -= 1;
+    factories.getCountRef() -= 1;
 }
 
 void ResourceMgr::unregisterDecompressor(Decompressor* decompressor)
@@ -84,7 +82,7 @@ void ResourceMgr::unregisterDecompressor(Decompressor* decompressor)
 
     decompressor->parent = NULL;
     decompressor->root.erase_();
-    decompressors.mCount -= 1;
+    decompressors.getCountRef() -= 1;
 }
 
 } // namespace sead

@@ -16,7 +16,7 @@ class Resource : public UnkList
 
 public:
     Resource();
-    virtual ~Resource() { }
+    virtual ~Resource();
 
     virtual void doPostCreate_();
 };
@@ -26,16 +26,46 @@ class DirectResource : public Resource
     SEAD_RTTI_OVERRIDE(DirectResource, Resource)
 
 public:
+    class Flags
+    {
+    public:
+        explicit Flags()
+            : val(0)
+        {
+        }
+
+        inline void set()
+        {
+            val |= 1;
+        }
+
+        inline void unset()
+        {
+            val &= ~1;
+        }
+
+        inline bool isSet() const
+        {
+            return val & 1;
+        }
+
+    private:
+        u32 val;
+    };
+
+public:
     DirectResource();
-    virtual ~DirectResource() { }
+    virtual ~DirectResource();
 
     virtual s32 getLoadDataAlignment();
     virtual void doCreate_(u8*, u32, Heap*);
 
+    void create(u8* buffer, u32 bufferSize, u32 allocSize, bool isValid, Heap* heap);
+
     u8* pData;
     u32 dataSize;
-    u32 _1C;
-    u32 flags[1];
+    u32 dataAllocSize;
+    Flags flags;
 };
 
 class ResourceFactory : public UnkList, public IDisposer
@@ -48,11 +78,7 @@ public:
     {
     }
 
-    virtual ~ResourceFactory()
-    {
-        if (ResourceMgr::sInstance != NULL)
-            ResourceMgr::sInstance->unregisterFactory(this);
-    }
+    virtual ~ResourceFactory();
 
     virtual Resource* create(const ResourceMgr::CreateArg& createArg) = 0;
     virtual Resource* tryCreate(const ResourceMgr::LoadArg& loadArg) = 0;
@@ -69,9 +95,14 @@ public:
     {
     }
 
+    virtual ~DirectResourceFactoryBase()
+    {
+    }
+
     virtual Resource* create(const ResourceMgr::CreateArg& createArg);
     virtual Resource* tryCreate(const ResourceMgr::LoadArg& loadArg);
     virtual Resource* tryCreateWithDecomp(const ResourceMgr::LoadArg& loadArg, Decompressor* decompressor);
+    virtual DirectResource* newResource_(Heap* heap, s32 alignment) = 0;
 };
 
 template <typename T>
@@ -83,9 +114,11 @@ public:
     {
     }
 
-    virtual ~DirectResourceFactory() { }
+    virtual ~DirectResourceFactory()
+    {
+    }
 
-    virtual T* newResource_(Heap* heap, s32 alignment)
+    virtual DirectResource* newResource_(Heap* heap, s32 alignment)
     {
         return new(heap, alignment) T;
     }

@@ -16,6 +16,7 @@
 #endif // __cplusplus
 #include <sead/seadNew.h>
 #include <sead/seadOffsetList.h>
+#include <sead/seadPath.h>
 #include <sead/seadPtrArray.h>
 #include <sead/seadResource.h>
 #include <sead/seadResourceMgr.h>
@@ -25,5 +26,6 @@
 #include <sead/seadSafeString.hpp>
 #endif // __cplusplus
 #include <sead/seadSZSDecompressor.h>
+#include <sead/seadTList.h>
 
 #endif // SEAD_H_

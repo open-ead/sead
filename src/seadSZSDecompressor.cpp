@@ -167,19 +167,12 @@ SZSDecompressor::tryDecompFromDevice(
             bool decompressed = false;
             allocSize = decompSize + 0x1F & (u32)-0x20;
 
-            s32 alignSign;
             s32 alignment;
 
             if (dst == NULL)
             {
                 if (!IsDerivedFrom<DirectResource, Resource>(resource))
-                {
-                    alignSign = 1;
-                    if (loadArg.resourceAlignment < 0)
-                        alignSign = -1;
-
-                    dst = new(heap, -(alignSign << 5)) u8[allocSize];
-                }
+                    dst = new(heap, -(((loadArg.resourceAlignment < 0) ? -1 : 1) << 5)) u8[allocSize];
 
                 else
                 {
@@ -197,22 +190,14 @@ SZSDecompressor::tryDecompFromDevice(
                         else
                         {
                             if (decompAlignment == 0)
-                            {
                                 decompAlignment = static_cast<DirectResource*>(resource)->getLoadDataAlignment();
-                                alignment = loadArg.resourceAlignment;
-                            }
 
-                            else
-                                alignment = loadArg.resourceAlignment;
-
-                            alignSign = 1;
-                            if (alignment < 0)
-                                alignSign = -1;
+                            alignment = loadArg.resourceAlignment;
 
                             if (decompAlignment < 0x20)
                                 decompAlignment = 0x20;
 
-                            dst = new(heap, alignSign * decompAlignment) u8[allocSize];
+                            dst = new(heap, ((alignment < 0) ? -1 : 1) * decompAlignment) u8[allocSize];
                         }
                     }
                 }

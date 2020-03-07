@@ -21,6 +21,15 @@ public:
         return mStringTop;
     }
 
+    inline const SafeStringBase<T> getPart(s32 at) const
+    {
+        s32 len = calcLength();
+        if ( at < 0 || at > len )
+            return SafeStringBase<T>::cEmptyString;
+
+        return SafeStringBase<T>(mStringTop + at);
+    }
+
     inline const T& unsafeAt_(s32 idx) const
     {
         return mStringTop[idx];
@@ -28,6 +37,8 @@ public:
 
     inline s32 calcLength() const;
     inline bool isEqual(const SafeStringBase<T>& str) const;
+    inline s32 comparen(const SafeStringBase<T>& str, s32 n) const;
+    inline s32 findIndex(const SafeStringBase<T>& str) const;
 
     static const T cNullChar;
     static const T cNullString[1];
@@ -37,18 +48,6 @@ public:
 
     const T* mStringTop;
 };
-
-template <typename T>
-const T SafeStringBase<T>::cNullChar = 0;
-
-template <typename T>
-const T SafeStringBase<T>::cLineBreakChar = static_cast<T>('\n');
-
-template <typename T>
-const T SafeStringBase<T>::cNullString[1] = { SafeStringBase<T>::cNullChar };
-
-template <typename T>
-const SafeStringBase<T> SafeStringBase<T>::cEmptyString;
 
 template <typename T>
 class BufferedSafeStringBase : public SafeStringBase<T>
@@ -85,6 +84,8 @@ public:
     }
 
     inline s32 copy(const SafeStringBase<T>& src, s32 copyLength=-1);
+    inline s32 copyAt(s32 at, const SafeStringBase<T>& src, s32 copyLength=-1);
+    inline s32 trim(s32 trimLength);
 
     s32 mBufferSize;
 };

@@ -16,25 +16,78 @@ class FileDevice : public UnkList, public IDisposer
 public:
     enum FileOpenFlag { };
 
+    struct LoadArg
+    {
+        LoadArg()
+            : name("")
+            , buffer(NULL)
+            , bufferSize(0)
+            , heap(NULL)
+            , bufferSizeAlignment(0)
+            , divSize(0)
+            , fileSize(0)
+            , allocSize(0)
+            , isValid(false)
+        {
+        }
+
+        LoadArg(const LoadArg& arg)
+            : name(arg.name)
+            , buffer(arg.buffer)
+            , bufferSize(arg.bufferSize)
+            , heap(arg.heap)
+            , bufferSizeAlignment(arg.bufferSizeAlignment)
+            , divSize(arg.divSize)
+            , fileSize(arg.fileSize)
+            , allocSize(arg.allocSize)
+            , isValid(arg.isValid)
+        {
+        }
+
+        SafeString name;
+        u8* buffer;
+        u32 bufferSize;
+        Heap* heap;
+        s32 bufferSizeAlignment;
+        u32 divSize;
+        u32 fileSize;
+        u32 allocSize;
+        bool isValid;
+    };
+
 public:
     FileDevice()
         : UnkList()
         , IDisposer()
-        , name()
+        , mName()
         , _4C(1)
     {
     }
 
+    FileDevice(const SafeString& name)
+        : UnkList()
+        , IDisposer()
+        , mName()
+        , _4C(1)
+    {
+        mName.copy(name);
+    }
+
     virtual ~FileDevice();
 
+    virtual void traceFilePath(const SafeString& path) const;
+    virtual void traceDirectoryPath(const SafeString& path) const;
+    virtual void resolveFilePath(BufferedSafeString* out, const SafeString& path) const;
+    virtual void resolveDirectoryPath(BufferedSafeString* out, const SafeString& path) const;
     // ...
 
-    FileDevice* tryOpen(FileHandle*, const SafeString&, FileOpenFlag, u32);
+    FileDevice* tryOpen(FileHandle* handle, const SafeString& path, FileOpenFlag flag, u32 divSize);
+    u8* tryLoad(LoadArg& arg);
     bool tryClose(FileHandle*);
 
     static const s32 cBufferMinAlignment = 0x40;
 
-    FixedSafeString<32> name;
+    FixedSafeString<32> mName;
     u8 _4C;
 };
 
@@ -80,10 +133,15 @@ class CafeFSAFileDevice : public FileDevice
     SEAD_RTTI_OVERRIDE(CafeFSAFileDevice, FileDevice)
 
 public:
-    CafeFSAFileDevice();
+    CafeFSAFileDevice(const SafeString& name, const SafeString& devicePath);
     virtual ~CafeFSAFileDevice() { }
 
-    u8 _54[24];
+    const char* devicePath;
+    u32 _58;
+    u32 _5C;
+    u32 _60;
+    u32 _64;
+    u32 _68;
 };
 
 class CafeContentFileDevice : public CafeFSAFileDevice
@@ -100,7 +158,7 @@ class MainFileDevice : public FileDevice
     SEAD_RTTI_OVERRIDE(MainFileDevice, FileDevice)
 
 public:
-    MainFileDevice();
+    MainFileDevice(Heap* heap);
     virtual ~MainFileDevice();
 
     CafeContentFileDevice* mFileDevice;

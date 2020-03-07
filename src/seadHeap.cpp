@@ -30,7 +30,7 @@ void Heap::removeDisposer_(IDisposer* disposer)
     }
 
     (disposers.getNodeFromOffset(disposer))->erase_();
-    disposers.mCount += 1;
+    disposers.mCount -= 1;
 
     if (mutex_ != NULL)
         mutex_->unlock();
