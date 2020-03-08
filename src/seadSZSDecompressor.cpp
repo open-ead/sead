@@ -113,6 +113,30 @@ __attribute__((aligned(0x20))) s32 decodeSZSCafeAsm_(void* dst, const void* src)
 
 namespace sead {
 
+SZSDecompressor::DecompContext::DecompContext()
+{
+    initialize(NULL);
+}
+
+SZSDecompressor::DecompContext::DecompContext(void* dst)
+{
+    initialize(dst);
+}
+
+void
+SZSDecompressor::DecompContext::initialize(void* dst)
+{
+    this->dst = static_cast<u8*>(dst);
+    this->headerDstSize = 0;
+    this->dstSize = 0;
+    this->codeMask = 0;
+    this->code = 0;
+    this->b1 = 0;
+    this->action = 0;
+    this->copy_pos = 0;
+    this->headerSize = 0x10;
+}
+
 SZSDecompressor::SZSDecompressor(u32 workSize, u8* workBuffer)
     : Decompressor("szs")
 {
@@ -167,40 +191,30 @@ SZSDecompressor::tryDecompFromDevice(
             bool decompressed = false;
             allocSize = decompSize + 0x1F & (u32)-0x20;
 
-            s32 alignment;
-
             if (dst == NULL)
             {
                 if (!IsDerivedFrom<DirectResource, Resource>(resource))
-                    dst = new(heap, -(((loadArg.resourceAlignment < 0) ? -1 : 1) << 5)) u8[allocSize];
+                    resource = NULL;
+
+                if (resource == NULL)
+                    decompAlignment = -(((loadArg.resourceAlignment < 0) ? -1 : 1) << 5);
 
                 else
                 {
-                    if (resource != NULL)
+                    s32 alignment = loadArg.bufferSizeAlignment;
+                    if (alignment != 0)
+                        decompAlignment = (alignment < 0x20) ? 0x20 : alignment;
+
+                    else
                     {
-                        alignment = loadArg.bufferSizeAlignment;
-                        if (alignment != 0)
-                        {
-                            if (alignment < 0x20)
-                                alignment = 0x20;
+                        if (decompAlignment == 0)
+                            decompAlignment = static_cast<DirectResource*>(resource)->getLoadDataAlignment();
 
-                            dst = new(heap, alignment) u8[allocSize];
-                        }
-
-                        else
-                        {
-                            if (decompAlignment == 0)
-                                decompAlignment = static_cast<DirectResource*>(resource)->getLoadDataAlignment();
-
-                            alignment = loadArg.resourceAlignment;
-
-                            if (decompAlignment < 0x20)
-                                decompAlignment = 0x20;
-
-                            dst = new(heap, ((alignment < 0) ? -1 : 1) * decompAlignment) u8[allocSize];
-                        }
+                        decompAlignment = ((loadArg.resourceAlignment < 0) ? -1 : 1) * ((decompAlignment < 0x20) ? 0x20 : decompAlignment);
                     }
                 }
+
+                dst = new(heap, decompAlignment) u8[allocSize];
 
                 if (dst != NULL)
                     decompressed = true;
@@ -266,6 +280,144 @@ u32
 SZSDecompressor::getDecompSize(const void* src)
 {
     return Endian::readU32(src + 4);
+}
+
+s32
+SZSDecompressor::readHeader_(DecompContext* context, const u8* src, u32 srcSize)
+{
+    s32 len = 0;
+
+    while (context->headerSize != 0)
+    {
+        context->headerSize -= 1;
+
+        if (context->headerSize == 0xF)
+        {
+            if (*src != 0x59)
+                return -1;
+        }
+
+        else if (context->headerSize == 0xE)
+        {
+            if (*src != 0x61)
+                return -1;
+        }
+
+        else if (context->headerSize == 0xD)
+        {
+            if (*src != 0x7A)
+                return -1;
+        }
+
+        else if (context->headerSize == 0xC)
+        {
+            if (*src != 0x30)
+                return -1;
+        }
+
+        else if (7 < context->headerSize)
+            context->headerDstSize |= static_cast<u32>(*src) << (context->headerSize - 8) * 8;
+
+        src++; len += 1;
+        if (--srcSize == 0 && context->headerSize != 0)
+            return len;
+    }
+
+    if (context->dstSize < 1)
+        return len;
+
+    if (context->headerDstSize <= context->dstSize)
+        return len;
+
+    context->headerDstSize = context->dstSize;
+    return len;
+}
+
+s32
+SZSDecompressor::streamDecomp(DecompContext* context, const void* src, u32 srcSize)
+{
+    const u8* _src = static_cast<const u8*>(src);
+    u32 n;
+
+    if (context->headerSize != 0)
+    {
+        s32 len = readHeader_(context, _src, srcSize);
+        if (len < 0)
+            return len;
+
+        srcSize -= len;
+        _src += len;
+
+        if (srcSize == 0)
+        {
+            if (context->headerSize == 0)
+                return context->headerDstSize;
+
+            return -1;
+        }
+    }
+
+    while (context->headerDstSize > 0)
+    {
+        if (context->action == 2)
+        {
+            n = *_src + 0x12;
+            if (!context->doCopy(n))
+                return -2;
+        }
+
+        else if (context->action == 1)
+        {
+            context->copy_pos = ((context->b1 << 8) & 0xf00 | *_src) + 1;
+
+            n = context->b1 >> 4;
+            if (n != 0)
+            {
+                n += 2;
+                if (!context->doCopy(n))
+                    return -2;
+            }
+
+            else
+                context->action = 2;
+        }
+
+        else
+        {
+            if (context->codeMask == 0)
+            {
+                context->code = *_src++;
+                context->codeMask = 0x80;
+                if (--srcSize == 0)
+                    break;
+            }
+
+            if ((context->code & context->codeMask) == 0)
+            {
+                context->b1 = *_src;
+                context->action = 1;
+            }
+
+            else
+            {
+                *context->dst++ = *_src;
+                context->headerDstSize -= 1;
+            }
+
+            context->codeMask >>= 1;
+        }
+
+        if (--srcSize == 0)
+            break;
+
+        _src++;
+    }
+
+    if (context->headerDstSize == 0 && context->dstSize == 0 && 0x20 < srcSize)
+        return -1;
+
+    else
+        return context->headerDstSize;
 }
 
 s32
