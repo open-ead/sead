@@ -176,7 +176,7 @@ SZSDecompressor::tryDecompFromDevice(
        ((src = mWorkBuffer, src != NULL) ||
         (src = new(heap, -FileDevice::cBufferMinAlignment) u8[mWorkSize], src != NULL)))
     {
-        u32 bytesRead = handle.tryRead(src, mWorkSize);
+        u32 bytesRead = handle.read(src, mWorkSize);
         if (bytesRead >= 0x10)
         {
             u32 decompSize = getDecompSize(src);
@@ -238,7 +238,7 @@ SZSDecompressor::tryDecompFromDevice(
                         if (error <= 0)
                             break;
                     }
-                    while ((bytesRead = handle.tryRead(src, mWorkSize), bytesRead != 0));
+                    while ((bytesRead = handle.read(src, mWorkSize), bytesRead != 0));
                 }
 
                 if (!(error < 0))

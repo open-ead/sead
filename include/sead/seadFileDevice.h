@@ -7,7 +7,10 @@
 
 namespace sead {
 
+class HandleBase;
 class FileHandle;
+class DirectoryHandle;
+class DirectoryEntry;
 
 class FileDevice : public UnkList, public IDisposer
 {
@@ -15,6 +18,13 @@ class FileDevice : public UnkList, public IDisposer
 
 public:
     enum FileOpenFlag { };
+
+    enum SeekOrigin
+    {
+        OriginBegin = 0,
+        OriginCurrent = 1,
+        OriginEnd = 2
+    };
 
     struct LoadArg
     {
@@ -79,11 +89,35 @@ public:
     virtual void traceDirectoryPath(const SafeString& path) const;
     virtual void resolveFilePath(BufferedSafeString* out, const SafeString& path) const;
     virtual void resolveDirectoryPath(BufferedSafeString* out, const SafeString& path) const;
-    // ...
+    virtual bool isMatchDevice_(const HandleBase* handle) const;
+    virtual bool doIsAvailable_() const = 0;
+    virtual u8* doLoad_(LoadArg& arg);
+    virtual FileDevice* doOpen_(FileHandle* handle, const SafeString& path, FileOpenFlag flag) = 0;
+    virtual bool doClose_(FileHandle* handle) = 0;
+    virtual bool doRead_(u32* bytesRead, FileHandle* handle, u8* outBuffer, u32 bytesToRead) = 0;
+    virtual bool doWrite_(u32* bytesWritten, FileHandle* handle, const u8* inBuffer, u32 bytesToWrite) = 0;
+    virtual bool doSeek_(FileHandle* handle, s32 offset, SeekOrigin origin) = 0;
+    virtual bool doGetCurrentSeekPos_(u32* seekPos, FileHandle* handle) = 0;
+    virtual bool doGetFileSize_(u32* fileSize, const SafeString& path) = 0;
+    virtual bool doGetFileSize_(u32* fileSize, FileHandle* handle) = 0;
+    virtual bool doIsExistFile_(bool* exists, const SafeString& path) = 0;
+    virtual bool doIsExistDirectory_(bool* exists, const SafeString& path) = 0;
+    virtual FileDevice* doOpenDirectory_(DirectoryHandle* handle, const SafeString& path) = 0;
+    virtual bool doCloseDirectory_(DirectoryHandle* handle) = 0;
+    virtual bool doReadDirectory_(u32* entriesRead, DirectoryHandle* handle, DirectoryEntry* entries, u32 entriesToRead) = 0;
+    virtual bool doMakeDirectory_(const SafeString& path, u32) = 0;
+    virtual u32 doGetLastRawError_() const = 0;
+    virtual void doTracePath_(const SafeString& path) const;
+    virtual void doResolvePath_(BufferedSafeString* out, const SafeString& path) const;
 
     FileDevice* tryOpen(FileHandle* handle, const SafeString& path, FileOpenFlag flag, u32 divSize);
+    bool tryRead(u32* bytesRead, FileHandle* handle, u8* outBuffer, u32 bytesToRead);
     u8* tryLoad(LoadArg& arg);
-    bool tryClose(FileHandle*);
+    bool tryClose(FileHandle* handle);
+
+    void setFileHandleDivSize_(FileHandle* handle, u32 divSize) const;
+    void setHandleBaseFileDevice_(HandleBase* handle, FileDevice* device) const;
+    void setHandleBaseOriginalFileDevice_(HandleBase* handle, FileDevice* device) const;
 
     static const s32 cBufferMinAlignment = 0x40;
 
@@ -112,7 +146,7 @@ class FileHandle : public HandleBase
 public:
     FileHandle()
         : HandleBase()
-        , filesize(0)
+        , divSize(0)
     {
     }
 
@@ -123,9 +157,9 @@ public:
             _device->tryClose(this);
     }
 
-    u32 tryRead(u8* outBuffer, u32 bytesToRead);
+    u32 read(u8* outBuffer, u32 bytesToRead);
 
-    u32 filesize;
+    s32 divSize;
 };
 
 class CafeFSAFileDevice : public FileDevice
@@ -135,6 +169,24 @@ class CafeFSAFileDevice : public FileDevice
 public:
     CafeFSAFileDevice(const SafeString& name, const SafeString& devicePath);
     virtual ~CafeFSAFileDevice() { }
+
+    virtual bool doIsAvailable_() const;
+    virtual FileDevice* doOpen_(FileHandle* handle, const SafeString& path, FileOpenFlag flag);
+    virtual bool doClose_(FileHandle* handle);
+    virtual bool doRead_(u32* bytesRead, FileHandle* handle, u8* outBuffer, u32 bytesToRead);
+    virtual bool doWrite_(u32* bytesWritten, FileHandle* handle, const u8* inBuffer, u32 bytesToWrite);
+    virtual bool doSeek_(FileHandle* handle, s32 offset, SeekOrigin origin);
+    virtual bool doGetCurrentSeekPos_(u32* seekPos, FileHandle* handle);
+    virtual bool doGetFileSize_(u32* fileSize, const SafeString& path);
+    virtual bool doGetFileSize_(u32* fileSize, FileHandle* handle);
+    virtual bool doIsExistFile_(bool* exists, const SafeString& path);
+    virtual bool doIsExistDirectory_(bool* exists, const SafeString& path);
+    virtual FileDevice* doOpenDirectory_(DirectoryHandle* handle, const SafeString& path);
+    virtual bool doCloseDirectory_(DirectoryHandle* handle);
+    virtual bool doReadDirectory_(u32* entriesRead, DirectoryHandle* handle, DirectoryEntry* entries, u32 entriesToRead);
+    virtual bool doMakeDirectory_(const SafeString& path, u32);
+    virtual u32 doGetLastRawError_() const;
+    virtual void doResolvePath_(BufferedSafeString* out, const SafeString& path) const;
 
     const char* devicePath;
     u32 _58;
@@ -160,6 +212,28 @@ class MainFileDevice : public FileDevice
 public:
     MainFileDevice(Heap* heap);
     virtual ~MainFileDevice();
+
+    virtual void traceFilePath(const SafeString& path) const;
+    virtual void traceDirectoryPath(const SafeString& path) const;
+    virtual void resolveFilePath(BufferedSafeString* out, const SafeString& path) const;
+    virtual void resolveDirectoryPath(BufferedSafeString* out, const SafeString& path) const;
+    virtual bool isMatchDevice_(const HandleBase* handle) const;
+    virtual bool doIsAvailable_() const;
+    virtual FileDevice* doOpen_(FileHandle* handle, const SafeString& path, FileOpenFlag flag);
+    virtual bool doClose_(FileHandle* handle);
+    virtual bool doRead_(u32* bytesRead, FileHandle* handle, u8* outBuffer, u32 bytesToRead);
+    virtual bool doWrite_(u32* bytesWritten, FileHandle* handle, const u8* inBuffer, u32 bytesToWrite);
+    virtual bool doSeek_(FileHandle* handle, s32 offset, SeekOrigin origin);
+    virtual bool doGetCurrentSeekPos_(u32* seekPos, FileHandle* handle);
+    virtual bool doGetFileSize_(u32* fileSize, const SafeString& path);
+    virtual bool doGetFileSize_(u32* fileSize, FileHandle* handle);
+    virtual bool doIsExistFile_(bool* exists, const SafeString& path);
+    virtual bool doIsExistDirectory_(bool* exists, const SafeString& path);
+    virtual FileDevice* doOpenDirectory_(DirectoryHandle* handle, const SafeString& path);
+    virtual bool doCloseDirectory_(DirectoryHandle* handle);
+    virtual bool doReadDirectory_(u32* entriesRead, DirectoryHandle* handle, DirectoryEntry* entries, u32 entriesToRead);
+    virtual bool doMakeDirectory_(const SafeString& path, u32);
+    virtual u32 doGetLastRawError_() const;
 
     CafeContentFileDevice* mFileDevice;
 };
