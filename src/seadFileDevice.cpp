@@ -65,7 +65,7 @@ u8* FileDevice::doLoad_(LoadArg& arg)
         return NULL;
 
     FileHandle handle;
-    if(tryOpen(&handle, arg.name, (FileDevice::FileOpenFlag)0, arg.divSize))
+    if(tryOpen(&handle, arg.name, FileDevice::FlagRead, arg.divSize))
     {
         u32 fileSize = 0;
         if (tryGetFileSize(&fileSize, &handle))

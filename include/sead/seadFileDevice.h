@@ -1,13 +1,36 @@
 #ifndef SEAD_FILEDEVICE_H_
 #define SEAD_FILEDEVICE_H_
 
+#include <cafe.h>
+
 #include <sead/seadDisposer.h>
 #include <sead/seadListImpl.h>
 #include <sead/seadRuntimeTypeInfo.h>
 
 namespace sead {
 
-class HandleBase;
+class FileDevice;
+
+class HandleBase : public IDisposer
+{
+public:
+    HandleBase()
+        : IDisposer()
+        , device(NULL)
+        , originalDevice(NULL)
+        , buffer()
+    {
+    }
+
+    virtual ~HandleBase() { }
+
+    FileDevice* device;
+    FileDevice* originalDevice;
+    u8 buffer[0x20];             // SafeArray<u8, 32>
+};
+
+
+
 class FileHandle;
 class DirectoryHandle;
 class DirectoryEntry;
@@ -17,7 +40,13 @@ class FileDevice : public UnkList, public IDisposer
     SEAD_RTTI_BASE(FileDevice)
 
 public:
-    enum FileOpenFlag { };
+    enum FileOpenFlag
+    {
+        FlagRead = 0,           // r
+        FlagWriteTrunc = 1,     // w
+        FlagReadWrite = 2,      // r+
+        FlagReadWriteTrunc = 3  // w+
+    };
 
     enum SeekOrigin
     {
@@ -120,28 +149,15 @@ public:
     void setHandleBaseFileDevice_(HandleBase* handle, FileDevice* device) const;
     void setHandleBaseOriginalFileDevice_(HandleBase* handle, FileDevice* device) const;
 
+    inline u8* getHandleBaseHandleBuffer_(HandleBase* handle) const
+    {
+        return handle->buffer;
+    }
+
     static const s32 cBufferMinAlignment = 0x40;
 
     FixedSafeString<32> mName;
     u8 _4C;
-};
-
-class HandleBase : public IDisposer
-{
-public:
-    HandleBase()
-        : IDisposer()
-        , device(NULL)
-        , originalDevice(NULL)
-        , _18()
-    {
-    }
-
-    virtual ~HandleBase() { }
-
-    FileDevice* device;
-    FileDevice* originalDevice;
-    u8 _18[0x20];
 };
 
 class FileHandle : public HandleBase
@@ -190,13 +206,17 @@ public:
     virtual bool doMakeDirectory_(const SafeString& path, u32);
     virtual u32 doGetLastRawError_() const;
     virtual void doResolvePath_(BufferedSafeString* out, const SafeString& path) const;
+    virtual void formatPathForFSA_(BufferedSafeString* out, const SafeString& path) const;
+
+    FSClient* getUsableFSClient_() const;
+    FSFileHandle* getFileHandleInner_(FileHandle* handle);
 
     const char* devicePath;
-    u32 _58;
-    u32 _5C;
-    u32 _60;
-    u32 _64;
-    u32 _68;
+    FSStatus status;
+    FSRetFlag openErrHandling;
+    FSRetFlag closeErrHandling;
+    FSRetFlag readErrHandling;
+    FSClient* client;
 };
 
 class CafeContentFileDevice : public CafeFSAFileDevice
