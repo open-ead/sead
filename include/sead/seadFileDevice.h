@@ -37,7 +37,7 @@ public:
             , divSize(0)
             , fileSize(0)
             , allocSize(0)
-            , isValid(false)
+            , allocated(false)
         {
         }
 
@@ -50,7 +50,7 @@ public:
             , divSize(arg.divSize)
             , fileSize(arg.fileSize)
             , allocSize(arg.allocSize)
-            , isValid(arg.isValid)
+            , allocated(arg.allocated)
         {
         }
 
@@ -62,7 +62,7 @@ public:
         u32 divSize;
         u32 fileSize;
         u32 allocSize;
-        bool isValid;
+        bool allocated;
     };
 
 public:
@@ -114,6 +114,7 @@ public:
     bool tryRead(u32* bytesRead, FileHandle* handle, u8* outBuffer, u32 bytesToRead);
     u8* tryLoad(LoadArg& arg);
     bool tryClose(FileHandle* handle);
+    bool tryGetFileSize(u32* fileSize, FileHandle* handle);
 
     void setFileHandleDivSize_(FileHandle* handle, u32 divSize) const;
     void setHandleBaseFileDevice_(HandleBase* handle, FileDevice* device) const;
@@ -129,8 +130,10 @@ class HandleBase : public IDisposer
 {
 public:
     HandleBase()
-        : device(NULL)
+        : IDisposer()
+        , device(NULL)
         , originalDevice(NULL)
+        , _18()
     {
     }
 

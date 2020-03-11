@@ -28,7 +28,7 @@ public:
         u8* buffer;
         u32 bufferSize;
         u32 allocSize;
-        bool isValid;
+        bool allocated;
         u32 _10[3];
         Heap* resourceCreateHeap;
         s32 resourceAlignment;

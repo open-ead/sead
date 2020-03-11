@@ -142,7 +142,7 @@ SZSDecompressor::SZSDecompressor(u32 workSize, u8* workBuffer)
 {
     if (workBuffer == NULL)
     {
-        mWorkSize = workSize + FileDevice::cBufferMinAlignment - 1 & (u32)-FileDevice::cBufferMinAlignment;
+        mWorkSize = MathCalcCommonU32::roundUpPow2(workSize, FileDevice::cBufferMinAlignment);
         mWorkBuffer = NULL;
     }
 
@@ -156,7 +156,7 @@ SZSDecompressor::SZSDecompressor(u32 workSize, u8* workBuffer)
 u8*
 SZSDecompressor::tryDecompFromDevice(
     const ResourceMgr::LoadArg& loadArg, Resource* resource,
-    u32* outSize, u32* outAllocSize, bool* success
+    u32* outSize, u32* outAllocSize, bool* outAllocated
 )
 {
     Heap* heap = loadArg.resourceLoadHeap;
@@ -188,8 +188,8 @@ SZSDecompressor::tryDecompFromDevice(
             if (decompSize > allocSize && allocSize != 0)
                 decompSize = allocSize;
 
-            bool decompressed = false;
-            allocSize = decompSize + 0x1F & (u32)-0x20;
+            bool allocated = false;
+            allocSize = MathCalcCommonS32::roundUpPow2(decompSize, 0x20);
 
             if (dst == NULL)
             {
@@ -217,7 +217,7 @@ SZSDecompressor::tryDecompFromDevice(
                 dst = new(heap, decompAlignment) u8[allocSize];
 
                 if (dst != NULL)
-                    decompressed = true;
+                    allocated = true;
             }
 
 
@@ -252,13 +252,13 @@ SZSDecompressor::tryDecompFromDevice(
                     if (outAllocSize != NULL)
                         *outAllocSize = allocSize;
 
-                    if (success != NULL)
-                        *success = decompressed;
+                    if (outAllocated != NULL)
+                        *outAllocated = allocated;
 
                     return dst;
                 }
 
-                if (decompressed)
+                if (allocated)
                     delete[] dst;
             }
         }

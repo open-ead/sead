@@ -12,6 +12,7 @@
 #include <sead/seadHeapMgr.h>
 #include <sead/seadListImpl.h>
 #ifdef __cplusplus
+#include <sead/seadMathCalcCommon.hpp>
 #include <sead/seadMemUtilCafe.hpp>
 #endif // __cplusplus
 #include <sead/seadNew.h>

@@ -181,7 +181,7 @@ u8* FileDeviceMgr::tryLoad(FileDevice::LoadArg& arg)
 
     arg.fileSize = arg2.fileSize;
     arg.allocSize = arg2.allocSize;
-    arg.isValid = arg2.isValid;
+    arg.allocated = arg2.allocated;
 
     return data;
 }

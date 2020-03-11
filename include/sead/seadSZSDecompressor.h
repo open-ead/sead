@@ -56,7 +56,7 @@ public:
     SZSDecompressor(u32 workSize, u8* workBuffer);
     virtual ~SZSDecompressor() { }
 
-    virtual u8* tryDecompFromDevice(const ResourceMgr::LoadArg& loadArg, Resource* resource, u32* outSize, u32* outAllocSize, bool* success);
+    virtual u8* tryDecompFromDevice(const ResourceMgr::LoadArg& loadArg, Resource* resource, u32* outSize, u32* outAllocSize, bool* outAllocated);
 
     static u32 getDecompAlignment(const void* src);
     static u32 getDecompSize(const void* src);

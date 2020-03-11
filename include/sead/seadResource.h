@@ -60,7 +60,7 @@ public:
     virtual s32 getLoadDataAlignment();
     virtual void doCreate_(u8*, u32, Heap*);
 
-    void create(u8* buffer, u32 bufferSize, u32 allocSize, bool isValid, Heap* heap);
+    void create(u8* buffer, u32 bufferSize, u32 allocSize, bool allocated, Heap* heap);
 
     u8* pData;
     u32 dataSize;

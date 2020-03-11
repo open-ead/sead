@@ -1,4 +1,5 @@
 #include <sead.h>
+#include <stdlib.h>
 
 namespace sead {
 
@@ -16,6 +17,113 @@ FileDevice::~FileDevice()
 {
     if (FileDeviceMgr::sInstance != NULL)
         FileDeviceMgr::sInstance->unmount(this);
+}
+
+void
+FileDevice::traceFilePath(
+    const SafeString& path
+) const
+{
+    doTracePath_(path);
+}
+
+void
+FileDevice::traceDirectoryPath(
+    const SafeString& path
+) const
+{
+    doTracePath_(path);
+}
+
+void
+FileDevice::resolveFilePath(
+    BufferedSafeString* out, const SafeString& path
+) const
+{
+    doResolvePath_(out, path);
+}
+
+void
+FileDevice::resolveDirectoryPath(
+    BufferedSafeString* out, const SafeString& path
+) const
+{
+    doResolvePath_(out, path);
+}
+
+bool
+FileDevice::isMatchDevice_(
+    const HandleBase* handle
+) const
+{
+    return handle->device == this;
+}
+
+u8* FileDevice::doLoad_(LoadArg& arg)
+{
+    if (arg.buffer != NULL && arg.bufferSize == 0)
+        return NULL;
+
+    FileHandle handle;
+    if(tryOpen(&handle, arg.name, (FileDevice::FileOpenFlag)0, arg.divSize))
+    {
+        u32 fileSize = 0;
+        if (tryGetFileSize(&fileSize, &handle))
+        {
+            u32 bytesToRead = arg.bufferSize;
+            if (bytesToRead == 0)
+                bytesToRead = MathCalcCommonS32::roundUpPow2(fileSize, FileDevice::cBufferMinAlignment);
+
+            else if (bytesToRead < fileSize)
+                goto return_fail;
+
+            u8* buf = arg.buffer;
+            bool allocated = false;
+
+            if (buf == NULL)
+            {
+                s32 sign = (arg.bufferSizeAlignment < 0) ? -1 : 1;
+                s32 alignment = abs(arg.bufferSizeAlignment);
+                alignment = sign * ((alignment < 0x40) ? 0x40 : alignment);
+
+                buf = new(arg.heap, alignment) u8[bytesToRead];
+                allocated = true;
+            }
+
+            u32 bytesRead = 0;
+            if (tryRead(&bytesRead, &handle, buf, bytesToRead) && tryClose(&handle))
+            {
+                arg.fileSize = bytesRead;
+                arg.allocSize = bytesToRead;
+                arg.allocated = allocated;
+
+                return buf;
+            }
+
+            else if (allocated)
+                delete[] buf;
+        }
+    }
+
+return_fail:
+    return NULL;
+}
+
+void
+FileDevice::doTracePath_(
+    const SafeString& path
+) const
+{
+    FixedSafeString<512> out;
+    doResolvePath_(&out, path);
+}
+
+void
+FileDevice::doResolvePath_(
+    BufferedSafeString* out, const SafeString& path
+) const
+{
+    out->copy(path);
 }
 
 FileDevice*
@@ -118,6 +226,23 @@ FileDevice::tryClose(FileHandle* handle)
     }
 
     return closed;
+}
+
+bool
+FileDevice::tryGetFileSize(
+    u32* fileSize, FileHandle* handle
+)
+{
+    if (this->_4C == 0)
+        return false;
+
+    if (handle == NULL)
+        return false;
+
+    if (fileSize == NULL)
+        return false;
+
+    return doGetFileSize_(fileSize, handle);
 }
 
 void

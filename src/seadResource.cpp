@@ -39,7 +39,7 @@ void DirectResource::doCreate_(u8*, u32, Heap*)
 {
 }
 
-void DirectResource::create(u8* buffer, u32 bufferSize, u32 allocSize, bool isValid, Heap* heap)
+void DirectResource::create(u8* buffer, u32 bufferSize, u32 allocSize, bool allocated, Heap* heap)
 {
     if (pData != NULL)
         return;
@@ -48,7 +48,7 @@ void DirectResource::create(u8* buffer, u32 bufferSize, u32 allocSize, bool isVa
     dataAllocSize = allocSize;
     pData = buffer;
 
-    if (isValid)
+    if (allocated)
         flags.set();
 
     else
@@ -77,7 +77,7 @@ Resource* DirectResourceFactoryBase::create(const ResourceMgr::CreateArg& create
         return NULL;
     }
 
-    resource->create(createArg.buffer, createArg.bufferSize, createArg.allocSize, createArg.isValid, createArg.resourceCreateHeap);
+    resource->create(createArg.buffer, createArg.bufferSize, createArg.allocSize, createArg.allocated, createArg.resourceCreateHeap);
     return resource;
 }
 
@@ -114,7 +114,7 @@ Resource* DirectResourceFactoryBase::tryCreate(const ResourceMgr::LoadArg& loadA
         return NULL;
     }
 
-    resource->create(data, fileLoadArg.fileSize, fileLoadArg.allocSize, fileLoadArg.isValid, loadArg.resourceCreateHeap);
+    resource->create(data, fileLoadArg.fileSize, fileLoadArg.allocSize, fileLoadArg.allocated, loadArg.resourceCreateHeap);
     return resource;
 }
 
@@ -129,11 +129,11 @@ DirectResourceFactoryBase::tryCreateWithDecomp(
 
     u32 outSize = 0;
     u32 outAllocSize = 0;
-    bool success = false;
+    bool outAllocated = false;
 
-    u8* data = decompressor->tryDecompFromDevice(loadArg, resource, &outSize, &outAllocSize, &success);
+    u8* data = decompressor->tryDecompFromDevice(loadArg, resource, &outSize, &outAllocSize, &outAllocated);
 
-    resource->create(data, outSize, outAllocSize, success, loadArg.resourceCreateHeap);
+    resource->create(data, outSize, outAllocSize, outAllocated, loadArg.resourceCreateHeap);
     return resource;
 }
 
