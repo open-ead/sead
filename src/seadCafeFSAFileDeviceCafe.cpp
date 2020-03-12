@@ -194,7 +194,7 @@ CafeFSAFileDevice::doGetFileSize_(
     FSClient* client_ = getUsableFSClient_();
     FSStat stat;
 
-    FixedSafeString<256> fullPath;
+    FixedSafeString<FS_MAX_ENTNAME_SIZE> fullPath;
     formatPathForFSA_(&fullPath, path);
 
     FSStatus status = FSGetStat(client_, &block, fullPath.c_str(), &stat, FS_RET_NO_ERROR);
@@ -236,7 +236,7 @@ CafeFSAFileDevice::doIsExistFile_(
     FSClient* client_ = getUsableFSClient_();
     FSStat stat;
 
-    FixedSafeString<256> fullPath;
+    FixedSafeString<FS_MAX_ENTNAME_SIZE> fullPath;
     formatPathForFSA_(&fullPath, path);
 
     FSStatus status = FSGetStat(client_, &block, fullPath.c_str(), &stat, FS_RET_PERMISSION_ERROR | FS_RET_NOT_FOUND);
@@ -265,7 +265,7 @@ CafeFSAFileDevice::doIsExistDirectory_(
     FSClient* client_ = getUsableFSClient_();
     FSStat stat;
 
-    FixedSafeString<256> fullPath;
+    FixedSafeString<FS_MAX_ENTNAME_SIZE> fullPath;
     formatPathForFSA_(&fullPath, path);
 
     FSStatus status = FSGetStat(client_, &block, fullPath.c_str(), &stat, FS_RET_PERMISSION_ERROR | FS_RET_NOT_FOUND);
@@ -281,6 +281,114 @@ CafeFSAFileDevice::doIsExistDirectory_(
         *exists = (stat.flag & FS_STAT_FLAG_IS_DIRECTORY) != 0;
 
     return true;
+}
+
+FileDevice*
+CafeFSAFileDevice::doOpenDirectory_(
+    DirectoryHandle* handle, const SafeString& path
+)
+{
+    FSCmdBlock block;
+    FSInitCmdBlock(&block);
+
+    FSClient* client_ = getUsableFSClient_();
+    FSDirHandle* fsHandle = getDirHandleInner_(handle);
+
+    FixedSafeString<FS_MAX_ENTNAME_SIZE> fullPath;
+    formatPathForFSA_(&fullPath, path);
+
+    FSStatus status = FSOpenDir(client_, &block, fullPath.c_str(), fsHandle, FS_RET_PERMISSION_ERROR | FS_RET_ACCESS_ERROR |
+                                                                             FS_RET_NOT_DIR | FS_RET_NOT_FOUND | FS_RET_ALREADY_OPEN);
+
+    if (this->status = status, status != FS_STATUS_OK)
+        return NULL;
+
+    return this;
+}
+
+bool
+CafeFSAFileDevice::doCloseDirectory_(
+    DirectoryHandle* handle
+)
+{
+    FSCmdBlock block;
+    FSInitCmdBlock(&block);
+
+    FSClient* client_ = getUsableFSClient_();
+    FSDirHandle* fsHandle = getDirHandleInner_(handle);
+
+    return (status = FSCloseDir(client_, &block, *fsHandle, FS_RET_NO_ERROR), status == FS_STATUS_OK);
+}
+
+bool
+CafeFSAFileDevice::doReadDirectory_(
+    u32* entriesRead, DirectoryHandle* handle,
+    DirectoryEntry* entries, u32 entriesToRead
+)
+{
+    FSCmdBlock block;
+    FSInitCmdBlock(&block);
+
+    FSClient* client_ = getUsableFSClient_();
+    FSDirHandle* fsHandle = getDirHandleInner_(handle);
+
+    for (s32 i = 0; i < entriesToRead; i++)
+    {
+        FSDirEntry dirEntry;
+
+        status = FSReadDir(client_, &block, *fsHandle, &dirEntry, FS_RET_NO_ERROR);
+        if (status != FS_STATUS_OK)
+        {
+            if (entriesRead != NULL)
+                *entriesRead = i;
+
+            if (status == FS_STATUS_END)
+                return true;
+
+            return false;
+        }
+
+        SafeString name(dirEntry.name);
+
+        entries[i].mName.copy(name);
+        entries[i].isDirectory = (dirEntry.stat.flag & FS_STAT_FLAG_IS_DIRECTORY) != 0;
+    }
+
+    if (entriesRead != NULL)
+        *entriesRead = entriesToRead;
+
+    return true;
+}
+
+bool
+CafeFSAFileDevice::doMakeDirectory_(
+    const SafeString& path, u32
+)
+{
+    FSCmdBlock block;
+    FSInitCmdBlock(&block);
+
+    FSClient* client_ = getUsableFSClient_();
+
+    FixedSafeString<FS_MAX_ENTNAME_SIZE> fullPath;
+    formatPathForFSA_(&fullPath, path);
+
+    return (status = FSMakeDir(client_, &block, fullPath.c_str(), FS_RET_JOURNAL_FULL | FS_RET_STORAGE_FULL |
+                                                                  FS_RET_PERMISSION_ERROR | FS_RET_NOT_FOUND), status == FS_STATUS_OK);
+
+}
+
+s32 CafeFSAFileDevice::doGetLastRawError_() const
+{
+    return status;
+}
+
+void
+CafeFSAFileDevice::doResolvePath_(
+    BufferedSafeString* out, const SafeString& path
+) const
+{
+    formatPathForFSA_(out, path);
 }
 
 void
@@ -305,6 +413,13 @@ CafeFSAFileDevice::getFileHandleInner_(
 )
 {
     return reinterpret_cast<FSFileHandle*>(getHandleBaseHandleBuffer_(handle));
+}
+FSDirHandle*
+CafeFSAFileDevice::getDirHandleInner_(
+    DirectoryHandle* handle
+)
+{
+    return reinterpret_cast<FSDirHandle*>(getHandleBaseHandleBuffer_(handle));
 }
 
 CafeContentFileDevice::CafeContentFileDevice()

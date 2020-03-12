@@ -229,6 +229,28 @@ FileDevice::tryClose(FileHandle* handle)
 }
 
 bool
+FileDevice::tryCloseDirectory(DirectoryHandle* handle)
+{
+    if (this->_4C == 0)
+        return false;
+
+    if (handle == NULL)
+        return false;
+
+    if (!isMatchDevice_(handle))
+        return false;
+
+    bool closed = doCloseDirectory_(handle);
+    if (closed)
+    {
+        setHandleBaseFileDevice_(handle, NULL);
+        setHandleBaseOriginalFileDevice_(handle, NULL);
+    }
+
+    return closed;
+}
+
+bool
 FileDevice::tryGetFileSize(
     u32* fileSize, FileHandle* handle
 )

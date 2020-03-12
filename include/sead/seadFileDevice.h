@@ -135,7 +135,7 @@ public:
     virtual bool doCloseDirectory_(DirectoryHandle* handle) = 0;
     virtual bool doReadDirectory_(u32* entriesRead, DirectoryHandle* handle, DirectoryEntry* entries, u32 entriesToRead) = 0;
     virtual bool doMakeDirectory_(const SafeString& path, u32) = 0;
-    virtual u32 doGetLastRawError_() const = 0;
+    virtual s32 doGetLastRawError_() const = 0;
     virtual void doTracePath_(const SafeString& path) const;
     virtual void doResolvePath_(BufferedSafeString* out, const SafeString& path) const;
 
@@ -144,6 +144,7 @@ public:
     u8* tryLoad(LoadArg& arg);
     bool tryClose(FileHandle* handle);
     bool tryGetFileSize(u32* fileSize, FileHandle* handle);
+    bool tryCloseDirectory(DirectoryHandle* handle);
 
     void setFileHandleDivSize_(FileHandle* handle, u32 divSize) const;
     void setHandleBaseFileDevice_(HandleBase* handle, FileDevice* device) const;
@@ -181,6 +182,37 @@ public:
     s32 divSize;
 };
 
+class DirectoryHandle : public HandleBase
+{
+public:
+    DirectoryHandle()
+        : HandleBase()
+    {
+    }
+
+    virtual ~DirectoryHandle()
+    {
+        FileDevice* _device = originalDevice;
+        if (_device != NULL)
+            _device->tryCloseDirectory(this);
+    }
+};
+
+class DirectoryEntry
+{
+public:
+    DirectoryEntry()
+        : mName()
+        , isDirectory(false)
+    {
+    }
+
+    ~DirectoryEntry() { }
+
+    FixedSafeString<256> mName;
+    bool isDirectory;
+};
+
 class CafeFSAFileDevice : public FileDevice
 {
     SEAD_RTTI_OVERRIDE(CafeFSAFileDevice, FileDevice)
@@ -204,12 +236,13 @@ public:
     virtual bool doCloseDirectory_(DirectoryHandle* handle);
     virtual bool doReadDirectory_(u32* entriesRead, DirectoryHandle* handle, DirectoryEntry* entries, u32 entriesToRead);
     virtual bool doMakeDirectory_(const SafeString& path, u32);
-    virtual u32 doGetLastRawError_() const;
+    virtual s32 doGetLastRawError_() const;
     virtual void doResolvePath_(BufferedSafeString* out, const SafeString& path) const;
     virtual void formatPathForFSA_(BufferedSafeString* out, const SafeString& path) const;
 
     FSClient* getUsableFSClient_() const;
     FSFileHandle* getFileHandleInner_(FileHandle* handle);
+    FSDirHandle* getDirHandleInner_(DirectoryHandle* handle);
 
     const char* devicePath;
     FSStatus status;
@@ -256,7 +289,7 @@ public:
     virtual bool doCloseDirectory_(DirectoryHandle* handle);
     virtual bool doReadDirectory_(u32* entriesRead, DirectoryHandle* handle, DirectoryEntry* entries, u32 entriesToRead);
     virtual bool doMakeDirectory_(const SafeString& path, u32);
-    virtual u32 doGetLastRawError_() const;
+    virtual s32 doGetLastRawError_() const;
 
     CafeContentFileDevice* mFileDevice;
 };
