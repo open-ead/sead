@@ -11,7 +11,7 @@ public:
     Arena();
     ~Arena();
 
-    void initialize(size_t size);
+    void* initialize(size_t size);
 
     void* heap;
     u32 size;

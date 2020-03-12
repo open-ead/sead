@@ -13,7 +13,7 @@ Arena::~Arena()
 {
 }
 
-void Arena::initialize(size_t size)
+void* Arena::initialize(size_t size)
 {
     MEMHeapHandle handle = MEMGetBaseHeapHandle(MEM_ARENA_2);
     u32 allocSize = MEMGetAllocatableSizeForExpHeap(handle);
@@ -23,6 +23,8 @@ void Arena::initialize(size_t size)
     this->size = size;
     heap = (*MEMAllocFromDefaultHeapEx)(size, MEM_HEAP_DEFAULT_ALIGNMENT);
     this->heap = heap;
+
+    return heap;
 }
 
 } // namespace sead
