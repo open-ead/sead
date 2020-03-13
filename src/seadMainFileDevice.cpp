@@ -58,6 +58,7 @@ MainFileDevice::isMatchDevice_(
     return mFileDevice->isMatchDevice_(handle);
 }
 
+bool MainFileDevice::doIsAvailable_() const
 {
     return mFileDevice->isAvailable();
 }
