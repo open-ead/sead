@@ -73,6 +73,8 @@ public:
     s32 appendWithFormat(const T* formatStr, ...);
     s32 appendWithFormatV(const T* formatStr, va_list args);
 
+    static s32 formatImpl_(T* s, s32 n, const T* formatStr, va_list args);
+
     inline T* getMutableStringTop_()
     {
         return const_cast<T*>(mStringTop);

@@ -28,6 +28,7 @@
 #ifdef __cplusplus
 #include <sead/seadSafeString.hpp>
 #endif // __cplusplus
+#include <sead/seadStringUtil.h>
 #include <sead/seadSZSDecompressor.h>
 #include <sead/seadTList.h>
 

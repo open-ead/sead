@@ -139,12 +139,23 @@ public:
     virtual void doTracePath_(const SafeString& path) const;
     virtual void doResolvePath_(BufferedSafeString* out, const SafeString& path) const;
 
-    FileDevice* tryOpen(FileHandle* handle, const SafeString& path, FileOpenFlag flag, u32 divSize);
-    bool tryRead(u32* bytesRead, FileHandle* handle, u8* outBuffer, u32 bytesToRead);
+    bool isAvailable() const;
     u8* tryLoad(LoadArg& arg);
+    FileDevice* tryOpen(FileHandle* handle, const SafeString& path, FileOpenFlag flag, u32 divSize);
     bool tryClose(FileHandle* handle);
+    bool tryRead(u32* bytesRead, FileHandle* handle, u8* outBuffer, u32 bytesToRead);
+    bool tryWrite(u32* bytesWritten, FileHandle* handle, const u8* inBuffer, u32 bytesToWrite);
+    bool trySeek(FileHandle* handle, s32 offset, SeekOrigin origin);
+    bool tryGetCurrentSeekPos(u32* seekPos, FileHandle* handle);
+    bool tryGetFileSize(u32* fileSize, const SafeString& path);
     bool tryGetFileSize(u32* fileSize, FileHandle* handle);
+    bool tryIsExistFile(bool* exists, const SafeString& path);
+    bool tryIsExistDirectory(bool* exists, const SafeString& path);
+    FileDevice* tryOpenDirectory(DirectoryHandle* handle, const SafeString& path);
     bool tryCloseDirectory(DirectoryHandle* handle);
+    bool tryReadDirectory(u32* entriesRead, DirectoryHandle* handle, DirectoryEntry* entries, u32 entriesToRead);
+    bool tryMakeDirectory(const SafeString& path, u32);
+    s32 getLastRawError() const;
 
     void setFileHandleDivSize_(FileHandle* handle, u32 divSize) const;
     void setHandleBaseFileDevice_(HandleBase* handle, FileDevice* device) const;

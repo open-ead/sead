@@ -126,6 +126,22 @@ FileDevice::doResolvePath_(
     out->copy(path);
 }
 
+bool FileDevice::isAvailable() const
+{
+    if (this->_4C == 0)
+        return false;
+
+    return doIsAvailable_();
+}
+
+u8* FileDevice::tryLoad(LoadArg& arg)
+{
+    if (this->_4C == 0)
+        return NULL;
+
+    return doLoad_(arg);
+}
+
 FileDevice*
 FileDevice::tryOpen(
     FileHandle* handle, const SafeString& path,
@@ -145,6 +161,28 @@ FileDevice::tryOpen(
         setHandleBaseOriginalFileDevice_(handle, this);
 
     return device;
+}
+
+bool
+FileDevice::tryClose(FileHandle* handle)
+{
+    if (this->_4C == 0)
+        return false;
+
+    if (handle == NULL)
+        return false;
+
+    if (!isMatchDevice_(handle))
+        return false;
+
+    bool closed = doClose_(handle);
+    if (closed)
+    {
+        setHandleBaseFileDevice_(handle, NULL);
+        setHandleBaseOriginalFileDevice_(handle, NULL);
+    }
+
+    return closed;
 }
 
 bool
@@ -198,16 +236,32 @@ FileDevice::tryRead(
     return true;
 }
 
-u8* FileDevice::tryLoad(LoadArg& arg)
+bool
+FileDevice::tryWrite(
+    u32* bytesWritten, FileHandle* handle,
+    const u8* inBuffer, u32 bytesToWrite
+)
 {
     if (this->_4C == 0)
-        return NULL;
+        return false;
 
-    return doLoad_(arg);
+    if (handle == NULL)
+        return false;
+
+    if (inBuffer == NULL)
+        return false;
+
+    if (!isMatchDevice_(handle))
+        return false;
+
+    return doWrite_(bytesWritten, handle, inBuffer, bytesToWrite);
 }
 
 bool
-FileDevice::tryClose(FileHandle* handle)
+FileDevice::trySeek(
+    FileHandle* handle, s32 offset,
+    FileDevice::SeekOrigin origin
+)
 {
     if (this->_4C == 0)
         return false;
@@ -218,14 +272,105 @@ FileDevice::tryClose(FileHandle* handle)
     if (!isMatchDevice_(handle))
         return false;
 
-    bool closed = doClose_(handle);
-    if (closed)
-    {
-        setHandleBaseFileDevice_(handle, NULL);
-        setHandleBaseOriginalFileDevice_(handle, NULL);
-    }
+    return doSeek_(handle, offset, origin);
+}
 
-    return closed;
+bool
+FileDevice::tryGetCurrentSeekPos(
+    u32* seekPos, FileHandle* handle
+)
+{
+    if (this->_4C == 0)
+        return false;
+
+    if (handle == NULL)
+        return false;
+
+    if (!isMatchDevice_(handle))
+        return false;
+
+    if (seekPos == NULL)
+        return false;
+
+    return doGetCurrentSeekPos_(seekPos, handle);
+}
+
+bool
+FileDevice::tryGetFileSize(
+    u32* fileSize, const SafeString& path
+)
+{
+    if (this->_4C == 0)
+        return false;
+
+    if (fileSize == NULL)
+        return false;
+
+    return doGetFileSize_(fileSize, path);
+}
+
+bool
+FileDevice::tryGetFileSize(
+    u32* fileSize, FileHandle* handle
+)
+{
+    if (this->_4C == 0)
+        return false;
+
+    if (handle == NULL)
+        return false;
+
+    if (fileSize == NULL)
+        return false;
+
+    return doGetFileSize_(fileSize, handle);
+}
+
+bool
+FileDevice::tryIsExistFile(
+    bool* exists, const SafeString& path
+)
+{
+    if (this->_4C == 0)
+        return false;
+
+    if (exists == NULL)
+        return false;
+
+    return doIsExistFile_(exists, path);
+}
+
+bool
+FileDevice::tryIsExistDirectory(
+    bool* exists, const SafeString& path
+)
+{
+    if (this->_4C == 0)
+        return false;
+
+    if (exists == NULL)
+        return false;
+
+    return doIsExistDirectory_(exists, path);
+}
+
+FileDevice*
+FileDevice::tryOpenDirectory(
+    DirectoryHandle* handle, const SafeString& path
+)
+{
+    if (this->_4C == 0)
+        return NULL;
+
+    if (handle == NULL)
+        return NULL;
+
+    FileDevice* device = doOpenDirectory_(handle, path);
+    setHandleBaseFileDevice_(handle, device);
+    if (device != NULL)
+        setHandleBaseOriginalFileDevice_(handle, this);
+
+    return device;
 }
 
 bool
@@ -251,8 +396,9 @@ FileDevice::tryCloseDirectory(DirectoryHandle* handle)
 }
 
 bool
-FileDevice::tryGetFileSize(
-    u32* fileSize, FileHandle* handle
+FileDevice::tryReadDirectory(
+    u32* entriesRead, DirectoryHandle* handle,
+    DirectoryEntry* entries, u32 entriesToRead
 )
 {
     if (this->_4C == 0)
@@ -261,10 +407,35 @@ FileDevice::tryGetFileSize(
     if (handle == NULL)
         return false;
 
-    if (fileSize == NULL)
+    if (!isMatchDevice_(handle))
         return false;
 
-    return doGetFileSize_(fileSize, handle);
+    u32 readCount = 0;
+    bool success = doReadDirectory_(&readCount, handle, entries, entriesToRead);
+
+    if (entriesRead != NULL)
+        *entriesRead = readCount;
+
+    if (readCount > entriesToRead)
+        return false;
+
+    return success;
+}
+
+bool
+FileDevice::tryMakeDirectory(
+    const SafeString& path, u32 _
+)
+{
+    if (this->_4C == 0)
+        return false;
+
+    return doMakeDirectory_(path, _);
+}
+
+s32 FileDevice::getLastRawError() const
+{
+    return doGetLastRawError_();
 }
 
 void
