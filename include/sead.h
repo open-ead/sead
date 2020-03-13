@@ -1,8 +1,9 @@
 #ifndef SEAD_H_
 #define SEAD_H_
 
-#include <sead/seadArena.h>
-#include <sead/seadCriticalSection.h>
+#include <sead/seadArenaCafe.h>
+#include <sead/seadCafeFSAFileDeviceCafe.h>
+#include <sead/seadCriticalSectionCafe.h>
 #include <sead/seadDecompressor.h>
 #include <sead/seadDisposer.h>
 #include <sead/seadEndian.h>
@@ -11,6 +12,7 @@
 #include <sead/seadHeap.h>
 #include <sead/seadHeapMgr.h>
 #include <sead/seadListImpl.h>
+#include <sead/seadMainFileDevice.h>
 #ifdef __cplusplus
 #include <sead/seadMathCalcCommon.hpp>
 #include <sead/seadMemUtilCafe.hpp>

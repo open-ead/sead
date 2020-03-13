@@ -5,6 +5,7 @@
 
 #include <sead/seadDisposer.h>
 #include <sead/seadFileDevice.h>
+#include <sead/seadMainFileDevice.h>
 #include <sead/seadTList.h>
 #include <sead/seadSafeString.h>
 

@@ -3,7 +3,7 @@
 
 #include <stddef.h>
 
-#include <sead/seadCriticalSection.h>
+#include <sead/seadCriticalSectionCafe.h>
 #include <sead/seadDisposer.h>
 #include <sead/seadOffsetList.h>
 #include <sead/seadRuntimeTypeInfo.h>

@@ -1,8 +1,8 @@
 #ifndef SEAD_HEAPMGR_H_
 #define SEAD_HEAPMGR_H_
 
-#include <sead/seadArena.h>
-#include <sead/seadCriticalSection.h>
+#include <sead/seadArenaCafe.h>
+#include <sead/seadCriticalSectionCafe.h>
 #include <sead/seadHeap.h>
 #include <sead/seadPtrArray.h>
 
