@@ -175,7 +175,7 @@ u8* FileDeviceMgr::tryLoad(FileDevice::LoadArg& arg)
         return NULL;
 
     FileDevice::LoadArg arg2(arg);
-    arg2.name = pathNoDrive.c_str();
+    arg2.name = pathNoDrive.cstr();
 
     u8* data = device->tryLoad(arg2);
 

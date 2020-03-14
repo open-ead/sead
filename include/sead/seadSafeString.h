@@ -15,7 +15,7 @@ public:
 
     virtual void assureTerminationImpl_() const { }
 
-    inline const T* c_str() const
+    inline const T* cstr() const
     {
         assureTerminationImpl_();
         return mStringTop;

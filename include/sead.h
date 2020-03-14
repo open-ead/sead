@@ -1,7 +1,11 @@
 #ifndef SEAD_H_
 #define SEAD_H_
 
+#include <types.h>
+
+#include <sead/seadArchiveRes.h>
 #include <sead/seadArenaCafe.h>
+#include <sead/seadBuffer.h>
 #include <sead/seadCafeFSAFileDeviceCafe.h>
 #include <sead/seadCriticalSectionCafe.h>
 #include <sead/seadDecompressor.h>
@@ -28,6 +32,7 @@
 #ifdef __cplusplus
 #include <sead/seadSafeString.hpp>
 #endif // __cplusplus
+#include <sead/seadSharcArchiveRes.h>
 #include <sead/seadStringUtil.h>
 #include <sead/seadSZSDecompressor.h>
 #include <sead/seadTList.h>

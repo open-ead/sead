@@ -7,7 +7,7 @@ CafeFSAFileDevice::CafeFSAFileDevice(
     const SafeString& name, const SafeString& devicePath
 )
     : FileDevice(name)
-    , devicePath(devicePath.c_str())
+    , devicePath(devicePath.cstr())
     , status(FS_STATUS_OK)
     , openErrHandling(FS_RET_PERMISSION_ERROR | FS_RET_ACCESS_ERROR |
                       FS_RET_NOT_FILE | FS_RET_NOT_FOUND |
@@ -57,7 +57,7 @@ CafeFSAFileDevice::doOpen_(
     FixedSafeString<FS_MAX_ENTNAME_SIZE> fullPath;
     formatPathForFSA_(&fullPath, path);
 
-    FSStatus status = FSOpenFile(client_, &block, fullPath.c_str(), mode, fsHandle, openErrHandling);
+    FSStatus status = FSOpenFile(client_, &block, fullPath.cstr(), mode, fsHandle, openErrHandling);
     fsHandle[1] = 0;
 
     if (this->status = status, status != FS_STATUS_OK)
@@ -197,7 +197,7 @@ CafeFSAFileDevice::doGetFileSize_(
     FixedSafeString<FS_MAX_ENTNAME_SIZE> fullPath;
     formatPathForFSA_(&fullPath, path);
 
-    FSStatus status = FSGetStat(client_, &block, fullPath.c_str(), &stat, FS_RET_NO_ERROR);
+    FSStatus status = FSGetStat(client_, &block, fullPath.cstr(), &stat, FS_RET_NO_ERROR);
     if (this->status = status, status != FS_STATUS_OK)
         return false;
 
@@ -239,7 +239,7 @@ CafeFSAFileDevice::doIsExistFile_(
     FixedSafeString<FS_MAX_ENTNAME_SIZE> fullPath;
     formatPathForFSA_(&fullPath, path);
 
-    FSStatus status = FSGetStat(client_, &block, fullPath.c_str(), &stat, FS_RET_PERMISSION_ERROR | FS_RET_NOT_FOUND);
+    FSStatus status = FSGetStat(client_, &block, fullPath.cstr(), &stat, FS_RET_PERMISSION_ERROR | FS_RET_NOT_FOUND);
     if (this->status = status, status != FS_STATUS_OK)
     {
         if (status != FS_STATUS_NOT_FOUND)
@@ -268,7 +268,7 @@ CafeFSAFileDevice::doIsExistDirectory_(
     FixedSafeString<FS_MAX_ENTNAME_SIZE> fullPath;
     formatPathForFSA_(&fullPath, path);
 
-    FSStatus status = FSGetStat(client_, &block, fullPath.c_str(), &stat, FS_RET_PERMISSION_ERROR | FS_RET_NOT_FOUND);
+    FSStatus status = FSGetStat(client_, &block, fullPath.cstr(), &stat, FS_RET_PERMISSION_ERROR | FS_RET_NOT_FOUND);
     if (this->status = status, status != FS_STATUS_OK)
     {
         if (status != FS_STATUS_NOT_FOUND)
@@ -297,7 +297,7 @@ CafeFSAFileDevice::doOpenDirectory_(
     FixedSafeString<FS_MAX_ENTNAME_SIZE> fullPath;
     formatPathForFSA_(&fullPath, path);
 
-    FSStatus status = FSOpenDir(client_, &block, fullPath.c_str(), fsHandle, FS_RET_PERMISSION_ERROR | FS_RET_ACCESS_ERROR |
+    FSStatus status = FSOpenDir(client_, &block, fullPath.cstr(), fsHandle, FS_RET_PERMISSION_ERROR | FS_RET_ACCESS_ERROR |
                                                                              FS_RET_NOT_DIR | FS_RET_NOT_FOUND | FS_RET_ALREADY_OPEN);
 
     if (this->status = status, status != FS_STATUS_OK)
@@ -373,7 +373,7 @@ CafeFSAFileDevice::doMakeDirectory_(
     FixedSafeString<FS_MAX_ENTNAME_SIZE> fullPath;
     formatPathForFSA_(&fullPath, path);
 
-    return (status = FSMakeDir(client_, &block, fullPath.c_str(), FS_RET_JOURNAL_FULL | FS_RET_STORAGE_FULL |
+    return (status = FSMakeDir(client_, &block, fullPath.cstr(), FS_RET_JOURNAL_FULL | FS_RET_STORAGE_FULL |
                                                                   FS_RET_PERMISSION_ERROR | FS_RET_NOT_FOUND), status == FS_STATUS_OK);
 
 }
@@ -396,7 +396,7 @@ CafeFSAFileDevice::formatPathForFSA_(
     BufferedSafeString* out, const SafeString& path
 ) const
 {
-    out->format("%s/%s", devicePath, path.c_str());
+    out->format("%s/%s", devicePath, path.cstr());
 }
 
 FSClient*

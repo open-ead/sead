@@ -25,6 +25,19 @@ enum Types
 extern Types cHostEndian;
 extern ConvFuncTable cConvFuncTable;
 
+inline Types markToEndian(u16 bom)
+{
+    u8* bom_ = reinterpret_cast<u8*>(&bom);
+    if (*bom_ == 0xff && *(bom_ + 1) == 0xfe)
+        return Type_Little;
+
+    else if (*bom_ == 0xfe && *(bom_ + 1) == 0xff)
+        return Type_Big;
+
+    else
+        return Type_Little;
+}
+
 inline u8 readU8(const void* ptr)
 {
     return cConvFuncTable.int8[Endian::cHostEndian](*static_cast<const u8*>(ptr));

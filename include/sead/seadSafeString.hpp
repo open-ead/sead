@@ -32,7 +32,7 @@ inline bool
 SafeStringBase<T>::isEqual(const SafeStringBase<T>& str) const
 {
     assureTerminationImpl_();
-    if (c_str() == str.c_str())
+    if (cstr() == str.cstr())
         return true;
 
     for (s32 i = 0; i <= cMaximumLength; i++)
@@ -52,7 +52,7 @@ inline s32
 SafeStringBase<T>::comparen(const SafeStringBase<T>& str, s32 n) const
 {
     assureTerminationImpl_();
-    if (c_str() == str.c_str())
+    if (cstr() == str.cstr())
         return 0;
 
     if (n > cMaximumLength)
@@ -104,7 +104,7 @@ BufferedSafeStringBase<T>::copy(const SafeStringBase<T>& src, s32 copyLength)
     if (copyLength >= mBufferSize)
         copyLength = mBufferSize - 1;
 
-    std::char_traits<T>::copy(dst, src.c_str(), copyLength);
+    std::char_traits<T>::copy(dst, src.cstr(), copyLength);
     dst[copyLength] = SafeStringBase<T>::cNullChar;
 
     return copyLength;
@@ -133,7 +133,7 @@ BufferedSafeStringBase<T>::copyAt(s32 at, const SafeStringBase<T>& src, s32 copy
     if (copyLength <= 0)
         return 0;
 
-    std::char_traits<T>::copy(dst + at, src.c_str(), copyLength);
+    std::char_traits<T>::copy(dst + at, src.cstr(), copyLength);
     if (at + copyLength > len)
         dst[at + copyLength] = SafeStringBase<T>::cNullChar;
 
