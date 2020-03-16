@@ -1,9 +1,6 @@
 #ifndef SEAD_RUNTIMETYPEINFO_H_
 #define SEAD_RUNTIMETYPEINFO_H_
 
-#include <sead/seadDisposer.h>
-#include <sead/seadListImpl.h>
-
 namespace sead { namespace RuntimeTypeInfo {
 
 class Interface
