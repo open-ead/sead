@@ -7,6 +7,8 @@ class Interface
 {
 public:
     Interface() { }
+
+    virtual bool isDerived(const Interface* typeInfo) const = 0;
 };
 
 class Root : public Interface
@@ -16,22 +18,22 @@ public:
 
     virtual bool isDerived(const Interface* typeInfo) const
     {
-        return typeInfo == static_cast<const Interface*>(this);
+        return typeInfo == this;
     }
 };
 
 template <typename BaseType>
-class Derive : public Root
+class Derive : public Interface
 {
 public:
     Derive() { }
 
     virtual bool isDerived(const Interface* typeInfo) const
     {
-        if (static_cast<const Interface*>(this) == typeInfo)
+        if (this == typeInfo)
             return true;
 
-        const RuntimeTypeInfo::Root* rootTypeInfo = reinterpret_cast<const Root*>(BaseType::getRuntimeTypeInfoStatic());
+        const RuntimeTypeInfo::Interface* rootTypeInfo = BaseType::getRuntimeTypeInfoStatic();
         return rootTypeInfo->isDerived(typeInfo);
     }
 };

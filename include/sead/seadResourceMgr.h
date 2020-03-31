@@ -36,6 +36,20 @@ public:
 
     struct LoadArg
     {
+        LoadArg()
+            : name()
+            , resourceCreateHeap(NULL)
+            , resourceLoadHeap(NULL)
+            , resourceAlignment(0x20)
+            , bufferSizeAlignment(0)
+            , buffer(NULL)
+            , bufferSize(0)
+            , factory(NULL)
+            , device(NULL)
+            , divSize(0)
+        {
+        }
+
         SafeString name;
         Heap* resourceCreateHeap;
         Heap* resourceLoadHeap;
