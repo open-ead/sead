@@ -58,6 +58,11 @@ public:
     void removeDisposer_(IDisposer* disposer);
     Heap* findContainHeap_(const void* ptr);
 
+    inline void* alloc(size_t size, s32 alignment)
+    {
+        return tryAlloc(size, alignment);
+    }
+
     SafeString name;
     u32 addr;
     u32 size;

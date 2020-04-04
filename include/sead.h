@@ -7,6 +7,8 @@
 #include <sead/seadArenaCafe.h>
 #include <sead/seadBuffer.h>
 #include <sead/seadCafeFSAFileDeviceCafe.h>
+#include <sead/seadCamera.h>
+#include <sead/seadColor.h>
 #include <sead/seadCriticalSectionCafe.h>
 #include <sead/seadDecompressor.h>
 #include <sead/seadDisposer.h>
@@ -19,11 +21,19 @@
 #include <sead/seadMainFileDevice.h>
 #ifdef __cplusplus
 #include <sead/seadMathCalcCommon.hpp>
+#endif // __cplusplus
+#include <sead/seadMatrix.h>
+#ifdef __cplusplus
+#include <sead/seadMatrixCalcCommon.hpp>
 #include <sead/seadMemUtilCafe.hpp>
 #endif // __cplusplus
 #include <sead/seadNew.h>
 #include <sead/seadOffsetList.h>
 #include <sead/seadPath.h>
+#include <sead/seadPrimitiveRenderer.h>
+#include <sead/seadPrimitiveRendererCafe.h>
+#include <sead/seadPrimitiveRendererUtil.h>
+#include <sead/seadProjection.h>
 #include <sead/seadPtrArray.h>
 #include <sead/seadResource.h>
 #include <sead/seadResourceMgr.h>
@@ -35,6 +45,9 @@
 #include <sead/seadSharcArchiveRes.h>
 #include <sead/seadStringUtil.h>
 #include <sead/seadSZSDecompressor.h>
+#include <sead/seadTexture.h>
+#include <sead/seadTextureCafeGX2.h>
 #include <sead/seadTList.h>
+#include <sead/seadVector.h>
 
 #endif // SEAD_H_

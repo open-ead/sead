@@ -1,18 +1,36 @@
 #include <sead.h>
 
+namespace {
+
+static const char16 cEmptyStringChar16[1] = L"";
+
+} // namespace {no-name}
+
 namespace sead {
 
-template <typename T>
-const T SafeStringBase<T>::cNullChar = 0;
+template <>
+const char SafeStringBase<char>::cNullChar = '\0';
 
-template <typename T>
-const T SafeStringBase<T>::cLineBreakChar = static_cast<T>('\n');
+template <>
+const char SafeStringBase<char>::cLineBreakChar = '\n';
 
-template <typename T>
-const T SafeStringBase<T>::cNullString[1] = { SafeStringBase<T>::cNullChar };
+template <>
+const char SafeStringBase<char>::cNullString[1] = { SafeStringBase<char>::cNullChar };
 
-template <typename T>
-const SafeStringBase<T> SafeStringBase<T>::cEmptyString;
+template <>
+const SafeStringBase<char> SafeStringBase<char>::cEmptyString("");
+
+template <>
+const char16 SafeStringBase<char16>::cNullChar = 0;
+
+template <>
+const char16 SafeStringBase<char16>::cLineBreakChar = static_cast<char16>('\n');
+
+template <>
+const char16 SafeStringBase<char16>::cNullString[1] = { SafeStringBase<char16>::cNullChar };
+
+template <>
+const SafeStringBase<char16> SafeStringBase<char16>::cEmptyString(cEmptyStringChar16);
 
 template <>
 s32 BufferedSafeStringBase<char>::formatImpl_(char* s, s32 n, const char* formatStr, va_list args)

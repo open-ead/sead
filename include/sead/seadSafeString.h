@@ -49,6 +49,30 @@ public:
     const T* mStringTop;
 };
 
+template <>
+extern const char SafeStringBase<char>::cNullChar;
+
+template <>
+extern const char SafeStringBase<char>::cLineBreakChar;
+
+template <>
+extern const char SafeStringBase<char>::cNullString[1];
+
+template <>
+extern const SafeStringBase<char> SafeStringBase<char>::cEmptyString;
+
+template <>
+extern const char16 SafeStringBase<char16>::cNullChar;
+
+template <>
+extern const char16 SafeStringBase<char16>::cLineBreakChar;
+
+template <>
+extern const char16 SafeStringBase<char16>::cNullString[1];
+
+template <>
+extern const SafeStringBase<char16> SafeStringBase<char16>::cEmptyString;
+
 template <typename T>
 class BufferedSafeStringBase : public SafeStringBase<T>
 {

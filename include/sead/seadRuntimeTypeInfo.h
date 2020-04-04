@@ -48,6 +48,16 @@ IsDerivedFrom(const Type* obj)
     return obj != NULL && obj->checkDerivedRuntimeTypeInfo(typeInfo);
 }
 
+template<typename DerivedType, typename Type>
+inline DerivedType*
+DynamicCast(Type* obj)
+{
+    if (IsDerivedFrom<DerivedType, Type>(obj))
+        return static_cast<DerivedType*>(obj);
+
+    return NULL;
+}
+
 } // namespace sead
 
 #define SEAD_RTTI_BASE(CLASS)                                                                                \
