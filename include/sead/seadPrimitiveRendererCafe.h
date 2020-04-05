@@ -5,7 +5,7 @@
 
 #include "sead/seadMatrix.h"
 #include "sead/seadPrimitiveRenderer.h"
-//#include "sead/seadPrimitiveRendererUtil.h"
+#include "sead/seadPrimitiveRendererUtil.h"
 #include "sead/seadSafeString.h"
 #include "sead/seadVector.h"
 
@@ -16,12 +16,6 @@ class Camera;
 class Projection;
 struct Color4f;
 class Texture;
-
-namespace PrimitiveRendererUtil {
-
-struct Vertex;
-
-}
 
 class PrimitiveRendererCafe : public PrimitiveRendererBase
 {

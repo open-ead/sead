@@ -145,7 +145,7 @@ void setSphereVertex(Vertex* vtx, u16* idx, s32 x, s32 y)
         {
             for (int j = 0; j < x; j++)
             {
-                int v = i - (i - (i >> 31) & (u32)~1);
+                int v = i % 2;
                 idx[((i * x + j) * 2 + x) * 3 + 0] = i * x + j;
                 idx[((i * x + j) * 2 + x) * 3 + 1] = (i + 1) * x + ((j + v) - ((j + v) / x) * x);
                 idx[((i * x + j) * 2 + x) * 3 + 2] = i * x + ((j + 1) - ((j + 1) / x) * x);

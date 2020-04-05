@@ -20,7 +20,7 @@ void PrimitiveRenderer::doPrepare_(Heap* heap)
 #ifdef cafe
     mRendererImpl = new(heap) PrimitiveRendererCafe(heap);
 #else
-        #error "Unknown platform"
+    #error "Unknown platform"
 #endif // cafe
 }
 
