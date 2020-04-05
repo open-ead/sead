@@ -14,35 +14,35 @@ class SharcArchiveRes : public ArchiveRes
 public:
     struct ArchiveBlockHeader
     {
-        char magic[4];
-        u16 headerSize;
-        u16 bom;
-        u32 fileSize;
-        u32 dataOffset;
+        char signature[4];
+        u16 header_size;
+        u16 byte_order;
+        u32 file_size;
+        u32 data_block_offset;
         u16 version;
         u16 reserved;
     };
 
     struct FATBlockHeader
     {
-        char magic[4];
-        u16 headerSize;
-        u16 nodeCount;
-        u32 hashKey;
+        char signature[4];
+        u16 header_size;
+        u16 file_num;
+        u32 hash_key;
     };
 
     struct FATEntry
     {
         u32 hash;
-        u32 nameOffset;
-        u32 dataStartOffset;
-        u32 dataEndOffset;
+        u32 name_offset;
+        u32 data_start_offset;
+        u32 data_end_offset;
     };
 
     struct FNTBlockHeader
     {
-        char magic[4];
-        u16 headerSize;
+        char signature[4];
+        u16 header_size;
         u16 reserved;
     };
 

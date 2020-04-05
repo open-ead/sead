@@ -4,19 +4,19 @@ namespace sead {
 
 CriticalSection::CriticalSection()
     : IDisposer()
-    , mutex()
+    , mCriticalSectionInner()
 {
-    OSInitMutex(&mutex);
+    OSInitMutex(&mCriticalSectionInner);
 }
 
 void CriticalSection::lock()
 {
-    OSLockMutex(&mutex);
+    OSLockMutex(&mCriticalSectionInner);
 }
 
 void CriticalSection::unlock()
 {
-    OSUnlockMutex(&mutex);
+    OSUnlockMutex(&mCriticalSectionInner);
 }
 
 } // namespace sead

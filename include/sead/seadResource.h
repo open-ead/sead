@@ -1,16 +1,17 @@
 #ifndef SEAD_RESOURCE_H_
 #define SEAD_RESOURCE_H_
 
+#include <sead/seadBitFlag.h>
 #include <sead/seadDecompressor.h>
 #include <sead/seadDisposer.h>
 #include <sead/seadHeap.h>
-#include <sead/seadListImpl.h>
 #include <sead/seadNew.h>
 #include <sead/seadResourceMgr.h>
+#include <sead/seadTList.h>
 
 namespace sead {
 
-class Resource : public UnkList
+class Resource : public TListNode<Resource>
 {
     SEAD_RTTI_BASE(Resource)
 
@@ -26,34 +27,6 @@ class DirectResource : public Resource
     SEAD_RTTI_OVERRIDE(DirectResource, Resource)
 
 public:
-    class Flags
-    {
-    public:
-        explicit Flags()
-            : val(0)
-        {
-        }
-
-        inline void set()
-        {
-            val |= 1;
-        }
-
-        inline void unset()
-        {
-            val &= ~1;
-        }
-
-        inline bool isSet() const
-        {
-            return val & 1;
-        }
-
-    private:
-        u32 val;
-    };
-
-public:
     DirectResource();
     virtual ~DirectResource();
 
@@ -62,19 +35,19 @@ public:
 
     void create(u8* buffer, u32 bufferSize, u32 allocSize, bool allocated, Heap* heap);
 
-    u8* pData;
-    u32 dataSize;
-    u32 dataAllocSize;
-    Flags flags;
+    u8* mRawData;
+    u32 mRawSize;
+    u32 mBufferSize;
+    BitFlag32 mSettingFlag;
 };
 
-class ResourceFactory : public UnkList, public IDisposer
+class ResourceFactory : public TListNode<ResourceFactory>, public IDisposer
 {
 public:
     ResourceFactory()
-        : UnkList()
+        : TListNode<ResourceFactory>()
         , IDisposer()
-        , mName()
+        , mExt()
     {
     }
 
@@ -84,7 +57,7 @@ public:
     virtual Resource* tryCreate(const ResourceMgr::LoadArg& loadArg) = 0;
     virtual Resource* tryCreateWithDecomp(const ResourceMgr::LoadArg& loadArg, Decompressor* decompressor) = 0;
 
-    FixedSafeString<32> mName;
+    FixedSafeString<32> mExt;
 };
 
 class DirectResourceFactoryBase : public ResourceFactory

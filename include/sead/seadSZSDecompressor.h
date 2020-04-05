@@ -10,9 +10,15 @@ namespace sead {
 class SZSDecompressor : public Decompressor
 {
 public:
-    class DecompContext
+    enum Step
     {
-    public:
+        cStepNormal = 0,
+        cStepShort = 1,
+        cStepLong = 2,
+    };
+
+    struct DecompContext
+    {
         DecompContext();
         DecompContext(void* dst);
 
@@ -20,35 +26,35 @@ public:
 
         __attribute__((always_inline)) bool doCopy(u32 n)
         {
-            if (this->headerDstSize < n)
+            if (this->destCount < n)
             {
-                if (this->dstSize == 0)
+                if (this->forceDestCount == 0)
                     return false;
 
-                n = this->headerDstSize & 0xFFFF;
+                n = this->destCount & 0xFFFF;
             }
 
-            this->headerDstSize -= n;
+            this->destCount -= n;
 
             do
             {
-                *this->dst = *(this->dst - this->copy_pos);
-                this->dst += 1;
+                *this->destp = *(this->destp - this->lzOffset);
+                this->destp += 1;
             }
             while (--n != 0);
 
-            this->action = 0;
+            this->step = SZSDecompressor::cStepNormal;
             return true;
         }
 
-        u8* dst;
-        s32 headerDstSize;
-        s32 dstSize;
-        u8 codeMask;
-        u8 code;
-        u8 b1;
-        u32 action;
-        u16 copy_pos;
+        u8* destp;
+        s32 destCount;
+        s32 forceDestCount;
+        u8 flagMask;
+        u8 flags;
+        u8 packHigh;
+        Step step;
+        u16 lzOffset;
         u8 headerSize;
     };
 

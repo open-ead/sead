@@ -3,7 +3,7 @@
 namespace sead {
 
 Resource::Resource()
-    : UnkList()
+    : TListNode<Resource>()
 {
 }
 
@@ -17,17 +17,17 @@ void Resource::doPostCreate_()
 
 DirectResource::DirectResource()
     : Resource()
-    , pData(NULL)
-    , dataSize(0)
-    , dataAllocSize(0)
-    , flags()
+    , mRawData(NULL)
+    , mRawSize(0)
+    , mBufferSize(0)
+    , mSettingFlag()
 {
 }
 
 DirectResource::~DirectResource()
 {
-    if (flags.isSet())
-        delete[] pData;
+    if (mSettingFlag.mBits & 1)
+        delete[] mRawData;
 }
 
 s32 DirectResource::getLoadDataAlignment()
@@ -41,18 +41,18 @@ void DirectResource::doCreate_(u8*, u32, Heap*)
 
 void DirectResource::create(u8* buffer, u32 bufferSize, u32 allocSize, bool allocated, Heap* heap)
 {
-    if (pData != NULL)
+    if (mRawData != NULL)
         return;
 
-    dataSize = bufferSize;
-    dataAllocSize = allocSize;
-    pData = buffer;
+    mRawSize = bufferSize;
+    mBufferSize = allocSize;
+    mRawData = buffer;
 
     if (allocated)
-        flags.set();
+        mSettingFlag.mBits |= 1;
 
     else
-        flags.unset();
+        mSettingFlag.mBits &= ~1;
 
     return doCreate_(buffer, bufferSize, heap);
 }
@@ -65,7 +65,7 @@ ResourceFactory::~ResourceFactory()
 
 Resource* DirectResourceFactoryBase::create(const ResourceMgr::CreateArg& createArg)
 {
-    DirectResource* resource = newResource_(createArg.resourceCreateHeap, createArg.resourceAlignment);
+    DirectResource* resource = newResource_(createArg.heap, createArg.alignment);
     if (resource == NULL)
         return NULL;
 
@@ -77,30 +77,30 @@ Resource* DirectResourceFactoryBase::create(const ResourceMgr::CreateArg& create
         return NULL;
     }
 
-    resource->create(createArg.buffer, createArg.bufferSize, createArg.allocSize, createArg.allocated, createArg.resourceCreateHeap);
+    resource->create(createArg.buffer, createArg.file_size, createArg.buffer_size, createArg.need_unload, createArg.heap);
     return resource;
 }
 
 Resource* DirectResourceFactoryBase::tryCreate(const ResourceMgr::LoadArg& loadArg)
 {
-    DirectResource* resource = newResource_(loadArg.resourceCreateHeap, loadArg.resourceAlignment);
+    DirectResource* resource = newResource_(loadArg.instance_heap, loadArg.instance_alignment);
     if (resource == NULL)
         return NULL;
 
     FileDevice::LoadArg fileLoadArg;
     u8* data;
 
-    fileLoadArg.name = loadArg.name;
-    fileLoadArg.buffer = loadArg.buffer;
-    fileLoadArg.bufferSize = loadArg.bufferSize;
-    fileLoadArg.heap = loadArg.resourceLoadHeap;
-    fileLoadArg.divSize = loadArg.divSize;
+    fileLoadArg.path = loadArg.path;
+    fileLoadArg.buffer = loadArg.load_data_buffer;
+    fileLoadArg.buffer_size = loadArg.load_data_buffer_size;
+    fileLoadArg.heap = loadArg.load_data_heap;
+    fileLoadArg.div_size = loadArg.div_size;
 
-    if (loadArg.bufferSizeAlignment != 0)
-        fileLoadArg.bufferSizeAlignment = loadArg.bufferSizeAlignment;
+    if (loadArg.load_data_alignment != 0)
+        fileLoadArg.alignment = loadArg.load_data_alignment;
 
     else
-        fileLoadArg.bufferSizeAlignment = ((loadArg.resourceAlignment < 0)? -1: 1) * resource->getLoadDataAlignment();
+        fileLoadArg.alignment = ((loadArg.instance_alignment < 0)? -1: 1) * resource->getLoadDataAlignment();
 
     if (loadArg.device != NULL)
         data = loadArg.device->tryLoad(fileLoadArg);
@@ -114,7 +114,7 @@ Resource* DirectResourceFactoryBase::tryCreate(const ResourceMgr::LoadArg& loadA
         return NULL;
     }
 
-    resource->create(data, fileLoadArg.fileSize, fileLoadArg.allocSize, fileLoadArg.allocated, loadArg.resourceCreateHeap);
+    resource->create(data, fileLoadArg.read_size, fileLoadArg.roundup_size, fileLoadArg.need_unload, loadArg.instance_heap);
     return resource;
 }
 
@@ -123,7 +123,7 @@ DirectResourceFactoryBase::tryCreateWithDecomp(
     const ResourceMgr::LoadArg& loadArg, Decompressor* decompressor
 )
 {
-    DirectResource* resource = newResource_(loadArg.resourceCreateHeap, loadArg.resourceAlignment);
+    DirectResource* resource = newResource_(loadArg.instance_heap, loadArg.instance_alignment);
     if (resource == NULL)
         return NULL;
 
@@ -133,7 +133,7 @@ DirectResourceFactoryBase::tryCreateWithDecomp(
 
     u8* data = decompressor->tryDecompFromDevice(loadArg, resource, &outSize, &outAllocSize, &outAllocated);
 
-    resource->create(data, outSize, outAllocSize, outAllocated, loadArg.resourceCreateHeap);
+    resource->create(data, outSize, outAllocSize, outAllocated, loadArg.instance_heap);
     return resource;
 }
 

@@ -168,22 +168,22 @@ void PrimitiveRendererCafe::prepareImpl(
 )
 {
     FileDevice::LoadArg arg;
-    arg.name = path;
-    arg.bufferSizeAlignment = 0x20;
+    arg.path = path;
+    arg.alignment = 0x20;
     arg.heap = heap;
 
     const void* file = sead::FileDeviceMgr::sInstance->tryLoad(arg);
-    prepareFromBinaryImpl(heap, file, arg.fileSize);
+    prepareFromBinaryImpl(heap, file, arg.read_size);
 }
 
 void PrimitiveRendererCafe::setCameraImpl(const Camera& camera)
 {
-    ASM_MTXCopy(const_cast<f32(*)[4]>(camera.mMatrix.rows), mCameraMtx.rows);
+    ASM_MTXCopy(const_cast<f32(*)[4]>(camera.mMatrix.m), mCameraMtx.m);
 }
 
 void PrimitiveRendererCafe::setProjectionImpl(const Projection& projection)
 {
-    ASM_MTX44Copy(const_cast<f32(*)[4]>(projection.getDeviceProjectionMatrix().rows), mProjectionMtx.rows);
+    ASM_MTX44Copy(const_cast<f32(*)[4]>(projection.getDeviceProjectionMatrix().m), mProjectionMtx.m);
 }
 
 void PrimitiveRendererCafe::beginImpl()

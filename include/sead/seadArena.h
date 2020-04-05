@@ -11,11 +11,11 @@ public:
     Arena();
     ~Arena();
 
-    void* initialize(size_t size);
+    u8* initialize(size_t size);
 
-    void* heap;
-    u32 size;
-    u8 _8;
+    u8* mStart;
+    size_t mSize;
+    bool mInitWithStartAddress;
 };
 
 } // namespace sead

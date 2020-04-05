@@ -16,13 +16,8 @@ public:
 private:
     friend class Heap;
 
-    union
-    {
-        u32 destructFlag;
-        Heap* containHeap;
-    };
-
-    ListNode listNode;
+    Heap* mDisposerHeap;
+    ListNode mListNode;
 };
 
 } // namespace sead

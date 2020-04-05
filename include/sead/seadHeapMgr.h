@@ -1,8 +1,8 @@
 #ifndef SEAD_HEAPMGR_H_
 #define SEAD_HEAPMGR_H_
 
-#include <sead/seadArenaCafe.h>
-#include <sead/seadCriticalSectionCafe.h>
+#include <sead/seadArena.h>
+#include <sead/seadCriticalSection.h>
 #include <sead/seadHeap.h>
 #include <sead/seadPtrArray.h>
 
@@ -25,7 +25,7 @@ public:
     static PtrArrayImpl sIndependentHeaps;
     static CriticalSection sHeapTreeLockCS;
 
-    u32 _0;
+    void* mAllocFailedCallback;  // IAllocFailedCallback* = IDelegate1<const AllocFailedCallbackArg*>*
 };
 
 } // namespace sead

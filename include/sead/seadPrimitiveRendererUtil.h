@@ -1,8 +1,8 @@
 #ifndef SEAD_PRIMITIVE_RENDERER_UTIL_H_
 #define SEAD_PRIMITIVE_RENDERER_UTIL_H_
 
-#include "sead/seadColor.h"
-#include "sead/seadVector.h"
+#include <sead/seadColor.h>
+#include <sead/seadVector.h>
 
 namespace sead { namespace PrimitiveRendererUtil {
 

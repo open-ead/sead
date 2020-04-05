@@ -25,41 +25,54 @@ class ResourceMgr
 public:
     struct CreateArg
     {
+        CreateArg()
+            : buffer(NULL)
+            , file_size(0)
+            , buffer_size(0)
+            , need_unload(false)
+            , factory(NULL)
+            , ext()
+            , heap(NULL)
+            , alignment(0x20)
+        {
+        }
+
         u8* buffer;
-        u32 bufferSize;
-        u32 allocSize;
-        bool allocated;
-        u32 _10[3];
-        Heap* resourceCreateHeap;
-        s32 resourceAlignment;
+        u32 file_size;
+        u32 buffer_size;
+        bool need_unload;
+        ResourceFactory *factory;
+        SafeString ext;
+        Heap* heap;
+        s32 alignment;
     };
 
     struct LoadArg
     {
         LoadArg()
-            : name()
-            , resourceCreateHeap(NULL)
-            , resourceLoadHeap(NULL)
-            , resourceAlignment(0x20)
-            , bufferSizeAlignment(0)
-            , buffer(NULL)
-            , bufferSize(0)
+            : path()
+            , instance_heap(NULL)
+            , load_data_heap(NULL)
+            , instance_alignment(0x20)
+            , load_data_alignment(0)
+            , load_data_buffer(NULL)
+            , load_data_buffer_size(0)
             , factory(NULL)
             , device(NULL)
-            , divSize(0)
+            , div_size(0)
         {
         }
 
-        SafeString name;
-        Heap* resourceCreateHeap;
-        Heap* resourceLoadHeap;
-        s32 resourceAlignment;
-        s32 bufferSizeAlignment;
-        u8* buffer;
-        u32 bufferSize;
+        SafeString path;
+        Heap* instance_heap;
+        Heap* load_data_heap;
+        s32 instance_alignment;
+        s32 load_data_alignment;
+        u8* load_data_buffer;
+        u32 load_data_buffer_size;
         ResourceFactory* factory;
         FileDevice* device;
-        u32 divSize;
+        u32 div_size;
     };
 
 public:
@@ -74,10 +87,14 @@ public:
 
     static ResourceMgr* sInstance;
 
-    TList<ResourceFactory> factories;
-    TList<Resource> postCreateResources;
-    TList<Decompressor> decompressors;
-    DirectResourceFactory<DirectResource>* factory;
+    typedef TList<ResourceFactory> FactoryList;
+    typedef TList<Resource> ResourceList;
+    typedef TList<Decompressor> DecompressorList;
+
+    FactoryList mFactoryList;
+    ResourceList mPostCreateResourceList;
+    DecompressorList mDecompList;
+    ResourceFactory* mNullResourceFactory;
 };
 
 } // namespace sead

@@ -6,25 +6,25 @@ ResourceMgr* ResourceMgr::sInstance = NULL;
 ResourceMgr::SingletonDisposer_* ResourceMgr::SingletonDisposer_::sStaticDisposer = NULL;
 
 ResourceMgr::ResourceMgr()
-    : factories()
-    , postCreateResources()
-    , decompressors()
-    , factory(NULL)
+    : mFactoryList()
+    , mPostCreateResourceList()
+    , mDecompList()
+    , mNullResourceFactory(NULL)
 {
     if (HeapMgr::sInstancePtr == NULL)
         return;
 
-    factory = new(HeapMgr::sInstancePtr->findContainHeap(this), 4) DirectResourceFactory<DirectResource>();
-    registerFactory(factory, "");
+    mNullResourceFactory = new(HeapMgr::sInstancePtr->findContainHeap(this), 4) DirectResourceFactory<DirectResource>();
+    registerFactory(mNullResourceFactory, "");
 }
 
 ResourceMgr::~ResourceMgr()
 {
-    if (factory == NULL)
+    if (mNullResourceFactory == NULL)
         return;
 
-    delete factory;
-    factory = NULL;
+    delete mNullResourceFactory;
+    mNullResourceFactory = NULL;
 }
 
 SEAD_CREATE_SINGLETON_INSTANCE(ResourceMgr, ResourceMgr::sInstance)
@@ -32,57 +32,57 @@ SEAD_DELETE_SINGLETON_INSTANCE(ResourceMgr, ResourceMgr::sInstance)
 
 void ResourceMgr::registerFactory(ResourceFactory* factory, const SafeString& name)
 {
-    factory->mName.copy(name);
+    factory->mExt.copy(name);
 
-    ListImpl* parent = factory->parent;
-    if (parent != NULL)
+    FactoryList* list = factory->mList;
+    if (list != NULL)
     {
-        factory->parent = NULL;
-        factory->root.erase_();
-        parent->mCount -= 1;
+        factory->mList = NULL;
+        factory->erase_();
+        list->mCount -= 1;
     }
 
-    factories.setParentFor(factory);
-    factories.insertFront(factory);
-    factories.getCountRef() += 1;
+    mFactoryList.setAsListFor(factory);
+    mFactoryList.insertFront(factory);
+    mFactoryList.mCount += 1;
 }
 
 void ResourceMgr::registerDecompressor(Decompressor* decompressor, const SafeString& name)
 {
     if (!name.isEqual(SafeString::cEmptyString))
-        decompressor->mName.copy(name);
+        decompressor->mExt.copy(name);
 
-    ListImpl* parent = decompressor->parent;
-    if (parent != NULL)
+    DecompressorList* list = decompressor->mList;
+    if (list != NULL)
     {
-        decompressor->parent = NULL;
-        decompressor->root.erase_();
-        parent->mCount -= 1;
+        decompressor->mList = NULL;
+        decompressor->erase_();
+        list->mCount -= 1;
     }
 
-    decompressors.setParentFor(decompressor);
-    decompressors.insertFront(decompressor);
-    decompressors.getCountRef() += 1;
+    mDecompList.setAsListFor(decompressor);
+    mDecompList.insertFront(decompressor);
+    mDecompList.mCount += 1;
 }
 
 void ResourceMgr::unregisterFactory(ResourceFactory* factory)
 {
-    if (factory->parent == NULL)
+    if (factory->mList == NULL)
         return;
 
-    factory->parent = NULL;
-    factory->root.erase_();
-    factories.getCountRef() -= 1;
+    factory->mList = NULL;
+    factory->erase_();
+    mFactoryList.mCount -= 1;
 }
 
 void ResourceMgr::unregisterDecompressor(Decompressor* decompressor)
 {
-    if (decompressor->parent == NULL)
+    if (decompressor->mList == NULL)
         return;
 
-    decompressor->parent = NULL;
-    decompressor->root.erase_();
-    decompressors.getCountRef() -= 1;
+    decompressor->mList = NULL;
+    decompressor->erase_();
+    mDecompList.mCount -= 1;
 }
 
 } // namespace sead

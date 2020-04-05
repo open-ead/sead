@@ -25,7 +25,7 @@ public:
         return static_cast<T>(basePtr - mOffset);
     }
 
-    u32 mOffset;
+    s32 mOffset;
 };
 
 } // namespace sead

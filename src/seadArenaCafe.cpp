@@ -4,8 +4,8 @@
 namespace sead {
 
 Arena::Arena()
-    : heap(NULL)
-    , size(0)
+    : mStart(NULL)
+    , mSize(0)
 {
 }
 
@@ -13,18 +13,17 @@ Arena::~Arena()
 {
 }
 
-void* Arena::initialize(size_t size)
+u8* Arena::initialize(size_t size)
 {
     MEMHeapHandle handle = MEMGetBaseHeapHandle(MEM_ARENA_2);
     u32 allocSize = MEMGetAllocatableSizeForExpHeap(handle);
     if (size > allocSize)
         size = allocSize;
 
-    this->size = size;
-    heap = (*MEMAllocFromDefaultHeapEx)(size, MEM_HEAP_DEFAULT_ALIGNMENT);
-    this->heap = heap;
+    mSize = size;
+    mStart = static_cast<u8*>((*MEMAllocFromDefaultHeapEx)(size, MEM_HEAP_DEFAULT_ALIGNMENT));
 
-    return heap;
+    return mStart;
 }
 
 } // namespace sead

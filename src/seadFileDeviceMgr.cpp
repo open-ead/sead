@@ -1,5 +1,7 @@
+#ifdef cafe
 #include <cafe.h>
 #include <nn/save.h>
+#endif // cafe
 
 #include <sead.h>
 
@@ -9,15 +11,16 @@ FileDeviceMgr* FileDeviceMgr::sInstance = NULL;
 FileDeviceMgr::SingletonDisposer_* FileDeviceMgr::SingletonDisposer_::sStaticDisposer = NULL;
 
 FileDeviceMgr::FileDeviceMgr()
-    : mountedDevices()
-    , mainDevice(NULL)
-    , defaultDevice(NULL)
+    : mDeviceList()
+    , mMainFileDevice(NULL)
+    , mDefaultFileDevice(NULL)
 {
     if (HeapMgr::sInstancePtr == NULL)
         return;
 
     Heap* containHeap = HeapMgr::sInstancePtr->findContainHeap(this);
 
+#ifdef cafe
     FSInit();
     FSAddClient(&client, FS_RET_NO_ERROR);
 
@@ -31,24 +34,31 @@ FileDeviceMgr::FileDeviceMgr()
     SAVEInit();
     _17A4[0] = 0;
     _1824 = 0;
+#else
+    #error "Unknown platform"
+#endif // cafe
 
-    mainDevice = new(containHeap, 4) MainFileDevice(containHeap);
-    mount(mainDevice);
+    mMainFileDevice = new(containHeap, 4) MainFileDevice(containHeap);
+    mount(mMainFileDevice);
 
-    defaultDevice = mainDevice;
+    mDefaultFileDevice = mMainFileDevice;
 }
 
 FileDeviceMgr::~FileDeviceMgr()
 {
-    if (mainDevice != NULL)
+    if (mMainFileDevice != NULL)
     {
-        delete mainDevice;
-        mainDevice = NULL;
+        delete mMainFileDevice;
+        mMainFileDevice = NULL;
     }
 
+#ifdef cafe
     FSDelClient(&client, FS_RET_NO_ERROR);
     SAVEShutdown();
     FSShutdown();
+#else
+    #error "Unknown platform"
+#endif // cafe
 }
 
 SEAD_CREATE_SINGLETON_INSTANCE(FileDeviceMgr, FileDeviceMgr::sInstance)
@@ -93,32 +103,32 @@ void FileDeviceMgr::resolveDirectoryPath(BufferedSafeString* out, const SafeStri
 void FileDeviceMgr::mount(FileDevice* device, const SafeString& name)
 {
     if (!name.isEqual(SafeString::cEmptyString))
-        device->mName.copy(name);
+        device->mDriveName.copy(name);
 
-    ListImpl* parent = device->parent;
-    if (parent != NULL)
+    DeviceList* list = device->mList;
+    if (list != NULL)
     {
-        device->parent = NULL;
-        device->root.erase_();
-        parent->mCount -= 1;
+        device->mList = NULL;
+        device->erase_();
+        list->mCount -= 1;
     }
 
-    mountedDevices.setParentFor(device);
-    mountedDevices.insertFront(device);
-    mountedDevices.getCountRef() += 1;
+    mDeviceList.setAsListFor(device);
+    mDeviceList.insertFront(device);
+    mDeviceList.mCount += 1;
 }
 
 void FileDeviceMgr::unmount(FileDevice* device)
 {
-    if (device->parent != NULL)
+    if (device->mList != NULL)
     {
-        device->parent = NULL;
-        device->root.erase_();
-        mountedDevices.getCountRef() -= 1;
+        device->mList = NULL;
+        device->erase_();
+        mDeviceList.mCount -= 1;
     }
 
-    if (device == defaultDevice)
-        defaultDevice = NULL;
+    if (device == mDefaultFileDevice)
+        mDefaultFileDevice = NULL;
 }
 
 FileDevice*
@@ -131,7 +141,7 @@ FileDeviceMgr::findDeviceFromPath(
 
     if(!Path::getDriveName(&driveName, path))
     {
-        device = defaultDevice;
+        device = mDefaultFileDevice;
         if (device == NULL)
             return NULL;
     }
@@ -148,9 +158,9 @@ FileDeviceMgr::findDeviceFromPath(
 FileDevice*
 FileDeviceMgr::findDevice(const SafeString& name) const
 {
-    for (UnkList* list = mountedDevices.root(); !mountedDevices.isAtEnd(list); list = mountedDevices.next(list))
-        if (mountedDevices.getParent(list)->mName.isEqual(name))
-            return mountedDevices.getParent(list);
+    for (TListNode<FileDevice>* node = mDeviceList.root(); !mDeviceList.isAtEnd(node); node = mDeviceList.next(node))
+        if (node->mData->mDriveName.isEqual(name))
+            return node->mData;
 
     return NULL;
 }
@@ -169,23 +179,24 @@ FileDevice* FileDeviceMgr::tryOpen(FileHandle* handle, const SafeString& path, F
 u8* FileDeviceMgr::tryLoad(FileDevice::LoadArg& arg)
 {
     FixedSafeString<256> pathNoDrive;
-    FileDevice* device = findDeviceFromPath(arg.name, &pathNoDrive);
+    FileDevice* device = findDeviceFromPath(arg.path, &pathNoDrive);
 
     if (device == NULL)
         return NULL;
 
     FileDevice::LoadArg arg2(arg);
-    arg2.name = pathNoDrive.cstr();
+    arg2.path = pathNoDrive.cstr();
 
     u8* data = device->tryLoad(arg2);
 
-    arg.fileSize = arg2.fileSize;
-    arg.allocSize = arg2.allocSize;
-    arg.allocated = arg2.allocated;
+    arg.read_size = arg2.read_size;
+    arg.roundup_size = arg2.roundup_size;
+    arg.need_unload = arg2.need_unload;
 
     return data;
 }
 
+#ifdef cafe
 void
 FileDeviceMgr::stateChangeCallback_(
     FSClient* client, FSVolumeState state, void* context
@@ -193,5 +204,6 @@ FileDeviceMgr::stateChangeCallback_(
 {
     FSGetLastError(client);
 }
+#endif // cafe
 
 }

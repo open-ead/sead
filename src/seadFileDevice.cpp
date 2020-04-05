@@ -5,11 +5,11 @@ namespace sead {
 
 u32 FileHandle::read(u8* outBuffer, u32 bytesToRead)
 {
-    if (device == NULL)
+    if (mDevice == NULL)
         return 0;
 
     u32 bytesRead = 0;
-    device->tryRead(&bytesRead, this, outBuffer, bytesToRead);
+    mDevice->tryRead(&bytesRead, this, outBuffer, bytesToRead);
     return bytesRead;
 }
 
@@ -56,21 +56,21 @@ FileDevice::isMatchDevice_(
     const HandleBase* handle
 ) const
 {
-    return handle->device == this;
+    return handle->mDevice == this;
 }
 
 u8* FileDevice::doLoad_(LoadArg& arg)
 {
-    if (arg.buffer != NULL && arg.bufferSize == 0)
+    if (arg.buffer != NULL && arg.buffer_size == 0)
         return NULL;
 
     FileHandle handle;
-    if(tryOpen(&handle, arg.name, FileDevice::FlagRead, arg.divSize))
+    if(tryOpen(&handle, arg.path, FileDevice::cFileOpenFlag_ReadOnly, arg.div_size))
     {
         u32 fileSize = 0;
         if (tryGetFileSize(&fileSize, &handle))
         {
-            u32 bytesToRead = arg.bufferSize;
+            u32 bytesToRead = arg.buffer_size;
             if (bytesToRead == 0)
                 bytesToRead = MathCalcCommonS32::roundUpPow2(fileSize, FileDevice::cBufferMinAlignment);
 
@@ -82,8 +82,8 @@ u8* FileDevice::doLoad_(LoadArg& arg)
 
             if (buf == NULL)
             {
-                s32 sign = (arg.bufferSizeAlignment < 0) ? -1 : 1;
-                s32 alignment = abs(arg.bufferSizeAlignment);
+                s32 sign = (arg.alignment < 0) ? -1 : 1;
+                s32 alignment = abs(arg.alignment);
                 alignment = sign * ((alignment < 0x40) ? 0x40 : alignment);
 
                 buf = new(arg.heap, alignment) u8[bytesToRead];
@@ -93,9 +93,9 @@ u8* FileDevice::doLoad_(LoadArg& arg)
             u32 bytesRead = 0;
             if (tryRead(&bytesRead, &handle, buf, bytesToRead) && tryClose(&handle))
             {
-                arg.fileSize = bytesRead;
-                arg.allocSize = bytesToRead;
-                arg.allocated = allocated;
+                arg.read_size = bytesRead;
+                arg.roundup_size = bytesToRead;
+                arg.need_unload = allocated;
 
                 return buf;
             }
@@ -128,7 +128,7 @@ FileDevice::doResolvePath_(
 
 bool FileDevice::isAvailable() const
 {
-    if (this->_4C == 0)
+    if (!mPermission)
         return false;
 
     return doIsAvailable_();
@@ -136,7 +136,7 @@ bool FileDevice::isAvailable() const
 
 u8* FileDevice::tryLoad(LoadArg& arg)
 {
-    if (this->_4C == 0)
+    if (!mPermission)
         return NULL;
 
     return doLoad_(arg);
@@ -148,7 +148,7 @@ FileDevice::tryOpen(
     FileOpenFlag flag, u32 divSize
 )
 {
-    if (this->_4C == 0)
+    if (!mPermission)
         return NULL;
 
     if (handle == NULL)
@@ -166,7 +166,7 @@ FileDevice::tryOpen(
 bool
 FileDevice::tryClose(FileHandle* handle)
 {
-    if (this->_4C == 0)
+    if (!mPermission)
         return false;
 
     if (handle == NULL)
@@ -191,7 +191,7 @@ FileDevice::tryRead(
     u8* outBuffer, u32 bytesToRead
 )
 {
-    if (this->_4C == 0)
+    if (!mPermission)
         return false;
 
     if (handle == NULL)
@@ -203,7 +203,7 @@ FileDevice::tryRead(
     if (outBuffer == NULL)
         return false;
 
-    if (handle->divSize == 0)
+    if (handle->mDivSize == 0)
         return doRead_(bytesRead, handle, outBuffer, bytesToRead);
 
     u32 totalReadSize = 0;
@@ -211,7 +211,7 @@ FileDevice::tryRead(
     do
     {
         u32 readSize = 0;
-        u32 size = (static_cast<s32>(bytesToRead) < handle->divSize) ? bytesToRead : handle->divSize;
+        u32 size = (static_cast<s32>(bytesToRead) < handle->mDivSize) ? bytesToRead : handle->mDivSize;
 
         if (!doRead_(&readSize, handle, outBuffer, size))
         {
@@ -242,7 +242,7 @@ FileDevice::tryWrite(
     const u8* inBuffer, u32 bytesToWrite
 )
 {
-    if (this->_4C == 0)
+    if (!mPermission)
         return false;
 
     if (handle == NULL)
@@ -263,7 +263,7 @@ FileDevice::trySeek(
     FileDevice::SeekOrigin origin
 )
 {
-    if (this->_4C == 0)
+    if (!mPermission)
         return false;
 
     if (handle == NULL)
@@ -280,7 +280,7 @@ FileDevice::tryGetCurrentSeekPos(
     u32* seekPos, FileHandle* handle
 )
 {
-    if (this->_4C == 0)
+    if (!mPermission)
         return false;
 
     if (handle == NULL)
@@ -300,7 +300,7 @@ FileDevice::tryGetFileSize(
     u32* fileSize, const SafeString& path
 )
 {
-    if (this->_4C == 0)
+    if (!mPermission)
         return false;
 
     if (fileSize == NULL)
@@ -314,7 +314,7 @@ FileDevice::tryGetFileSize(
     u32* fileSize, FileHandle* handle
 )
 {
-    if (this->_4C == 0)
+    if (!mPermission)
         return false;
 
     if (handle == NULL)
@@ -331,7 +331,7 @@ FileDevice::tryIsExistFile(
     bool* exists, const SafeString& path
 )
 {
-    if (this->_4C == 0)
+    if (!mPermission)
         return false;
 
     if (exists == NULL)
@@ -345,7 +345,7 @@ FileDevice::tryIsExistDirectory(
     bool* exists, const SafeString& path
 )
 {
-    if (this->_4C == 0)
+    if (!mPermission)
         return false;
 
     if (exists == NULL)
@@ -359,7 +359,7 @@ FileDevice::tryOpenDirectory(
     DirectoryHandle* handle, const SafeString& path
 )
 {
-    if (this->_4C == 0)
+    if (!mPermission)
         return NULL;
 
     if (handle == NULL)
@@ -376,7 +376,7 @@ FileDevice::tryOpenDirectory(
 bool
 FileDevice::tryCloseDirectory(DirectoryHandle* handle)
 {
-    if (this->_4C == 0)
+    if (!mPermission)
         return false;
 
     if (handle == NULL)
@@ -401,7 +401,7 @@ FileDevice::tryReadDirectory(
     DirectoryEntry* entries, u32 entriesToRead
 )
 {
-    if (this->_4C == 0)
+    if (!mPermission)
         return false;
 
     if (handle == NULL)
@@ -427,7 +427,7 @@ FileDevice::tryMakeDirectory(
     const SafeString& path, u32 _
 )
 {
-    if (this->_4C == 0)
+    if (!mPermission)
         return false;
 
     return doMakeDirectory_(path, _);
@@ -443,7 +443,7 @@ FileDevice::setFileHandleDivSize_(
     FileHandle* handle, u32 divSize
 ) const
 {
-    handle->divSize = divSize;
+    handle->mDivSize = divSize;
 }
 
 void
@@ -451,7 +451,7 @@ FileDevice::setHandleBaseFileDevice_(
     HandleBase* handle, FileDevice* device
 ) const
 {
-    handle->device = device;
+    handle->mDevice = device;
 }
 
 void
@@ -459,7 +459,7 @@ FileDevice::setHandleBaseOriginalFileDevice_(
     HandleBase* handle, FileDevice* device
 ) const
 {
-    handle->originalDevice = device;
+    handle->mOriginalDevice = device;
 }
 
 } // namespace sead

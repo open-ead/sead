@@ -1,7 +1,9 @@
 #ifndef SEAD_FILEDEVICEMGR_H_
 #define SEAD_FILEDEVICEMGR_H_
 
+#ifdef cafe
 #include <cafe.h>
+#endif // cafe
 
 #include <sead/seadDisposer.h>
 #include <sead/seadFileDevice.h>
@@ -32,17 +34,24 @@ public:
     FileDevice* tryOpen(FileHandle* handle, const SafeString& path, FileDevice::FileOpenFlag flag, u32 divSize);
     u8* tryLoad(FileDevice::LoadArg& arg);
 
-    static void stateChangeCallback_(FSClient* client, FSVolumeState state, void* context);
-
     static FileDeviceMgr* sInstance;
 
-    TList<FileDevice> mountedDevices;
-    FileDevice* defaultDevice;
-    MainFileDevice* mainDevice;
+    typedef TList<FileDevice> DeviceList;
+
+    DeviceList mDeviceList;
+    FileDevice* mDefaultFileDevice;
+    MainFileDevice* mMainFileDevice;
+
+#ifdef cafe
+    static void stateChangeCallback_(FSClient* client, FSVolumeState state, void* context);
+
     FSClient client;
     u8 _1724[128];
     u8 _17A4[128];
     u32 _1824;
+#else
+    #error "Unknown platform"
+#endif // cafe
 };
 
 } // namespace sead

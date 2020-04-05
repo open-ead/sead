@@ -126,15 +126,15 @@ SZSDecompressor::DecompContext::DecompContext(void* dst)
 void
 SZSDecompressor::DecompContext::initialize(void* dst)
 {
-    this->dst = static_cast<u8*>(dst);
-    this->headerDstSize = 0;
-    this->dstSize = 0;
-    this->codeMask = 0;
-    this->code = 0;
-    this->b1 = 0;
-    this->action = 0;
-    this->copy_pos = 0;
-    this->headerSize = 0x10;
+    destp = static_cast<u8*>(dst);
+    destCount = 0;
+    forceDestCount = 0;
+    flagMask = 0;
+    flags = 0;
+    packHigh = 0;
+    step = SZSDecompressor::cStepNormal;
+    lzOffset = 0;
+    headerSize = 0x10;
 }
 
 SZSDecompressor::SZSDecompressor(u32 workSize, u8* workBuffer)
@@ -159,7 +159,7 @@ SZSDecompressor::tryDecompFromDevice(
     u32* outSize, u32* outAllocSize, bool* outAllocated
 )
 {
-    Heap* heap = loadArg.resourceLoadHeap;
+    Heap* heap = loadArg.load_data_heap;
     if (heap == NULL)
         heap = HeapMgr::sInstancePtr->getCurrentHeap();
 
@@ -168,9 +168,9 @@ SZSDecompressor::tryDecompFromDevice(
     u8* src;
 
     if (loadArg.device != NULL)
-        device = loadArg.device->tryOpen(&handle, loadArg.name, FileDevice::FlagRead, loadArg.divSize);
+        device = loadArg.device->tryOpen(&handle, loadArg.path, FileDevice::cFileOpenFlag_ReadOnly, loadArg.div_size);
     else
-        device = FileDeviceMgr::sInstance->tryOpen(&handle, loadArg.name, FileDevice::FlagRead, loadArg.divSize);
+        device = FileDeviceMgr::sInstance->tryOpen(&handle, loadArg.path, FileDevice::cFileOpenFlag_ReadOnly, loadArg.div_size);
 
     if (device != NULL &&
        ((src = mWorkBuffer, src != NULL) ||
@@ -182,8 +182,8 @@ SZSDecompressor::tryDecompFromDevice(
             u32 decompSize = getDecompSize(src);
             s32 decompAlignment = getDecompAlignment(src);
 
-            u32 allocSize = loadArg.bufferSize;
-            u8* dst = loadArg.buffer;
+            u32 allocSize = loadArg.load_data_buffer_size;
+            u8* dst = loadArg.load_data_buffer;
 
             if (decompSize > allocSize && allocSize != 0)
                 decompSize = allocSize;
@@ -197,11 +197,11 @@ SZSDecompressor::tryDecompFromDevice(
                     resource = NULL;
 
                 if (resource == NULL)
-                    decompAlignment = -(((loadArg.resourceAlignment < 0) ? -1 : 1) << 5);
+                    decompAlignment = -(((loadArg.instance_alignment < 0) ? -1 : 1) << 5);
 
                 else
                 {
-                    s32 alignment = loadArg.bufferSizeAlignment;
+                    s32 alignment = loadArg.load_data_alignment;
                     if (alignment != 0)
                         decompAlignment = (alignment < 0x20) ? 0x20 : alignment;
 
@@ -210,7 +210,7 @@ SZSDecompressor::tryDecompFromDevice(
                         if (decompAlignment == 0)
                             decompAlignment = static_cast<DirectResource*>(resource)->getLoadDataAlignment();
 
-                        decompAlignment = ((loadArg.resourceAlignment < 0) ? -1 : 1) * ((decompAlignment < 0x20) ? 0x20 : decompAlignment);
+                        decompAlignment = ((loadArg.instance_alignment < 0) ? -1 : 1) * ((decompAlignment < 0x20) ? 0x20 : decompAlignment);
                     }
                 }
 
@@ -230,7 +230,7 @@ SZSDecompressor::tryDecompFromDevice(
                 else
                 {
                     DecompContext context(dst);
-                    context.dstSize = decompSize;
+                    context.forceDestCount = decompSize;
 
                     do
                     {
@@ -316,20 +316,20 @@ SZSDecompressor::readHeader_(DecompContext* context, const u8* src, u32 srcSize)
         }
 
         else if (7 < context->headerSize)
-            context->headerDstSize |= static_cast<u32>(*src) << (context->headerSize - 8) * 8;
+            context->destCount |= static_cast<u32>(*src) << (context->headerSize - 8) * 8;
 
         src++; len += 1;
         if (--srcSize == 0 && context->headerSize != 0)
             return len;
     }
 
-    if (context->dstSize < 1)
+    if (context->forceDestCount < 1)
         return len;
 
-    if (context->headerDstSize <= context->dstSize)
+    if (context->destCount <= context->forceDestCount)
         return len;
 
-    context->headerDstSize = context->dstSize;
+    context->destCount = context->forceDestCount;
     return len;
 }
 
@@ -351,26 +351,26 @@ SZSDecompressor::streamDecomp(DecompContext* context, const void* src, u32 srcSi
         if (srcSize == 0)
         {
             if (context->headerSize == 0)
-                return context->headerDstSize;
+                return context->destCount;
 
             return -1;
         }
     }
 
-    while (context->headerDstSize > 0)
+    while (context->destCount > 0)
     {
-        if (context->action == 2)
+        if (context->step == cStepLong)
         {
             n = *_src + 0x12;
             if (!context->doCopy(n))
                 return -2;
         }
 
-        else if (context->action == 1)
+        else if (context->step == cStepShort)
         {
-            context->copy_pos = ((context->b1 << 8) & 0xf00 | *_src) + 1;
+            context->lzOffset = ((context->packHigh << 8) & 0xf00 | *_src) + 1;
 
-            n = context->b1 >> 4;
+            n = context->packHigh >> 4;
             if (n != 0)
             {
                 n += 2;
@@ -379,32 +379,32 @@ SZSDecompressor::streamDecomp(DecompContext* context, const void* src, u32 srcSi
             }
 
             else
-                context->action = 2;
+                context->step = cStepLong;
         }
 
         else
         {
-            if (context->codeMask == 0)
+            if (context->flagMask == 0)
             {
-                context->code = *_src++;
-                context->codeMask = 0x80;
+                context->flags = *_src++;
+                context->flagMask = 0x80;
                 if (--srcSize == 0)
                     break;
             }
 
-            if ((context->code & context->codeMask) == 0)
+            if ((context->flags & context->flagMask) == 0)
             {
-                context->b1 = *_src;
-                context->action = 1;
+                context->packHigh = *_src;
+                context->step = cStepShort;
             }
 
             else
             {
-                *context->dst++ = *_src;
-                context->headerDstSize -= 1;
+                *context->destp++ = *_src;
+                context->destCount -= 1;
             }
 
-            context->codeMask >>= 1;
+            context->flagMask >>= 1;
         }
 
         if (--srcSize == 0)
@@ -413,11 +413,11 @@ SZSDecompressor::streamDecomp(DecompContext* context, const void* src, u32 srcSi
         _src++;
     }
 
-    if (context->headerDstSize == 0 && context->dstSize == 0 && 0x20 < srcSize)
+    if (context->destCount == 0 && context->forceDestCount == 0 && 0x20 < srcSize)
         return -1;
 
     else
-        return context->headerDstSize;
+        return context->destCount;
 }
 
 s32

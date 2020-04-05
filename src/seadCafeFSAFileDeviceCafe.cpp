@@ -38,16 +38,16 @@ CafeFSAFileDevice::doOpen_(
     char* mode;
     switch (flag)
     {
-    case FileDevice::FlagRead:
+    case FileDevice::cFileOpenFlag_ReadOnly:
         mode = "r";
         break;
-    case FileDevice::FlagWriteTrunc:
+    case FileDevice::cFileOpenFlag_WriteOnly:
         mode = "w";
         break;
-    case FileDevice::FlagReadWrite:
+    case FileDevice::cFileOpenFlag_ReadWrite:
         mode = "r+";
         break;
-    case FileDevice::FlagReadWriteTrunc:
+    case FileDevice::cFileOpenFlag_Create:
         mode = "w+";
         break;
     default:
@@ -148,12 +148,12 @@ CafeFSAFileDevice::doSeek_(
     FSClient* client_ = getUsableFSClient_();
     FSFileHandle* fsHandle = getFileHandleInner_(handle);
 
-    if (origin != FileDevice::OriginBegin)
+    if (origin != FileDevice::cSeekOrigin_Begin)
     {
-        if (origin == FileDevice::OriginCurrent)
+        if (origin == FileDevice::cSeekOrigin_Current)
             offset += fsHandle[1];
 
-        else if (origin != FileDevice::OriginEnd)
+        else if (origin != FileDevice::cSeekOrigin_End)
             return false;
 
         else
@@ -350,8 +350,8 @@ CafeFSAFileDevice::doReadDirectory_(
 
         SafeString name(dirEntry.name);
 
-        entries[i].mName.copy(name);
-        entries[i].isDirectory = (dirEntry.stat.flag & FS_STAT_FLAG_IS_DIRECTORY) != 0;
+        entries[i].name.copy(name);
+        entries[i].is_directory = (dirEntry.stat.flag & FS_STAT_FLAG_IS_DIRECTORY) != 0;
     }
 
     if (entriesRead != NULL)

@@ -1,7 +1,10 @@
 #ifndef SEAD_MAIN_FILEDEVICE_H_
 #define SEAD_MAIN_FILEDEVICE_H_
 
+#ifdef cafe
 #include <sead/seadCafeFSAFileDeviceCafe.h>
+#endif // cafe
+
 #include <sead/seadFileDevice.h>
 #include <sead/seadRuntimeTypeInfo.h>
 #include <sead/seadSafeString.h>
@@ -38,7 +41,11 @@ public:
     virtual bool doMakeDirectory_(const SafeString& path, u32);
     virtual s32 doGetLastRawError_() const;
 
+#ifdef cafe
     CafeContentFileDevice* mFileDevice;
+#else
+    #error "Unknown platform"
+#endif // cafe
 };
 
 } // namespace sead

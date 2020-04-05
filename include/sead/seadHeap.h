@@ -3,8 +3,10 @@
 
 #include <stddef.h>
 
-#include <sead/seadCriticalSectionCafe.h>
+#include <sead/seadBitFlag.h>
+#include <sead/seadCriticalSection.h>
 #include <sead/seadDisposer.h>
+#include <sead/seadNamable.h>
 #include <sead/seadOffsetList.h>
 #include <sead/seadRuntimeTypeInfo.h>
 #include <sead/seadSafeString.h>
@@ -15,13 +17,13 @@ class Context;
 
 } // namespace sead::hostio
 
-class Heap : public IDisposer
+class Heap : public IDisposer, public INamable
 {
 public:
     enum HeapDirection
     {
-        DirectionHead = 0,
-        DirectionTail = 1
+        cHeapDirection_Forward = 1,
+        cHeapDirection_Reverse = -1
     };
 
     Heap(const SafeString& name, Heap* parent, void* address, u32 size, HeapDirection direction, bool);
@@ -63,17 +65,18 @@ public:
         return tryAlloc(size, alignment);
     }
 
-    SafeString name;
-    u32 addr;
-    u32 size;
-    Heap* parent;
-    OffsetList children;
-    u32 _34;
-    u32 _38;
-    OffsetList disposers;
-    u32 direction;
-    CriticalSection mutex;
-    u32 flags;
+    typedef OffsetList HeapList;
+    typedef OffsetList DisposerList;
+
+    void *mStart;
+    size_t mSize;
+    Heap* mParent;
+    HeapList mChildren;
+    ListNode mListNode;
+    DisposerList mDisposerList;
+    HeapDirection mDirection;
+    CriticalSection mCS;
+    BitFlag32 mFlag;
 };
 
 } // namespace sead

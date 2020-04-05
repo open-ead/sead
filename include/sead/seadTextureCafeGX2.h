@@ -3,8 +3,8 @@
 
 #include <cafe.h>
 
-#include "sead/seadRuntimeTypeInfo.h"
-#include "sead/seadTexture.h"
+#include <sead/seadRuntimeTypeInfo.h>
+#include <sead/seadTexture.h>
 
 namespace sead {
 

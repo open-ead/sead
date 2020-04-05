@@ -9,25 +9,25 @@ const u32 cDestructedFlag = 1;
 namespace sead {
 
 IDisposer::IDisposer()
-    : listNode()
-    , containHeap(NULL)
+    : mListNode()
+    , mDisposerHeap(NULL)
 {
     if (sead::HeapMgr::sInstancePtr != NULL)
     {
-        containHeap = sead::HeapMgr::sInstancePtr->findContainHeap(this);
-        if (containHeap != NULL)
-            containHeap->appendDisposer_(this);
+        mDisposerHeap = sead::HeapMgr::sInstancePtr->findContainHeap(this);
+        if (mDisposerHeap != NULL)
+            mDisposerHeap->appendDisposer_(this);
     }
 }
 
 IDisposer::~IDisposer()
 {
-    if (destructFlag != cDestructedFlag)
+    if (*reinterpret_cast<size_t*>(&mDisposerHeap) != cDestructedFlag)
     {
-        if (containHeap != NULL)
-            containHeap->removeDisposer_(this);
+        if (mDisposerHeap != NULL)
+            mDisposerHeap->removeDisposer_(this);
 
-        destructFlag = cDestructedFlag;
+        *reinterpret_cast<size_t*>(&mDisposerHeap) = cDestructedFlag;
     }
 }
 

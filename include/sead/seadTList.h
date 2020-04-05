@@ -6,51 +6,58 @@
 namespace sead {
 
 template <typename T>
-class TList
+class TListNode;
+
+template <typename T>
+class TList : public ListImpl
 {
 public:
     TList()
-        : mList()
+        : ListImpl()
     {
     }
 
-    void setParentFor(T* item)
+    // Self-defined inlines for convenience
+
+    void setAsListFor(T* item)
     {
-        item->parent = &mList;
+        item->mList = this;
     }
 
     void insertFront(T* item)
     {
-        mList.mStartEnd.insertFront_(&item->root);
+        mStartEnd.insertFront_(item);
     }
 
-    s32& getCountRef()
+    TListNode<T>* root() const
     {
-        return mList.mCount;
+        return static_cast<TListNode<T>*>(mStartEnd.mNext);
     }
 
-    UnkList* root() const
+    static TListNode<T>* next(TListNode<T>* node)
     {
-        return reinterpret_cast<UnkList*>(mList.mStartEnd.mNext);
+        return static_cast<TListNode<T>*>(node->mNext);
     }
 
-    static UnkList* next(UnkList* list)
+    bool isAtEnd(TListNode<T>* node) const
     {
-        return reinterpret_cast<UnkList*>(list->root.mNext);
+        return node == &mStartEnd;
     }
+};
 
-    bool isAtEnd(UnkList* list) const
+template <typename T>
+class TListNode : public ListNode
+{
+public:
+    TListNode()
+        : ListNode()
     {
-        return &list->root == &mList.mStartEnd;
+        mData = static_cast<T*>(this);
+        mList = NULL;
     }
 
-    static T* getParent(UnkList* list)
-    {
-        return static_cast<FileDevice*>(list->ptrToSelf);
-    }
-
-private:
-    ListImpl mList;
+    T* mData;
+    TList<T>* mList;
 };
 
 } // namespace sead

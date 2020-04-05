@@ -11,8 +11,8 @@ void PtrArrayImpl::setBuffer(s32 ptrNumMax, void* buf)
         return;
 
     mPtrNumMax = ptrNumMax;
-    mPtrs = buf;
-    mSize = NULL;
+    mPtrs = static_cast<void**>(buf);
+    mPtrNum = 0;
 }
 
 } // namespace sead

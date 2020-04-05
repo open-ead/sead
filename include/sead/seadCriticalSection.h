@@ -1,7 +1,10 @@
 #ifndef SEAD_CRITICAL_SECTION_H_
 #define SEAD_CRITICAL_SECTION_H_
 
+#ifdef cafe
 #include <cafe.h>
+#endif // cafe
+
 #include <sead/seadDisposer.h>
 
 namespace sead {
@@ -15,7 +18,11 @@ public:
     void lock();
     void unlock();
 
-    OSMutex mutex;
+#ifdef cafe
+    OSMutex mCriticalSectionInner;
+#else
+    #error "Unknown platform"
+#endif // cafe
 };
 
 } // namespace sead

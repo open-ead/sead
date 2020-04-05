@@ -7,7 +7,7 @@ class PtrArrayImpl
 {
 public:
     __attribute__((always_inline)) PtrArrayImpl(s32 ptrNumMax, void* buf)
-        : mSize(0)
+        : mPtrNum(0)
         , mPtrNumMax(0)
         , mPtrs(NULL)
     {
@@ -16,9 +16,9 @@ public:
 
     void setBuffer(s32 ptrNumMax, void* buf);
 
-    s32 mSize;
+    s32 mPtrNum;
     s32 mPtrNumMax;
-    void* mPtrs;
+    void** mPtrs;
 };
 
 } // namespace sead

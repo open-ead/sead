@@ -3,9 +3,9 @@
 
 #include <sead/seadDisposer.h>
 #include <sead/seadHeap.h>
-#include <sead/seadListImpl.h>
 #include <sead/seadRuntimeTypeInfo.h>
 #include <sead/seadSafeString.h>
+#include <sead/seadTList.h>
 
 namespace sead {
 
@@ -16,100 +16,100 @@ class HandleBase : public IDisposer
 public:
     HandleBase()
         : IDisposer()
-        , device(NULL)
-        , originalDevice(NULL)
-        , buffer()
+        , mDevice(NULL)
+        , mOriginalDevice(NULL)
+        , mHandleBuffer()
     {
     }
 
     virtual ~HandleBase() { }
 
-    FileDevice* device;
-    FileDevice* originalDevice;
-    u8 buffer[0x20];             // SafeArray<u8, 32>
+    FileDevice* mDevice;
+    FileDevice* mOriginalDevice;
+    u8 mHandleBuffer[0x20];       // HandleBuffer = SafeArray<u8, 32>
 };
 
 
 
 class FileHandle;
 class DirectoryHandle;
-class DirectoryEntry;
+struct DirectoryEntry;
 
-class FileDevice : public UnkList, public IDisposer
+class FileDevice : public TListNode<FileDevice>, public IDisposer
 {
     SEAD_RTTI_BASE(FileDevice)
 
 public:
     enum FileOpenFlag
     {
-        FlagRead = 0,           // r
-        FlagWriteTrunc = 1,     // w
-        FlagReadWrite = 2,      // r+
-        FlagReadWriteTrunc = 3  // w+
+        cFileOpenFlag_ReadOnly = 0,   // r
+        cFileOpenFlag_WriteOnly = 1,  // w
+        cFileOpenFlag_ReadWrite = 2,  // r+
+        cFileOpenFlag_Create = 3      // w+
     };
 
     enum SeekOrigin
     {
-        OriginBegin = 0,
-        OriginCurrent = 1,
-        OriginEnd = 2
+        cSeekOrigin_Begin = 0,
+        cSeekOrigin_Current = 1,
+        cSeekOrigin_End = 2
     };
 
     struct LoadArg
     {
         LoadArg()
-            : name("")
+            : path("")
             , buffer(NULL)
-            , bufferSize(0)
+            , buffer_size(0)
             , heap(NULL)
-            , bufferSizeAlignment(0)
-            , divSize(0)
-            , fileSize(0)
-            , allocSize(0)
-            , allocated(false)
+            , alignment(0)
+            , div_size(0)
+            , read_size(0)
+            , roundup_size(0)
+            , need_unload(false)
         {
         }
 
         LoadArg(const LoadArg& arg)
-            : name(arg.name)
+            : path(arg.path)
             , buffer(arg.buffer)
-            , bufferSize(arg.bufferSize)
+            , buffer_size(arg.buffer_size)
             , heap(arg.heap)
-            , bufferSizeAlignment(arg.bufferSizeAlignment)
-            , divSize(arg.divSize)
-            , fileSize(arg.fileSize)
-            , allocSize(arg.allocSize)
-            , allocated(arg.allocated)
+            , alignment(arg.alignment)
+            , div_size(arg.div_size)
+            , read_size(arg.read_size)
+            , roundup_size(arg.roundup_size)
+            , need_unload(arg.need_unload)
         {
         }
 
-        SafeString name;
+        SafeString path;
         u8* buffer;
-        u32 bufferSize;
+        u32 buffer_size;
         Heap* heap;
-        s32 bufferSizeAlignment;
-        u32 divSize;
-        u32 fileSize;
-        u32 allocSize;
-        bool allocated;
+        s32 alignment;
+        u32 div_size;
+        u32 read_size;
+        u32 roundup_size;
+        bool need_unload;
     };
 
 public:
     FileDevice()
-        : UnkList()
+        : TListNode<FileDevice>()
         , IDisposer()
-        , mName()
-        , _4C(1)
+        , mDriveName()
+        , mPermission(true)
     {
     }
 
     FileDevice(const SafeString& name)
-        : UnkList()
+        : TListNode<FileDevice>()
         , IDisposer()
-        , mName()
-        , _4C(1)
+        , mDriveName()
+        , mPermission(true)
     {
-        mName.copy(name);
+        mDriveName.copy(name);
     }
 
     virtual ~FileDevice();
@@ -163,13 +163,13 @@ public:
 
     inline u8* getHandleBaseHandleBuffer_(HandleBase* handle) const
     {
-        return handle->buffer;
+        return handle->mHandleBuffer;
     }
 
     static const s32 cBufferMinAlignment = 0x40;
 
-    FixedSafeString<32> mName;
-    u8 _4C;
+    FixedSafeString<32> mDriveName;
+    bool mPermission;
 };
 
 class FileHandle : public HandleBase
@@ -177,20 +177,20 @@ class FileHandle : public HandleBase
 public:
     FileHandle()
         : HandleBase()
-        , divSize(0)
+        , mDivSize(0)
     {
     }
 
     virtual ~FileHandle()
     {
-        FileDevice* _device = originalDevice;
+        FileDevice* _device = mOriginalDevice;
         if (_device != NULL)
             _device->tryClose(this);
     }
 
     u32 read(u8* outBuffer, u32 bytesToRead);
 
-    s32 divSize;
+    s32 mDivSize;
 };
 
 class DirectoryHandle : public HandleBase
@@ -203,25 +203,22 @@ public:
 
     virtual ~DirectoryHandle()
     {
-        FileDevice* _device = originalDevice;
+        FileDevice* _device = mOriginalDevice;
         if (_device != NULL)
             _device->tryCloseDirectory(this);
     }
 };
 
-class DirectoryEntry
+struct DirectoryEntry
 {
-public:
     DirectoryEntry()
-        : mName()
-        , isDirectory(false)
+        : name()
+        , is_directory(false)
     {
     }
 
-    ~DirectoryEntry() { }
-
-    FixedSafeString<256> mName;
-    bool isDirectory;
+    FixedSafeString<256> name;
+    bool is_directory;
 };
 
 } // namespace sead

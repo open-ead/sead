@@ -57,7 +57,11 @@ SharcArchiveRes::SharcArchiveRes()
     , mFATBlockHeader(NULL)
     , mFNTBlock(NULL)
     , mDataBlock(NULL)
-    , mEndianType(Endian::Type_Big)
+#ifdef cafe
+    , mEndianType(Endian::cBig)
+#else
+    #error "Unknown platform"
+#endif // cafe
 {
 }
 
@@ -86,11 +90,11 @@ SharcArchiveRes::getFileFastImpl_(
     if (entry_id < 0 || entry_id >= mFATEntrys.mSize)
         return NULL;
 
-    u32 start = mFATEntrys[entry_id].dataStartOffset;
+    u32 start = mFATEntrys[entry_id].data_start_offset;
 
     if (file_info != NULL)
     {
-        u32 end = mFATEntrys[entry_id].dataEndOffset;
+        u32 end = mFATEntrys[entry_id].data_end_offset;
         if (start > end)
             return NULL;
 
@@ -108,7 +112,7 @@ SharcArchiveRes::convertPathToEntryIDImpl_(
     const SafeString& file_path
 )
 {
-    u32 hash = calcHash32(file_path, mFATBlockHeader->hashKey);
+    u32 hash = calcHash32(file_path, mFATBlockHeader->hash_key);
 
     s32 start = 0;
     s32 end = mFATEntrys.mSize;
@@ -117,7 +121,7 @@ SharcArchiveRes::convertPathToEntryIDImpl_(
     if (id == -1)
         return -1;
 
-    u32 offset = mFATEntrys[id].nameOffset;
+    u32 offset = mFATEntrys[id].name_offset;
     if (offset != 0)
     {
         id -= (offset >> 24) - 1;
@@ -130,7 +134,7 @@ SharcArchiveRes::convertPathToEntryIDImpl_(
 
             else
             {
-                u32 offset_ = entry->nameOffset;
+                u32 offset_ = entry->name_offset;
 
                 if (reinterpret_cast<const u8*>(mFNTBlock + (offset_ & 0xffffff)) > mDataBlock)
                     return -1;
@@ -174,24 +178,24 @@ SharcArchiveRes::readDirectoryImpl_(
 {
     u32 count = 0;
 
-    while (*handle + count < mFATBlockHeader->nodeCount && count < num)
+    while (*handle + count < mFATBlockHeader->file_num && count < num)
     {
         u32 id = *handle + count;
 
-        u32 offset = mFATEntrys[id].nameOffset;
+        u32 offset = mFATEntrys[id].name_offset;
         if (offset == 0)
-            entry[count].mName.format("%08x", mFATEntrys[id].hash);
+            entry[count].name.format("%08x", mFATEntrys[id].hash);
 
         else
         {
             if (reinterpret_cast<const u8*>(mFNTBlock + (offset & 0xffffff)) > mDataBlock)
-                entry[count].mName.clear();
+                entry[count].name.clear();
 
             else
-                entry[count].mName.copy(mFNTBlock + (offset & 0xffffff) * cFileNameTableAlign);
+                entry[count].name.copy(mFNTBlock + (offset & 0xffffff) * cFileNameTableAlign);
         }
 
-        entry[count].isDirectory = false;
+        entry[count].is_directory = false;
         count++;
     }
 
@@ -208,49 +212,49 @@ SharcArchiveRes::prepareArchive_(const void* archive)
     const u8* archive_ = reinterpret_cast<const u8*>(archive);
 
     mArchiveBlockHeader = reinterpret_cast<const ArchiveBlockHeader*>(archive_);
-    if (std::strncmp(mArchiveBlockHeader->magic, "SARC", 4) != 0)
+    if (std::strncmp(mArchiveBlockHeader->signature, "SARC", 4) != 0)
         return false;
 
-    mEndianType = Endian::markToEndian(mArchiveBlockHeader->bom);
+    mEndianType = Endian::markToEndian(mArchiveBlockHeader->byte_order);
     if (mEndianType != Endian::cHostEndian)
         return false;
 
     if (mArchiveBlockHeader->version != cArchiveVersion)
         return false;
 
-    if (mArchiveBlockHeader->headerSize != sizeof(ArchiveBlockHeader))
+    if (mArchiveBlockHeader->header_size != sizeof(ArchiveBlockHeader))
         return false;
 
-    mFATBlockHeader = reinterpret_cast<const FATBlockHeader*>(archive_ + mArchiveBlockHeader->headerSize);
-    if (std::strncmp(mFATBlockHeader->magic, "SFAT", 4) != 0)
+    mFATBlockHeader = reinterpret_cast<const FATBlockHeader*>(archive_ + mArchiveBlockHeader->header_size);
+    if (std::strncmp(mFATBlockHeader->signature, "SFAT", 4) != 0)
         return false;
 
-    if (mFATBlockHeader->headerSize != sizeof(FATBlockHeader))
+    if (mFATBlockHeader->header_size != sizeof(FATBlockHeader))
         return false;
 
-    if (mFATBlockHeader->nodeCount > cArchiveEntryMax)
+    if (mFATBlockHeader->file_num > cArchiveEntryMax)
         return false;
 
     mFATEntrys.setBuffer(
-        mFATBlockHeader->nodeCount,
-        const_cast<FATEntry*>(reinterpret_cast<const FATEntry*>(archive_ + mArchiveBlockHeader->headerSize + mFATBlockHeader->headerSize))
+        mFATBlockHeader->file_num,
+        const_cast<FATEntry*>(reinterpret_cast<const FATEntry*>(archive_ + mArchiveBlockHeader->header_size + mFATBlockHeader->header_size))
     );
 
     const FNTBlockHeader* fnt_header = reinterpret_cast<const FNTBlockHeader*>(
-        archive_ + mArchiveBlockHeader->headerSize +
-        mFATBlockHeader->headerSize + mFATBlockHeader->nodeCount * sizeof(FATEntry)
+        archive_ + mArchiveBlockHeader->header_size +
+        mFATBlockHeader->header_size + mFATBlockHeader->file_num * sizeof(FATEntry)
     );
-    if (std::strncmp(fnt_header->magic, "SFNT", 4) != 0)
+    if (std::strncmp(fnt_header->signature, "SFNT", 4) != 0)
         return false;
 
-    if (fnt_header->headerSize != sizeof(FNTBlockHeader))
+    if (fnt_header->header_size != sizeof(FNTBlockHeader))
         return false;
 
-    mFNTBlock = reinterpret_cast<const char*>(fnt_header) + fnt_header->headerSize;
-    if (static_cast<s32>(mArchiveBlockHeader->dataOffset) < static_cast<s32>(reinterpret_cast<size_t>(mArchiveBlockHeader) - reinterpret_cast<size_t>(mFNTBlock)))
+    mFNTBlock = reinterpret_cast<const char*>(fnt_header) + fnt_header->header_size;
+    if (static_cast<s32>(mArchiveBlockHeader->data_block_offset) < static_cast<s32>(reinterpret_cast<size_t>(mArchiveBlockHeader) - reinterpret_cast<size_t>(mFNTBlock)))
         return false;
 
-    mDataBlock = archive_ + mArchiveBlockHeader->dataOffset;
+    mDataBlock = archive_ + mArchiveBlockHeader->data_block_offset;
     return true;
 }
 

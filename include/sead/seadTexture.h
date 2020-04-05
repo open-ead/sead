@@ -1,7 +1,7 @@
 #ifndef SEAD_TEXTURE_H_
 #define SEAD_TEXTURE_H_
 
-#include "sead/seadRuntimeTypeInfo.h"
+#include <sead/seadRuntimeTypeInfo.h>
 
 namespace sead {
 

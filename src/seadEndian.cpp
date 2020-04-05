@@ -54,7 +54,12 @@ u64 Null64(u64 val)
 
 namespace sead { namespace Endian {
 
-Types cHostEndian = Type_Big; // Temporary
+#ifdef cafe
+Types cHostEndian = cBig; // Temporary
+#else
+#error "Unknown platform"
+#endif // cafe
+
 ConvFuncTable cConvFuncTable = { &Null8, &Swap8, &Null16, &Swap16, &Null32, &Swap32, &Null64, &Swap64 };
 
 } } // namespace sead::Endian

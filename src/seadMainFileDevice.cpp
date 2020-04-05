@@ -6,7 +6,11 @@ MainFileDevice::MainFileDevice(Heap* heap)
     : FileDevice("main")
     , mFileDevice(NULL)
 {
+#ifdef cafe
     mFileDevice = new(heap, 4) CafeContentFileDevice();
+#else
+    #error "Unknown platform"
+#endif // cafe
 }
 
 MainFileDevice::~MainFileDevice()
@@ -68,7 +72,7 @@ FileDevice* MainFileDevice::doOpen_(
     FileDevice::FileOpenFlag flag
 )
 {
-    return mFileDevice->tryOpen(handle, path, flag, handle->divSize);
+    return mFileDevice->tryOpen(handle, path, flag, handle->mDivSize);
 }
 
 bool MainFileDevice::doClose_(

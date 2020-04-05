@@ -5,35 +5,35 @@ namespace sead {
 void Heap::appendDisposer_(IDisposer* disposer)
 {
     // sead::ConditionalScopedLock<sead::CriticalSection>*
-    CriticalSection* mutex_ = NULL;
-    if (flags & 1)
+    CriticalSection* cs = NULL;
+    if (mFlag.mBits & 1)
     {
-        mutex_ = &mutex;
-        mutex_->lock();
+        cs = &mCS;
+        cs->lock();
     }
 
-    disposers.mStartEnd.insertFront_(disposers.getNodeFromOffset(disposer));
-    disposers.mCount += 1;
+    mDisposerList.mStartEnd.insertFront_(mDisposerList.getNodeFromOffset(disposer));
+    mDisposerList.mCount += 1;
 
-    if (mutex_ != NULL)
-        mutex_->unlock();
+    if (cs != NULL)
+        cs->unlock();
 }
 
 void Heap::removeDisposer_(IDisposer* disposer)
 {
     // sead::ConditionalScopedLock<sead::CriticalSection>*
-    CriticalSection* mutex_ = NULL;
-    if (flags & 1)
+    CriticalSection* cs = NULL;
+    if (mFlag.mBits & 1)
     {
-        mutex_ = &mutex;
-        mutex_->lock();
+        cs = &mCS;
+        cs->lock();
     }
 
-    (disposers.getNodeFromOffset(disposer))->erase_();
-    disposers.mCount -= 1;
+    (mDisposerList.getNodeFromOffset(disposer))->erase_();
+    mDisposerList.mCount -= 1;
 
-    if (mutex_ != NULL)
-        mutex_->unlock();
+    if (cs != NULL)
+        cs->unlock();
 }
 
 Heap*
@@ -50,33 +50,33 @@ Heap::findContainHeap_(const void* ptr)
     }
 
     // sead::ConditionalScopedLock<sead::CriticalSection>*
-    CriticalSection* mutex_ = NULL;
-    if (flags & 1)
+    CriticalSection* cs = NULL;
+    if (mFlag.mBits & 1)
     {
-        mutex_ = &mutex;
-        mutex_->lock();
+        cs = &mCS;
+        cs->lock();
     }
 
-    u32 offset = children.mOffset;
-    containHeap = reinterpret_cast<Heap*>(reinterpret_cast<size_t>(children.mStartEnd.mNext) - offset);
+    u32 offset = mChildren.mOffset;
+    containHeap = reinterpret_cast<Heap*>(reinterpret_cast<size_t>(mChildren.mStartEnd.mNext) - offset);
 
-    while (containHeap != children.getFromOffsetR<Heap*>(&children))
+    while (containHeap != mChildren.getFromOffsetR<Heap*>(&mChildren))
     {
         if (containHeap->isInclude(ptr))
         {
             containHeap = containHeap->findContainHeap_(ptr);
-            if (mutex_ != NULL)
-                mutex_->unlock();
+            if (cs != NULL)
+                cs->unlock();
 
             HeapMgr::sHeapTreeLockCS.unlock();
             return containHeap;
         }
 
-        containHeap = reinterpret_cast<Heap*>(*reinterpret_cast<size_t*>(static_cast<void*>(&containHeap->listNode) + offset) - offset);
+        containHeap = reinterpret_cast<Heap*>(*reinterpret_cast<size_t*>(static_cast<void*>(&static_cast<IDisposer*>(containHeap)->mListNode) + offset) - offset);
     }
 
-    if (mutex_ != NULL)
-        mutex_->unlock();
+    if (cs != NULL)
+        cs->unlock();
 
     HeapMgr::sHeapTreeLockCS.unlock();
     return this;

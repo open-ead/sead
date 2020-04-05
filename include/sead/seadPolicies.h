@@ -32,8 +32,8 @@ public:
     {
         union
         {
-            T rows[3][4];
-            T cells[12];
+            T m[3][4];
+            T a[12];
         };
     };
 
@@ -41,8 +41,8 @@ public:
     {
         union
         {
-            T rows[4][4];
-            T cells[16];
+            T m[4][4];
+            T a[16];
         };
     };
 };

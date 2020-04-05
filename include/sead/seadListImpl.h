@@ -33,22 +33,6 @@ public:
     s32 mCount;
 };
 
-class UnkList
-{
-public:
-    UnkList()
-    {
-        ptrToSelf = this;
-        root.mNext = NULL;
-        root.mPrev = NULL;
-        parent = NULL;
-    }
-
-    ListNode root;
-    void* ptrToSelf;
-    ListImpl* parent;
-};
-
 } // namespace sead
 
 #endif // SEAD_LIST_IMPL_H_

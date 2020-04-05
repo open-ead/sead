@@ -17,7 +17,7 @@ PtrArrayImpl HeapMgr::sIndependentHeaps(NUM_INDEPENDENT_HEAPS_MAX, independentHe
 CriticalSection HeapMgr::sHeapTreeLockCS;
 
 HeapMgr::HeapMgr()
-    : _0(0)
+    : mAllocFailedCallback(NULL)
 {
 }
 
@@ -30,8 +30,8 @@ HeapMgr::findContainHeap(const void* ptr) const
 
     sHeapTreeLockCS.lock();
 
-    heapsEnd = reinterpret_cast<Heap**>(reinterpret_cast<size_t>(sRootHeaps.mPtrs) + sRootHeaps.mSize * 4);
-    heapsPtr = static_cast<Heap**>(sRootHeaps.mPtrs);
+    heapsEnd = reinterpret_cast<Heap**>(&sRootHeaps.mPtrs[sRootHeaps.mPtrNum]);
+    heapsPtr = reinterpret_cast<Heap**>(&sRootHeaps.mPtrs[0]);
 
     for (; heapsPtr != heapsEnd; heapsPtr++)
     {
@@ -43,8 +43,8 @@ HeapMgr::findContainHeap(const void* ptr) const
         }
     }
 
-    heapsEnd = reinterpret_cast<Heap**>(reinterpret_cast<size_t>(sIndependentHeaps.mPtrs) + sIndependentHeaps.mSize * 4);
-    heapsPtr = static_cast<Heap**>(sIndependentHeaps.mPtrs);
+    heapsEnd = reinterpret_cast<Heap**>(&sIndependentHeaps.mPtrs[sIndependentHeaps.mPtrNum]);
+    heapsPtr = reinterpret_cast<Heap**>(&sIndependentHeaps.mPtrs[0]);
 
     for (; heapsPtr != heapsEnd; heapsPtr++)
     {
