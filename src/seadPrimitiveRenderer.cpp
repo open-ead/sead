@@ -48,7 +48,11 @@ void PrimitiveRenderer::setProjection(const Projection& projection)
 
 void PrimitiveRenderer::setModelMatrix(const Matrix34f& model_mtx)
 {
+#ifdef cafe
     ASM_MTXCopy(const_cast<f32(*)[4]>(model_mtx.m), mModelMtx.m);
+#else
+    #error "Unknown platform"
+#endif // cafe
 }
 
 void PrimitiveRenderer::begin()

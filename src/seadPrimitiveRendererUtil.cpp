@@ -95,72 +95,87 @@ void setWireCubeVertex(Vertex* vtx, u16* idx)
 void setSphereVertex(Vertex* vtx, u16* idx, s32 x, s32 y)
 {
     if (vtx != NULL) {
-        for (int i = 0; i < y; i++)
+        for (s32 i = 0; i < y; i++)
         {
             f32 angle_y = ((i + 1) / (y + 1.0f) - 0.5f) * M_PI;
 
-            f32 sy_2 = sinf(angle_y) * 0.5f;
-            f32 cy_2 = cosf(angle_y) * 0.5f;
+            f32 pos_y = sinf(angle_y) * 0.5f;
+            f32 radius = cosf(angle_y) * 0.5f;
 
-            for (int j = 0; j < x; j++)
+            for (s32 j = 0; j < x; j++)
             {
-                f32 angle_x = (j * M_PI * 2.0f) / x;
-                if ((i & 1) == 0)
-                    angle_x = angle_x - ((M_PI * 2.0f / x) / 2.0f);
+                s32 pos = i * x + j;
+                f32 angle_x = (M_PI * 2.0f) * j / x;
+                if (i % 2 == 0)
+                    angle_x -= (M_PI * 2.0f) / x / 2;
 
-                vtx[i * x + j].pos.x = cosf(angle_x) * cy_2;
-                vtx[i * x + j].pos.y = sy_2;
-                vtx[i * x + j].pos.z = sinf(angle_x) * cy_2;
-                vtx[i * x + j].uv.x = sy_2 + 0.5f;
-                vtx[i * x + j].uv.y = static_cast<f32>(j) / x;
-                vtx[i * x + j].color.r = 0.5f - sy_2;
+                f32 pos_x = cosf(angle_x) * radius;
+                f32 pos_z = sinf(angle_x) * radius;
+
+                vtx[pos].pos.x = pos_x;
+                vtx[pos].pos.y = pos_y;
+                vtx[pos].pos.z = pos_z;
+                vtx[pos].uv.x = pos_y + 0.5f;
+                vtx[pos].uv.y = static_cast<f32>(j) / x;
+                vtx[pos].color.r = 0.5f - pos_y;
             }
         }
 
-        vtx[x * y].pos.x = 0.0f;
-        vtx[x * y].pos.y = -0.5f;
-        vtx[x * y].pos.z = 0.0f;
-        vtx[x * y].uv.x = 0.0f;
-        vtx[x * y].uv.y = 0.5f;
-        vtx[x * y].color.r = 1.0f;
+        {
+            s32 pos = x * y;
 
-        vtx[x * y + 1].pos.x = 0.0f;
-        vtx[x * y + 1].pos.y = 0.5f;
-        vtx[x * y + 1].pos.z = 0.0f;
-        vtx[x * y + 1].uv.x = 1.0f;
-        vtx[x * y + 1].uv.y = 0.5f;
-        vtx[x * y + 1].color.r = 0.0f;
+            vtx[pos].pos.x = 0.0f;
+            vtx[pos].pos.y = -0.5f;
+            vtx[pos].pos.z = 0.0f;
+            vtx[pos].uv.x = 0.0f;
+            vtx[pos].uv.y = 0.5f;
+            vtx[pos].color.r = 1.0f;
+        }
+
+        {
+            s32 pos = x * y + 1;
+
+            vtx[pos].pos.x = 0.0f;
+            vtx[pos].pos.y = 0.5f;
+            vtx[pos].pos.z = 0.0f;
+            vtx[pos].uv.x = 1.0f;
+            vtx[pos].uv.y = 0.5f;
+            vtx[pos].color.r = 0.0f;
+        }
     }
 
     if (idx != NULL)
     {
-        for (int i = 0; i < x; i++)
+        for (s32 i = 0; i < x; i++)
         {
           idx[i * 3 + 0] = x * y;
           idx[i * 3 + 1] = i;
-          idx[i * 3 + 2] = (i + 1) - ((i + 1) / x) * x;
+          idx[i * 3 + 2] = (i + 1) % x;
         }
 
-        for (int i = 0; i < y - 1; i++)
+        for (s32 i = 0; i < y - 1; i++)
         {
-            for (int j = 0; j < x; j++)
+            for (s32 j = 0; j < x; j++)
             {
-                int v = i % 2;
-                idx[((i * x + j) * 2 + x) * 3 + 0] = i * x + j;
-                idx[((i * x + j) * 2 + x) * 3 + 1] = (i + 1) * x + ((j + v) - ((j + v) / x) * x);
-                idx[((i * x + j) * 2 + x) * 3 + 2] = i * x + ((j + 1) - ((j + 1) / x) * x);
-                idx[((i * x + j) * 2 + x) * 3 + 3] = (i + 1) * x + ((j + v) - ((j + v) / x) * x);
-                v += j + 1;
-                idx[((i * x + j) * 2 + x) * 3 + 4] = (i + 1) * x + (v - (v / x) * x);
-                idx[((i * x + j) * 2 + x) * 3 + 5] = i * x + ((j + 1) - ((j + 1) / x) * x);
+                s32 offset = i % 2;
+                s32 pos = (i * x * 6) + j * 6 + x * 3;
+
+                idx[pos + 0] = i * x + j;
+                idx[pos + 1] = (i + 1) * x + ((j + offset) % x);
+                idx[pos + 2] = i * x + ((j + 1) % x);
+                idx[pos + 3] = (i + 1) * x + ((j + offset) % x);
+                idx[pos + 4] = (i + 1) * x + ((j + 1 + offset) % x);
+                idx[pos + 5] = i * x + ((j + 1) % x);
             }
         }
 
-        for (int i = 0; i < x; i++)
+        for (s32 i = 0; i < x; i++)
         {
-            idx[i * 3 + 0 + (x * 3) * ((y - 1) * 2 + 1)] = x * y + 1;
-            idx[i * 3 + 1 + (x * 3) * ((y - 1) * 2 + 1)] = x * (y - 1) + ((i + 1) - ((i + 1) / x) * x);
-            idx[i * 3 + 2 + (x * 3) * ((y - 1) * 2 + 1)] = x * (y - 1) + i;
+            s32 posOffs = 3 * x * (y - 1) * 2 + x * 3;
+
+            idx[i * 3 + 0 + posOffs] = x * y + 1;
+            idx[i * 3 + 1 + posOffs] = x * (y - 1) + ((i + 1) % x);
+            idx[i * 3 + 2 + posOffs] = x * (y - 1) + i;
         }
     }
 }
@@ -169,9 +184,9 @@ void setDiskVertex(Vertex* vtx, u16* idx, s32 div)
 {
     if (vtx != NULL)
     {
-        for (int i = 0; i < div; i++)
+        for (s32 i = 0; i < div; i++)
         {
-            f32 angle = (i * M_PI * 2.0f) / div;
+            f32 angle = (M_PI * 2.0f) * i / div;
 
             vtx[i].pos.x = cosf(angle) * 0.5f;
             vtx[i].pos.y = sinf(angle) * 0.5f;
@@ -181,19 +196,23 @@ void setDiskVertex(Vertex* vtx, u16* idx, s32 div)
             vtx[i].color.r = 1.0f;
         }
 
-        vtx[div].pos.x = 0.0f;
-        vtx[div].pos.y = 0.0f;
-        vtx[div].pos.z = 0.0f;
-        vtx[div].uv.x = 0.5f;
-        vtx[div].uv.y = 0.5f;
-        vtx[div].color.r = 0.0f;
+        {
+            s32 i = div;
+
+            vtx[i].pos.x = 0.0f;
+            vtx[i].pos.y = 0.0f;
+            vtx[i].pos.z = 0.0f;
+            vtx[i].uv.x = 0.5f;
+            vtx[i].uv.y = 0.5f;
+            vtx[i].color.r = 0.0f;
+        }
     }
 
     if (idx != NULL)
-        for (int i = 0; i < div; i++)
+        for (s32 i = 0; i < div; i++)
         {
             idx[i * 3 + 0] = i;
-            idx[i * 3 + 1] = (i + 1) - ((i + 1) / div) * div;
+            idx[i * 3 + 1] = (i + 1) % div;
             idx[i * 3 + 2] = div;
         }
 }
@@ -202,9 +221,9 @@ void setCylinderVertex(Vertex* vtx, u16* idx, s32 div)
 {
     if (vtx != NULL)
     {
-        for (int i = 0; i < div; i++)
+        for (s32 i = 0; i < div; i++)
         {
-            f32 angle = (i * M_PI * 2.0f) / div;
+            f32 angle = (M_PI * 2.0f) * i / div;
 
             vtx[i].pos.x = cosf(angle) * 0.5f;
             vtx[i].pos.z = -sinf(angle) * 0.5f;
@@ -212,48 +231,64 @@ void setCylinderVertex(Vertex* vtx, u16* idx, s32 div)
             vtx[i].uv.x = vtx[i].pos.x;
             vtx[i].uv.y = 1.0f - vtx[i].pos.z;
             vtx[i].color.r = 0.0f;
-            vtx[i + div + 1].pos.x = cosf(angle) * 0.5f;
-            vtx[i + div + 1].pos.z = -sinf(angle) * 0.5f;
-            vtx[i + div + 1].pos.y = -0.5f;
-            vtx[i + div + 1].uv.x = vtx[i].pos.x;
-            vtx[i + div + 1].uv.y = 1.0f - vtx[i].pos.z;
-            vtx[i + div + 1].color.r = 1.0f;
+
+            s32 pos = i + div + 1;
+
+            vtx[pos].pos.x = cosf(angle) * 0.5f;
+            vtx[pos].pos.z = -sinf(angle) * 0.5f;
+            vtx[pos].pos.y = -0.5f;
+            vtx[pos].uv.x = vtx[i].pos.x;
+            vtx[pos].uv.y = 1.0f - vtx[i].pos.z;
+            vtx[pos].color.r = 1.0f;
         }
 
-        vtx[div].pos.x = 0.0f;
-        vtx[div].pos.y = 0.5f;
-        vtx[div].pos.z = 0.0f;
-        vtx[div].uv.x = 0.5f;
-        vtx[div].uv.y = 0.5f;
-        vtx[div].color.r = 0.0f;
-        vtx[div + div + 1].pos.x = 0.0f;
-        vtx[div + div + 1].pos.y = -0.5f;
-        vtx[div + div + 1].pos.z = 0.0f;
-        vtx[div + div + 1].uv.x = 0.5f;
-        vtx[div + div + 1].uv.y = 0.5f;
-        vtx[div + div + 1].color.r = 1.0f;
+        {
+            s32 pos = div;
+
+            vtx[pos].pos.x = 0.0f;
+            vtx[pos].pos.y = 0.5f;
+            vtx[pos].pos.z = 0.0f;
+            vtx[pos].uv.x = 0.5f;
+            vtx[pos].uv.y = 0.5f;
+            vtx[pos].color.r = 0.0f;
+        }
+
+        {
+            s32 pos = div + div + 1;
+
+            vtx[pos].pos.x = 0.0f;
+            vtx[pos].pos.y = -0.5f;
+            vtx[pos].pos.z = 0.0f;
+            vtx[pos].uv.x = 0.5f;
+            vtx[pos].uv.y = 0.5f;
+            vtx[pos].color.r = 1.0f;
+        }
     }
 
     if (idx != NULL)
     {
-        for (int i = 0; i < div; i++)
+        for (s32 i = 0; i < div; i++)
         {
             idx[i * 3 + 0] = i;
-            idx[i * 3 + 1] = (i + 1) - ((i + 1) / div) * div;
+            idx[i * 3 + 1] = (i + 1) - ((i + 1) % div);
             idx[i * 3 + 2] = div;
-            idx[i * 3 + div * 3 + 0] = i + (div + 1);
-            idx[i * 3 + div * 3 + 1] = div + (div + 1);
-            idx[i * 3 + div * 3 + 2] = ((i + 1) - ((i + 1) / div) * div) + (div + 1);
+
+            s32 posOffs = div * 3;
+            idx[i * 3 + 0 + posOffs] = i + (div + 1);
+            idx[i * 3 + 1 + posOffs] = div + (div + 1);
+            idx[i * 3 + 2 + posOffs] = ((i + 1) - ((i + 1) % div)) + (div + 1);
         }
 
-        for (int i = 0; i < div; i++)
+        for (s32 i = 0; i < div; i++)
         {
-            idx[i * 6 + div * 6 + 0] = i;
-            idx[i * 6 + div * 6 + 1] = i + (div + 1);
-            idx[i * 6 + div * 6 + 2] = (i + 1) - ((i + 1) / div) * div;
-            idx[i * 6 + div * 6 + 3] = (i + 1) - ((i + 1) / div) * div;
-            idx[i * 6 + div * 6 + 4] = i + (div + 1);
-            idx[i * 6 + div * 6 + 5] = ((i + 1) - ((i + 1) / div) * div) + (div + 1);
+            s32 posOffs = div * 6;
+
+            idx[i * 6 + 0 + posOffs] = i;
+            idx[i * 6 + 1 + posOffs] = i + (div + 1);
+            idx[i * 6 + 2 + posOffs] = (i + 1) - ((i + 1) % div);
+            idx[i * 6 + 3 + posOffs] = (i + 1) - ((i + 1) % div);
+            idx[i * 6 + 4 + posOffs] = i + (div + 1);
+            idx[i * 6 + 5 + posOffs] = ((i + 1) - ((i + 1) % div)) + (div + 1);
         }
     }
 }

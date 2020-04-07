@@ -61,53 +61,51 @@ public:
     u32 mAttrVertexLocation;
     u32 mAttrTexCoord0Location;
     u32 mAttrColorRateLocation;
-    GX2AttribStream mAttrVertex;
-    GX2AttribStream mAttrTexCoord0;
-    GX2AttribStream mAttrColorRate;
-    void* mFsBuffer;
+    GX2AttribStream mAttributes[3];
+    void* mFetchShaderBufPtr;
     GX2FetchShader mFetchShader;
-    GX2Sampler mSampler;
+    GX2Sampler mDrawQuadSampler;
 
     // Quad, Box
-    PrimitiveRendererUtil::Vertex* mQuadVertex;
-    u16*                           mQuadIndex;
-    u16*                           mBoxIndex;
+    PrimitiveRendererUtil::Vertex* mQuadVertexBuf;
+    u16*                           mQuadIndexBuf;
+    u16*                           mBoxIndexBuf;
 
     // Line
-    PrimitiveRendererUtil::Vertex* mLineVertex;
-    u16*                           mLineIndex;
+    PrimitiveRendererUtil::Vertex* mLineVertexBuf;
+    u16*                           mLineIndexBuf;
 
     // Cube
-    PrimitiveRendererUtil::Vertex* mCubeVertex;
-    u16*                           mCubeIndex;
+    PrimitiveRendererUtil::Vertex* mCubeVertexBuf;
+    u16*                           mCubeIndexBuf;
 
     // WireCube
-    PrimitiveRendererUtil::Vertex* mWireCubeVertex;
-    u16*                           mWireCubeIndex;
+    PrimitiveRendererUtil::Vertex* mWireCubeVertexBuf;
+    u16*                           mWireCubeIndexBuf;
 
-    // Sphere4x8
-    PrimitiveRendererUtil::Vertex* mSphereVertexS;
-    u16*                           mSphereIndexS;
+    // SphereS
+    PrimitiveRendererUtil::Vertex* mSphereSVertexBuf;
+    u16*                           mSphereSIndexBuf;
 
-    // Sphere8x16
-    PrimitiveRendererUtil::Vertex* mSphereVertexL;
-    u16*                           mSphereIndexL;
+    // SphereL
+    PrimitiveRendererUtil::Vertex* mSphereLVertexBuf;
+    u16*                           mSphereLIndexBuf;
 
-    // Disk16, Disk32, Circle16, Circle32
-    PrimitiveRendererUtil::Vertex* mDiskVertexS;
-    u16*                           mDiskIndexS;
-    PrimitiveRendererUtil::Vertex* mDiskVertexL;
-    u16*                           mDiskIndexL;
-    u16*                           mCircleIndexS;
-    u16*                           mCircleIndexL;
+    // DiskS, DiskL, CircleS, CircleL
+    PrimitiveRendererUtil::Vertex* mDiskSVertexBuf;
+    u16*                           mDiskSIndexBuf;
+    PrimitiveRendererUtil::Vertex* mDiskLVertexBuf;
+    u16*                           mDiskLIndexBuf;
+    u16*                           mCircleSIndexBuf;
+    u16*                           mCircleLIndexBuf;
 
-    // Cylinder16
-    PrimitiveRendererUtil::Vertex* mCylinderVertexS;
-    u16*                           mCylinderIndexS;
+    // CylinderS
+    PrimitiveRendererUtil::Vertex* mCylinderSVertexBuf;
+    u16*                           mCylinderSIndexBuf;
 
-    // Cylinder32
-    PrimitiveRendererUtil::Vertex* mCylinderVertexL;
-    u16*                           mCylinderIndexL;
+    // CylinderL
+    PrimitiveRendererUtil::Vertex* mCylinderLVertexBuf;
+    u16*                           mCylinderLIndexBuf;
 };
 
 } // namespace sead
