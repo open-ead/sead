@@ -147,7 +147,7 @@ inline s32
 BufferedSafeStringBase<T>::trim(s32 trimLength)
 {
     if (trimLength >= mBufferSize)
-        return calcLength();
+        return this->calcLength();
 
     if (trimLength < 0)
         trimLength = 0;

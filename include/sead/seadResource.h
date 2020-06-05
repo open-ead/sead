@@ -8,6 +8,7 @@
 #include <sead/seadNew.h>
 #include <sead/seadResourceMgr.h>
 #include <sead/seadTList.h>
+#include <sead/types.h>
 
 namespace sead {
 

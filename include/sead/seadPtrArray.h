@@ -1,6 +1,8 @@
 #ifndef SEAD_PTR_ARRAY_H_
 #define SEAD_PTR_ARRAY_H_
 
+#include <sead/types.h>
+
 namespace sead {
 
 class PtrArrayImpl

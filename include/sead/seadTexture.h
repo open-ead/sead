@@ -2,6 +2,7 @@
 #define SEAD_TEXTURE_H_
 
 #include <sead/seadRuntimeTypeInfo.h>
+#include <sead/types.h>
 
 namespace sead {
 

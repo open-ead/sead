@@ -1,11 +1,14 @@
 #ifndef SEAD_CRITICAL_SECTION_H_
 #define SEAD_CRITICAL_SECTION_H_
 
-#ifdef cafe
+#if defined(cafe)
 #include <cafe.h>
-#endif // cafe
+#elif defined(SWITCH)
+#include <nn/os.h>
+#endif
 
 #include <sead/seadDisposer.h>
+#include <sead/types.h>
 
 namespace sead {
 
@@ -18,11 +21,13 @@ public:
     void lock();
     void unlock();
 
-#ifdef cafe
+#if defined(cafe)
     OSMutex mCriticalSectionInner;
+#elif defined(SWITCH)
+    nn::os::MutexType mCriticalSectionInner;
 #else
     #error "Unknown platform"
-#endif // cafe
+#endif
 };
 
 } // namespace sead

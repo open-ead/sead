@@ -1,8 +1,9 @@
 #ifndef SEAD_NEW_H_
 #define SEAD_NEW_H_
 
-#include <stddef.h>
 #include <sead/seadHeap.h>
+#include <sead/types.h>
+#include <stddef.h>
 
 void* operator new(size_t size);
 void* operator new[](size_t size);

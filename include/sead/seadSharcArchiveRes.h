@@ -4,6 +4,7 @@
 #include <sead/seadArchiveRes.h>
 #include <sead/seadFileDevice.h>
 #include <sead/seadSafeString.h>
+#include <sead/types.h>
 
 namespace sead {
 

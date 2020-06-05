@@ -1,7 +1,7 @@
 #ifndef SEAD_ARENA_H_
 #define SEAD_ARENA_H_
 
-#include <types.h>
+#include <sead/types.h>
 
 namespace sead {
 

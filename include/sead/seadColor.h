@@ -1,6 +1,8 @@
 #ifndef SEAD_COLOR_H_
 #define SEAD_COLOR_H_
 
+#include <sead/types.h>
+
 namespace sead {
 
 class Color4f

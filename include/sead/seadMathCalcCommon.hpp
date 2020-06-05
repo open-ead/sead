@@ -1,5 +1,7 @@
 #pragma once
 
+#include <sead/types.h>
+
 namespace sead {
 
 template <typename T>

@@ -3,6 +3,8 @@
 
 #include <stdarg.h>
 
+#include <sead/types.h>
+
 namespace sead {
 
 template <typename T>
@@ -11,7 +13,7 @@ class SafeStringBase
 public:
     SafeStringBase() : mStringTop(cNullString) { }
     SafeStringBase(const T* str) : mStringTop(str) { }
-    virtual ~SafeStringBase() { }
+    virtual ~SafeStringBase() = default;
 
     virtual void assureTerminationImpl_() const { }
 
@@ -49,30 +51,6 @@ public:
     const T* mStringTop;
 };
 
-template <>
-extern const char SafeStringBase<char>::cNullChar;
-
-template <>
-extern const char SafeStringBase<char>::cLineBreakChar;
-
-template <>
-extern const char SafeStringBase<char>::cNullString[1];
-
-template <>
-extern const SafeStringBase<char> SafeStringBase<char>::cEmptyString;
-
-template <>
-extern const char16 SafeStringBase<char16>::cNullChar;
-
-template <>
-extern const char16 SafeStringBase<char16>::cLineBreakChar;
-
-template <>
-extern const char16 SafeStringBase<char16>::cNullString[1];
-
-template <>
-extern const SafeStringBase<char16> SafeStringBase<char16>::cEmptyString;
-
 template <typename T>
 class BufferedSafeStringBase : public SafeStringBase<T>
 {
@@ -84,9 +62,9 @@ public:
         assureTerminationImpl_();
     }
 
-    virtual ~BufferedSafeStringBase() { }
+    ~BufferedSafeStringBase() override = default;
 
-    virtual void assureTerminationImpl_() const
+    void assureTerminationImpl_() const override
     {
         BufferedSafeStringBase<T>* mutableSafeString = const_cast<BufferedSafeStringBase<T>*>(this);
         mutableSafeString->getMutableStringTop_()[mBufferSize - 1] = mutableSafeString->cNullChar;
@@ -101,7 +79,7 @@ public:
 
     inline T* getMutableStringTop_()
     {
-        return const_cast<T*>(mStringTop);
+        return const_cast<T*>(this->mStringTop);
     }
 
     inline void clear()
@@ -123,16 +101,16 @@ public:
     FixedSafeStringBase()
         : BufferedSafeStringBase<T>(mBuffer, L)
     {
-        clear();
+        this->clear();
     }
 
     explicit FixedSafeStringBase(const SafeStringBase<T>& str)
         : BufferedSafeStringBase<T>(mBuffer, L)
     {
-        copy(str);
+        this->copy(str);
     }
 
-    virtual ~FixedSafeStringBase() { }
+    ~FixedSafeStringBase() override = default;
 
     T mBuffer[L];
 };
@@ -194,7 +172,7 @@ class FormatFixedSafeString : public FixedSafeStringBase<char, L>
 {
 public:
     FormatFixedSafeString(const char* str, ...);
-    virtual ~FormatFixedSafeString() { }
+    ~FormatFixedSafeString() override = default;
 };
 
 template <s32 L>
@@ -202,7 +180,7 @@ class WFormatFixedSafeString : public FixedSafeStringBase<char16, L>
 {
 public:
     WFormatFixedSafeString(const char16* str, ...);
-    virtual ~WFormatFixedSafeString() { }
+    ~WFormatFixedSafeString() override = default;
 };
 
 } // namespace sead

@@ -1,7 +1,7 @@
 #ifndef SEAD_H_
 #define SEAD_H_
 
-#include <types.h>
+#include <sead/types.h>
 
 #include <sead/seadArchiveRes.h>
 #include <sead/seadArena.h>

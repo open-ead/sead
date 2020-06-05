@@ -3,6 +3,7 @@
 
 #include <sead/seadColor.h>
 #include <sead/seadVector.h>
+#include <sead/types.h>
 
 namespace sead { namespace PrimitiveRendererUtil {
 

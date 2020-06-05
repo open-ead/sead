@@ -1,6 +1,8 @@
 #ifndef SEAD_ENDIAN_H_
 #define SEAD_ENDIAN_H_
 
+#include <sead/types.h>
+
 namespace sead { namespace Endian {
 
 enum Types

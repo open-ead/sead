@@ -5,6 +5,7 @@
 
 #include <sead/seadRuntimeTypeInfo.h>
 #include <sead/seadTexture.h>
+#include <sead/types.h>
 
 namespace sead {
 

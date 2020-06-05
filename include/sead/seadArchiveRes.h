@@ -5,6 +5,7 @@
 #include <sead/seadHeap.h>
 #include <sead/seadResource.h>
 #include <sead/seadSafeString.h>
+#include <sead/types.h>
 
 namespace sead {
 

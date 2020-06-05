@@ -1,6 +1,8 @@
 #ifndef SEAD_LIST_IMPL_H_
 #define SEAD_LIST_IMPL_H_
 
+#include <sead/types.h>
+
 namespace sead {
 
 class ListNode

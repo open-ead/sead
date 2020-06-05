@@ -1,6 +1,8 @@
 #ifndef SEAD_BUFFER_H_
 #define SEAD_BUFFER_H_
 
+#include <sead/types.h>
+
 namespace sead {
 
 template <typename T>

@@ -4,6 +4,7 @@
 #include <sead/seadResource.h>
 #include <sead/seadResourceMgr.h>
 #include <sead/seadDecompressor.h>
+#include <sead/types.h>
 
 namespace sead {
 
@@ -26,7 +27,7 @@ public:
 
         __attribute__((always_inline)) bool doCopy(u32 n)
         {
-            if (this->destCount < n)
+            if (u32(this->destCount) < n)
             {
                 if (this->forceDestCount == 0)
                     return false;

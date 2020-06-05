@@ -2,6 +2,7 @@
 #define SEAD_DISPOSER_H_
 
 #include <sead/seadListImpl.h>
+#include <sead/types.h>
 
 namespace sead {
 

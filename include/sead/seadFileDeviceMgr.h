@@ -8,8 +8,9 @@
 #include <sead/seadDisposer.h>
 #include <sead/seadFileDevice.h>
 #include <sead/seadMainFileDevice.h>
-#include <sead/seadTList.h>
 #include <sead/seadSafeString.h>
+#include <sead/seadTList.h>
+#include <sead/types.h>
 
 namespace sead {
 
@@ -21,10 +22,10 @@ public:
     FileDeviceMgr();
     ~FileDeviceMgr();
 
-    virtual void traceFilePath(const SafeString& path) const;
-    virtual void traceDirectoryPath(const SafeString& path) const;
-    virtual void resolveFilePath(BufferedSafeString* out, const SafeString& path) const;
-    virtual void resolveDirectoryPath(BufferedSafeString* out, const SafeString& path) const;
+    void traceFilePath(const SafeString& path) const;
+    void traceDirectoryPath(const SafeString& path) const;
+    void resolveFilePath(BufferedSafeString* out, const SafeString& path) const;
+    void resolveDirectoryPath(BufferedSafeString* out, const SafeString& path) const;
 
     void mount(FileDevice* device, const SafeString& name=SafeString::cEmptyString);
     void unmount(FileDevice* device);
