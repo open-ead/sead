@@ -1,96 +1,173 @@
-#include <stddef.h>
-#include <sead.h>
+#include <cstdlib>
 
-#include <cafe.h>
+#include <sead/seadHeap.h>
+#include <sead/seadHeapMgr.h>
+#include <sead/seadNew.h>
 
-/*
-    This file should actually be implemented
-    by the application using sead.
-    I am implementing it myself for convenience.
-*/
+namespace sead
+{
+namespace system
+{
+
+// TODO
+void* NewImpl(Heap* heap, size_t size, s32 alignment, bool abortOnFailure);
+void DeleteImpl(void* ptr);
+
+}
+}  // namespace sead::system
+
+// operator new(size_t)
 
 void* operator new(size_t size)
 {
-    if (sead::HeapMgr::sInstancePtr != NULL)
-    {
-        sead::Heap* heap = sead::HeapMgr::sInstancePtr->getCurrentHeap();
-        if (heap == NULL)
-            return NULL;
-
-        return heap->tryAlloc(size, 4);
-    }
-
-    return (*MEMAllocFromDefaultHeap)(size);
+    return sead::system::NewImpl(nullptr, size, 8, true);
 }
 
 void* operator new[](size_t size)
 {
-    if (sead::HeapMgr::sInstancePtr != NULL)
-    {
-        sead::Heap* heap = sead::HeapMgr::sInstancePtr->getCurrentHeap();
-        if (heap == NULL)
-            return NULL;
-
-        return heap->tryAlloc(size, 4);
-    }
-
-    return (*MEMAllocFromDefaultHeap)(size);
+    return sead::system::NewImpl(nullptr, size, 8, true);
 }
 
-void operator delete(void* ptr)
+void* operator new(size_t size, const std::nothrow_t&) noexcept
 {
-    if (ptr != NULL)
-    {
-        if (sead::HeapMgr::sInstancePtr != NULL)
-        {
-            sead::Heap* heap = sead::HeapMgr::sInstancePtr->findContainHeap(ptr);
-            if (heap == NULL)
-                return;
-
-            return heap->free(ptr);
-        }
-
-        return (*MEMFreeToDefaultHeap)(ptr);
-    }
+    return sead::system::NewImpl(nullptr, size, 8, false);
 }
 
-void operator delete[](void* ptr)
+void* operator new[](size_t size, const std::nothrow_t&) noexcept
 {
-    if (ptr != NULL)
-    {
-        if (sead::HeapMgr::sInstancePtr != NULL)
-        {
-            sead::Heap* heap = sead::HeapMgr::sInstancePtr->findContainHeap(ptr);
-            if (heap == NULL)
-                return;
-
-            return heap->free(ptr);
-        }
-
-        return (*MEMFreeToDefaultHeap)(ptr);
-    }
+    return sead::system::NewImpl(nullptr, size, 8, false);
 }
+
+// operator new(size_t, s32 alignment)
+
+void* operator new(size_t size, s32 alignment)
+{
+    return sead::system::NewImpl(nullptr, size, alignment, true);
+}
+
+void* operator new[](size_t size, s32 alignment)
+{
+    return sead::system::NewImpl(nullptr, size, alignment, true);
+}
+
+void* operator new(size_t size, s32 alignment, const std::nothrow_t&)
+{
+    return sead::system::NewImpl(nullptr, size, alignment, false);
+}
+
+void* operator new[](size_t size, s32 alignment, const std::nothrow_t&)
+{
+    return sead::system::NewImpl(nullptr, size, alignment, false);
+}
+
+// operator new(size_t, sead::Heap*, s32 alignment)
 
 void* operator new(size_t size, sead::Heap* heap, s32 alignment)
 {
-    if (heap == NULL)
-    {
-        heap = sead::HeapMgr::sInstancePtr->getCurrentHeap();
-        if (heap == NULL)
-            return NULL;
-    }
-
-    return heap->tryAlloc(size, alignment);
+    return sead::system::NewImpl(heap, size, alignment, true);
 }
 
 void* operator new[](size_t size, sead::Heap* heap, s32 alignment)
 {
-    if (heap == NULL)
-    {
-        heap = sead::HeapMgr::sInstancePtr->getCurrentHeap();
-        if (heap == NULL)
-            return NULL;
-    }
+    return sead::system::NewImpl(heap, size, alignment, true);
+}
 
-    return heap->tryAlloc(size, alignment);
+void* operator new(size_t size, sead::Heap* heap, s32 alignment, const std::nothrow_t&)
+{
+    return sead::system::NewImpl(heap, size, alignment, false);
+}
+
+void* operator new[](size_t size, sead::Heap* heap, s32 alignment, const std::nothrow_t&)
+{
+    return sead::system::NewImpl(heap, size, alignment, false);
+}
+
+// operator new(size_t, sead::Heap*, const std::nothrow_t&)
+
+void* operator new(size_t size, sead::Heap* heap, const std::nothrow_t&)
+{
+    return sead::system::NewImpl(heap, size, 8, false);
+}
+
+void* operator new[](size_t size, sead::Heap* heap, const std::nothrow_t&)
+{
+    return sead::system::NewImpl(heap, size, 8, false);
+}
+
+// operator delete(void*)
+
+void operator delete(void* ptr)
+{
+    sead::system::DeleteImpl(ptr);
+}
+
+void operator delete[](void* ptr)
+{
+    sead::system::DeleteImpl(ptr);
+}
+
+void operator delete(void* ptr, const std::nothrow_t&)
+{
+    sead::system::DeleteImpl(ptr);
+}
+
+void operator delete[](void* ptr, const std::nothrow_t&)
+{
+    sead::system::DeleteImpl(ptr);
+}
+
+// operator delete(void*, s32)
+
+void operator delete(void* ptr, s32)
+{
+    sead::system::DeleteImpl(ptr);
+}
+
+void operator delete[](void* ptr, s32)
+{
+    sead::system::DeleteImpl(ptr);
+}
+
+void operator delete(void* ptr, s32, const std::nothrow_t&)
+{
+    sead::system::DeleteImpl(ptr);
+}
+
+void operator delete[](void* ptr, s32, const std::nothrow_t&)
+{
+    sead::system::DeleteImpl(ptr);
+}
+
+// operator delete(void*, sead::Heap*, const std::nothrow_t&)
+
+void operator delete(void* ptr, sead::Heap*, const std::nothrow_t&)
+{
+    sead::system::DeleteImpl(ptr);
+}
+
+void operator delete[](void* ptr, sead::Heap*, const std::nothrow_t&)
+{
+    sead::system::DeleteImpl(ptr);
+}
+
+// operator delete(void*, sead::Heap*, s32)
+
+void operator delete(void* ptr, sead::Heap*, s32)
+{
+    sead::system::DeleteImpl(ptr);
+}
+
+void operator delete[](void* ptr, sead::Heap*, s32)
+{
+    sead::system::DeleteImpl(ptr);
+}
+
+void operator delete(void* ptr, sead::Heap*, s32, const std::nothrow_t&)
+{
+    sead::system::DeleteImpl(ptr);
+}
+
+void operator delete[](void* ptr, sead::Heap*, s32, const std::nothrow_t&)
+{
+    sead::system::DeleteImpl(ptr);
 }
