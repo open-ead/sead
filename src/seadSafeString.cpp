@@ -1,8 +1,9 @@
-#include <sead.h>
+#include <sead/seadSafeString.h>
+#include <sead/seadStringUtil.h>
 
 namespace {
 
-static const char16 cEmptyStringChar16[1] = L"";
+static const char16 cEmptyStringChar16[1] = u"";
 
 } // namespace {no-name}
 
