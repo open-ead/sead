@@ -15,6 +15,12 @@ public:
     SafeStringBase(const T* str) : mStringTop(str) { }
     virtual ~SafeStringBase() = default;
 
+    virtual SafeStringBase& operator=(const SafeStringBase& other)
+    {
+        mStringTop = other.mStringTop;
+        return *this;
+    }
+
     virtual void assureTerminationImpl_() const { }
 
     inline const T* cstr() const
@@ -46,7 +52,7 @@ public:
     static const T cNullString[1];
     static const T cLineBreakChar;
     static const SafeStringBase cEmptyString;
-    static const s32 cMaximumLength = 0x40000;
+    static const s32 cMaximumLength = 0x80000;
 
     const T* mStringTop;
 };
@@ -63,6 +69,12 @@ public:
     }
 
     ~BufferedSafeStringBase() override = default;
+
+    SafeStringBase<T>& operator=(const SafeStringBase<T>& other) override
+    {
+        copy(other);
+        return *this;
+    }
 
     void assureTerminationImpl_() const override
     {
