@@ -57,6 +57,12 @@ public:
     const T* mStringTop;
 };
 
+template <>
+const char SafeStringBase<char>::cNullString[1];
+
+template <>
+const SafeStringBase<char> SafeStringBase<char>::cEmptyString;
+
 template <typename T>
 class BufferedSafeStringBase : public SafeStringBase<T>
 {
