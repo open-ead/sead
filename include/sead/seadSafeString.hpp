@@ -1,7 +1,9 @@
 #pragma once
 
 #include <string>
+#ifdef cafe
 #include <sead/seadMemUtilCafe.hpp>
+#endif  // cafe
 #include <sead/seadSafeString.h>
 
 namespace sead {
