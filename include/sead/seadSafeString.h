@@ -168,6 +168,12 @@ public:
         : FixedSafeStringBase<char, L>(str)
     {
     }
+
+    SafeStringBase<char>& operator=(const SafeStringBase<char>& other) override
+    {
+        this->copy(other);
+        return *this;
+    }
 };
 
 template <s32 L>
