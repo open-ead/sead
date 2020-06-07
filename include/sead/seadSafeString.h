@@ -21,7 +21,7 @@ public:
         return *this;
     }
 
-    virtual void assureTerminationImpl_() const { }
+    virtual void assureTerminationImpl_() const;
 
     inline const T* cstr() const
     {

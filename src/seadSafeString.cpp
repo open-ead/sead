@@ -10,6 +10,12 @@ static const char16 cEmptyStringChar16[1] = u"";
 namespace sead {
 
 template <>
+void SafeStringBase<char>::assureTerminationImpl_() const {}
+
+template <>
+void SafeStringBase<char16>::assureTerminationImpl_() const {}
+
+template <>
 const char SafeStringBase<char>::cNullChar = '\0';
 
 template <>
