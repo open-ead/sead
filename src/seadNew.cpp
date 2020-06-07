@@ -96,22 +96,22 @@ void* operator new[](size_t size, sead::Heap* heap, const std::nothrow_t&)
 
 // operator delete(void*)
 
-void operator delete(void* ptr)
+void operator delete(void* ptr) noexcept
 {
     sead::system::DeleteImpl(ptr);
 }
 
-void operator delete[](void* ptr)
+void operator delete[](void* ptr) noexcept
 {
     sead::system::DeleteImpl(ptr);
 }
 
-void operator delete(void* ptr, const std::nothrow_t&)
+void operator delete(void* ptr, const std::nothrow_t&) noexcept
 {
     sead::system::DeleteImpl(ptr);
 }
 
-void operator delete[](void* ptr, const std::nothrow_t&)
+void operator delete[](void* ptr, const std::nothrow_t&) noexcept
 {
     sead::system::DeleteImpl(ptr);
 }
