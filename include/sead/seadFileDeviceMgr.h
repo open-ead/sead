@@ -8,7 +8,7 @@
 #include <sead/seadDisposer.h>
 #include <sead/seadFileDevice.h>
 #include <sead/seadMainFileDevice.h>
-#include <sead/seadSafeString.h>
+#include <sead/seadSafeString.hpp>
 #include <sead/seadTList.h>
 #include <sead/types.h>
 

@@ -6,7 +6,7 @@
 #include <sead/seadMatrix.h>
 #include <sead/seadPrimitiveRenderer.h>
 #include <sead/seadPrimitiveRendererUtil.h>
-#include <sead/seadSafeString.h>
+#include <sead/seadSafeString.hpp>
 #include <sead/seadVector.h>
 
 namespace sead {

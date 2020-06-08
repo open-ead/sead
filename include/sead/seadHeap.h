@@ -9,7 +9,7 @@
 #include <sead/seadNamable.h>
 #include <sead/seadOffsetList.h>
 #include <sead/seadRuntimeTypeInfo.h>
-#include <sead/seadSafeString.h>
+#include <sead/seadSafeString.hpp>
 #include <sead/types.h>
 
 namespace sead { namespace hostio {

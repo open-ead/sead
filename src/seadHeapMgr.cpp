@@ -1,4 +1,4 @@
-#include <sead.h>
+#include <sead/seadHeapMgr.h>
 
 #define NUM_ROOT_HEAPS_MAX         4
 #define NUM_INDEPENDENT_HEAPS_MAX  4

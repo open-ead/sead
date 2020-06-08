@@ -44,10 +44,7 @@
 #include <sead/seadResource.h>
 #include <sead/seadResourceMgr.h>
 #include <sead/seadRuntimeTypeInfo.h>
-#include <sead/seadSafeString.h>
-#ifdef __cplusplus
 #include <sead/seadSafeString.hpp>
-#endif // __cplusplus
 #include <sead/seadSharcArchiveRes.h>
 #include <sead/seadStringUtil.h>
 #include <sead/seadSZSDecompressor.h>

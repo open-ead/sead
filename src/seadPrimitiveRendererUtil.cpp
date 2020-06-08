@@ -1,5 +1,6 @@
 #include <cmath>
-#include <sead.h>
+#include <cstring>
+#include <sead/seadPrimitiveRendererUtil.h>
 
 namespace sead { namespace PrimitiveRendererUtil {
 

@@ -1,4 +1,5 @@
-#include <sead.h>
+#include <sead/seadFileDeviceMgr.h>
+#include <sead/seadResource.h>
 
 namespace sead {
 

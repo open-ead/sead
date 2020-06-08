@@ -1,4 +1,4 @@
-#include <sead.h>
+#include <sead/seadColor.h>
 
 namespace sead {
 

@@ -1,4 +1,6 @@
-#include <sead.h>
+#include <cstring>
+#include <sead/seadEndian.h>
+#include <sead/seadSharcArchiveRes.h>
 
 namespace
 {

@@ -1,4 +1,8 @@
-#include <sead.h>
+#include <sead/seadEndian.h>
+#include <sead/seadFileDeviceMgr.h>
+#include <sead/seadHeapMgr.h>
+#include <sead/seadMathCalcCommon.hpp>
+#include <sead/seadSZSDecompressor.h>
 
 namespace {
 

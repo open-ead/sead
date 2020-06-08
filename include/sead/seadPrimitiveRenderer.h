@@ -4,7 +4,7 @@
 #include <sead/seadColor.h>
 #include <sead/seadDisposer.h>
 #include <sead/seadMatrix.h>
-#include <sead/seadSafeString.h>
+#include <sead/seadSafeString.hpp>
 #include <sead/seadVector.h>
 
 namespace sead {

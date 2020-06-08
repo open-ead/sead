@@ -1,4 +1,4 @@
-#include <sead.h>
+#include <sead/seadEndian.h>
 
 u8 Swap8(u8 val)
 {
@@ -56,9 +56,11 @@ namespace sead { namespace Endian {
 
 #ifdef cafe
 Types cHostEndian = cBig; // Temporary
+#elif defined(SWITCH)
+Types cHostEndian = cLittle; // Temporary
 #else
 #error "Unknown platform"
-#endif // cafe
+#endif
 
 ConvFuncTable cConvFuncTable = { &Null8, &Swap8, &Null16, &Swap16, &Null32, &Swap32, &Null64, &Swap64 };
 

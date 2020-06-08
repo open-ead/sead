@@ -1,4 +1,7 @@
-#include <sead.h>
+#include <sead/seadFileDevice.h>
+#include <sead/seadFileDeviceMgr.h>
+#include <sead/seadMathCalcCommon.hpp>
+#include <sead/seadNew.h>
 #include <stdlib.h>
 
 namespace sead {

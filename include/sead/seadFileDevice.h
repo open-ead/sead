@@ -4,7 +4,7 @@
 #include <sead/seadDisposer.h>
 #include <sead/seadHeap.h>
 #include <sead/seadRuntimeTypeInfo.h>
-#include <sead/seadSafeString.h>
+#include <sead/seadSafeString.hpp>
 #include <sead/seadTList.h>
 #include <sead/types.h>
 

@@ -5,7 +5,7 @@
 
 #include <sead/seadFileDevice.h>
 #include <sead/seadRuntimeTypeInfo.h>
-#include <sead/seadSafeString.h>
+#include <sead/seadSafeString.hpp>
 #include <sead/types.h>
 
 namespace sead {

@@ -3,7 +3,10 @@
 #include <nn/save.h>
 #endif // cafe
 
-#include <sead.h>
+#include <sead/seadFileDeviceMgr.h>
+#include <sead/seadHeapMgr.h>
+#include <sead/seadNew.h>
+#include <sead/seadPath.h>
 
 namespace sead {
 

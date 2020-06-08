@@ -1,4 +1,4 @@
-#include <sead.h>
+#include <sead/seadPath.h>
 
 namespace sead { namespace Path {
 

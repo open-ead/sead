@@ -3,6 +3,7 @@
 
 #include <sead/seadMatrix.h>
 #include <sead/seadRuntimeTypeInfo.h>
+#include <sead/seadVector.h>
 #include <sead/types.h>
 
 namespace sead {
