@@ -37,41 +37,15 @@ void Heap::removeDisposer_(IDisposer* disposer)
 
 Heap* Heap::findContainHeap_(const void* ptr)
 {
-    Heap* containHeap;
-
-    HeapMgr::sHeapTreeLockCS.lock();
-
     if (!isInclude(ptr))
+        return nullptr;
+
+    for (auto it = mChildren.begin(); it != mChildren.end(); ++it)
     {
-        HeapMgr::sHeapTreeLockCS.unlock();
-        return NULL;
+        if (it->isInclude(ptr))
+            return it->findContainHeap_(ptr);
     }
 
-    // sead::ConditionalScopedLock<sead::CriticalSection>*
-    CriticalSection* cs = NULL;
-    if (mFlag.mBits & 1)
-    {
-        cs = &mCS;
-        cs->lock();
-    }
-
-    for (Heap& child : mChildren) {
-        containHeap = &child;
-        if (containHeap->isInclude(ptr))
-        {
-            containHeap = containHeap->findContainHeap_(ptr);
-            if (cs != NULL)
-                cs->unlock();
-
-            HeapMgr::sHeapTreeLockCS.unlock();
-            return containHeap;
-        }
-    }
-
-    if (cs != NULL)
-        cs->unlock();
-
-    HeapMgr::sHeapTreeLockCS.unlock();
     return this;
 }
 
