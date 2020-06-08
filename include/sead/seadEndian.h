@@ -3,11 +3,13 @@
 
 #include <sead/types.h>
 
-namespace sead { namespace Endian {
-
+namespace sead
+{
+namespace Endian
+{
 enum Types
 {
-    cBig    = 0,
+    cBig = 0,
     cLittle = 1
 };
 
@@ -80,6 +82,7 @@ inline s64 readS64(const void* ptr)
     return static_cast<s64>(readU64(ptr));
 }
 
-} } // namespace sead::Endian
+}  // namespace Endian
+}  // namespace sead
 
-#endif // SEAD_ENDIAN_H_
+#endif  // SEAD_ENDIAN_H_

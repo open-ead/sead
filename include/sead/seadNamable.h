@@ -3,26 +3,20 @@
 
 #include <sead/seadSafeString.hpp>
 
-namespace sead {
-
+namespace sead
+{
 class INamable
 {
 public:
-    INamable()
-        : mINamableName()
-    {
-    }
+    INamable() : mINamableName() {}
 
-    INamable(const char* str)
-        : mINamableName(str)
-    {
-    }
+    INamable(const char* str) : mINamableName(str) {}
 
-    ~INamable() { }
+    ~INamable() {}
 
     SafeString mINamableName;
 };
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_NAMABLE_H_
+#endif  // SEAD_NAMABLE_H_

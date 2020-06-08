@@ -7,15 +7,15 @@
 #include <sead/seadTexture.h>
 #include <sead/types.h>
 
-namespace sead {
-
+namespace sead
+{
 class TextureCafeGX2 : public Texture
 {
     SEAD_RTTI_OVERRIDE(TextureCafeGX2, Texture)
 
 public:
-    TextureCafeGX2() { }
-    virtual ~TextureCafeGX2() { }
+    TextureCafeGX2() {}
+    virtual ~TextureCafeGX2() {}
 
     virtual u32 getWidth() const;
     virtual u32 getHeight() const;
@@ -23,6 +23,6 @@ public:
     GX2Texture* mGX2Texture;
 };
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_TEXTURE_CAFE_GX2_H_
+#endif  // SEAD_TEXTURE_CAFE_GX2_H_

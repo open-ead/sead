@@ -4,8 +4,8 @@
 #include <sead/seadMatrix.h>
 #include <sead/seadRuntimeTypeInfo.h>
 
-namespace sead {
-
+namespace sead
+{
 class Camera
 {
     SEAD_RTTI_BASE(Camera)
@@ -19,6 +19,6 @@ public:
     Matrix34f mMatrix;
 };
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_CAMERA_H_
+#endif  // SEAD_CAMERA_H_

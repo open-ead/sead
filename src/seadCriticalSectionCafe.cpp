@@ -1,10 +1,8 @@
 #include <sead.h>
 
-namespace sead {
-
-CriticalSection::CriticalSection()
-    : IDisposer()
-    , mCriticalSectionInner()
+namespace sead
+{
+CriticalSection::CriticalSection() : IDisposer(), mCriticalSectionInner()
 {
     OSInitMutex(&mCriticalSectionInner);
 }
@@ -19,4 +17,4 @@ void CriticalSection::unlock()
     OSUnlockMutex(&mCriticalSectionInner);
 }
 
-} // namespace sead
+}  // namespace sead

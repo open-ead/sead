@@ -5,14 +5,14 @@
 
 #include <sead/types.h>
 
-namespace sead {
-
+namespace sead
+{
 template <typename T>
 class SafeStringBase
 {
 public:
-    SafeStringBase() : mStringTop(cNullString) { }
-    SafeStringBase(const T* str) : mStringTop(str) { }
+    SafeStringBase() : mStringTop(cNullString) {}
+    SafeStringBase(const T* str) : mStringTop(str) {}
     virtual ~SafeStringBase() = default;
 
     virtual SafeStringBase& operator=(const SafeStringBase& other)
@@ -32,16 +32,13 @@ public:
     inline const SafeStringBase<T> getPart(s32 at) const
     {
         s32 len = calcLength();
-        if ( at < 0 || at > len )
+        if (at < 0 || at > len)
             return SafeStringBase<T>::cEmptyString;
 
         return SafeStringBase<T>(mStringTop + at);
     }
 
-    inline const T& unsafeAt_(s32 idx) const
-    {
-        return mStringTop[idx];
-    }
+    inline const T& unsafeAt_(s32 idx) const { return mStringTop[idx]; }
 
     inline s32 calcLength() const;
     inline bool isEqual(const SafeStringBase<T>& str) const;
@@ -95,18 +92,12 @@ public:
 
     static s32 formatImpl_(T* s, s32 n, const T* formatStr, va_list args);
 
-    inline T* getMutableStringTop_()
-    {
-        return const_cast<T*>(this->mStringTop);
-    }
+    inline T* getMutableStringTop_() { return const_cast<T*>(this->mStringTop); }
 
-    inline void clear()
-    {
-        getMutableStringTop_()[0] = this->cNullChar;
-    }
+    inline void clear() { getMutableStringTop_()[0] = this->cNullChar; }
 
-    inline s32 copy(const SafeStringBase<T>& src, s32 copyLength=-1);
-    inline s32 copyAt(s32 at, const SafeStringBase<T>& src, s32 copyLength=-1);
+    inline s32 copy(const SafeStringBase<T>& src, s32 copyLength = -1);
+    inline s32 copyAt(s32 at, const SafeStringBase<T>& src, s32 copyLength = -1);
     inline s32 trim(s32 trimLength);
 
     s32 mBufferSize;
@@ -116,11 +107,7 @@ template <typename T, s32 L>
 class FixedSafeStringBase : public BufferedSafeStringBase<T>
 {
 public:
-    FixedSafeStringBase()
-        : BufferedSafeStringBase<T>(mBuffer, L)
-    {
-        this->clear();
-    }
+    FixedSafeStringBase() : BufferedSafeStringBase<T>(mBuffer, L) { this->clear(); }
 
     explicit FixedSafeStringBase(const SafeStringBase<T>& str)
         : BufferedSafeStringBase<T>(mBuffer, L)
@@ -159,15 +146,9 @@ template <s32 L>
 class FixedSafeString : public FixedSafeStringBase<char, L>
 {
 public:
-    FixedSafeString()
-        : FixedSafeStringBase<char, L>()
-    {
-    }
+    FixedSafeString() : FixedSafeStringBase<char, L>() {}
 
-    explicit FixedSafeString(const SafeString& str)
-        : FixedSafeStringBase<char, L>(str)
-    {
-    }
+    explicit FixedSafeString(const SafeString& str) : FixedSafeStringBase<char, L>(str) {}
 
     SafeStringBase<char>& operator=(const SafeStringBase<char>& other) override
     {
@@ -180,15 +161,9 @@ template <s32 L>
 class WFixedSafeString : public FixedSafeStringBase<char16, L>
 {
 public:
-    WFixedSafeString()
-        : FixedSafeStringBase<char16, L>()
-    {
-    }
+    WFixedSafeString() : FixedSafeStringBase<char16, L>() {}
 
-    explicit WFixedSafeString(const SafeString16& str)
-        : FixedSafeStringBase<char16, L>(str)
-    {
-    }
+    explicit WFixedSafeString(const SafeString16& str) : FixedSafeStringBase<char16, L>(str) {}
 };
 
 template <s32 L>
@@ -207,6 +182,6 @@ public:
     ~WFormatFixedSafeString() override = default;
 };
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_SAFE_STRING_H_
+#endif  // SEAD_SAFE_STRING_H_

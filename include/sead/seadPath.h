@@ -3,11 +3,14 @@
 
 #include <sead/seadSafeString.hpp>
 
-namespace sead { namespace Path {
-
+namespace sead
+{
+namespace Path
+{
 bool getDriveName(BufferedSafeString* driveName, const SafeString& path);
 void getPathExceptDrive(BufferedSafeString* pathNoDrive, const SafeString& path);
 
-} } // namespace sead::Path
+}  // namespace Path
+}  // namespace sead
 
-#endif // SEAD_PATH_H_
+#endif  // SEAD_PATH_H_

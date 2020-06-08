@@ -4,12 +4,12 @@
 #include <sead/types.h>
 #include "sead/seadPolicies.h"
 
-namespace sead {
-
+namespace sead
+{
 template <typename T>
 struct Vector2 : public Policies<T>::Vec2Base
 {
-    Vector2() { }
+    Vector2() {}
     Vector2(T x, T y)
     {
         this->x = x;
@@ -25,7 +25,7 @@ struct Vector2 : public Policies<T>::Vec2Base
 template <typename T>
 struct Vector3 : public Policies<T>::Vec3Base
 {
-    Vector3() { }
+    Vector3() {}
     Vector3(T x, T y, T z)
     {
         this->x = x;
@@ -43,7 +43,7 @@ struct Vector3 : public Policies<T>::Vec3Base
 template <typename T>
 struct Vector4 : public Policies<T>::Vec4Base
 {
-    Vector4() { }
+    Vector4() {}
     Vector4(T x, T y, T z, T w)
     {
         this->x = x;
@@ -66,4 +66,4 @@ typedef Vector4<f32> Vector4f;
 
 }  // namespace sead
 
-#endif // #define SEAD_VECTOR_H_
+#endif  // #define SEAD_VECTOR_H_

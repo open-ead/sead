@@ -6,13 +6,13 @@
 #include <sead/seadHeap.h>
 #include <sead/seadPtrArray.h>
 
-namespace sead {
-
+namespace sead
+{
 class HeapMgr
 {
 public:
     HeapMgr();
-    virtual ~HeapMgr() { }
+    virtual ~HeapMgr() {}
 
     Heap* getCurrentHeap();
     Heap* findContainHeap(const void* ptr) const;
@@ -25,9 +25,10 @@ public:
     static PtrArrayImpl sIndependentHeaps;
     static CriticalSection sHeapTreeLockCS;
 
-    void* mAllocFailedCallback;  // IAllocFailedCallback* = IDelegate1<const AllocFailedCallbackArg*>*
+    void*
+        mAllocFailedCallback;  // IAllocFailedCallback* = IDelegate1<const AllocFailedCallbackArg*>*
 };
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_HEAPMGR_H_
+#endif  // SEAD_HEAPMGR_H_

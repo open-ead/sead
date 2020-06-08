@@ -4,15 +4,13 @@
 #include <sead/seadSystem.h>
 #include <sead/types.h>
 
-namespace sead {
-
+namespace sead
+{
 class PtrArrayImpl
 {
 public:
     __attribute__((always_inline)) PtrArrayImpl(s32 ptrNumMax, void* buf)
-        : mPtrNum(0)
-        , mPtrNumMax(0)
-        , mPtrs(NULL)
+        : mPtrNum(0), mPtrNumMax(0), mPtrs(NULL)
     {
         setBuffer(ptrNumMax, buf);
     }
@@ -45,6 +43,6 @@ public:
 // TODO: sead::PtrArray::constIterator
 // TODO: sead::FixedPtrArray : sead::PtrArray
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_PTR_ARRAY_H_
+#endif  // SEAD_PTR_ARRAY_H_

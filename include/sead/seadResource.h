@@ -10,8 +10,8 @@
 #include <sead/seadTList.h>
 #include <sead/types.h>
 
-namespace sead {
-
+namespace sead
+{
 class Resource : public TListNode<Resource>
 {
     SEAD_RTTI_BASE(Resource)
@@ -45,18 +45,14 @@ public:
 class ResourceFactory : public TListNode<ResourceFactory>, public IDisposer
 {
 public:
-    ResourceFactory()
-        : TListNode<ResourceFactory>()
-        , IDisposer()
-        , mExt()
-    {
-    }
+    ResourceFactory() : TListNode<ResourceFactory>(), IDisposer(), mExt() {}
 
     virtual ~ResourceFactory();
 
     virtual Resource* create(const ResourceMgr::CreateArg& createArg) = 0;
     virtual Resource* tryCreate(const ResourceMgr::LoadArg& loadArg) = 0;
-    virtual Resource* tryCreateWithDecomp(const ResourceMgr::LoadArg& loadArg, Decompressor* decompressor) = 0;
+    virtual Resource* tryCreateWithDecomp(const ResourceMgr::LoadArg& loadArg,
+                                          Decompressor* decompressor) = 0;
 
     FixedSafeString<32> mExt;
 };
@@ -64,18 +60,14 @@ public:
 class DirectResourceFactoryBase : public ResourceFactory
 {
 public:
-    DirectResourceFactoryBase()
-        : ResourceFactory()
-    {
-    }
+    DirectResourceFactoryBase() : ResourceFactory() {}
 
-    virtual ~DirectResourceFactoryBase()
-    {
-    }
+    virtual ~DirectResourceFactoryBase() {}
 
     virtual Resource* create(const ResourceMgr::CreateArg& createArg);
     virtual Resource* tryCreate(const ResourceMgr::LoadArg& loadArg);
-    virtual Resource* tryCreateWithDecomp(const ResourceMgr::LoadArg& loadArg, Decompressor* decompressor);
+    virtual Resource* tryCreateWithDecomp(const ResourceMgr::LoadArg& loadArg,
+                                          Decompressor* decompressor);
     virtual DirectResource* newResource_(Heap* heap, s32 alignment) = 0;
 };
 
@@ -83,21 +75,16 @@ template <typename T>
 class DirectResourceFactory : public DirectResourceFactoryBase
 {
 public:
-    DirectResourceFactory()
-        : DirectResourceFactoryBase()
-    {
-    }
+    DirectResourceFactory() : DirectResourceFactoryBase() {}
 
-    virtual ~DirectResourceFactory()
-    {
-    }
+    virtual ~DirectResourceFactory() {}
 
     virtual DirectResource* newResource_(Heap* heap, s32 alignment)
     {
-        return new(heap, alignment) T;
+        return new (heap, alignment) T;
     }
 };
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_RESOURCE_H_
+#endif  // SEAD_RESOURCE_H_

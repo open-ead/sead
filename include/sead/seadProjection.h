@@ -6,10 +6,10 @@
 #include <sead/seadVector.h>
 #include <sead/types.h>
 
-namespace sead {
-
-namespace Graphics {
-
+namespace sead
+{
+namespace Graphics
+{
 enum DevicePosture
 {
     cDevicePosture_Same = 0,
@@ -49,6 +49,6 @@ public:
     f32 mDeviceZOffset;
 };
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_PROJECTION_H_
+#endif  // SEAD_PROJECTION_H_

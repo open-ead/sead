@@ -8,8 +8,8 @@
 #include <sead/seadTList.h>
 #include <sead/types.h>
 
-namespace sead {
-
+namespace sead
+{
 class Resource;
 class DirectResource;
 class ResourceFactory;
@@ -17,7 +17,6 @@ class Decompressor;
 
 template <typename T>
 class DirectResourceFactory;
-
 
 class ResourceMgr
 {
@@ -27,14 +26,8 @@ public:
     struct CreateArg
     {
         CreateArg()
-            : buffer(NULL)
-            , file_size(0)
-            , buffer_size(0)
-            , need_unload(false)
-            , factory(NULL)
-            , ext()
-            , heap(NULL)
-            , alignment(0x20)
+            : buffer(NULL), file_size(0), buffer_size(0), need_unload(false), factory(NULL), ext(),
+              heap(NULL), alignment(0x20)
         {
         }
 
@@ -42,7 +35,7 @@ public:
         u32 file_size;
         u32 buffer_size;
         bool need_unload;
-        ResourceFactory *factory;
+        ResourceFactory* factory;
         SafeString ext;
         Heap* heap;
         s32 alignment;
@@ -51,16 +44,9 @@ public:
     struct LoadArg
     {
         LoadArg()
-            : path()
-            , instance_heap(NULL)
-            , load_data_heap(NULL)
-            , instance_alignment(0x20)
-            , load_data_alignment(0)
-            , load_data_buffer(NULL)
-            , load_data_buffer_size(0)
-            , factory(NULL)
-            , device(NULL)
-            , div_size(0)
+            : path(), instance_heap(NULL), load_data_heap(NULL), instance_alignment(0x20),
+              load_data_alignment(0), load_data_buffer(NULL), load_data_buffer_size(0),
+              factory(NULL), device(NULL), div_size(0)
         {
         }
 
@@ -98,6 +84,6 @@ public:
     ResourceFactory* mNullResourceFactory;
 };
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_RESOURCEMGR_H_
+#endif  // SEAD_RESOURCEMGR_H_

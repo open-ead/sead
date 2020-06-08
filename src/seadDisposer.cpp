@@ -1,17 +1,15 @@
 #include <sead/seadDisposer.h>
 #include <sead/seadHeapMgr.h>
 
-namespace {
-
+namespace
+{
 const u32 cDestructedFlag = 1;
 
-} // namespace {no-name}
+}  // namespace
 
-namespace sead {
-
-IDisposer::IDisposer()
-    : mListNode()
-    , mDisposerHeap(NULL)
+namespace sead
+{
+IDisposer::IDisposer() : mListNode(), mDisposerHeap(NULL)
 {
     if (sead::HeapMgr::sInstancePtr != NULL)
     {
@@ -32,4 +30,4 @@ IDisposer::~IDisposer()
     }
 }
 
-} // namespace sead
+}  // namespace sead

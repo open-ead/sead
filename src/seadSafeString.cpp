@@ -1,19 +1,23 @@
 #include <sead/seadSafeString.hpp>
 #include <sead/seadStringUtil.h>
 
-namespace {
-
+namespace
+{
 static const char16 cEmptyStringChar16[1] = u"";
 
-} // namespace {no-name}
+}  // namespace
 
-namespace sead {
+namespace sead
+{
+template <>
+void SafeStringBase<char>::assureTerminationImpl_() const
+{
+}
 
 template <>
-void SafeStringBase<char>::assureTerminationImpl_() const {}
-
-template <>
-void SafeStringBase<char16>::assureTerminationImpl_() const {}
+void SafeStringBase<char16>::assureTerminationImpl_() const
+{
+}
 
 template <>
 const char SafeStringBase<char>::cNullChar = '\0';
@@ -22,7 +26,7 @@ template <>
 const char SafeStringBase<char>::cLineBreakChar = '\n';
 
 template <>
-const char SafeStringBase<char>::cNullString[1] = { SafeStringBase<char>::cNullChar };
+const char SafeStringBase<char>::cNullString[1] = {SafeStringBase<char>::cNullChar};
 
 template <>
 const SafeStringBase<char> SafeStringBase<char>::cEmptyString("");
@@ -34,7 +38,7 @@ template <>
 const char16 SafeStringBase<char16>::cLineBreakChar = static_cast<char16>('\n');
 
 template <>
-const char16 SafeStringBase<char16>::cNullString[1] = { SafeStringBase<char16>::cNullChar };
+const char16 SafeStringBase<char16>::cNullString[1] = {SafeStringBase<char16>::cNullChar};
 
 template <>
 const SafeStringBase<char16> SafeStringBase<char16>::cEmptyString(cEmptyStringChar16);
@@ -46,7 +50,8 @@ s32 BufferedSafeStringBase<char>::formatImpl_(char* s, s32 n, const char* format
 }
 
 template <>
-s32 BufferedSafeStringBase<char16>::formatImpl_(char16* s, s32 n, const char16* formatStr, va_list args)
+s32 BufferedSafeStringBase<char16>::formatImpl_(char16* s, s32 n, const char16* formatStr,
+                                                va_list args)
 {
     return StringUtil::vsnw16printf(s, n, formatStr, args);
 }
@@ -87,4 +92,4 @@ s32 BufferedSafeStringBase<char16>::format(const char16* formatStr, ...)
     return ret;
 }
 
-} // namespace sead
+}  // namespace sead

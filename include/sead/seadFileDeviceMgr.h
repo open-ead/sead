@@ -3,7 +3,7 @@
 
 #ifdef cafe
 #include <cafe.h>
-#endif // cafe
+#endif  // cafe
 
 #include <sead/seadDisposer.h>
 #include <sead/seadFileDevice.h>
@@ -12,8 +12,8 @@
 #include <sead/seadTList.h>
 #include <sead/types.h>
 
-namespace sead {
-
+namespace sead
+{
 class FileDeviceMgr
 {
     SEAD_SINGLETON_DISPOSER(FileDeviceMgr, sInstance)
@@ -27,12 +27,13 @@ public:
     void resolveFilePath(BufferedSafeString* out, const SafeString& path) const;
     void resolveDirectoryPath(BufferedSafeString* out, const SafeString& path) const;
 
-    void mount(FileDevice* device, const SafeString& name=SafeString::cEmptyString);
+    void mount(FileDevice* device, const SafeString& name = SafeString::cEmptyString);
     void unmount(FileDevice* device);
     FileDevice* findDeviceFromPath(const SafeString& path, BufferedSafeString* pathNoDrive) const;
     FileDevice* findDevice(const SafeString& name) const;
 
-    FileDevice* tryOpen(FileHandle* handle, const SafeString& path, FileDevice::FileOpenFlag flag, u32 divSize);
+    FileDevice* tryOpen(FileHandle* handle, const SafeString& path, FileDevice::FileOpenFlag flag,
+                        u32 divSize);
     u8* tryLoad(FileDevice::LoadArg& arg);
 
     static FileDeviceMgr* sInstance;
@@ -51,10 +52,10 @@ public:
     u8 _17A4[128];
     u32 _1824;
 #else
-    #error "Unknown platform"
-#endif // cafe
+#error "Unknown platform"
+#endif  // cafe
 };
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_FILEDEVICEMGR_H_
+#endif  // SEAD_FILEDEVICEMGR_H_

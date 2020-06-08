@@ -4,8 +4,8 @@
 #include <sead/seadListImpl.h>
 #include <sead/types.h>
 
-namespace sead {
-
+namespace sead
+{
 class OffsetList : public ListImpl
 {
 public:
@@ -29,6 +29,6 @@ public:
     s32 mOffset;
 };
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_OFFSET_LIST_H_
+#endif  // SEAD_OFFSET_LIST_H_

@@ -5,15 +5,15 @@
 #include <sead/seadVector.h>
 #include <sead/types.h>
 
-namespace sead { namespace PrimitiveRendererUtil {
-
+namespace sead
+{
+namespace PrimitiveRendererUtil
+{
 class Vertex
 {
 public:
     Vertex(const Vector3f& pos, const Vector2f& uv, const Color4f& color)
-        : pos(pos)
-        , uv(uv)
-        , color(color)
+        : pos(pos), uv(uv), color(color)
     {
     }
 
@@ -30,6 +30,7 @@ void setSphereVertex(Vertex* vtx, u16* idx, s32 x, s32 y);
 void setDiskVertex(Vertex* vtx, u16* idx, s32 div);
 void setCylinderVertex(Vertex* vtx, u16* idx, s32 div);
 
-} } // namespace sead::PrimitiveRendererUtil
+}  // namespace PrimitiveRendererUtil
+}  // namespace sead
 
-#endif // SEAD_PRIMITIVE_RENDERER_UTIL_H_
+#endif  // SEAD_PRIMITIVE_RENDERER_UTIL_H_

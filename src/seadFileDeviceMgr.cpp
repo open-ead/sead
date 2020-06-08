@@ -1,22 +1,19 @@
 #ifdef cafe
 #include <cafe.h>
 #include <nn/save.h>
-#endif // cafe
+#endif  // cafe
 
 #include <sead/seadFileDeviceMgr.h>
 #include <sead/seadHeapMgr.h>
 #include <sead/seadNew.h>
 #include <sead/seadPath.h>
 
-namespace sead {
-
+namespace sead
+{
 FileDeviceMgr* FileDeviceMgr::sInstance = NULL;
 FileDeviceMgr::SingletonDisposer_* FileDeviceMgr::SingletonDisposer_::sStaticDisposer = NULL;
 
-FileDeviceMgr::FileDeviceMgr()
-    : mDeviceList()
-    , mMainFileDevice(NULL)
-    , mDefaultFileDevice(NULL)
+FileDeviceMgr::FileDeviceMgr() : mDeviceList(), mMainFileDevice(NULL), mDefaultFileDevice(NULL)
 {
     if (HeapMgr::sInstancePtr == NULL)
         return;
@@ -28,20 +25,17 @@ FileDeviceMgr::FileDeviceMgr()
     FSAddClient(&client, FS_RET_NO_ERROR);
 
     FSStateChangeParams changeParams = {
-        .userCallback = stateChangeCallback_,
-        .userContext  = NULL,
-        .ioMsgQueue   = NULL
-    };
+        .userCallback = stateChangeCallback_, .userContext = NULL, .ioMsgQueue = NULL};
 
     FSSetStateChangeNotification(&client, &changeParams);
     SAVEInit();
     _17A4[0] = 0;
     _1824 = 0;
 #else
-    #error "Unknown platform"
-#endif // cafe
+#error "Unknown platform"
+#endif  // cafe
 
-    mMainFileDevice = new(containHeap, 4) MainFileDevice(containHeap);
+    mMainFileDevice = new (containHeap, 4) MainFileDevice(containHeap);
     mount(mMainFileDevice);
 
     mDefaultFileDevice = mMainFileDevice;
@@ -60,8 +54,8 @@ FileDeviceMgr::~FileDeviceMgr()
     SAVEShutdown();
     FSShutdown();
 #else
-    #error "Unknown platform"
-#endif // cafe
+#error "Unknown platform"
+#endif  // cafe
 }
 
 SEAD_CREATE_SINGLETON_INSTANCE(FileDeviceMgr, FileDeviceMgr::sInstance)
@@ -134,15 +128,13 @@ void FileDeviceMgr::unmount(FileDevice* device)
         mDefaultFileDevice = NULL;
 }
 
-FileDevice*
-FileDeviceMgr::findDeviceFromPath(
-    const SafeString& path, BufferedSafeString* pathNoDrive
-) const
+FileDevice* FileDeviceMgr::findDeviceFromPath(const SafeString& path,
+                                              BufferedSafeString* pathNoDrive) const
 {
     FixedSafeString<32> driveName;
     FileDevice* device;
 
-    if(!Path::getDriveName(&driveName, path))
+    if (!Path::getDriveName(&driveName, path))
     {
         device = mDefaultFileDevice;
         if (device == NULL)
@@ -158,17 +150,18 @@ FileDeviceMgr::findDeviceFromPath(
     return device;
 }
 
-FileDevice*
-FileDeviceMgr::findDevice(const SafeString& name) const
+FileDevice* FileDeviceMgr::findDevice(const SafeString& name) const
 {
-    for (TListNode<FileDevice>* node = mDeviceList.root(); !mDeviceList.isAtEnd(node); node = mDeviceList.next(node))
+    for (TListNode<FileDevice>* node = mDeviceList.root(); !mDeviceList.isAtEnd(node);
+         node = mDeviceList.next(node))
         if (node->mData->mDriveName.isEqual(name))
             return node->mData;
 
     return NULL;
 }
 
-FileDevice* FileDeviceMgr::tryOpen(FileHandle* handle, const SafeString& path, FileDevice::FileOpenFlag flag, u32 divSize)
+FileDevice* FileDeviceMgr::tryOpen(FileHandle* handle, const SafeString& path,
+                                   FileDevice::FileOpenFlag flag, u32 divSize)
 {
     FixedSafeString<256> pathNoDrive;
     FileDevice* device = findDeviceFromPath(path, &pathNoDrive);
@@ -200,13 +193,10 @@ u8* FileDeviceMgr::tryLoad(FileDevice::LoadArg& arg)
 }
 
 #ifdef cafe
-void
-FileDeviceMgr::stateChangeCallback_(
-    FSClient* client, FSVolumeState state, void* context
-)
+void FileDeviceMgr::stateChangeCallback_(FSClient* client, FSVolumeState state, void* context)
 {
     FSGetLastError(client);
 }
-#endif // cafe
+#endif  // cafe
 
-}
+}  // namespace sead

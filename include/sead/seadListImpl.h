@@ -3,16 +3,12 @@
 
 #include <sead/types.h>
 
-namespace sead {
-
+namespace sead
+{
 class ListNode
 {
 public:
-    __attribute__((always_inline)) ListNode()
-        : mPrev(NULL)
-        , mNext(NULL)
-    {
-    }
+    __attribute__((always_inline)) ListNode() : mPrev(NULL), mNext(NULL) {}
 
     void insertFront_(ListNode* node);
     void erase_();
@@ -24,8 +20,7 @@ public:
 class ListImpl
 {
 public:
-    __attribute__((always_inline)) ListImpl()
-        : mStartEnd(), mCount(0)
+    __attribute__((always_inline)) ListImpl() : mStartEnd(), mCount(0)
     {
         mStartEnd.mNext = &mStartEnd;
         mStartEnd.mPrev = &mStartEnd;
@@ -35,6 +30,6 @@ public:
     s32 mCount;
 };
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_LIST_IMPL_H_
+#endif  // SEAD_LIST_IMPL_H_

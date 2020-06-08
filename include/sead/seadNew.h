@@ -31,7 +31,7 @@ void* operator new[](size_t size, sead::Heap* heap, s32 alignment, const std::no
 
 void operator delete(void* ptr) noexcept;
 void operator delete[](void* ptr) noexcept;
-void operator delete(void* ptr, const std::nothrow_t&) noexcept;
+void operator delete(void* ptr, const std::nothrow_t&)noexcept;
 void operator delete[](void* ptr, const std::nothrow_t&) noexcept;
 
 void operator delete(void* ptr, s32);
@@ -47,4 +47,4 @@ void operator delete[](void* ptr, sead::Heap*, s32);
 void operator delete(void* ptr, sead::Heap*, s32, const std::nothrow_t&);
 void operator delete[](void* ptr, sead::Heap*, s32, const std::nothrow_t&);
 
-#endif // SEAD_NEW_H_
+#endif  // SEAD_NEW_H_

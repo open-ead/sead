@@ -1,8 +1,8 @@
 #ifndef SEAD_POLICIES_H_
 #define SEAD_POLICIES_H_
 
-namespace sead {
-
+namespace sead
+{
 template <typename T>
 class Policies
 {
@@ -30,8 +30,7 @@ public:
 
     struct Mtx34Base
     {
-        union
-        {
+        union {
             T m[3][4];
             T a[12];
         };
@@ -39,14 +38,13 @@ public:
 
     struct Mtx44Base
     {
-        union
-        {
+        union {
             T m[4][4];
             T a[16];
         };
     };
 };
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_POLICIES_H_
+#endif  // SEAD_POLICIES_H_

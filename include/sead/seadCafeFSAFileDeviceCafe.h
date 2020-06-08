@@ -8,21 +8,22 @@
 #include <sead/seadSafeString.hpp>
 #include <sead/types.h>
 
-namespace sead {
-
+namespace sead
+{
 class CafeFSAFileDevice : public FileDevice
 {
     SEAD_RTTI_OVERRIDE(CafeFSAFileDevice, FileDevice)
 
 public:
     CafeFSAFileDevice(const SafeString& name, const SafeString& devicePath);
-    virtual ~CafeFSAFileDevice() { }
+    virtual ~CafeFSAFileDevice() {}
 
     virtual bool doIsAvailable_() const;
     virtual FileDevice* doOpen_(FileHandle* handle, const SafeString& path, FileOpenFlag flag);
     virtual bool doClose_(FileHandle* handle);
     virtual bool doRead_(u32* bytesRead, FileHandle* handle, u8* outBuffer, u32 bytesToRead);
-    virtual bool doWrite_(u32* bytesWritten, FileHandle* handle, const u8* inBuffer, u32 bytesToWrite);
+    virtual bool doWrite_(u32* bytesWritten, FileHandle* handle, const u8* inBuffer,
+                          u32 bytesToWrite);
     virtual bool doSeek_(FileHandle* handle, s32 offset, SeekOrigin origin);
     virtual bool doGetCurrentSeekPos_(u32* seekPos, FileHandle* handle);
     virtual bool doGetFileSize_(u32* fileSize, const SafeString& path);
@@ -31,7 +32,8 @@ public:
     virtual bool doIsExistDirectory_(bool* exists, const SafeString& path);
     virtual FileDevice* doOpenDirectory_(DirectoryHandle* handle, const SafeString& path);
     virtual bool doCloseDirectory_(DirectoryHandle* handle);
-    virtual bool doReadDirectory_(u32* entriesRead, DirectoryHandle* handle, DirectoryEntry* entries, u32 entriesToRead);
+    virtual bool doReadDirectory_(u32* entriesRead, DirectoryHandle* handle,
+                                  DirectoryEntry* entries, u32 entriesToRead);
     virtual bool doMakeDirectory_(const SafeString& path, u32);
     virtual s32 doGetLastRawError_() const;
     virtual void doResolvePath_(BufferedSafeString* out, const SafeString& path) const;
@@ -55,9 +57,9 @@ class CafeContentFileDevice : public CafeFSAFileDevice
 
 public:
     CafeContentFileDevice();
-    virtual ~CafeContentFileDevice() { }
+    virtual ~CafeContentFileDevice() {}
 };
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_CAFE_FSA_FILEDEVICE_H_
+#endif  // SEAD_CAFE_FSA_FILEDEVICE_H_

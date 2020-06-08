@@ -4,7 +4,6 @@
 
 namespace
 {
-
 u32 calcHash32(const sead::SafeString& str, u32 key)
 {
     const char* str_ = str.cstr();
@@ -16,10 +15,7 @@ u32 calcHash32(const sead::SafeString& str, u32 key)
     return result;
 }
 
-s32 binarySearch_(
-    u32 hash, const sead::SharcArchiveRes::FATEntry* buffer,
-    s32 start, s32 end
-)
+s32 binarySearch_(u32 hash, const sead::SharcArchiveRes::FATEntry* buffer, s32 start, s32 end)
 {
     s32 middle;
 
@@ -49,33 +45,25 @@ s32 binarySearch_(
     }
 }
 
-} // namespace {no-name}
+}  // namespace
 
-namespace sead {
-
+namespace sead
+{
 SharcArchiveRes::SharcArchiveRes()
-    : ArchiveRes()
-    , mArchiveBlockHeader(NULL)
-    , mFATBlockHeader(NULL)
-    , mFNTBlock(NULL)
-    , mDataBlock(NULL)
+    : ArchiveRes(), mArchiveBlockHeader(NULL), mFATBlockHeader(NULL), mFNTBlock(NULL),
+      mDataBlock(NULL)
 #ifdef cafe
-    , mEndianType(Endian::cBig)
+      ,
+      mEndianType(Endian::cBig)
 #else
-    #error "Unknown platform"
-#endif // cafe
+#error "Unknown platform"
+#endif  // cafe
 {
 }
 
-SharcArchiveRes::~SharcArchiveRes()
-{
-}
+SharcArchiveRes::~SharcArchiveRes() {}
 
-void*
-SharcArchiveRes::getFileImpl_(
-    const SafeString& file_path,
-    FileInfo* file_info
-)
+void* SharcArchiveRes::getFileImpl_(const SafeString& file_path, FileInfo* file_info)
 {
     s32 id = convertPathToEntryIDImpl_(file_path);
     if (id < 0)
@@ -84,10 +72,7 @@ SharcArchiveRes::getFileImpl_(
     return getFileFastImpl_(id, file_info);
 }
 
-void*
-SharcArchiveRes::getFileFastImpl_(
-    s32 entry_id, FileInfo* file_info
-)
+void* SharcArchiveRes::getFileFastImpl_(s32 entry_id, FileInfo* file_info)
 {
     if (entry_id < 0 || entry_id >= mFATEntrys.mSize)
         return NULL;
@@ -109,10 +94,7 @@ SharcArchiveRes::getFileFastImpl_(
     return const_cast<u8*>(mDataBlock) + start;
 }
 
-s32
-SharcArchiveRes::convertPathToEntryIDImpl_(
-    const SafeString& file_path
-)
+s32 SharcArchiveRes::convertPathToEntryIDImpl_(const SafeString& file_path)
 {
     u32 hash = calcHash32(file_path, mFATBlockHeader->hash_key);
 
@@ -152,31 +134,23 @@ SharcArchiveRes::convertPathToEntryIDImpl_(
     return id;
 }
 
-bool
-SharcArchiveRes::setCurrentDirectoryImpl_(const SafeString&)
+bool SharcArchiveRes::setCurrentDirectoryImpl_(const SafeString&)
 {
     return false;
 }
 
-bool
-SharcArchiveRes::openDirectoryImpl_(
-    u32* handle, const SafeString&
-)
+bool SharcArchiveRes::openDirectoryImpl_(u32* handle, const SafeString&)
 {
     *handle = 0;
     return true;
 }
 
-bool
-SharcArchiveRes::closeDirectoryImpl_(u32* handle)
+bool SharcArchiveRes::closeDirectoryImpl_(u32* handle)
 {
     return true;
 }
 
-u32
-SharcArchiveRes::readDirectoryImpl_(
-    u32* handle, DirectoryEntry* entry, u32 num
-)
+u32 SharcArchiveRes::readDirectoryImpl_(u32* handle, DirectoryEntry* entry, u32 num)
 {
     u32 count = 0;
 
@@ -205,8 +179,7 @@ SharcArchiveRes::readDirectoryImpl_(
     return count;
 }
 
-bool
-SharcArchiveRes::prepareArchive_(const void* archive)
+bool SharcArchiveRes::prepareArchive_(const void* archive)
 {
     if (archive == NULL)
         return false;
@@ -227,7 +200,8 @@ SharcArchiveRes::prepareArchive_(const void* archive)
     if (mArchiveBlockHeader->header_size != sizeof(ArchiveBlockHeader))
         return false;
 
-    mFATBlockHeader = reinterpret_cast<const FATBlockHeader*>(archive_ + mArchiveBlockHeader->header_size);
+    mFATBlockHeader =
+        reinterpret_cast<const FATBlockHeader*>(archive_ + mArchiveBlockHeader->header_size);
     if (std::strncmp(mFATBlockHeader->signature, "SFAT", 4) != 0)
         return false;
 
@@ -239,13 +213,12 @@ SharcArchiveRes::prepareArchive_(const void* archive)
 
     mFATEntrys.setBuffer(
         mFATBlockHeader->file_num,
-        const_cast<FATEntry*>(reinterpret_cast<const FATEntry*>(archive_ + mArchiveBlockHeader->header_size + mFATBlockHeader->header_size))
-    );
+        const_cast<FATEntry*>(reinterpret_cast<const FATEntry*>(
+            archive_ + mArchiveBlockHeader->header_size + mFATBlockHeader->header_size)));
 
     const FNTBlockHeader* fnt_header = reinterpret_cast<const FNTBlockHeader*>(
-        archive_ + mArchiveBlockHeader->header_size +
-        mFATBlockHeader->header_size + mFATBlockHeader->file_num * sizeof(FATEntry)
-    );
+        archive_ + mArchiveBlockHeader->header_size + mFATBlockHeader->header_size +
+        mFATBlockHeader->file_num * sizeof(FATEntry));
     if (std::strncmp(fnt_header->signature, "SFNT", 4) != 0)
         return false;
 
@@ -253,11 +226,13 @@ SharcArchiveRes::prepareArchive_(const void* archive)
         return false;
 
     mFNTBlock = reinterpret_cast<const char*>(fnt_header) + fnt_header->header_size;
-    if (static_cast<s32>(mArchiveBlockHeader->data_block_offset) < static_cast<s32>(reinterpret_cast<size_t>(mArchiveBlockHeader) - reinterpret_cast<size_t>(mFNTBlock)))
+    if (static_cast<s32>(mArchiveBlockHeader->data_block_offset) <
+        static_cast<s32>(reinterpret_cast<size_t>(mArchiveBlockHeader) -
+                         reinterpret_cast<size_t>(mFNTBlock)))
         return false;
 
     mDataBlock = archive_ + mArchiveBlockHeader->data_block_offset;
     return true;
 }
 
-} // namespace sead
+}  // namespace sead

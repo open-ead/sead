@@ -1,27 +1,16 @@
 #include <sead/seadFileDeviceMgr.h>
 #include <sead/seadResource.h>
 
-namespace sead {
-
-Resource::Resource()
-    : TListNode<Resource>()
+namespace sead
 {
-}
+Resource::Resource() : TListNode<Resource>() {}
 
-Resource::~Resource()
-{
-}
+Resource::~Resource() {}
 
-void Resource::doPostCreate_()
-{
-}
+void Resource::doPostCreate_() {}
 
 DirectResource::DirectResource()
-    : Resource()
-    , mRawData(NULL)
-    , mRawSize(0)
-    , mBufferSize(0)
-    , mSettingFlag()
+    : Resource(), mRawData(NULL), mRawSize(0), mBufferSize(0), mSettingFlag()
 {
 }
 
@@ -36,9 +25,7 @@ s32 DirectResource::getLoadDataAlignment()
     return 4;
 }
 
-void DirectResource::doCreate_(u8*, u32, Heap*)
-{
-}
+void DirectResource::doCreate_(u8*, u32, Heap*) {}
 
 void DirectResource::create(u8* buffer, u32 bufferSize, u32 allocSize, bool allocated, Heap* heap)
 {
@@ -78,7 +65,8 @@ Resource* DirectResourceFactoryBase::create(const ResourceMgr::CreateArg& create
         return NULL;
     }
 
-    resource->create(createArg.buffer, createArg.file_size, createArg.buffer_size, createArg.need_unload, createArg.heap);
+    resource->create(createArg.buffer, createArg.file_size, createArg.buffer_size,
+                     createArg.need_unload, createArg.heap);
     return resource;
 }
 
@@ -101,7 +89,8 @@ Resource* DirectResourceFactoryBase::tryCreate(const ResourceMgr::LoadArg& loadA
         fileLoadArg.alignment = loadArg.load_data_alignment;
 
     else
-        fileLoadArg.alignment = ((loadArg.instance_alignment < 0)? -1: 1) * resource->getLoadDataAlignment();
+        fileLoadArg.alignment =
+            ((loadArg.instance_alignment < 0) ? -1 : 1) * resource->getLoadDataAlignment();
 
     if (loadArg.device != NULL)
         data = loadArg.device->tryLoad(fileLoadArg);
@@ -115,14 +104,13 @@ Resource* DirectResourceFactoryBase::tryCreate(const ResourceMgr::LoadArg& loadA
         return NULL;
     }
 
-    resource->create(data, fileLoadArg.read_size, fileLoadArg.roundup_size, fileLoadArg.need_unload, loadArg.instance_heap);
+    resource->create(data, fileLoadArg.read_size, fileLoadArg.roundup_size, fileLoadArg.need_unload,
+                     loadArg.instance_heap);
     return resource;
 }
 
-Resource*
-DirectResourceFactoryBase::tryCreateWithDecomp(
-    const ResourceMgr::LoadArg& loadArg, Decompressor* decompressor
-)
+Resource* DirectResourceFactoryBase::tryCreateWithDecomp(const ResourceMgr::LoadArg& loadArg,
+                                                         Decompressor* decompressor)
 {
     DirectResource* resource = newResource_(loadArg.instance_heap, loadArg.instance_alignment);
     if (resource == NULL)
@@ -132,10 +120,11 @@ DirectResourceFactoryBase::tryCreateWithDecomp(
     u32 outAllocSize = 0;
     bool outAllocated = false;
 
-    u8* data = decompressor->tryDecompFromDevice(loadArg, resource, &outSize, &outAllocSize, &outAllocated);
+    u8* data = decompressor->tryDecompFromDevice(loadArg, resource, &outSize, &outAllocSize,
+                                                 &outAllocated);
 
     resource->create(data, outSize, outAllocSize, outAllocated, loadArg.instance_heap);
     return resource;
 }
 
-}
+}  // namespace sead

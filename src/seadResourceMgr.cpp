@@ -2,21 +2,19 @@
 #include <sead/seadResource.h>
 #include <sead/seadResourceMgr.h>
 
-namespace sead {
-
+namespace sead
+{
 ResourceMgr* ResourceMgr::sInstance = NULL;
 ResourceMgr::SingletonDisposer_* ResourceMgr::SingletonDisposer_::sStaticDisposer = NULL;
 
 ResourceMgr::ResourceMgr()
-    : mFactoryList()
-    , mPostCreateResourceList()
-    , mDecompList()
-    , mNullResourceFactory(NULL)
+    : mFactoryList(), mPostCreateResourceList(), mDecompList(), mNullResourceFactory(NULL)
 {
     if (HeapMgr::sInstancePtr == NULL)
         return;
 
-    mNullResourceFactory = new(HeapMgr::sInstancePtr->findContainHeap(this), 4) DirectResourceFactory<DirectResource>();
+    mNullResourceFactory = new (HeapMgr::sInstancePtr->findContainHeap(this), 4)
+        DirectResourceFactory<DirectResource>();
     registerFactory(mNullResourceFactory, "");
 }
 
@@ -87,4 +85,4 @@ void ResourceMgr::unregisterDecompressor(Decompressor* decompressor)
     mDecompList.mCount -= 1;
 }
 
-} // namespace sead
+}  // namespace sead

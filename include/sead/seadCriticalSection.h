@@ -10,13 +10,13 @@
 #include <sead/seadDisposer.h>
 #include <sead/types.h>
 
-namespace sead {
-
+namespace sead
+{
 class CriticalSection : public IDisposer
 {
 public:
     CriticalSection();
-    virtual ~CriticalSection() { }
+    virtual ~CriticalSection() {}
 
     void lock();
     void unlock();
@@ -26,10 +26,10 @@ public:
 #elif defined(SWITCH)
     nn::os::MutexType mCriticalSectionInner;
 #else
-    #error "Unknown platform"
+#error "Unknown platform"
 #endif
 };
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_CRITICAL_SECTION_H_
+#endif  // SEAD_CRITICAL_SECTION_H_

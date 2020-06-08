@@ -1,13 +1,13 @@
 #include <sead/seadHeapMgr.h>
 
-#define NUM_ROOT_HEAPS_MAX         4
-#define NUM_INDEPENDENT_HEAPS_MAX  4
+#define NUM_ROOT_HEAPS_MAX 4
+#define NUM_INDEPENDENT_HEAPS_MAX 4
 
 sead::Heap* rootHeaps[NUM_ROOT_HEAPS_MAX];
 sead::Heap* independentHeaps[NUM_INDEPENDENT_HEAPS_MAX];
 
-namespace sead {
-
+namespace sead
+{
 HeapMgr* HeapMgr::sInstancePtr = NULL;
 
 HeapMgr HeapMgr::sInstance;
@@ -16,13 +16,9 @@ PtrArrayImpl HeapMgr::sRootHeaps(NUM_ROOT_HEAPS_MAX, rootHeaps);
 PtrArrayImpl HeapMgr::sIndependentHeaps(NUM_INDEPENDENT_HEAPS_MAX, independentHeaps);
 CriticalSection HeapMgr::sHeapTreeLockCS;
 
-HeapMgr::HeapMgr()
-    : mAllocFailedCallback(NULL)
-{
-}
+HeapMgr::HeapMgr() : mAllocFailedCallback(NULL) {}
 
-Heap*
-HeapMgr::findContainHeap(const void* ptr) const
+Heap* HeapMgr::findContainHeap(const void* ptr) const
 {
     Heap* containHeap;
     Heap** heapsEnd;
@@ -60,4 +56,4 @@ HeapMgr::findContainHeap(const void* ptr) const
     return NULL;
 }
 
-} // namespace sead
+}  // namespace sead

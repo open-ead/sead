@@ -2,13 +2,15 @@
 
 #include <sead/seadPolicies.h>
 
-namespace sead {
-
+namespace sead
+{
 template <typename T>
 class Matrix44CalcCommon
 {
 public:
-    static void multiply(typename Policies<T>::Mtx44Base& out, const typename Policies<T>::Mtx44Base& b, const typename Policies<T>::Mtx34Base& a)
+    static void multiply(typename Policies<T>::Mtx44Base& out,
+                         const typename Policies<T>::Mtx44Base& b,
+                         const typename Policies<T>::Mtx34Base& a)
     {
         T a_00 = a.m[0][0];
         T a_01 = a.m[0][1];
@@ -67,4 +69,4 @@ public:
     }
 };
 
-}
+}  // namespace sead

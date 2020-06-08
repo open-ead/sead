@@ -3,8 +3,8 @@
 
 #include <sead/seadListImpl.h>
 
-namespace sead {
-
+namespace sead
+{
 template <typename T>
 class TListNode;
 
@@ -12,45 +12,29 @@ template <typename T>
 class TList : public ListImpl
 {
 public:
-    TList()
-        : ListImpl()
-    {
-    }
+    TList() : ListImpl() {}
 
     // Self-defined inlines for convenience
 
-    void setAsListFor(T* item)
-    {
-        item->mList = this;
-    }
+    void setAsListFor(T* item) { item->mList = this; }
 
-    void insertFront(T* item)
-    {
-        mStartEnd.insertFront_(item);
-    }
+    void insertFront(T* item) { mStartEnd.insertFront_(item); }
 
-    TListNode<T>* root() const
-    {
-        return static_cast<TListNode<T>*>(mStartEnd.mNext);
-    }
+    TListNode<T>* root() const { return static_cast<TListNode<T>*>(mStartEnd.mNext); }
 
     static TListNode<T>* next(TListNode<T>* node)
     {
         return static_cast<TListNode<T>*>(node->mNext);
     }
 
-    bool isAtEnd(TListNode<T>* node) const
-    {
-        return node == &mStartEnd;
-    }
+    bool isAtEnd(TListNode<T>* node) const { return node == &mStartEnd; }
 };
 
 template <typename T>
 class TListNode : public ListNode
 {
 public:
-    TListNode()
-        : ListNode()
+    TListNode() : ListNode()
     {
         mData = static_cast<T*>(this);
         mList = NULL;
@@ -60,6 +44,6 @@ public:
     TList<T>* mList;
 };
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_TLIST_H_
+#endif  // SEAD_TLIST_H_

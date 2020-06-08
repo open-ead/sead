@@ -8,13 +8,12 @@ namespace sead
 {
 namespace system
 {
-
 // TODO
 void* NewImpl(Heap* heap, size_t size, s32 alignment, bool abortOnFailure);
 void DeleteImpl(void* ptr);
 
-}
-}  // namespace sead::system
+}  // namespace system
+}  // namespace sead
 
 // operator new(size_t)
 
@@ -106,7 +105,7 @@ void operator delete[](void* ptr) noexcept
     sead::system::DeleteImpl(ptr);
 }
 
-void operator delete(void* ptr, const std::nothrow_t&) noexcept
+void operator delete(void* ptr, const std::nothrow_t&)noexcept
 {
     sead::system::DeleteImpl(ptr);
 }

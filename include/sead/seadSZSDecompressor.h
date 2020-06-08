@@ -1,13 +1,13 @@
 #ifndef SEAD_SZS_DECOMPRESSOR_H_
 #define SEAD_SZS_DECOMPRESSOR_H_
 
+#include <sead/seadDecompressor.h>
 #include <sead/seadResource.h>
 #include <sead/seadResourceMgr.h>
-#include <sead/seadDecompressor.h>
 #include <sead/types.h>
 
-namespace sead {
-
+namespace sead
+{
 class SZSDecompressor : public Decompressor
 {
 public:
@@ -41,8 +41,7 @@ public:
             {
                 *this->destp = *(this->destp - this->lzOffset);
                 this->destp += 1;
-            }
-            while (--n != 0);
+            } while (--n != 0);
 
             this->step = SZSDecompressor::cStepNormal;
             return true;
@@ -61,9 +60,10 @@ public:
 
 public:
     SZSDecompressor(u32 workSize, u8* workBuffer);
-    virtual ~SZSDecompressor() { }
+    virtual ~SZSDecompressor() {}
 
-    virtual u8* tryDecompFromDevice(const ResourceMgr::LoadArg& loadArg, Resource* resource, u32* outSize, u32* outAllocSize, bool* outAllocated);
+    virtual u8* tryDecompFromDevice(const ResourceMgr::LoadArg& loadArg, Resource* resource,
+                                    u32* outSize, u32* outAllocSize, bool* outAllocated);
 
     static u32 getDecompAlignment(const void* src);
     static u32 getDecompSize(const void* src);
@@ -75,6 +75,6 @@ public:
     u8* mWorkBuffer;
 };
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_SZS_DECOMPRESSOR_H_
+#endif  // SEAD_SZS_DECOMPRESSOR_H_

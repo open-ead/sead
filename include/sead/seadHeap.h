@@ -12,11 +12,13 @@
 #include <sead/seadSafeString.hpp>
 #include <sead/types.h>
 
-namespace sead { namespace hostio {
-
+namespace sead
+{
+namespace hostio
+{
 class Context;
 
-} // namespace sead::hostio
+}  // namespace hostio
 
 class Heap : public IDisposer, public INamable
 {
@@ -27,8 +29,9 @@ public:
         cHeapDirection_Reverse = -1
     };
 
-    Heap(const SafeString& name, Heap* parent, void* address, u32 size, HeapDirection direction, bool);
-    virtual ~Heap() { }
+    Heap(const SafeString& name, Heap* parent, void* address, u32 size, HeapDirection direction,
+         bool);
+    virtual ~Heap() {}
 
     SEAD_RTTI_BASE(Heap)
 
@@ -49,27 +52,20 @@ public:
     virtual bool isResizable() const = 0;
     virtual bool isAdjustable() const = 0;
 
-    virtual void dump() const
-    {
-    }
+    virtual void dump() const {}
 
-    virtual void genInformation_(hostio::Context*)
-    {
-    }
+    virtual void genInformation_(hostio::Context*) {}
 
     void appendDisposer_(IDisposer* disposer);
     void removeDisposer_(IDisposer* disposer);
     Heap* findContainHeap_(const void* ptr);
 
-    inline void* alloc(size_t size, s32 alignment)
-    {
-        return tryAlloc(size, alignment);
-    }
+    inline void* alloc(size_t size, s32 alignment) { return tryAlloc(size, alignment); }
 
     typedef OffsetList HeapList;
     typedef OffsetList DisposerList;
 
-    void *mStart;
+    void* mStart;
     size_t mSize;
     Heap* mParent;
     HeapList mChildren;
@@ -80,6 +76,6 @@ public:
     BitFlag32 mFlag;
 };
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_HEAP_H_
+#endif  // SEAD_HEAP_H_

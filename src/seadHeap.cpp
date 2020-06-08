@@ -1,8 +1,8 @@
 #include <sead/seadHeap.h>
 #include <sead/seadHeapMgr.h>
 
-namespace sead {
-
+namespace sead
+{
 void Heap::appendDisposer_(IDisposer* disposer)
 {
     // sead::ConditionalScopedLock<sead::CriticalSection>*
@@ -37,8 +37,7 @@ void Heap::removeDisposer_(IDisposer* disposer)
         cs->unlock();
 }
 
-Heap*
-Heap::findContainHeap_(const void* ptr)
+Heap* Heap::findContainHeap_(const void* ptr)
 {
     Heap* containHeap;
 
@@ -59,7 +58,8 @@ Heap::findContainHeap_(const void* ptr)
     }
 
     u32 offset = mChildren.mOffset;
-    containHeap = reinterpret_cast<Heap*>(reinterpret_cast<size_t>(mChildren.mStartEnd.mNext) - offset);
+    containHeap =
+        reinterpret_cast<Heap*>(reinterpret_cast<size_t>(mChildren.mStartEnd.mNext) - offset);
 
     while (containHeap != mChildren.getFromOffsetR<Heap*>(&mChildren))
     {
@@ -73,7 +73,10 @@ Heap::findContainHeap_(const void* ptr)
             return containHeap;
         }
 
-        containHeap = reinterpret_cast<Heap*>(*reinterpret_cast<size_t*>(static_cast<void*>(&static_cast<IDisposer*>(containHeap)->mListNode) + offset) - offset);
+        containHeap = reinterpret_cast<Heap*>(
+            *reinterpret_cast<size_t*>(
+                static_cast<void*>(&static_cast<IDisposer*>(containHeap)->mListNode) + offset) -
+            offset);
     }
 
     if (cs != NULL)
@@ -83,4 +86,4 @@ Heap::findContainHeap_(const void* ptr)
     return this;
 }
 
-} // namespace sead
+}  // namespace sead

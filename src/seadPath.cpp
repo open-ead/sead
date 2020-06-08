@@ -1,7 +1,9 @@
 #include <sead/seadPath.h>
 
-namespace sead { namespace Path {
-
+namespace sead
+{
+namespace Path
+{
 bool getDriveName(BufferedSafeString* driveName, const SafeString& path)
 {
     driveName->trim(driveName->mBufferSize);
@@ -25,4 +27,5 @@ void getPathExceptDrive(BufferedSafeString* pathNoDrive, const SafeString& path)
         pathNoDrive->copyAt(0, path.getPart(index + 3));
 }
 
-} } // namespace sead::Path
+}  // namespace Path
+}  // namespace sead

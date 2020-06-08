@@ -3,8 +3,8 @@
 
 #include <sead/types.h>
 
-namespace sead {
-
+namespace sead
+{
 class Arena
 {
 public:
@@ -18,6 +18,6 @@ public:
     bool mInitWithStartAddress;
 };
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_ARENA_H_
+#endif  // SEAD_ARENA_H_

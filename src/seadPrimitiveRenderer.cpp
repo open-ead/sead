@@ -1,14 +1,13 @@
 #include <sead/seadPrimitiveRenderer.h>
 
-namespace sead {
-
+namespace sead
+{
 PrimitiveRenderer* PrimitiveRenderer::sInstance = NULL;
-PrimitiveRenderer::SingletonDisposer_* PrimitiveRenderer::SingletonDisposer_::sStaticDisposer = NULL;
+PrimitiveRenderer::SingletonDisposer_* PrimitiveRenderer::SingletonDisposer_::sStaticDisposer =
+    NULL;
 
 PrimitiveRenderer::PrimitiveRenderer()
-    : IDisposer()
-    , mRendererImpl(NULL)
-    , mModelMtx(Matrix34f::ident)
+    : IDisposer(), mRendererImpl(NULL), mModelMtx(Matrix34f::ident)
 {
 }
 
@@ -18,10 +17,10 @@ SEAD_DELETE_SINGLETON_INSTANCE(PrimitiveRenderer, PrimitiveRenderer::sInstance)
 void PrimitiveRenderer::doPrepare_(Heap* heap)
 {
 #ifdef cafe
-    mRendererImpl = new(heap) PrimitiveRendererCafe(heap);
+    mRendererImpl = new (heap) PrimitiveRendererCafe(heap);
 #else
-    #error "Unknown platform"
-#endif // cafe
+#error "Unknown platform"
+#endif  // cafe
 }
 
 void PrimitiveRenderer::prepareFromBinary(Heap* heap, const void* bin_data, u32 bin_size)
@@ -51,8 +50,8 @@ void PrimitiveRenderer::setModelMatrix(const Matrix34f& model_mtx)
 #ifdef cafe
     ASM_MTXCopy(const_cast<f32(*)[4]>(model_mtx.m), mModelMtx.m);
 #else
-    #error "Unknown platform"
-#endif // cafe
+#error "Unknown platform"
+#endif  // cafe
 }
 
 void PrimitiveRenderer::begin()
@@ -65,4 +64,4 @@ void PrimitiveRenderer::end()
     mRendererImpl->endImpl();
 }
 
-}
+}  // namespace sead

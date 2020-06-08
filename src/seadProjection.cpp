@@ -1,7 +1,7 @@
 #include <sead/seadProjection.h>
 
-namespace sead {
-
+namespace sead
+{
 void Projection::updateMatrixImpl_() const
 {
     if (mDirty)
@@ -27,4 +27,4 @@ const Matrix44f& Projection::getDeviceProjectionMatrix() const
     return mDeviceMatrix;
 }
 
-}
+}  // namespace sead

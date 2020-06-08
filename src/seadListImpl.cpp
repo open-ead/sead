@@ -1,7 +1,7 @@
 #include <sead/seadListImpl.h>
 
-namespace sead {
-
+namespace sead
+{
 void ListNode::insertFront_(ListNode* node)
 {
     ListNode* prev = mPrev;
@@ -26,4 +26,4 @@ void ListNode::erase_()
     this->mPrev = NULL;
 }
 
-} // namespace sead
+}  // namespace sead

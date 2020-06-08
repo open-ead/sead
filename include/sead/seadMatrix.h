@@ -4,18 +4,14 @@
 #include <sead/seadPolicies.h>
 #include <sead/types.h>
 
-namespace sead {
-
+namespace sead
+{
 template <typename T>
 struct Matrix34 : public Policies<T>::Mtx34Base
 {
-    Matrix34() { }
+    Matrix34() {}
 
-    Matrix34(
-        T _00, T _01, T _02, T _03,
-        T _10, T _11, T _12, T _13,
-        T _20, T _21, T _22, T _23
-    )
+    Matrix34(T _00, T _01, T _02, T _03, T _10, T _11, T _12, T _13, T _20, T _21, T _22, T _23)
     {
         this->m[0][0] = _00;
         this->m[0][1] = _01;
@@ -40,14 +36,10 @@ struct Matrix34 : public Policies<T>::Mtx34Base
 template <typename T>
 struct Matrix44 : public Policies<T>::Mtx44Base
 {
-    Matrix44() { }
+    Matrix44() {}
 
-    Matrix44(
-        T _00, T _01, T _02, T _03,
-        T _10, T _11, T _12, T _13,
-        T _20, T _21, T _22, T _23,
-        T _30, T _31, T _32, T _33
-    )
+    Matrix44(T _00, T _01, T _02, T _03, T _10, T _11, T _12, T _13, T _20, T _21, T _22, T _23,
+             T _30, T _31, T _32, T _33)
     {
         this->m[0][0] = _00;
         this->m[0][1] = _01;
@@ -79,4 +71,4 @@ typedef Matrix44<f32> Matrix44f;
 
 }  // namespace sead
 
-#endif // SEAD_MATRIX34_H_
+#endif  // SEAD_MATRIX34_H_

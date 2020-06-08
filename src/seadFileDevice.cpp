@@ -4,8 +4,8 @@
 #include <sead/seadNew.h>
 #include <stdlib.h>
 
-namespace sead {
-
+namespace sead
+{
 u32 FileHandle::read(u8* outBuffer, u32 bytesToRead)
 {
     if (mDevice == NULL)
@@ -22,42 +22,27 @@ FileDevice::~FileDevice()
         FileDeviceMgr::sInstance->unmount(this);
 }
 
-void
-FileDevice::traceFilePath(
-    const SafeString& path
-) const
+void FileDevice::traceFilePath(const SafeString& path) const
 {
     doTracePath_(path);
 }
 
-void
-FileDevice::traceDirectoryPath(
-    const SafeString& path
-) const
+void FileDevice::traceDirectoryPath(const SafeString& path) const
 {
     doTracePath_(path);
 }
 
-void
-FileDevice::resolveFilePath(
-    BufferedSafeString* out, const SafeString& path
-) const
+void FileDevice::resolveFilePath(BufferedSafeString* out, const SafeString& path) const
 {
     doResolvePath_(out, path);
 }
 
-void
-FileDevice::resolveDirectoryPath(
-    BufferedSafeString* out, const SafeString& path
-) const
+void FileDevice::resolveDirectoryPath(BufferedSafeString* out, const SafeString& path) const
 {
     doResolvePath_(out, path);
 }
 
-bool
-FileDevice::isMatchDevice_(
-    const HandleBase* handle
-) const
+bool FileDevice::isMatchDevice_(const HandleBase* handle) const
 {
     return handle->mDevice == this;
 }
@@ -68,14 +53,15 @@ u8* FileDevice::doLoad_(LoadArg& arg)
         return NULL;
 
     FileHandle handle;
-    if(tryOpen(&handle, arg.path, FileDevice::cFileOpenFlag_ReadOnly, arg.div_size))
+    if (tryOpen(&handle, arg.path, FileDevice::cFileOpenFlag_ReadOnly, arg.div_size))
     {
         u32 fileSize = 0;
         if (tryGetFileSize(&fileSize, &handle))
         {
             u32 bytesToRead = arg.buffer_size;
             if (bytesToRead == 0)
-                bytesToRead = MathCalcCommonS32::roundUpPow2(fileSize, FileDevice::cBufferMinAlignment);
+                bytesToRead =
+                    MathCalcCommonS32::roundUpPow2(fileSize, FileDevice::cBufferMinAlignment);
 
             else if (bytesToRead < fileSize)
                 goto return_fail;
@@ -89,7 +75,7 @@ u8* FileDevice::doLoad_(LoadArg& arg)
                 s32 alignment = abs(arg.alignment);
                 alignment = sign * ((alignment < 0x40) ? 0x40 : alignment);
 
-                buf = new(arg.heap, alignment) u8[bytesToRead];
+                buf = new (arg.heap, alignment) u8[bytesToRead];
                 allocated = true;
             }
 
@@ -112,19 +98,13 @@ return_fail:
     return NULL;
 }
 
-void
-FileDevice::doTracePath_(
-    const SafeString& path
-) const
+void FileDevice::doTracePath_(const SafeString& path) const
 {
     FixedSafeString<512> out;
     doResolvePath_(&out, path);
 }
 
-void
-FileDevice::doResolvePath_(
-    BufferedSafeString* out, const SafeString& path
-) const
+void FileDevice::doResolvePath_(BufferedSafeString* out, const SafeString& path) const
 {
     out->copy(path);
 }
@@ -145,11 +125,8 @@ u8* FileDevice::tryLoad(LoadArg& arg)
     return doLoad_(arg);
 }
 
-FileDevice*
-FileDevice::tryOpen(
-    FileHandle* handle, const SafeString& path,
-    FileOpenFlag flag, u32 divSize
-)
+FileDevice* FileDevice::tryOpen(FileHandle* handle, const SafeString& path, FileOpenFlag flag,
+                                u32 divSize)
 {
     if (!mPermission)
         return NULL;
@@ -166,8 +143,7 @@ FileDevice::tryOpen(
     return device;
 }
 
-bool
-FileDevice::tryClose(FileHandle* handle)
+bool FileDevice::tryClose(FileHandle* handle)
 {
     if (!mPermission)
         return false;
@@ -188,11 +164,7 @@ FileDevice::tryClose(FileHandle* handle)
     return closed;
 }
 
-bool
-FileDevice::tryRead(
-    u32* bytesRead, FileHandle* handle,
-    u8* outBuffer, u32 bytesToRead
-)
+bool FileDevice::tryRead(u32* bytesRead, FileHandle* handle, u8* outBuffer, u32 bytesToRead)
 {
     if (!mPermission)
         return false;
@@ -214,7 +186,8 @@ FileDevice::tryRead(
     do
     {
         u32 readSize = 0;
-        u32 size = (static_cast<s32>(bytesToRead) < handle->mDivSize) ? bytesToRead : handle->mDivSize;
+        u32 size =
+            (static_cast<s32>(bytesToRead) < handle->mDivSize) ? bytesToRead : handle->mDivSize;
 
         if (!doRead_(&readSize, handle, outBuffer, size))
         {
@@ -230,8 +203,7 @@ FileDevice::tryRead(
 
         outBuffer += readSize;
         bytesToRead -= size;
-    }
-    while(bytesToRead != 0);
+    } while (bytesToRead != 0);
 
     if (bytesRead != NULL)
         *bytesRead = totalReadSize;
@@ -239,11 +211,8 @@ FileDevice::tryRead(
     return true;
 }
 
-bool
-FileDevice::tryWrite(
-    u32* bytesWritten, FileHandle* handle,
-    const u8* inBuffer, u32 bytesToWrite
-)
+bool FileDevice::tryWrite(u32* bytesWritten, FileHandle* handle, const u8* inBuffer,
+                          u32 bytesToWrite)
 {
     if (!mPermission)
         return false;
@@ -260,11 +229,7 @@ FileDevice::tryWrite(
     return doWrite_(bytesWritten, handle, inBuffer, bytesToWrite);
 }
 
-bool
-FileDevice::trySeek(
-    FileHandle* handle, s32 offset,
-    FileDevice::SeekOrigin origin
-)
+bool FileDevice::trySeek(FileHandle* handle, s32 offset, FileDevice::SeekOrigin origin)
 {
     if (!mPermission)
         return false;
@@ -278,10 +243,7 @@ FileDevice::trySeek(
     return doSeek_(handle, offset, origin);
 }
 
-bool
-FileDevice::tryGetCurrentSeekPos(
-    u32* seekPos, FileHandle* handle
-)
+bool FileDevice::tryGetCurrentSeekPos(u32* seekPos, FileHandle* handle)
 {
     if (!mPermission)
         return false;
@@ -298,10 +260,7 @@ FileDevice::tryGetCurrentSeekPos(
     return doGetCurrentSeekPos_(seekPos, handle);
 }
 
-bool
-FileDevice::tryGetFileSize(
-    u32* fileSize, const SafeString& path
-)
+bool FileDevice::tryGetFileSize(u32* fileSize, const SafeString& path)
 {
     if (!mPermission)
         return false;
@@ -312,10 +271,7 @@ FileDevice::tryGetFileSize(
     return doGetFileSize_(fileSize, path);
 }
 
-bool
-FileDevice::tryGetFileSize(
-    u32* fileSize, FileHandle* handle
-)
+bool FileDevice::tryGetFileSize(u32* fileSize, FileHandle* handle)
 {
     if (!mPermission)
         return false;
@@ -329,10 +285,7 @@ FileDevice::tryGetFileSize(
     return doGetFileSize_(fileSize, handle);
 }
 
-bool
-FileDevice::tryIsExistFile(
-    bool* exists, const SafeString& path
-)
+bool FileDevice::tryIsExistFile(bool* exists, const SafeString& path)
 {
     if (!mPermission)
         return false;
@@ -343,10 +296,7 @@ FileDevice::tryIsExistFile(
     return doIsExistFile_(exists, path);
 }
 
-bool
-FileDevice::tryIsExistDirectory(
-    bool* exists, const SafeString& path
-)
+bool FileDevice::tryIsExistDirectory(bool* exists, const SafeString& path)
 {
     if (!mPermission)
         return false;
@@ -357,10 +307,7 @@ FileDevice::tryIsExistDirectory(
     return doIsExistDirectory_(exists, path);
 }
 
-FileDevice*
-FileDevice::tryOpenDirectory(
-    DirectoryHandle* handle, const SafeString& path
-)
+FileDevice* FileDevice::tryOpenDirectory(DirectoryHandle* handle, const SafeString& path)
 {
     if (!mPermission)
         return NULL;
@@ -376,8 +323,7 @@ FileDevice::tryOpenDirectory(
     return device;
 }
 
-bool
-FileDevice::tryCloseDirectory(DirectoryHandle* handle)
+bool FileDevice::tryCloseDirectory(DirectoryHandle* handle)
 {
     if (!mPermission)
         return false;
@@ -398,11 +344,8 @@ FileDevice::tryCloseDirectory(DirectoryHandle* handle)
     return closed;
 }
 
-bool
-FileDevice::tryReadDirectory(
-    u32* entriesRead, DirectoryHandle* handle,
-    DirectoryEntry* entries, u32 entriesToRead
-)
+bool FileDevice::tryReadDirectory(u32* entriesRead, DirectoryHandle* handle,
+                                  DirectoryEntry* entries, u32 entriesToRead)
 {
     if (!mPermission)
         return false;
@@ -425,10 +368,7 @@ FileDevice::tryReadDirectory(
     return success;
 }
 
-bool
-FileDevice::tryMakeDirectory(
-    const SafeString& path, u32 _
-)
+bool FileDevice::tryMakeDirectory(const SafeString& path, u32 _)
 {
     if (!mPermission)
         return false;
@@ -441,28 +381,19 @@ s32 FileDevice::getLastRawError() const
     return doGetLastRawError_();
 }
 
-void
-FileDevice::setFileHandleDivSize_(
-    FileHandle* handle, u32 divSize
-) const
+void FileDevice::setFileHandleDivSize_(FileHandle* handle, u32 divSize) const
 {
     handle->mDivSize = divSize;
 }
 
-void
-FileDevice::setHandleBaseFileDevice_(
-    HandleBase* handle, FileDevice* device
-) const
+void FileDevice::setHandleBaseFileDevice_(HandleBase* handle, FileDevice* device) const
 {
     handle->mDevice = device;
 }
 
-void
-FileDevice::setHandleBaseOriginalFileDevice_(
-    HandleBase* handle, FileDevice* device
-) const
+void FileDevice::setHandleBaseOriginalFileDevice_(HandleBase* handle, FileDevice* device) const
 {
     handle->mOriginalDevice = device;
 }
 
-} // namespace sead
+}  // namespace sead

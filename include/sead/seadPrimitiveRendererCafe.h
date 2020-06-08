@@ -9,8 +9,8 @@
 #include <sead/seadSafeString.hpp>
 #include <sead/seadVector.h>
 
-namespace sead {
-
+namespace sead
+{
 class Heap;
 class Camera;
 class Projection;
@@ -28,25 +28,38 @@ public:
     virtual void setProjectionImpl(const Projection& projection);
     virtual void beginImpl();
     virtual void endImpl();
-    virtual void drawQuadImpl(const Matrix34f& model_mtx, const Color4f& colorL, const Color4f& colorR);
-    virtual void drawQuadImpl(const Matrix34f& model_mtx, const Texture& texture, const Color4f& colorL, const Color4f& colorR, const Vector2f& uv_src, const Vector2f& uv_size);
-    virtual void drawBoxImpl(const Matrix34f& model_mtx, const Color4f& colorL, const Color4f& colorR);
+    virtual void drawQuadImpl(const Matrix34f& model_mtx, const Color4f& colorL,
+                              const Color4f& colorR);
+    virtual void drawQuadImpl(const Matrix34f& model_mtx, const Texture& texture,
+                              const Color4f& colorL, const Color4f& colorR, const Vector2f& uv_src,
+                              const Vector2f& uv_size);
+    virtual void drawBoxImpl(const Matrix34f& model_mtx, const Color4f& colorL,
+                             const Color4f& colorR);
     virtual void drawCubeImpl(const Matrix34f& model_mtx, const Color4f& c0, const Color4f& c1);
     virtual void drawWireCubeImpl(const Matrix34f& model_mtx, const Color4f& c0, const Color4f& c1);
     virtual void drawLineImpl(const Matrix34f& model_mtx, const Color4f& c0, const Color4f& c1);
-    virtual void drawSphere4x8Impl(const Matrix34f& model_mtx, const Color4f& north, const Color4f& south);
-    virtual void drawSphere8x16Impl(const Matrix34f& model_mtx, const Color4f& north, const Color4f& south);
-    virtual void drawDisk16Impl(const Matrix34f& model_mtx, const Color4f& center, const Color4f& edge);
-    virtual void drawDisk32Impl(const Matrix34f& model_mtx, const Color4f& center, const Color4f& edge);
+    virtual void drawSphere4x8Impl(const Matrix34f& model_mtx, const Color4f& north,
+                                   const Color4f& south);
+    virtual void drawSphere8x16Impl(const Matrix34f& model_mtx, const Color4f& north,
+                                    const Color4f& south);
+    virtual void drawDisk16Impl(const Matrix34f& model_mtx, const Color4f& center,
+                                const Color4f& edge);
+    virtual void drawDisk32Impl(const Matrix34f& model_mtx, const Color4f& center,
+                                const Color4f& edge);
     virtual void drawCircle16Impl(const Matrix34f& model_mtx, const Color4f& edge);
     virtual void drawCircle32Impl(const Matrix34f& model_mtx, const Color4f& edge);
-    virtual void drawCylinder16Impl(const Matrix34f& model_mtx, const Color4f& top, const Color4f& btm);
-    virtual void drawCylinder32Impl(const Matrix34f& model_mtx, const Color4f& top, const Color4f& btm);
+    virtual void drawCylinder16Impl(const Matrix34f& model_mtx, const Color4f& top,
+                                    const Color4f& btm);
+    virtual void drawCylinder32Impl(const Matrix34f& model_mtx, const Color4f& top,
+                                    const Color4f& btm);
 
-    virtual ~PrimitiveRendererCafe() { }
+    virtual ~PrimitiveRendererCafe() {}
 
-    void drawTriangles_(const Matrix34f& model_mtx, const Color4f& c0, const Color4f& c1, PrimitiveRendererUtil::Vertex* vtx, u32 vtx_num, u16* idx, u32 idx_num, const GX2Texture* tex);
-    void drawLines_(const Matrix34f& model_mtx, const Color4f& c0, const Color4f& c1, PrimitiveRendererUtil::Vertex* vtx, u32 vtx_num, u16* idx, u32 idx_num);
+    void drawTriangles_(const Matrix34f& model_mtx, const Color4f& c0, const Color4f& c1,
+                        PrimitiveRendererUtil::Vertex* vtx, u32 vtx_num, u16* idx, u32 idx_num,
+                        const GX2Texture* tex);
+    void drawLines_(const Matrix34f& model_mtx, const Color4f& c0, const Color4f& c1,
+                    PrimitiveRendererUtil::Vertex* vtx, u32 vtx_num, u16* idx, u32 idx_num);
 
     Matrix34f mCameraMtx;
     Matrix44f mProjectionMtx;
@@ -68,46 +81,46 @@ public:
 
     // Quad, Box
     PrimitiveRendererUtil::Vertex* mQuadVertexBuf;
-    u16*                           mQuadIndexBuf;
-    u16*                           mBoxIndexBuf;
+    u16* mQuadIndexBuf;
+    u16* mBoxIndexBuf;
 
     // Line
     PrimitiveRendererUtil::Vertex* mLineVertexBuf;
-    u16*                           mLineIndexBuf;
+    u16* mLineIndexBuf;
 
     // Cube
     PrimitiveRendererUtil::Vertex* mCubeVertexBuf;
-    u16*                           mCubeIndexBuf;
+    u16* mCubeIndexBuf;
 
     // WireCube
     PrimitiveRendererUtil::Vertex* mWireCubeVertexBuf;
-    u16*                           mWireCubeIndexBuf;
+    u16* mWireCubeIndexBuf;
 
     // SphereS
     PrimitiveRendererUtil::Vertex* mSphereSVertexBuf;
-    u16*                           mSphereSIndexBuf;
+    u16* mSphereSIndexBuf;
 
     // SphereL
     PrimitiveRendererUtil::Vertex* mSphereLVertexBuf;
-    u16*                           mSphereLIndexBuf;
+    u16* mSphereLIndexBuf;
 
     // DiskS, DiskL, CircleS, CircleL
     PrimitiveRendererUtil::Vertex* mDiskSVertexBuf;
-    u16*                           mDiskSIndexBuf;
+    u16* mDiskSIndexBuf;
     PrimitiveRendererUtil::Vertex* mDiskLVertexBuf;
-    u16*                           mDiskLIndexBuf;
-    u16*                           mCircleSIndexBuf;
-    u16*                           mCircleLIndexBuf;
+    u16* mDiskLIndexBuf;
+    u16* mCircleSIndexBuf;
+    u16* mCircleLIndexBuf;
 
     // CylinderS
     PrimitiveRendererUtil::Vertex* mCylinderSVertexBuf;
-    u16*                           mCylinderSIndexBuf;
+    u16* mCylinderSIndexBuf;
 
     // CylinderL
     PrimitiveRendererUtil::Vertex* mCylinderLVertexBuf;
-    u16*                           mCylinderLIndexBuf;
+    u16* mCylinderLIndexBuf;
 };
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_PRIMITIVE_RENDERER_H_
+#endif  // SEAD_PRIMITIVE_RENDERER_H_

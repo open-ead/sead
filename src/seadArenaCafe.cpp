@@ -1,17 +1,11 @@
 #include <cafe.h>
 #include <sead.h>
 
-namespace sead {
-
-Arena::Arena()
-    : mStart(NULL)
-    , mSize(0)
+namespace sead
 {
-}
+Arena::Arena() : mStart(NULL), mSize(0) {}
 
-Arena::~Arena()
-{
-}
+Arena::~Arena() {}
 
 u8* Arena::initialize(size_t size)
 {
@@ -26,4 +20,4 @@ u8* Arena::initialize(size_t size)
     return mStart;
 }
 
-} // namespace sead
+}  // namespace sead

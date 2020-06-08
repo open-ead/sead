@@ -8,29 +8,21 @@
 #include <sead/seadTList.h>
 #include <sead/types.h>
 
-namespace sead {
-
+namespace sead
+{
 class FileDevice;
 
 class HandleBase : public IDisposer
 {
 public:
-    HandleBase()
-        : IDisposer()
-        , mDevice(NULL)
-        , mOriginalDevice(NULL)
-        , mHandleBuffer()
-    {
-    }
+    HandleBase() : IDisposer(), mDevice(NULL), mOriginalDevice(NULL), mHandleBuffer() {}
 
-    virtual ~HandleBase() { }
+    virtual ~HandleBase() {}
 
     FileDevice* mDevice;
     FileDevice* mOriginalDevice;
-    u8 mHandleBuffer[0x20];       // HandleBuffer = SafeArray<u8, 32>
+    u8 mHandleBuffer[0x20];  // HandleBuffer = SafeArray<u8, 32>
 };
-
-
 
 class FileHandle;
 class DirectoryHandle;
@@ -59,28 +51,15 @@ public:
     struct LoadArg
     {
         LoadArg()
-            : path("")
-            , buffer(NULL)
-            , buffer_size(0)
-            , heap(NULL)
-            , alignment(0)
-            , div_size(0)
-            , read_size(0)
-            , roundup_size(0)
-            , need_unload(false)
+            : path(""), buffer(NULL), buffer_size(0), heap(NULL), alignment(0), div_size(0),
+              read_size(0), roundup_size(0), need_unload(false)
         {
         }
 
         LoadArg(const LoadArg& arg)
-            : path(arg.path)
-            , buffer(arg.buffer)
-            , buffer_size(arg.buffer_size)
-            , heap(arg.heap)
-            , alignment(arg.alignment)
-            , div_size(arg.div_size)
-            , read_size(arg.read_size)
-            , roundup_size(arg.roundup_size)
-            , need_unload(arg.need_unload)
+            : path(arg.path), buffer(arg.buffer), buffer_size(arg.buffer_size), heap(arg.heap),
+              alignment(arg.alignment), div_size(arg.div_size), read_size(arg.read_size),
+              roundup_size(arg.roundup_size), need_unload(arg.need_unload)
         {
         }
 
@@ -96,19 +75,10 @@ public:
     };
 
 public:
-    FileDevice()
-        : TListNode<FileDevice>()
-        , IDisposer()
-        , mDriveName()
-        , mPermission(true)
-    {
-    }
+    FileDevice() : TListNode<FileDevice>(), IDisposer(), mDriveName(), mPermission(true) {}
 
     FileDevice(const SafeString& name)
-        : TListNode<FileDevice>()
-        , IDisposer()
-        , mDriveName()
-        , mPermission(true)
+        : TListNode<FileDevice>(), IDisposer(), mDriveName(), mPermission(true)
     {
         mDriveName.copy(name);
     }
@@ -125,7 +95,8 @@ public:
     virtual FileDevice* doOpen_(FileHandle* handle, const SafeString& path, FileOpenFlag flag) = 0;
     virtual bool doClose_(FileHandle* handle) = 0;
     virtual bool doRead_(u32* bytesRead, FileHandle* handle, u8* outBuffer, u32 bytesToRead) = 0;
-    virtual bool doWrite_(u32* bytesWritten, FileHandle* handle, const u8* inBuffer, u32 bytesToWrite) = 0;
+    virtual bool doWrite_(u32* bytesWritten, FileHandle* handle, const u8* inBuffer,
+                          u32 bytesToWrite) = 0;
     virtual bool doSeek_(FileHandle* handle, s32 offset, SeekOrigin origin) = 0;
     virtual bool doGetCurrentSeekPos_(u32* seekPos, FileHandle* handle) = 0;
     virtual bool doGetFileSize_(u32* fileSize, const SafeString& path) = 0;
@@ -134,7 +105,8 @@ public:
     virtual bool doIsExistDirectory_(bool* exists, const SafeString& path) = 0;
     virtual FileDevice* doOpenDirectory_(DirectoryHandle* handle, const SafeString& path) = 0;
     virtual bool doCloseDirectory_(DirectoryHandle* handle) = 0;
-    virtual bool doReadDirectory_(u32* entriesRead, DirectoryHandle* handle, DirectoryEntry* entries, u32 entriesToRead) = 0;
+    virtual bool doReadDirectory_(u32* entriesRead, DirectoryHandle* handle,
+                                  DirectoryEntry* entries, u32 entriesToRead) = 0;
     virtual bool doMakeDirectory_(const SafeString& path, u32) = 0;
     virtual s32 doGetLastRawError_() const = 0;
     virtual void doTracePath_(const SafeString& path) const;
@@ -154,7 +126,8 @@ public:
     bool tryIsExistDirectory(bool* exists, const SafeString& path);
     FileDevice* tryOpenDirectory(DirectoryHandle* handle, const SafeString& path);
     bool tryCloseDirectory(DirectoryHandle* handle);
-    bool tryReadDirectory(u32* entriesRead, DirectoryHandle* handle, DirectoryEntry* entries, u32 entriesToRead);
+    bool tryReadDirectory(u32* entriesRead, DirectoryHandle* handle, DirectoryEntry* entries,
+                          u32 entriesToRead);
     bool tryMakeDirectory(const SafeString& path, u32);
     s32 getLastRawError() const;
 
@@ -176,11 +149,7 @@ public:
 class FileHandle : public HandleBase
 {
 public:
-    FileHandle()
-        : HandleBase()
-        , mDivSize(0)
-    {
-    }
+    FileHandle() : HandleBase(), mDivSize(0) {}
 
     virtual ~FileHandle()
     {
@@ -197,10 +166,7 @@ public:
 class DirectoryHandle : public HandleBase
 {
 public:
-    DirectoryHandle()
-        : HandleBase()
-    {
-    }
+    DirectoryHandle() : HandleBase() {}
 
     virtual ~DirectoryHandle()
     {
@@ -212,16 +178,12 @@ public:
 
 struct DirectoryEntry
 {
-    DirectoryEntry()
-        : name()
-        , is_directory(false)
-    {
-    }
+    DirectoryEntry() : name(), is_directory(false) {}
 
     FixedSafeString<256> name;
     bool is_directory;
 };
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_FILEDEVICE_H_
+#endif  // SEAD_FILEDEVICE_H_

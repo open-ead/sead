@@ -6,8 +6,8 @@
 #include <sead/seadSafeString.hpp>
 #include <sead/types.h>
 
-namespace sead {
-
+namespace sead
+{
 class SharcArchiveRes : public ArchiveRes
 {
     SEAD_RTTI_OVERRIDE(SharcArchiveRes, ArchiveRes)
@@ -51,13 +51,17 @@ public:
     SharcArchiveRes();
     virtual ~SharcArchiveRes();
 
-    virtual void* getFileImpl_(const SafeString& file_path, FileInfo* file_info=NULL);
+    virtual void* getFileImpl_(const SafeString& file_path, FileInfo* file_info = NULL);
     virtual void* getFileFastImpl_(s32 entry_id, FileInfo* file_info);
     virtual s32 convertPathToEntryIDImpl_(const SafeString& file_path);
     virtual bool setCurrentDirectoryImpl_(const SafeString&);
-    virtual bool openDirectoryImpl_(u32* handle, const SafeString&);                    // openDirectoryImpl_(SafeArray<u8, 32>*, const SafeString&)
-    virtual bool closeDirectoryImpl_(u32* handle);                                      // closeDirectoryImpl_(SafeArray<u8, 32>*)
-    virtual u32 readDirectoryImpl_(u32* handle, DirectoryEntry* entry, u32 num);        // readDirectoryImpl_(SafeArray<u8, 32>*, DirectoryEntry*, u32)
+    virtual bool openDirectoryImpl_(
+        u32* handle,
+        const SafeString&);  // openDirectoryImpl_(SafeArray<u8, 32>*, const SafeString&)
+    virtual bool closeDirectoryImpl_(u32* handle);  // closeDirectoryImpl_(SafeArray<u8, 32>*)
+    virtual u32
+    readDirectoryImpl_(u32* handle, DirectoryEntry* entry,
+                       u32 num);  // readDirectoryImpl_(SafeArray<u8, 32>*, DirectoryEntry*, u32)
     virtual bool prepareArchive_(const void* archive);
 
     static const u32 cArchiveVersion = 0x100;
@@ -72,6 +76,6 @@ public:
     Endian::Types mEndianType;
 };
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_SHARC_ARCHIVE_RES_H_
+#endif  // SEAD_SHARC_ARCHIVE_RES_H_

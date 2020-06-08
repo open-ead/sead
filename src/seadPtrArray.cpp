@@ -1,7 +1,7 @@
 #include <sead/seadPtrArray.h>
 
-namespace sead {
-
+namespace sead
+{
 void PtrArrayImpl::setBuffer(s32 ptrNumMax, void* buf)
 {
     if (ptrNumMax < 1)
@@ -15,4 +15,4 @@ void PtrArrayImpl::setBuffer(s32 ptrNumMax, void* buf)
     mPtrNum = 0;
 }
 
-} // namespace sead
+}  // namespace sead

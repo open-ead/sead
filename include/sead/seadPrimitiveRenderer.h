@@ -7,8 +7,8 @@
 #include <sead/seadSafeString.hpp>
 #include <sead/seadVector.h>
 
-namespace sead {
-
+namespace sead
+{
 class Heap;
 class Camera;
 class Projection;
@@ -23,20 +23,31 @@ public:
     virtual void setProjectionImpl(const Projection& projection) = 0;
     virtual void beginImpl() = 0;
     virtual void endImpl() = 0;
-    virtual void drawQuadImpl(const Matrix34f& model_mtx, const Color4f& colorL, const Color4f& colorR) = 0;
-    virtual void drawQuadImpl(const Matrix34f& model_mtx, const Texture& texture, const Color4f& colorL, const Color4f& colorR, const Vector2f& uv_src, const Vector2f& uv_size) = 0;
-    virtual void drawBoxImpl(const Matrix34f& model_mtx, const Color4f& colorL, const Color4f& colorR) = 0;
+    virtual void drawQuadImpl(const Matrix34f& model_mtx, const Color4f& colorL,
+                              const Color4f& colorR) = 0;
+    virtual void drawQuadImpl(const Matrix34f& model_mtx, const Texture& texture,
+                              const Color4f& colorL, const Color4f& colorR, const Vector2f& uv_src,
+                              const Vector2f& uv_size) = 0;
+    virtual void drawBoxImpl(const Matrix34f& model_mtx, const Color4f& colorL,
+                             const Color4f& colorR) = 0;
     virtual void drawCubeImpl(const Matrix34f& model_mtx, const Color4f& c0, const Color4f& c1) = 0;
-    virtual void drawWireCubeImpl(const Matrix34f& model_mtx, const Color4f& c0, const Color4f& c1) = 0;
+    virtual void drawWireCubeImpl(const Matrix34f& model_mtx, const Color4f& c0,
+                                  const Color4f& c1) = 0;
     virtual void drawLineImpl(const Matrix34f& model_mtx, const Color4f& c0, const Color4f& c1) = 0;
-    virtual void drawSphere4x8Impl(const Matrix34f& model_mtx, const Color4f& north, const Color4f& south) = 0;
-    virtual void drawSphere8x16Impl(const Matrix34f& model_mtx, const Color4f& north, const Color4f& south) = 0;
-    virtual void drawDisk16Impl(const Matrix34f& model_mtx, const Color4f& center, const Color4f& edge) = 0;
-    virtual void drawDisk32Impl(const Matrix34f& model_mtx, const Color4f& center, const Color4f& edge) = 0;
+    virtual void drawSphere4x8Impl(const Matrix34f& model_mtx, const Color4f& north,
+                                   const Color4f& south) = 0;
+    virtual void drawSphere8x16Impl(const Matrix34f& model_mtx, const Color4f& north,
+                                    const Color4f& south) = 0;
+    virtual void drawDisk16Impl(const Matrix34f& model_mtx, const Color4f& center,
+                                const Color4f& edge) = 0;
+    virtual void drawDisk32Impl(const Matrix34f& model_mtx, const Color4f& center,
+                                const Color4f& edge) = 0;
     virtual void drawCircle16Impl(const Matrix34f& model_mtx, const Color4f& edge) = 0;
     virtual void drawCircle32Impl(const Matrix34f& model_mtx, const Color4f& edge) = 0;
-    virtual void drawCylinder16Impl(const Matrix34f& model_mtx, const Color4f& top, const Color4f& btm) = 0;
-    virtual void drawCylinder32Impl(const Matrix34f& model_mtx, const Color4f& top, const Color4f& btm) = 0;
+    virtual void drawCylinder16Impl(const Matrix34f& model_mtx, const Color4f& top,
+                                    const Color4f& btm) = 0;
+    virtual void drawCylinder32Impl(const Matrix34f& model_mtx, const Color4f& top,
+                                    const Color4f& btm) = 0;
 };
 
 class PrimitiveRenderer : public IDisposer
@@ -48,16 +59,13 @@ public:
     {
     public:
         QuadArg()
-            : mCenter(Vector3f::zero)
-            , mSize(Vector2f::zero)
-            , mColor0(Color4f::cWhite)
-            , mColor1(Color4f::cWhite)
-            , mHorizontal(false)
+            : mCenter(Vector3f::zero), mSize(Vector2f::zero), mColor0(Color4f::cWhite),
+              mColor1(Color4f::cWhite), mHorizontal(false)
         {
         }
 
         void setCornerAndSize(const Vector3f&, const Vector2f&);
-        //void setBoundBox(const BoundBox2f&, float);
+        // void setBoundBox(const BoundBox2f&, float);
         void setColor(const Color4f&, const Color4f&);
         void setColorHorizontal(const Color4f&, const Color4f&);
 
@@ -72,14 +80,14 @@ public:
     {
     public:
         void setCornerAndSize(const Vector3f&, const Vector3f&);
-        //void setBoundBox(const BoundBox3f&);
+        // void setBoundBox(const BoundBox3f&);
     };
 
     struct UVArg;
 
 public:
     PrimitiveRenderer();
-    virtual ~PrimitiveRenderer() { }
+    virtual ~PrimitiveRenderer() {}
 
     void prepareFromBinary(Heap* heap, const void* bin_data, u32 bin_size);
     void prepare(Heap* heap, const SafeString& path);
@@ -137,6 +145,6 @@ private:
     Matrix34f mModelMtx;
 };
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_PRIMITIVE_RENDERER_H_
+#endif  // SEAD_PRIMITIVE_RENDERER_H_

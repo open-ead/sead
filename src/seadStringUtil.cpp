@@ -4,8 +4,10 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-namespace sead { namespace StringUtil {
-
+namespace sead
+{
+namespace StringUtil
+{
 s32 vsw16printf(char16* s, size_t n, const char16* formatStr, va_list args)
 {
     if (n == 0)
@@ -19,4 +21,5 @@ s32 vsw16printf(char16* s, size_t n, const char16* formatStr, va_list args)
     // return std::vswprintf(s, n, formatStr, args);
 }
 
-} } // namespace sead::StringUtil
+}  // namespace StringUtil
+}  // namespace sead

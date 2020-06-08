@@ -6,11 +6,10 @@
 #endif  // cafe
 #include <sead/seadSafeString.h>
 
-namespace sead {
-
+namespace sead
+{
 template <typename T>
-inline s32
-SafeStringBase<T>::calcLength() const
+inline s32 SafeStringBase<T>::calcLength() const
 {
     assureTerminationImpl_();
     s32 length = 0;
@@ -30,8 +29,7 @@ SafeStringBase<T>::calcLength() const
 }
 
 template <typename T>
-inline bool
-SafeStringBase<T>::isEqual(const SafeStringBase<T>& str) const
+inline bool SafeStringBase<T>::isEqual(const SafeStringBase<T>& str) const
 {
     assureTerminationImpl_();
     if (cstr() == str.cstr())
@@ -50,8 +48,7 @@ SafeStringBase<T>::isEqual(const SafeStringBase<T>& str) const
 }
 
 template <typename T>
-inline s32
-SafeStringBase<T>::comparen(const SafeStringBase<T>& str, s32 n) const
+inline s32 SafeStringBase<T>::comparen(const SafeStringBase<T>& str, s32 n) const
 {
     assureTerminationImpl_();
     if (cstr() == str.cstr())
@@ -82,8 +79,7 @@ SafeStringBase<T>::comparen(const SafeStringBase<T>& str, s32 n) const
 }
 
 template <typename T>
-inline s32
-SafeStringBase<T>::findIndex(const SafeStringBase<T>& str) const
+inline s32 SafeStringBase<T>::findIndex(const SafeStringBase<T>& str) const
 {
     s32 len = calcLength();
     s32 subStrLen = str.calcLength();
@@ -96,8 +92,7 @@ SafeStringBase<T>::findIndex(const SafeStringBase<T>& str) const
 }
 
 template <typename T>
-inline s32
-BufferedSafeStringBase<T>::copy(const SafeStringBase<T>& src, s32 copyLength)
+inline s32 BufferedSafeStringBase<T>::copy(const SafeStringBase<T>& src, s32 copyLength)
 {
     T* dst = getMutableStringTop_();
     const T* csrc = src.cstr();
@@ -117,8 +112,7 @@ BufferedSafeStringBase<T>::copy(const SafeStringBase<T>& src, s32 copyLength)
 }
 
 template <typename T>
-inline s32
-BufferedSafeStringBase<T>::copyAt(s32 at, const SafeStringBase<T>& src, s32 copyLength)
+inline s32 BufferedSafeStringBase<T>::copyAt(s32 at, const SafeStringBase<T>& src, s32 copyLength)
 {
     T* dst = getMutableStringTop_();
     s32 len = this->calcLength();
@@ -147,8 +141,7 @@ BufferedSafeStringBase<T>::copyAt(s32 at, const SafeStringBase<T>& src, s32 copy
 }
 
 template <typename T>
-inline s32
-BufferedSafeStringBase<T>::trim(s32 trimLength)
+inline s32 BufferedSafeStringBase<T>::trim(s32 trimLength)
 {
     if (trimLength >= mBufferSize)
         return this->calcLength();
@@ -162,4 +155,4 @@ BufferedSafeStringBase<T>::trim(s32 trimLength)
     return trimLength;
 }
 
-} // namespace sead
+}  // namespace sead

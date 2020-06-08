@@ -1,20 +1,13 @@
 #include <cafe.h>
 #include <sead.h>
 
-namespace sead {
-
-CafeFSAFileDevice::CafeFSAFileDevice(
-    const SafeString& name, const SafeString& devicePath
-)
-    : FileDevice(name)
-    , devicePath(devicePath.cstr())
-    , status(FS_STATUS_OK)
-    , openErrHandling(FS_RET_PERMISSION_ERROR | FS_RET_ACCESS_ERROR |
-                      FS_RET_NOT_FILE | FS_RET_NOT_FOUND |
-                      FS_RET_ALREADY_OPEN)
-    , closeErrHandling(FS_RET_NO_ERROR)
-    , readErrHandling(FS_RET_NO_ERROR)
-    , client(NULL)
+namespace sead
+{
+CafeFSAFileDevice::CafeFSAFileDevice(const SafeString& name, const SafeString& devicePath)
+    : FileDevice(name), devicePath(devicePath.cstr()), status(FS_STATUS_OK),
+      openErrHandling(FS_RET_PERMISSION_ERROR | FS_RET_ACCESS_ERROR | FS_RET_NOT_FILE |
+                      FS_RET_NOT_FOUND | FS_RET_ALREADY_OPEN),
+      closeErrHandling(FS_RET_NO_ERROR), readErrHandling(FS_RET_NO_ERROR), client(NULL)
 {
 }
 
@@ -23,11 +16,8 @@ bool CafeFSAFileDevice::doIsAvailable_() const
     return true;
 }
 
-FileDevice*
-CafeFSAFileDevice::doOpen_(
-    FileHandle* handle, const SafeString& path,
-    FileDevice::FileOpenFlag flag
-)
+FileDevice* CafeFSAFileDevice::doOpen_(FileHandle* handle, const SafeString& path,
+                                       FileDevice::FileOpenFlag flag)
 {
     FSCmdBlock block;
     FSInitCmdBlock(&block);
@@ -69,8 +59,7 @@ CafeFSAFileDevice::doOpen_(
     return this;
 }
 
-bool
-CafeFSAFileDevice::doClose_(FileHandle* handle)
+bool CafeFSAFileDevice::doClose_(FileHandle* handle)
 {
     FSCmdBlock block;
     FSInitCmdBlock(&block);
@@ -81,11 +70,7 @@ CafeFSAFileDevice::doClose_(FileHandle* handle)
     return FSCloseFile(client_, &block, *fsHandle, closeErrHandling) == FS_STATUS_OK;
 }
 
-bool
-CafeFSAFileDevice::doRead_(
-    u32* bytesRead, FileHandle* handle,
-    u8* outBuffer, u32 bytesToRead
-)
+bool CafeFSAFileDevice::doRead_(u32* bytesRead, FileHandle* handle, u8* outBuffer, u32 bytesToRead)
 {
     FSCmdBlock block;
     FSInitCmdBlock(&block);
@@ -93,7 +78,8 @@ CafeFSAFileDevice::doRead_(
     FSClient* client_ = getUsableFSClient_();
     FSFileHandle* fsHandle = getFileHandleInner_(handle);
 
-    s32 status = FSReadFile(client_, &block, outBuffer, sizeof(u8), bytesToRead, *fsHandle, 0, readErrHandling);
+    s32 status = FSReadFile(client_, &block, outBuffer, sizeof(u8), bytesToRead, *fsHandle, 0,
+                            readErrHandling);
     if (status >= 0)
     {
         this->status = FS_STATUS_OK;
@@ -109,11 +95,8 @@ CafeFSAFileDevice::doRead_(
     return false;
 }
 
-bool
-CafeFSAFileDevice::doWrite_(
-    u32* bytesWritten, FileHandle* handle,
-    const u8* inBuffer, u32 bytesToWrite
-)
+bool CafeFSAFileDevice::doWrite_(u32* bytesWritten, FileHandle* handle, const u8* inBuffer,
+                                 u32 bytesToWrite)
 {
     FSCmdBlock block;
     FSInitCmdBlock(&block);
@@ -121,7 +104,8 @@ CafeFSAFileDevice::doWrite_(
     FSClient* client_ = getUsableFSClient_();
     FSFileHandle* fsHandle = getFileHandleInner_(handle);
 
-    s32 status = FSWriteFile(client_, &block, inBuffer, sizeof(const u8), bytesToWrite, *fsHandle, 0, FS_RET_STORAGE_FULL | FS_RET_FILE_TOO_BIG);
+    s32 status = FSWriteFile(client_, &block, inBuffer, sizeof(const u8), bytesToWrite, *fsHandle,
+                             0, FS_RET_STORAGE_FULL | FS_RET_FILE_TOO_BIG);
     if (status >= 0)
     {
         this->status = FS_STATUS_OK;
@@ -137,10 +121,7 @@ CafeFSAFileDevice::doWrite_(
     return false;
 }
 
-bool
-CafeFSAFileDevice::doSeek_(
-    FileHandle* handle, s32 offset, FileDevice::SeekOrigin origin
-)
+bool CafeFSAFileDevice::doSeek_(FileHandle* handle, s32 offset, FileDevice::SeekOrigin origin)
 {
     FSCmdBlock block;
     FSInitCmdBlock(&block);
@@ -159,7 +140,7 @@ CafeFSAFileDevice::doSeek_(
         else
         {
             u32 fileSize = 0;
-            if(!doGetFileSize_(&fileSize, handle))
+            if (!doGetFileSize_(&fileSize, handle))
                 return false;
 
             offset += fileSize;
@@ -174,19 +155,13 @@ CafeFSAFileDevice::doSeek_(
     return true;
 }
 
-bool
-CafeFSAFileDevice::doGetCurrentSeekPos_(
-    u32* seekPos, FileHandle* handle
-)
+bool CafeFSAFileDevice::doGetCurrentSeekPos_(u32* seekPos, FileHandle* handle)
 {
     *seekPos = getFileHandleInner_(handle)[1];
     return true;
 }
 
-bool
-CafeFSAFileDevice::doGetFileSize_(
-    u32* fileSize, const SafeString& path
-)
+bool CafeFSAFileDevice::doGetFileSize_(u32* fileSize, const SafeString& path)
 {
     FSCmdBlock block;
     FSInitCmdBlock(&block);
@@ -205,10 +180,7 @@ CafeFSAFileDevice::doGetFileSize_(
     return true;
 }
 
-bool
-CafeFSAFileDevice::doGetFileSize_(
-    u32* fileSize, FileHandle* handle
-)
+bool CafeFSAFileDevice::doGetFileSize_(u32* fileSize, FileHandle* handle)
 {
     FSCmdBlock block;
     FSInitCmdBlock(&block);
@@ -225,10 +197,7 @@ CafeFSAFileDevice::doGetFileSize_(
     return true;
 }
 
-bool
-CafeFSAFileDevice::doIsExistFile_(
-    bool* exists, const SafeString& path
-)
+bool CafeFSAFileDevice::doIsExistFile_(bool* exists, const SafeString& path)
 {
     FSCmdBlock block;
     FSInitCmdBlock(&block);
@@ -239,7 +208,8 @@ CafeFSAFileDevice::doIsExistFile_(
     FixedSafeString<FS_MAX_ENTNAME_SIZE> fullPath;
     formatPathForFSA_(&fullPath, path);
 
-    FSStatus status = FSGetStat(client_, &block, fullPath.cstr(), &stat, FS_RET_PERMISSION_ERROR | FS_RET_NOT_FOUND);
+    FSStatus status = FSGetStat(client_, &block, fullPath.cstr(), &stat,
+                                FS_RET_PERMISSION_ERROR | FS_RET_NOT_FOUND);
     if (this->status = status, status != FS_STATUS_OK)
     {
         if (status != FS_STATUS_NOT_FOUND)
@@ -254,10 +224,7 @@ CafeFSAFileDevice::doIsExistFile_(
     return true;
 }
 
-bool
-CafeFSAFileDevice::doIsExistDirectory_(
-    bool* exists, const SafeString& path
-)
+bool CafeFSAFileDevice::doIsExistDirectory_(bool* exists, const SafeString& path)
 {
     FSCmdBlock block;
     FSInitCmdBlock(&block);
@@ -268,7 +235,8 @@ CafeFSAFileDevice::doIsExistDirectory_(
     FixedSafeString<FS_MAX_ENTNAME_SIZE> fullPath;
     formatPathForFSA_(&fullPath, path);
 
-    FSStatus status = FSGetStat(client_, &block, fullPath.cstr(), &stat, FS_RET_PERMISSION_ERROR | FS_RET_NOT_FOUND);
+    FSStatus status = FSGetStat(client_, &block, fullPath.cstr(), &stat,
+                                FS_RET_PERMISSION_ERROR | FS_RET_NOT_FOUND);
     if (this->status = status, status != FS_STATUS_OK)
     {
         if (status != FS_STATUS_NOT_FOUND)
@@ -283,10 +251,7 @@ CafeFSAFileDevice::doIsExistDirectory_(
     return true;
 }
 
-FileDevice*
-CafeFSAFileDevice::doOpenDirectory_(
-    DirectoryHandle* handle, const SafeString& path
-)
+FileDevice* CafeFSAFileDevice::doOpenDirectory_(DirectoryHandle* handle, const SafeString& path)
 {
     FSCmdBlock block;
     FSInitCmdBlock(&block);
@@ -297,8 +262,9 @@ CafeFSAFileDevice::doOpenDirectory_(
     FixedSafeString<FS_MAX_ENTNAME_SIZE> fullPath;
     formatPathForFSA_(&fullPath, path);
 
-    FSStatus status = FSOpenDir(client_, &block, fullPath.cstr(), fsHandle, FS_RET_PERMISSION_ERROR | FS_RET_ACCESS_ERROR |
-                                                                             FS_RET_NOT_DIR | FS_RET_NOT_FOUND | FS_RET_ALREADY_OPEN);
+    FSStatus status = FSOpenDir(client_, &block, fullPath.cstr(), fsHandle,
+                                FS_RET_PERMISSION_ERROR | FS_RET_ACCESS_ERROR | FS_RET_NOT_DIR |
+                                    FS_RET_NOT_FOUND | FS_RET_ALREADY_OPEN);
 
     if (this->status = status, status != FS_STATUS_OK)
         return NULL;
@@ -306,10 +272,7 @@ CafeFSAFileDevice::doOpenDirectory_(
     return this;
 }
 
-bool
-CafeFSAFileDevice::doCloseDirectory_(
-    DirectoryHandle* handle
-)
+bool CafeFSAFileDevice::doCloseDirectory_(DirectoryHandle* handle)
 {
     FSCmdBlock block;
     FSInitCmdBlock(&block);
@@ -317,14 +280,12 @@ CafeFSAFileDevice::doCloseDirectory_(
     FSClient* client_ = getUsableFSClient_();
     FSDirHandle* fsHandle = getDirHandleInner_(handle);
 
-    return (status = FSCloseDir(client_, &block, *fsHandle, FS_RET_NO_ERROR), status == FS_STATUS_OK);
+    return (status = FSCloseDir(client_, &block, *fsHandle, FS_RET_NO_ERROR),
+            status == FS_STATUS_OK);
 }
 
-bool
-CafeFSAFileDevice::doReadDirectory_(
-    u32* entriesRead, DirectoryHandle* handle,
-    DirectoryEntry* entries, u32 entriesToRead
-)
+bool CafeFSAFileDevice::doReadDirectory_(u32* entriesRead, DirectoryHandle* handle,
+                                         DirectoryEntry* entries, u32 entriesToRead)
 {
     FSCmdBlock block;
     FSInitCmdBlock(&block);
@@ -360,10 +321,7 @@ CafeFSAFileDevice::doReadDirectory_(
     return true;
 }
 
-bool
-CafeFSAFileDevice::doMakeDirectory_(
-    const SafeString& path, u32
-)
+bool CafeFSAFileDevice::doMakeDirectory_(const SafeString& path, u32)
 {
     FSCmdBlock block;
     FSInitCmdBlock(&block);
@@ -373,9 +331,10 @@ CafeFSAFileDevice::doMakeDirectory_(
     FixedSafeString<FS_MAX_ENTNAME_SIZE> fullPath;
     formatPathForFSA_(&fullPath, path);
 
-    return (status = FSMakeDir(client_, &block, fullPath.cstr(), FS_RET_JOURNAL_FULL | FS_RET_STORAGE_FULL |
-                                                                  FS_RET_PERMISSION_ERROR | FS_RET_NOT_FOUND), status == FS_STATUS_OK);
-
+    return (status = FSMakeDir(client_, &block, fullPath.cstr(),
+                               FS_RET_JOURNAL_FULL | FS_RET_STORAGE_FULL | FS_RET_PERMISSION_ERROR |
+                                   FS_RET_NOT_FOUND),
+            status == FS_STATUS_OK);
 }
 
 s32 CafeFSAFileDevice::doGetLastRawError_() const
@@ -383,48 +342,32 @@ s32 CafeFSAFileDevice::doGetLastRawError_() const
     return status;
 }
 
-void
-CafeFSAFileDevice::doResolvePath_(
-    BufferedSafeString* out, const SafeString& path
-) const
+void CafeFSAFileDevice::doResolvePath_(BufferedSafeString* out, const SafeString& path) const
 {
     formatPathForFSA_(out, path);
 }
 
-void
-CafeFSAFileDevice::formatPathForFSA_(
-    BufferedSafeString* out, const SafeString& path
-) const
+void CafeFSAFileDevice::formatPathForFSA_(BufferedSafeString* out, const SafeString& path) const
 {
     out->format("%s/%s", devicePath, path.cstr());
 }
 
-FSClient*
-CafeFSAFileDevice::getUsableFSClient_() const
+FSClient* CafeFSAFileDevice::getUsableFSClient_() const
 {
     if (client == NULL)
         return &FileDeviceMgr::sInstance->client;
 
     return client;
 }
-FSFileHandle*
-CafeFSAFileDevice::getFileHandleInner_(
-    FileHandle* handle
-)
+FSFileHandle* CafeFSAFileDevice::getFileHandleInner_(FileHandle* handle)
 {
     return reinterpret_cast<FSFileHandle*>(getHandleBaseHandleBuffer_(handle));
 }
-FSDirHandle*
-CafeFSAFileDevice::getDirHandleInner_(
-    DirectoryHandle* handle
-)
+FSDirHandle* CafeFSAFileDevice::getDirHandleInner_(DirectoryHandle* handle)
 {
     return reinterpret_cast<FSDirHandle*>(getHandleBaseHandleBuffer_(handle));
 }
 
-CafeContentFileDevice::CafeContentFileDevice()
-    : CafeFSAFileDevice("content", FS_CONTENT_DIR)
-{
-}
+CafeContentFileDevice::CafeContentFileDevice() : CafeFSAFileDevice("content", FS_CONTENT_DIR) {}
 
-} // namespace sead
+}  // namespace sead

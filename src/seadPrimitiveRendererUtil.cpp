@@ -2,21 +2,19 @@
 #include <cstring>
 #include <sead/seadPrimitiveRendererUtil.h>
 
-namespace sead { namespace PrimitiveRendererUtil {
-
+namespace sead
+{
+namespace PrimitiveRendererUtil
+{
 void setQuadVertex(Vertex* vtx, u16* idx)
 {
     static const Vertex cVtx[4] = {
-        Vertex( Vector3f(-0.5f,  0.5f, 0.0f), Vector2f(0.0f, 1.0f), Color4f(0.0f, 0.0f, 0.0f, 0.0f) ),
-        Vertex( Vector3f( 0.5f,  0.5f, 0.0f), Vector2f(1.0f, 1.0f), Color4f(0.0f, 0.0f, 0.0f, 0.0f) ),
-        Vertex( Vector3f(-0.5f, -0.5f, 0.0f), Vector2f(0.0f, 0.0f), Color4f(1.0f, 0.0f, 0.0f, 0.0f) ),
-        Vertex( Vector3f( 0.5f, -0.5f, 0.0f), Vector2f(1.0f, 0.0f), Color4f(1.0f, 0.0f, 0.0f, 0.0f) )
-    };
+        Vertex(Vector3f(-0.5f, 0.5f, 0.0f), Vector2f(0.0f, 1.0f), Color4f(0.0f, 0.0f, 0.0f, 0.0f)),
+        Vertex(Vector3f(0.5f, 0.5f, 0.0f), Vector2f(1.0f, 1.0f), Color4f(0.0f, 0.0f, 0.0f, 0.0f)),
+        Vertex(Vector3f(-0.5f, -0.5f, 0.0f), Vector2f(0.0f, 0.0f), Color4f(1.0f, 0.0f, 0.0f, 0.0f)),
+        Vertex(Vector3f(0.5f, -0.5f, 0.0f), Vector2f(1.0f, 0.0f), Color4f(1.0f, 0.0f, 0.0f, 0.0f))};
 
-    static const u16 cIdx[6] = {
-        0, 2, 1,
-        1, 2, 3
-    };
+    static const u16 cIdx[6] = {0, 2, 1, 1, 2, 3};
 
     if (vtx != NULL)
         memcpy(vtx, cVtx, sizeof(cVtx));
@@ -28,13 +26,10 @@ void setQuadVertex(Vertex* vtx, u16* idx)
 void setLineVertex(Vertex* vtx, u16* idx)
 {
     static const Vertex cVtx[2] = {
-        Vertex( Vector3f(-0.5f,  0.0f, 0.0f), Vector2f(0.0f, 0.5f), Color4f(0.0f, 0.0f, 0.0f, 0.0f) ),
-        Vertex( Vector3f( 0.5f,  0.0f, 0.0f), Vector2f(1.0f, 0.5f), Color4f(1.0f, 0.0f, 0.0f, 0.0f) )
-    };
+        Vertex(Vector3f(-0.5f, 0.0f, 0.0f), Vector2f(0.0f, 0.5f), Color4f(0.0f, 0.0f, 0.0f, 0.0f)),
+        Vertex(Vector3f(0.5f, 0.0f, 0.0f), Vector2f(1.0f, 0.5f), Color4f(1.0f, 0.0f, 0.0f, 0.0f))};
 
-    static const u16 cIdx[2] = {
-        0, 1
-    };
+    static const u16 cIdx[2] = {0, 1};
 
     if (vtx != NULL)
         memcpy(vtx, cVtx, sizeof(cVtx));
@@ -46,27 +41,23 @@ void setLineVertex(Vertex* vtx, u16* idx)
 void setCubeVertex(Vertex* vtx, u16* idx)
 {
     static const Vertex cVtx[8] = {
-        Vertex( Vector3f(-0.5f, -0.5f, -0.5f), Vector2f(0.0f, 0.0f), Color4f(1.0f / 3.0f, 0.0f, 0.0f, 0.0f) ),
-        Vertex( Vector3f(-0.5f,  0.5f, -0.5f), Vector2f(0.0f, 1.0f), Color4f(       0.0f, 0.0f, 0.0f, 0.0f) ),
-        Vertex( Vector3f(-0.5f,  0.5f,  0.5f), Vector2f(1.0f, 1.0f), Color4f(1.0f / 3.0f, 0.0f, 0.0f, 0.0f) ),
-        Vertex( Vector3f(-0.5f, -0.5f,  0.5f), Vector2f(1.0f, 0.0f), Color4f(2.0f / 3.0f, 0.0f, 0.0f, 0.0f) ),
-        Vertex( Vector3f( 0.5f, -0.5f,  0.5f), Vector2f(0.0f, 0.0f), Color4f(       1.0f, 0.0f, 0.0f, 0.0f) ),
-        Vertex( Vector3f( 0.5f,  0.5f,  0.5f), Vector2f(0.0f, 1.0f), Color4f(2.0f / 3.0f, 0.0f, 0.0f, 0.0f) ),
-        Vertex( Vector3f( 0.5f,  0.5f, -0.5f), Vector2f(1.0f, 1.0f), Color4f(1.0f / 3.0f, 0.0f, 0.0f, 0.0f) ),
-        Vertex( Vector3f( 0.5f, -0.5f, -0.5f), Vector2f(1.0f, 0.0f), Color4f(2.0f / 3.0f, 0.0f, 0.0f, 0.0f) )
-    };
+        Vertex(Vector3f(-0.5f, -0.5f, -0.5f), Vector2f(0.0f, 0.0f),
+               Color4f(1.0f / 3.0f, 0.0f, 0.0f, 0.0f)),
+        Vertex(Vector3f(-0.5f, 0.5f, -0.5f), Vector2f(0.0f, 1.0f), Color4f(0.0f, 0.0f, 0.0f, 0.0f)),
+        Vertex(Vector3f(-0.5f, 0.5f, 0.5f), Vector2f(1.0f, 1.0f),
+               Color4f(1.0f / 3.0f, 0.0f, 0.0f, 0.0f)),
+        Vertex(Vector3f(-0.5f, -0.5f, 0.5f), Vector2f(1.0f, 0.0f),
+               Color4f(2.0f / 3.0f, 0.0f, 0.0f, 0.0f)),
+        Vertex(Vector3f(0.5f, -0.5f, 0.5f), Vector2f(0.0f, 0.0f), Color4f(1.0f, 0.0f, 0.0f, 0.0f)),
+        Vertex(Vector3f(0.5f, 0.5f, 0.5f), Vector2f(0.0f, 1.0f),
+               Color4f(2.0f / 3.0f, 0.0f, 0.0f, 0.0f)),
+        Vertex(Vector3f(0.5f, 0.5f, -0.5f), Vector2f(1.0f, 1.0f),
+               Color4f(1.0f / 3.0f, 0.0f, 0.0f, 0.0f)),
+        Vertex(Vector3f(0.5f, -0.5f, -0.5f), Vector2f(1.0f, 0.0f),
+               Color4f(2.0f / 3.0f, 0.0f, 0.0f, 0.0f))};
 
-    static const u16 cIdx[36] = {
-        2, 1, 0, 3,
-        2, 0, 5, 2,
-        3, 4, 5, 3,
-        6, 5, 7, 7,
-        5, 4, 1, 6,
-        0, 6, 7, 0,
-        0, 7, 3, 3,
-        7, 4, 1, 2,
-        6, 2, 5, 6
-    };
+    static const u16 cIdx[36] = {2, 1, 0, 3, 2, 0, 5, 2, 3, 4, 5, 3, 6, 5, 7, 7, 5, 4,
+                                 1, 6, 0, 6, 7, 0, 0, 7, 3, 3, 7, 4, 1, 2, 6, 2, 5, 6};
 
     if (vtx != NULL)
         memcpy(vtx, cVtx, sizeof(cVtx));
@@ -79,13 +70,8 @@ void setWireCubeVertex(Vertex* vtx, u16* idx)
 {
     setCubeVertex(vtx, NULL);
 
-    static const u16 cIdx[17] = {
-        0, 1, 2,
-        3, 0, 7,
-        6, 1, 2,
-        5, 6, 7,
-        4, 5, 4,
-        3, 0
+    static const u16 cIdx[17] = {0, 1, 2, 3, 0, 7, 6, 1, 2,
+                                 5, 6, 7, 4, 5, 4, 3, 0
 
     };
 
@@ -95,7 +81,8 @@ void setWireCubeVertex(Vertex* vtx, u16* idx)
 
 void setSphereVertex(Vertex* vtx, u16* idx, s32 x, s32 y)
 {
-    if (vtx != NULL) {
+    if (vtx != NULL)
+    {
         for (s32 i = 0; i < y; i++)
         {
             f32 angle_y = ((i + 1) / (y + 1.0f) - 0.5f) * M_PI;
@@ -149,9 +136,9 @@ void setSphereVertex(Vertex* vtx, u16* idx, s32 x, s32 y)
     {
         for (s32 i = 0; i < x; i++)
         {
-          idx[i * 3 + 0] = x * y;
-          idx[i * 3 + 1] = i;
-          idx[i * 3 + 2] = (i + 1) % x;
+            idx[i * 3 + 0] = x * y;
+            idx[i * 3 + 1] = i;
+            idx[i * 3 + 2] = (i + 1) % x;
         }
 
         for (s32 i = 0; i < y - 1; i++)
@@ -294,4 +281,5 @@ void setCylinderVertex(Vertex* vtx, u16* idx, s32 div)
     }
 }
 
-} } // namespace sead::PrimitiveRendererUtil
+}  // namespace PrimitiveRendererUtil
+}  // namespace sead
