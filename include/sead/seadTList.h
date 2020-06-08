@@ -14,11 +14,17 @@ class TList : public ListImpl
 public:
     TList() : ListImpl() {}
 
-    // Self-defined inlines for convenience
+    void insertFront(T* item)
+    {
+        item->mList = this;
+        ListImpl::insertFront(item);
+    }
 
-    void setAsListFor(T* item) { item->mList = this; }
-
-    void insertFront(T* item) { mStartEnd.insertFront_(item); }
+    void erase(T* item)
+    {
+        item->mList = nullptr;
+        ListImpl::erase(item);
+    }
 
     TListNode<T>* root() const { return static_cast<TListNode<T>*>(mStartEnd.mNext); }
 

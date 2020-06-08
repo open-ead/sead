@@ -8,7 +8,7 @@ add_library(sead
   src/seadEndian.cpp
   # src/seadFileDevice.cpp
   # src/seadFileDeviceMgr.cpp
-  # src/seadHeap.cpp
+  src/seadHeap.cpp
   src/seadHeapMgr.cpp
   src/seadListImpl.cpp
   # src/seadMainFileDevice.cpp

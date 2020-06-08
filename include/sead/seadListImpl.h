@@ -26,6 +26,21 @@ public:
         mStartEnd.mPrev = &mStartEnd;
     }
 
+    void insertFront(ListNode* item)
+    {
+        mStartEnd.insertFront_(item);
+        ++mCount;
+    }
+
+    void erase(ListNode* item)
+    {
+        item->erase_();
+        --mCount;
+    }
+
+    int size() const { return mCount; }
+
+protected:
     ListNode mStartEnd;
     s32 mCount;
 };

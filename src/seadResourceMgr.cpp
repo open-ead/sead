@@ -36,15 +36,8 @@ void ResourceMgr::registerFactory(ResourceFactory* factory, const SafeString& na
 
     FactoryList* list = factory->mList;
     if (list != NULL)
-    {
-        factory->mList = NULL;
-        factory->erase_();
-        list->mCount -= 1;
-    }
-
-    mFactoryList.setAsListFor(factory);
+        list->erase(factory);
     mFactoryList.insertFront(factory);
-    mFactoryList.mCount += 1;
 }
 
 void ResourceMgr::registerDecompressor(Decompressor* decompressor, const SafeString& name)
@@ -54,35 +47,22 @@ void ResourceMgr::registerDecompressor(Decompressor* decompressor, const SafeStr
 
     DecompressorList* list = decompressor->mList;
     if (list != NULL)
-    {
-        decompressor->mList = NULL;
-        decompressor->erase_();
-        list->mCount -= 1;
-    }
-
-    mDecompList.setAsListFor(decompressor);
+        list->erase(decompressor);
     mDecompList.insertFront(decompressor);
-    mDecompList.mCount += 1;
 }
 
 void ResourceMgr::unregisterFactory(ResourceFactory* factory)
 {
     if (factory->mList == NULL)
         return;
-
-    factory->mList = NULL;
-    factory->erase_();
-    mFactoryList.mCount -= 1;
+    mFactoryList.erase(factory);
 }
 
 void ResourceMgr::unregisterDecompressor(Decompressor* decompressor)
 {
     if (decompressor->mList == NULL)
         return;
-
-    decompressor->mList = NULL;
-    decompressor->erase_();
-    mDecompList.mCount -= 1;
+    mDecompList.erase(decompressor);
 }
 
 }  // namespace sead

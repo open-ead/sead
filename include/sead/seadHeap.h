@@ -62,8 +62,8 @@ public:
 
     inline void* alloc(size_t size, s32 alignment) { return tryAlloc(size, alignment); }
 
-    typedef OffsetList HeapList;
-    typedef OffsetList DisposerList;
+    using HeapList = OffsetList<Heap>;
+    using DisposerList = OffsetList<IDisposer>;
 
     void* mStart;
     size_t mSize;

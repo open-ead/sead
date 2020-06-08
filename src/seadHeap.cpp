@@ -13,8 +13,7 @@ void Heap::appendDisposer_(IDisposer* disposer)
         cs->lock();
     }
 
-    mDisposerList.mStartEnd.insertFront_(mDisposerList.getNodeFromOffset(disposer));
-    mDisposerList.mCount += 1;
+    mDisposerList.insertFront(disposer);
 
     if (cs != NULL)
         cs->unlock();
@@ -30,8 +29,7 @@ void Heap::removeDisposer_(IDisposer* disposer)
         cs->lock();
     }
 
-    (mDisposerList.getNodeFromOffset(disposer))->erase_();
-    mDisposerList.mCount -= 1;
+    mDisposerList.erase(disposer);
 
     if (cs != NULL)
         cs->unlock();
@@ -57,12 +55,8 @@ Heap* Heap::findContainHeap_(const void* ptr)
         cs->lock();
     }
 
-    u32 offset = mChildren.mOffset;
-    containHeap =
-        reinterpret_cast<Heap*>(reinterpret_cast<size_t>(mChildren.mStartEnd.mNext) - offset);
-
-    while (containHeap != mChildren.getFromOffsetR<Heap*>(&mChildren))
-    {
+    for (Heap& child : mChildren) {
+        containHeap = &child;
         if (containHeap->isInclude(ptr))
         {
             containHeap = containHeap->findContainHeap_(ptr);
@@ -72,11 +66,6 @@ Heap* Heap::findContainHeap_(const void* ptr)
             HeapMgr::sHeapTreeLockCS.unlock();
             return containHeap;
         }
-
-        containHeap = reinterpret_cast<Heap*>(
-            *reinterpret_cast<size_t*>(
-                static_cast<void*>(&static_cast<IDisposer*>(containHeap)->mListNode) + offset) -
-            offset);
     }
 
     if (cs != NULL)
