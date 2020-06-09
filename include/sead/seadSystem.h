@@ -8,7 +8,7 @@
     do                                                                                             \
     {                                                                                              \
         if (!(condition))                                                                          \
-            sead::system::HaltWithDetail(__FILE__, __LINE__, message, __VA_ARGS__);                \
+            sead::system::HaltWithDetail(__FILE__, __LINE__, message, ##__VA_ARGS__);              \
     } while (0)
 #else
 #define SEAD_ASSERT(condition, message, ...)
