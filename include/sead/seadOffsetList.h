@@ -57,7 +57,8 @@ private:
         return reinterpret_cast<T*>(reinterpret_cast<u8*>(node) - offset);
     }
 
-    s32 mOffset;
+    // TODO: add mOffset >= 0 asserts
+    s32 mOffset = -1;
 };
 
 }  // namespace sead
