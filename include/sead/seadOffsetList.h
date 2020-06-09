@@ -33,28 +33,28 @@ public:
         T* operator->() const { return mPtr; }
 
     private:
-        void advance() { mPtr = ObjFromNode(NodeFromObj(mPtr, mOffset)->mNext, mOffset); }
+        void advance() { mPtr = ObjFromNode(NodeFromObj(mPtr, mOffset)->mNext, -s64(mOffset)); }
 
         T* mPtr;
         s32 mOffset;
     };
 
-    iterator begin() { return iterator(ObjFromNode(mStartEnd.mNext, mOffset), mOffset); }
-    iterator end() { return iterator(ObjFromNode(&mStartEnd, mOffset), mOffset); }
+    iterator begin() { return iterator(ObjFromNode(mStartEnd.mNext, -mOffset), mOffset); }
+    iterator end() { return iterator(ObjFromNode(&mStartEnd, -mOffset), mOffset); }
 
     void insertFront(T* item) { ListImpl::insertFront(NodeFromObj(item, mOffset)); }
 
     void erase(T* item) { ListImpl::erase(NodeFromObj(item, mOffset)); }
 
 private:
-    static ListNode* NodeFromObj(T* ptr, int offset)
+    static ListNode* NodeFromObj(T* ptr, intptr_t offset)
     {
         return reinterpret_cast<ListNode*>(reinterpret_cast<u8*>(ptr) + offset);
     }
 
-    static T* ObjFromNode(ListNode* node, int offset)
+    static T* ObjFromNode(ListNode* ptr, intptr_t offset)
     {
-        return reinterpret_cast<T*>(reinterpret_cast<u8*>(node) - offset);
+        return reinterpret_cast<T*>(reinterpret_cast<u8*>(ptr) + offset);
     }
 
     // TODO: add mOffset >= 0 asserts
