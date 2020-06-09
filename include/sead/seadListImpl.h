@@ -5,6 +5,8 @@
 
 namespace sead
 {
+class Random;
+
 class ListNode
 {
 public:
@@ -30,13 +32,28 @@ public:
         ++mCount;
     }
 
+    ListNode* popBack();
+    ListNode* popFront();
+
     void erase(ListNode* item)
     {
         item->erase_();
         --mCount;
     }
 
+    void swap(ListNode* a, ListNode* b);
+    void moveAfter(ListNode* a, ListNode* b);
+    void moveBefore(ListNode* a, ListNode* b);
+
+    void reverse();
+    void shuffle(Random* random);
+    void clear();
+
     int size() const { return mCount; }
+
+    ListNode* nth(int n) const;
+    s32 indexOf(const ListNode*) const;
+    bool checkLinks() const;
 
 protected:
     ListNode mStartEnd;
