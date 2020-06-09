@@ -20,9 +20,12 @@ public:
     static HeapMgr sInstance;
     static HeapMgr* sInstancePtr;
 
+    using RootHeaps = FixedPtrArray<Heap, 4>;
+    using IndependentHeaps = FixedPtrArray<Heap, 4>;
+
     static Arena sDefaultArena;
-    static PtrArrayImpl sRootHeaps;
-    static PtrArrayImpl sIndependentHeaps;
+    static RootHeaps sRootHeaps;
+    static IndependentHeaps sIndependentHeaps;
     static CriticalSection sHeapTreeLockCS;
 
     void*
