@@ -1,5 +1,7 @@
 #pragma once
 
+#define SEAD_SAFE_STRING_HPP_
+
 #include <cstring>
 #ifdef cafe
 #include <sead/seadMemUtilCafe.hpp>

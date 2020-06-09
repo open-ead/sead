@@ -1,6 +1,10 @@
 #ifndef SEAD_SAFE_STRING_H_
 #define SEAD_SAFE_STRING_H_
 
+#ifndef SEAD_SAFE_STRING_HPP_
+#error "Include <sead/seadSafeString.hpp>"
+#endif
+
 #include <stdarg.h>
 
 #include <sead/types.h>
