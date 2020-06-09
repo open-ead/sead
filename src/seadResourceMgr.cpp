@@ -27,8 +27,8 @@ ResourceMgr::~ResourceMgr()
     mNullResourceFactory = NULL;
 }
 
-SEAD_CREATE_SINGLETON_INSTANCE(ResourceMgr, ResourceMgr::sInstance)
-SEAD_DELETE_SINGLETON_INSTANCE(ResourceMgr, ResourceMgr::sInstance)
+SEAD_CREATE_SINGLETON_INSTANCE(ResourceMgr)
+SEAD_DELETE_SINGLETON_INSTANCE(ResourceMgr)
 
 void ResourceMgr::registerFactory(ResourceFactory* factory, const SafeString& name)
 {

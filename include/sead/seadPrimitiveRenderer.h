@@ -52,7 +52,7 @@ public:
 
 class PrimitiveRenderer : public IDisposer
 {
-    SEAD_SINGLETON_DISPOSER(PrimitiveRenderer, sInstance)
+    SEAD_SINGLETON_DISPOSER(PrimitiveRenderer)
 
 public:
     class QuadArg
@@ -135,8 +135,6 @@ public:
     void drawCylinder32(const Vector3f&, float, float, const Color4f&);
 
     void drawAxis(const Vector3f&, float);
-
-    static PrimitiveRenderer* sInstance;
 
 private:
     void doPrepare_(Heap* heap);

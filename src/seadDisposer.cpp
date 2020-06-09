@@ -9,13 +9,40 @@ const u32 cDestructedFlag = 1;
 
 namespace sead
 {
-IDisposer::IDisposer() : mListNode(), mDisposerHeap(NULL)
+IDisposer::IDisposer() : IDisposer(nullptr, HeapNullOption::UseSpecifiedOrContainHeap) {}
+
+IDisposer::IDisposer(Heap* const disposer_heap, HeapNullOption option)
 {
-    if (sead::HeapMgr::sInstancePtr != NULL)
+    mDisposerHeap = disposer_heap;
+    if (mDisposerHeap)
     {
+        mDisposerHeap->appendDisposer_(this);
+        return;
+    }
+
+    switch (option)
+    {
+    case HeapNullOption::AlwaysUseSpecifiedHeap:
+        SEAD_ASSERT(false, "disposer_heap must not be nullptr");
+    case HeapNullOption::UseSpecifiedOrContainHeap:
+        if (!sead::HeapMgr::sInstancePtr)
+            return;
         mDisposerHeap = sead::HeapMgr::sInstancePtr->findContainHeap(this);
-        if (mDisposerHeap != NULL)
+        if (mDisposerHeap)
             mDisposerHeap->appendDisposer_(this);
+        return;
+    case HeapNullOption::DoNotAppendDisposerIfNoHeapSpecified:
+        return;
+    case HeapNullOption::UseSpecifiedOrCurrentHeap:
+        if (!sead::HeapMgr::sInstancePtr)
+            return;
+        mDisposerHeap = sead::HeapMgr::sInstancePtr->getCurrentHeap();
+        if (mDisposerHeap)
+            mDisposerHeap->appendDisposer_(this);
+        return;
+    default:
+        SEAD_ASSERT(false, "illegal option[%d]", int(option));
+        return;
     }
 }
 

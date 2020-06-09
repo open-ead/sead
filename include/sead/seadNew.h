@@ -24,8 +24,8 @@ void* operator new[](size_t size, s32 alignment, const std::nothrow_t&);
 void* operator new(size_t size, sead::Heap* heap, const std::nothrow_t&);
 void* operator new[](size_t size, sead::Heap* heap, const std::nothrow_t&);
 
-void* operator new(size_t size, sead::Heap* heap, s32 alignment);
-void* operator new[](size_t size, sead::Heap* heap, s32 alignment);
+void* operator new(size_t size, sead::Heap* heap, s32 alignment = sizeof(void*));
+void* operator new[](size_t size, sead::Heap* heap, s32 alignment = sizeof(void*));
 void* operator new(size_t size, sead::Heap* heap, s32 alignment, const std::nothrow_t&);
 void* operator new[](size_t size, sead::Heap* heap, s32 alignment, const std::nothrow_t&);
 

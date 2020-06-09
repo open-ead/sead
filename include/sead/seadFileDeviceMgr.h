@@ -16,7 +16,7 @@ namespace sead
 {
 class FileDeviceMgr
 {
-    SEAD_SINGLETON_DISPOSER(FileDeviceMgr, sInstance)
+    SEAD_SINGLETON_DISPOSER(FileDeviceMgr)
 
 public:
     FileDeviceMgr();
@@ -35,8 +35,6 @@ public:
     FileDevice* tryOpen(FileHandle* handle, const SafeString& path, FileDevice::FileOpenFlag flag,
                         u32 divSize);
     u8* tryLoad(FileDevice::LoadArg& arg);
-
-    static FileDeviceMgr* sInstance;
 
     typedef TList<FileDevice> DeviceList;
 

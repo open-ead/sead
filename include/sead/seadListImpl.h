@@ -8,13 +8,11 @@ namespace sead
 class ListNode
 {
 public:
-    __attribute__((always_inline)) ListNode() : mPrev(NULL), mNext(NULL) {}
-
     void insertFront_(ListNode* node);
     void erase_();
 
-    ListNode* mPrev;
-    ListNode* mNext;
+    ListNode* mPrev = nullptr;
+    ListNode* mNext = nullptr;
 };
 
 class ListImpl

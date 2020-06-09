@@ -3,6 +3,7 @@
 
 #include <sead/seadListImpl.h>
 #include <sead/seadNew.h>
+#include <sead/seadSystem.h>
 #include <sead/types.h>
 
 namespace sead
@@ -12,7 +13,18 @@ class Heap;
 class IDisposer
 {
 public:
+    enum class HeapNullOption
+    {
+        // disposer_heap must not be nullptr for this option.
+        AlwaysUseSpecifiedHeap = 0,
+        UseSpecifiedOrContainHeap = 1,
+        DoNotAppendDisposerIfNoHeapSpecified = 2,
+        UseSpecifiedOrCurrentHeap = 3,
+    };
+
     IDisposer();
+    IDisposer(Heap* disposer_heap,
+              HeapNullOption option = HeapNullOption::UseSpecifiedOrCurrentHeap);
     virtual ~IDisposer();
 
 private:
@@ -24,51 +36,54 @@ private:
 
 }  // namespace sead
 
-#define SEAD_SINGLETON_DISPOSER(CLASS, INSTANCE)                                                   \
+#define SEAD_SINGLETON_DISPOSER(CLASS)                                                             \
 public:                                                                                            \
-    class SingletonDisposer_ : public IDisposer                                                    \
+    class SingletonDisposer_ : public sead::IDisposer                                              \
     {                                                                                              \
     public:                                                                                        \
-        SingletonDisposer_() : IDisposer() {}                                                      \
+        using sead::IDisposer::IDisposer;                                                          \
         virtual ~SingletonDisposer_()                                                              \
         {                                                                                          \
             if (this == sStaticDisposer)                                                           \
             {                                                                                      \
-                sStaticDisposer = NULL;                                                            \
-                INSTANCE->~CLASS();                                                                \
-                INSTANCE = NULL;                                                                   \
+                sStaticDisposer = nullptr;                                                         \
+                CLASS::sInstance->~CLASS();                                                        \
+                CLASS::sInstance = nullptr;                                                        \
             }                                                                                      \
         }                                                                                          \
                                                                                                    \
         static SingletonDisposer_* sStaticDisposer;                                                \
     };                                                                                             \
+    static CLASS* sInstance;                                                                       \
                                                                                                    \
-    static CLASS* createInstance(Heap* heap);                                                      \
+    static CLASS* createInstance(sead::Heap* heap);                                                \
     static void deleteInstance();                                                                  \
                                                                                                    \
-    u32 mSingletonDisposerBuf_[sizeof(SingletonDisposer_) / sizeof(u32)];
+    alignas(alignof(SingletonDisposer_))                                                           \
+        u32 mSingletonDisposerBuf_[sizeof(SingletonDisposer_) / sizeof(u32)];
 
-#define SEAD_CREATE_SINGLETON_INSTANCE(CLASS, INSTANCE)                                            \
-    CLASS* CLASS::createInstance(Heap* heap)                                                       \
+#define SEAD_CREATE_SINGLETON_INSTANCE(CLASS)                                                      \
+    CLASS* CLASS::createInstance(sead::Heap* heap)                                                 \
     {                                                                                              \
-        CLASS::SingletonDisposer_* staticDisposer = CLASS::SingletonDisposer_::sStaticDisposer;    \
-        CLASS* instance = INSTANCE;                                                                \
-                                                                                                   \
-        if (INSTANCE == NULL)                                                                      \
+        SEAD_ASSERT(!CLASS::sInstance, "Create Singleton Twice (%s) : addr 0x%016llX", #CLASS,     \
+                    reinterpret_cast<uintptr_t>(CLASS::sInstance));                                \
+        if (!CLASS::sInstance)                                                                     \
         {                                                                                          \
-            instance = reinterpret_cast<CLASS*>(new (heap, 4) u8[sizeof(CLASS)]);                  \
-            staticDisposer =                                                                       \
+            auto* instance = reinterpret_cast<CLASS*>(new (heap) u8[sizeof(CLASS)]);               \
+            SEAD_ASSERT(!CLASS::SingletonDisposer_::sStaticDisposer,                               \
+                        "Create Singleton Twice (%s).", #CLASS);                                   \
+            auto* staticDisposer =                                                                 \
                 reinterpret_cast<CLASS::SingletonDisposer_*>(instance->mSingletonDisposerBuf_);    \
                                                                                                    \
             CLASS::SingletonDisposer_::sStaticDisposer =                                           \
-                new (staticDisposer) SingletonDisposer_();                                         \
-            INSTANCE = new (instance) CLASS();                                                     \
+                new (staticDisposer) SingletonDisposer_(heap);                                     \
+            CLASS::sInstance = new (instance) CLASS();                                             \
         }                                                                                          \
                                                                                                    \
-        return INSTANCE;                                                                           \
+        return CLASS::sInstance;                                                                   \
     }
 
-#define SEAD_DELETE_SINGLETON_INSTANCE(CLASS, INSTANCE)                                            \
+#define SEAD_DELETE_SINGLETON_INSTANCE(CLASS)                                                      \
     void CLASS::deleteInstance()                                                                   \
     {                                                                                              \
         CLASS::SingletonDisposer_* staticDisposer = CLASS::SingletonDisposer_::sStaticDisposer;    \
@@ -77,10 +92,10 @@ public:                                                                         
             CLASS::SingletonDisposer_::sStaticDisposer = NULL;                                     \
             staticDisposer->~SingletonDisposer_();                                                 \
                                                                                                    \
-            if (INSTANCE != NULL)                                                                  \
-                delete INSTANCE;                                                                   \
+            if (CLASS::sInstance != NULL)                                                          \
+                delete CLASS::sInstance;                                                           \
                                                                                                    \
-            INSTANCE = NULL;                                                                       \
+            CLASS::sInstance = NULL;                                                               \
         }                                                                                          \
     }
 

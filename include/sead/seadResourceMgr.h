@@ -20,7 +20,7 @@ class DirectResourceFactory;
 
 class ResourceMgr
 {
-    SEAD_SINGLETON_DISPOSER(ResourceMgr, sInstance)
+    SEAD_SINGLETON_DISPOSER(ResourceMgr)
 
 public:
     struct CreateArg
@@ -71,8 +71,6 @@ public:
 
     void unregisterFactory(ResourceFactory* factory);
     void unregisterDecompressor(Decompressor* decompressor);
-
-    static ResourceMgr* sInstance;
 
     typedef TList<ResourceFactory> FactoryList;
     typedef TList<Resource> ResourceList;
