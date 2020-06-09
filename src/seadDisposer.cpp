@@ -48,12 +48,12 @@ IDisposer::IDisposer(Heap* const disposer_heap, HeapNullOption option)
 
 IDisposer::~IDisposer()
 {
-    if (*reinterpret_cast<size_t*>(&mDisposerHeap) != cDestructedFlag)
+    if (reinterpret_cast<uintptr_t>(mDisposerHeap) != cDestructedFlag)
     {
         if (mDisposerHeap != NULL)
             mDisposerHeap->removeDisposer_(this);
 
-        *reinterpret_cast<size_t*>(&mDisposerHeap) = cDestructedFlag;
+        *reinterpret_cast<uintptr_t*>(&mDisposerHeap) = cDestructedFlag;
     }
 }
 
