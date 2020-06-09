@@ -1,4 +1,4 @@
-add_library(sead
+add_library(sead OBJECT
   src/seadArchiveRes.cpp
   # seadArena
   # seadFileDevice (platform specific)
