@@ -72,9 +72,9 @@ public:
     void unregisterFactory(ResourceFactory* factory);
     void unregisterDecompressor(Decompressor* decompressor);
 
-    typedef TList<ResourceFactory> FactoryList;
-    typedef TList<Resource> ResourceList;
-    typedef TList<Decompressor> DecompressorList;
+    typedef TList<ResourceFactory*> FactoryList;
+    typedef TList<Resource*> ResourceList;
+    typedef TList<Decompressor*> DecompressorList;
 
     FactoryList mFactoryList;
     ResourceList mPostCreateResourceList;

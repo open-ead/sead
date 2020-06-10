@@ -36,7 +36,7 @@ public:
                         u32 divSize);
     u8* tryLoad(FileDevice::LoadArg& arg);
 
-    typedef TList<FileDevice> DeviceList;
+    typedef TList<FileDevice*> DeviceList;
 
     DeviceList mDeviceList;
     FileDevice* mDefaultFileDevice;

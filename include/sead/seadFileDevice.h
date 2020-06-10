@@ -28,7 +28,7 @@ class FileHandle;
 class DirectoryHandle;
 struct DirectoryEntry;
 
-class FileDevice : public TListNode<FileDevice>, public IDisposer
+class FileDevice : public TListNode<FileDevice*>, public IDisposer
 {
     SEAD_RTTI_BASE(FileDevice)
 
@@ -75,10 +75,10 @@ public:
     };
 
 public:
-    FileDevice() : TListNode<FileDevice>(), IDisposer(), mDriveName(), mPermission(true) {}
+    FileDevice() : TListNode<FileDevice*>(), IDisposer(), mDriveName(), mPermission(true) {}
 
     FileDevice(const SafeString& name)
-        : TListNode<FileDevice>(), IDisposer(), mDriveName(), mPermission(true)
+        : TListNode<FileDevice*>(), IDisposer(), mDriveName(), mPermission(true)
     {
         mDriveName.copy(name);
     }

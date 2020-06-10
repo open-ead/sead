@@ -5,49 +5,49 @@
 
 namespace sead
 {
-template <typename T>
+template <typename Pointer>
 class TListNode;
 
-template <typename T>
+template <typename Pointer>
 class TList : public ListImpl
 {
 public:
     TList() : ListImpl() {}
 
-    void insertFront(T* item)
+    void insertFront(Pointer item)
     {
         item->mList = this;
         ListImpl::insertFront(item);
     }
 
-    void erase(T* item)
+    void erase(Pointer item)
     {
         item->mList = nullptr;
         ListImpl::erase(item);
     }
 
-    TListNode<T>* root() const { return static_cast<TListNode<T>*>(mStartEnd.mNext); }
+    TListNode<Pointer>* root() const { return static_cast<TListNode<Pointer>*>(mStartEnd.mNext); }
 
-    static TListNode<T>* next(TListNode<T>* node)
+    static TListNode<Pointer>* next(TListNode<Pointer>* node)
     {
-        return static_cast<TListNode<T>*>(node->mNext);
+        return static_cast<TListNode<Pointer>*>(node->mNext);
     }
 
-    bool isAtEnd(TListNode<T>* node) const { return node == &mStartEnd; }
+    bool isAtEnd(TListNode<Pointer>* node) const { return node == &mStartEnd; }
 };
 
-template <typename T>
+template <typename Pointer>
 class TListNode : public ListNode
 {
 public:
     TListNode() : ListNode()
     {
-        mData = static_cast<T*>(this);
+        mData = static_cast<Pointer>(this);
         mList = NULL;
     }
 
-    T* mData;
-    TList<T>* mList;
+    Pointer mData;
+    TList<Pointer>* mList;
 };
 
 }  // namespace sead
