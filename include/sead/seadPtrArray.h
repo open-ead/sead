@@ -18,11 +18,11 @@ public:
     }
 
     void setBuffer(s32 ptrNumMax, void* buf);
-    void allocBuffer(s32 ptrNumMax, Heap* heap, s32 alignment);
-    bool tryAllocBuffer(s32 ptrNumMax, Heap* heap, s32 alignment);
+    void allocBuffer(s32 ptrNumMax, Heap* heap, s32 alignment = sizeof(void*));
+    bool tryAllocBuffer(s32 ptrNumMax, Heap* heap, s32 alignment = sizeof(void*));
     void freeBuffer();
 
-    void erase(s32, s32);
+    void erase(s32 position, s32 count);
     void reverse();
     void shuffle(Random* random);
     void insert(s32 pos, void* ptr);
