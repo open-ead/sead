@@ -12,15 +12,13 @@
 
 namespace sead
 {
-class Resource : public TListNode<Resource>
+class Resource
 {
+public:
     SEAD_RTTI_BASE(Resource)
 
-public:
     Resource();
     virtual ~Resource();
-
-    virtual void doPostCreate_();
 };
 
 class DirectResource : public Resource
@@ -31,14 +29,14 @@ public:
     DirectResource();
     virtual ~DirectResource();
 
-    virtual s32 getLoadDataAlignment();
-    virtual void doCreate_(u8*, u32, Heap*);
+    virtual s32 getLoadDataAlignment() const;
+    virtual void doCreate_(u8* buffer, u32 bufferSize, Heap* heap);
 
     void create(u8* buffer, u32 bufferSize, u32 allocSize, bool allocated, Heap* heap);
 
-    u8* mRawData;
-    u32 mRawSize;
-    u32 mBufferSize;
+    u8* mRawData = 0;
+    u32 mRawSize = 0;
+    u32 mBufferSize = 0;
     BitFlag32 mSettingFlag;
 };
 

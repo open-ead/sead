@@ -3,16 +3,11 @@
 
 namespace sead
 {
-Resource::Resource() : TListNode<Resource>() {}
+Resource::Resource() = default;
 
-Resource::~Resource() {}
+Resource::~Resource() = default;
 
-void Resource::doPostCreate_() {}
-
-DirectResource::DirectResource()
-    : Resource(), mRawData(NULL), mRawSize(0), mBufferSize(0), mSettingFlag()
-{
-}
+DirectResource::DirectResource() = default;
 
 DirectResource::~DirectResource()
 {
@@ -20,7 +15,7 @@ DirectResource::~DirectResource()
         delete[] mRawData;
 }
 
-s32 DirectResource::getLoadDataAlignment()
+s32 DirectResource::getLoadDataAlignment() const
 {
     return 4;
 }
