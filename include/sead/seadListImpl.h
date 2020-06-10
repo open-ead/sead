@@ -13,6 +13,8 @@ public:
     void insertFront_(ListNode* node);
     void erase_();
 
+    bool isLinked() const { return mPrev || mNext; }
+
     ListNode* mPrev = nullptr;
     ListNode* mNext = nullptr;
 };

@@ -1,4 +1,5 @@
 #include <sead/seadListImpl.h>
+#include <sead/seadSystem.h>
 
 namespace sead
 {
@@ -6,8 +7,8 @@ void ListNode::insertFront_(ListNode* node)
 {
     ListNode* prev = mPrev;
     this->mPrev = node;
-    node->mNext = this;
     node->mPrev = prev;
+    node->mNext = this;
     if (prev == NULL)
         return;
 
@@ -16,14 +17,14 @@ void ListNode::insertFront_(ListNode* node)
 
 void ListNode::erase_()
 {
-    if (this->mPrev != NULL)
-        this->mPrev->mNext = this->mNext;
+    SEAD_ASSERT(isLinked(), "node is not linked.");
+    if (mPrev != nullptr)
+        mPrev->mNext = mNext;
 
-    if (this->mNext != NULL)
-        this->mNext->mPrev = this->mPrev;
+    if (mNext != nullptr)  // This disgusting cast is required for a 1:1 match...
+        mNext->mPrev = static_cast<volatile ListNode*>(this)->mPrev;
 
-    this->mNext = NULL;
-    this->mPrev = NULL;
+    mPrev = mNext = NULL;
 }
 
 }  // namespace sead
