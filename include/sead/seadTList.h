@@ -17,7 +17,7 @@ public:
     void insertFront(Pointer item)
     {
         item->mList = this;
-        ListImpl::insertFront(item);
+        ListImpl::pushBack(item);
     }
 
     void erase(Pointer item)

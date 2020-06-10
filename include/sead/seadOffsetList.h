@@ -42,7 +42,7 @@ public:
     iterator begin() { return iterator(ObjFromNode(mStartEnd.mNext, -mOffset), mOffset); }
     iterator end() { return iterator(ObjFromNode(&mStartEnd, -mOffset), mOffset); }
 
-    void insertFront(T* item) { ListImpl::insertFront(NodeFromObj(item, mOffset)); }
+    void insertFront(T* item) { ListImpl::pushBack(NodeFromObj(item, mOffset)); }
 
     void erase(T* item) { ListImpl::erase(NodeFromObj(item, mOffset)); }
 

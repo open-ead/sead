@@ -28,7 +28,7 @@ public:
         mStartEnd.mPrev = &mStartEnd;
     }
 
-    void insertFront(ListNode* item)
+    void pushBack(ListNode* item)
     {
         mStartEnd.insertFront_(item);
         ++mCount;
