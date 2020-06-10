@@ -1,7 +1,8 @@
 #pragma once
 
 #include <cstdarg>
-#include <sead/types.h>
+
+#include <basis/seadTypes.h>
 
 #ifndef SEAD_DEBUG
 #define SEAD_ASSERT(condition, message, ...)                                                       \
