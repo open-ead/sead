@@ -6,6 +6,8 @@
 
 namespace sead
 {
+class Random;
+
 class PtrArrayImpl
 {
 public:
@@ -16,6 +18,20 @@ public:
     }
 
     void setBuffer(s32 ptrNumMax, void* buf);
+    void allocBuffer(s32 ptrNumMax, Heap* heap, s32 alignment);
+    bool tryAllocBuffer(s32 ptrNumMax, Heap* heap, s32 alignment);
+    void freeBuffer();
+
+    void erase(s32, s32);
+    void reverse();
+    void shuffle(Random* random);
+    void insert(s32 pos, void* ptr);
+    bool checkInsert(s32 pos, s32);
+    void insertArray(s32 pos, void*, s32, s32);
+
+    using CompareCallbackImpl = int(*)(const void* a, const void* b);
+    void sort(CompareCallbackImpl compareCallback);
+    void heapSort(CompareCallbackImpl compareCallback);
 
     s32 size() const { return mPtrNum; }
     s32 capacity() const { return mPtrNumMax; }
