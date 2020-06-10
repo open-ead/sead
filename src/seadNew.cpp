@@ -30,7 +30,7 @@ void* NewImpl(Heap* heap, size_t size, s32 alignment, bool abortOnFailure)
     if (!result && abortOnFailure)
     {
         SEAD_ASSERT(false, "alloc failed. size: %u, allocatable size: %u, alignment: %d, heap: %s",
-                    size, heap->getMaxAllocatableSize(), alignment, heap->mINamableName.cstr());
+                    size, heap->getMaxAllocatableSize(alignment), alignment, heap->mINamableName.cstr());
         return nullptr;
     }
     return result;

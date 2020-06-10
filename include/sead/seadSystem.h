@@ -3,7 +3,7 @@
 #include <cstdarg>
 #include <sead/types.h>
 
-#ifdef SEAD_DEBUG
+#ifndef SEAD_DEBUG
 #define SEAD_ASSERT(condition, message, ...)                                                       \
     do                                                                                             \
     {                                                                                              \

@@ -49,7 +49,7 @@ public:
     virtual uintptr_t getEndAddress() const = 0;
     virtual size_t getSize() const = 0;
     virtual size_t getFreeSize() const = 0;
-    virtual size_t getMaxAllocatableSize(int) const = 0;
+    virtual size_t getMaxAllocatableSize(int alignment) const = 0;
     virtual bool isInclude(const void*) const = 0;
     virtual bool isEmpty() const = 0;
     virtual bool isFreeable() const = 0;
