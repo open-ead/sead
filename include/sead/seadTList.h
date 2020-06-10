@@ -14,6 +14,51 @@ class TList : public ListImpl
 public:
     TList() : ListImpl() {}
 
+    class iterator
+    {
+    public:
+        iterator(TListNode<Pointer>* ptr) : mPtr(ptr) {}
+
+        iterator& operator++()
+        {
+            mPtr = static_cast<TListNode<Pointer>*>(mPtr->mNext);
+            return *this;
+        }
+
+        iterator operator++(int)
+        {
+            const iterator it(*this);
+            (void)++*this;
+            return it;
+        }
+
+        iterator& operator--()
+        {
+            mPtr = static_cast<TListNode<Pointer>*>(mPtr->mPrev);
+            return *this;
+        }
+
+        iterator operator--(int)
+        {
+            const iterator it(*this);
+            (void)--*this;
+            return it;
+        }
+
+        friend bool operator==(iterator it1, iterator it2) { return it1.mPtr == it2.mPtr; }
+
+        friend bool operator!=(iterator it1, iterator it2) { return !(it1 == it2); }
+
+        TListNode<Pointer>* mPtr;
+    };
+
+    iterator begin() const { return iterator(static_cast<TListNode<Pointer>*>(mStartEnd.mNext)); }
+
+    iterator end() const
+    {
+        return iterator(static_cast<TListNode<Pointer>*>(const_cast<ListNode*>(&mStartEnd)));
+    }
+
     void insertFront(Pointer item)
     {
         item->mList = this;
