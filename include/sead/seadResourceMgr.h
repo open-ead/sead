@@ -25,62 +25,68 @@ class ResourceMgr
 public:
     struct CreateArg
     {
-        CreateArg()
-            : buffer(NULL), file_size(0), buffer_size(0), need_unload(false), factory(NULL), ext(),
-              heap(NULL), alignment(0x20)
-        {
-        }
-
-        u8* buffer;
-        u32 file_size;
-        u32 buffer_size;
-        bool need_unload;
-        ResourceFactory* factory;
+        u8* buffer = nullptr;
+        u32 file_size = 0;
+        u32 buffer_size = 0;
+        bool need_unload = false;
+        ResourceFactory* factory = nullptr;
         SafeString ext;
-        Heap* heap;
-        s32 alignment;
+        Heap* heap = nullptr;
+        s32 alignment = 0x20;
     };
+#ifdef SWITCH
+    static_assert(sizeof(CreateArg) == 0x40);
+#endif
 
     struct LoadArg
     {
-        LoadArg()
-            : path(), instance_heap(NULL), load_data_heap(NULL), instance_alignment(0x20),
-              load_data_alignment(0), load_data_buffer(NULL), load_data_buffer_size(0),
-              factory(NULL), device(NULL), div_size(0)
-        {
-        }
-
         SafeString path;
-        Heap* instance_heap;
-        Heap* load_data_heap;
-        s32 instance_alignment;
-        s32 load_data_alignment;
-        u8* load_data_buffer;
-        u32 load_data_buffer_size;
-        ResourceFactory* factory;
-        FileDevice* device;
-        u32 div_size;
+        Heap* instance_heap = nullptr;
+        Heap* load_data_heap = nullptr;
+        s32 instance_alignment = 0x20;
+        s32 load_data_alignment = 0;
+        u8* load_data_buffer = nullptr;
+        u32 load_data_buffer_size = 0;
+        s32 load_data_buffer_alignment = 0;
+        ResourceFactory* factory = nullptr;
+        FileDevice* device = nullptr;
+        // Read chunk size.
+        u32 div_size = 0;
+        bool _4C = true;
+        bool* has_tried_create_with_decomp = nullptr;
     };
+#ifdef SWITCH
+    static_assert(sizeof(LoadArg) == 0x58);
+#endif
 
 public:
     ResourceMgr();
     ~ResourceMgr();
 
     void registerFactory(ResourceFactory* factory, const SafeString& name);
-    void registerDecompressor(Decompressor* decompressor, const SafeString& name);
-
     void unregisterFactory(ResourceFactory* factory);
+    void setDefaultFactory(ResourceFactory* factory);
+    ResourceFactory* findFactory(const SafeString& name);
+
+    void registerDecompressor(Decompressor* decompressor, const SafeString& name);
     void unregisterDecompressor(Decompressor* decompressor);
+    Decompressor* findDecompressor(const SafeString& name);
+
+    Resource* tryLoad(const LoadArg& arg, const SafeString&, Decompressor* decompressor);
+    Resource* tryLoadWithoutDecomp(const LoadArg& arg);
+    void unload(Resource* res);
 
     typedef TList<ResourceFactory*> FactoryList;
-    typedef TList<Resource*> ResourceList;
     typedef TList<Decompressor*> DecompressorList;
 
     FactoryList mFactoryList;
-    ResourceList mPostCreateResourceList;
     DecompressorList mDecompList;
-    ResourceFactory* mNullResourceFactory;
+    ResourceFactory* mNullResourceFactory = nullptr;
+    ResourceFactory* mDefaultResourceFactory = nullptr;
 };
+#ifdef SWITCH
+static_assert(sizeof(ResourceMgr) == 0x60);
+#endif
 
 }  // namespace sead
 

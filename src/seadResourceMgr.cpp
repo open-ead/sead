@@ -1,6 +1,7 @@
 #include <sead/seadHeapMgr.h>
 #include <sead/seadResource.h>
 #include <sead/seadResourceMgr.h>
+#include <sead/seadSystem.h>
 
 namespace sead
 {
@@ -8,13 +9,16 @@ ResourceMgr* ResourceMgr::sInstance = NULL;
 ResourceMgr::SingletonDisposer_* ResourceMgr::SingletonDisposer_::sStaticDisposer = NULL;
 
 ResourceMgr::ResourceMgr()
-    : mFactoryList(), mPostCreateResourceList(), mDecompList(), mNullResourceFactory(NULL)
 {
     if (HeapMgr::sInstancePtr == NULL)
+    {
+        SEAD_ASSERT(false, "ResourceMgr need HeapMgr");
         return;
+    }
 
-    mNullResourceFactory = new (HeapMgr::sInstancePtr->findContainHeap(this), 4)
-        DirectResourceFactory<DirectResource>();
+    mNullResourceFactory =
+        new (HeapMgr::sInstancePtr->findContainHeap(this)) DirectResourceFactory<DirectResource>();
+    mDefaultResourceFactory = mNullResourceFactory;
     registerFactory(mNullResourceFactory, "");
 }
 
