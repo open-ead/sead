@@ -196,13 +196,8 @@ u8* SZSDecompressor::tryDecompFromDevice(const ResourceMgr::LoadArg& loadArg, Re
 
             if (dst == NULL)
             {
-                if (!IsDerivedFrom<DirectResource, Resource>(resource))
-                    resource = NULL;
-
-                if (resource == NULL)
-                    decompAlignment = -(((loadArg.instance_alignment < 0) ? -1 : 1) << 5);
-
-                else
+                DirectResource* directResource = DynamicCast<DirectResource, Resource>(resource);
+                if (directResource != NULL)
                 {
                     s32 alignment = loadArg.load_data_alignment;
                     if (alignment != 0)
@@ -211,15 +206,17 @@ u8* SZSDecompressor::tryDecompFromDevice(const ResourceMgr::LoadArg& loadArg, Re
                     else
                     {
                         if (decompAlignment == 0)
-                            decompAlignment =
-                                static_cast<DirectResource*>(resource)->getLoadDataAlignment();
+                            decompAlignment = directResource->getLoadDataAlignment();
 
                         decompAlignment = ((loadArg.instance_alignment < 0) ? -1 : 1) *
                                           ((decompAlignment < 0x20) ? 0x20 : decompAlignment);
                     }
                 }
 
-                dst = new (heap, decompAlignment) u8[allocSize];
+                else
+                    decompAlignment = -(((loadArg.instance_alignment < 0) ? -1 : 1) << 5);
+
+                dst = new(heap, decompAlignment) u8[allocSize];
 
                 if (dst != NULL)
                     allocated = true;
