@@ -2,9 +2,9 @@
 #define SEAD_DISPOSER_H_
 
 #include <basis/seadNew.h>
+#include <basis/seadRawPrint.h>
 #include <basis/seadTypes.h>
 #include <container/seadListImpl.h>
-#include <sead/seadSystem.h>
 
 namespace sead
 {

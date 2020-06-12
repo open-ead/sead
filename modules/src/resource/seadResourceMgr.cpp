@@ -1,7 +1,7 @@
+#include <basis/seadRawPrint.h>
 #include <heap/seadHeapMgr.h>
 #include <resource/seadResource.h>
 #include <resource/seadResourceMgr.h>
-#include <sead/seadSystem.h>
 
 namespace sead
 {

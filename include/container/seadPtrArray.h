@@ -1,8 +1,8 @@
 #ifndef SEAD_PTR_ARRAY_H_
 #define SEAD_PTR_ARRAY_H_
 
+#include <basis/seadRawPrint.h>
 #include <basis/seadTypes.h>
-#include <sead/seadSystem.h>
 
 namespace sead
 {

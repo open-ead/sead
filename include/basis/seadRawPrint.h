@@ -4,7 +4,7 @@
 
 #include <basis/seadTypes.h>
 
-#ifndef SEAD_DEBUG
+#ifdef SEAD_DEBUG
 #define SEAD_ASSERT(condition, message, ...)                                                       \
     do                                                                                             \
     {                                                                                              \
@@ -29,8 +29,6 @@
 
 namespace sead
 {
-class Heap;
-
 namespace system
 {
 void Halt();
@@ -45,5 +43,4 @@ void PrintString(const char* format, s32);
 void Warning(const char* file, int line, const char* msg, ...);
 void SetWarningEnable(bool enable);
 }  // namespace system
-
 }  // namespace sead

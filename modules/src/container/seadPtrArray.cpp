@@ -1,8 +1,8 @@
 #include <cstring>
 
 #include <basis/seadNew.h>
+#include <basis/seadRawPrint.h>
 #include <container/seadPtrArray.h>
-#include <sead/seadSystem.h>
 
 namespace sead
 {

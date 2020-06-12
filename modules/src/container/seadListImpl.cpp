@@ -1,5 +1,5 @@
+#include <basis/seadRawPrint.h>
 #include <container/seadListImpl.h>
-#include <sead/seadSystem.h>
 
 namespace sead
 {
