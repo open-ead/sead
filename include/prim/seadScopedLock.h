@@ -26,9 +26,9 @@ public:
         mLocked = lock;
         mLocked->lock();
     }
-    ConditionalScopedLock(const ScopedLock& other) = delete;
-    const ScopedLock& operator=(const ScopedLock& other) = delete;
-    virtual ~ScopedLock()
+    ConditionalScopedLock(const ConditionalScopedLock& other) = delete;
+    const ConditionalScopedLock& operator=(const ConditionalScopedLock& other) = delete;
+    virtual ~ConditionalScopedLock()
     {
         if (mLocked)
             mLocked->unlock();
