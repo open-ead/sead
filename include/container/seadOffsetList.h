@@ -33,13 +33,13 @@ public:
         T* operator->() const { return mPtr; }
 
     private:
-        void advance() { mPtr = ObjFromNode(NodeFromObj(mPtr, mOffset)->mNext, -s64(mOffset)); }
+        void advance() { mPtr = ObjFromNode(NodeFromObj(mPtr, mOffset)->next(), -s64(mOffset)); }
 
         T* mPtr;
         s32 mOffset;
     };
 
-    iterator begin() { return iterator(ObjFromNode(mStartEnd.mNext, -mOffset), mOffset); }
+    iterator begin() { return iterator(ObjFromNode(mStartEnd.next(), -mOffset), mOffset); }
     iterator end() { return iterator(ObjFromNode(&mStartEnd, -mOffset), mOffset); }
 
     void insertFront(T* item) { ListImpl::pushBack(NodeFromObj(item, mOffset)); }

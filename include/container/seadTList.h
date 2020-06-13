@@ -21,7 +21,7 @@ public:
 
         iterator& operator++()
         {
-            mPtr = static_cast<TListNode<Pointer>*>(mPtr->mNext);
+            mPtr = static_cast<TListNode<Pointer>*>(mPtr->next());
             return *this;
         }
 
@@ -34,7 +34,7 @@ public:
 
         iterator& operator--()
         {
-            mPtr = static_cast<TListNode<Pointer>*>(mPtr->mPrev);
+            mPtr = static_cast<TListNode<Pointer>*>(mPtr->prev());
             return *this;
         }
 
@@ -52,7 +52,7 @@ public:
         TListNode<Pointer>* mPtr;
     };
 
-    iterator begin() const { return iterator(static_cast<TListNode<Pointer>*>(mStartEnd.mNext)); }
+    iterator begin() const { return iterator(static_cast<TListNode<Pointer>*>(mStartEnd.next())); }
 
     iterator end() const
     {
@@ -71,11 +71,11 @@ public:
         ListImpl::erase(item);
     }
 
-    TListNode<Pointer>* root() const { return static_cast<TListNode<Pointer>*>(mStartEnd.mNext); }
+    TListNode<Pointer>* root() const { return static_cast<TListNode<Pointer>*>(mStartEnd.next()); }
 
     static TListNode<Pointer>* next(TListNode<Pointer>* node)
     {
-        return static_cast<TListNode<Pointer>*>(node->mNext);
+        return static_cast<TListNode<Pointer>*>(node->next());
     }
 
     bool isAtEnd(TListNode<Pointer>* node) const { return node == &mStartEnd; }

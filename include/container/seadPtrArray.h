@@ -6,6 +6,7 @@
 
 namespace sead
 {
+class Heap;
 class Random;
 
 class PtrArrayImpl
