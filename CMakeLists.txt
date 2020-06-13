@@ -21,6 +21,7 @@ add_library(sead OBJECT
   modules/src/math/seadMatrix.cpp
   modules/src/math/seadVector.cpp
 
+  modules/src/prim/seadBitFlag.cpp
   modules/src/prim/seadEndian.cpp
   modules/src/prim/seadSafeString.cpp
   modules/src/prim/seadStringUtil.cpp

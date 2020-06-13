@@ -7,7 +7,7 @@ void Heap::appendDisposer_(IDisposer* disposer)
 {
     // sead::ConditionalScopedLock<sead::CriticalSection>*
     CriticalSection* cs = NULL;
-    if (mFlag.mBits & 1)
+    if (mFlag.isOnBit(0))
     {
         cs = &mCS;
         cs->lock();
@@ -23,7 +23,7 @@ void Heap::removeDisposer_(IDisposer* disposer)
 {
     // sead::ConditionalScopedLock<sead::CriticalSection>*
     CriticalSection* cs = NULL;
-    if (mFlag.mBits & 1)
+    if (mFlag.isOnBit(0))
     {
         cs = &mCS;
         cs->lock();

@@ -11,7 +11,7 @@ DirectResource::DirectResource() = default;
 
 DirectResource::~DirectResource()
 {
-    if (mSettingFlag.mBits & 1)
+    if (mSettingFlag.isOnBit(0))
         delete[] mRawData;
 }
 
@@ -31,11 +31,7 @@ void DirectResource::create(u8* buffer, u32 bufferSize, u32 allocSize, bool allo
     mBufferSize = allocSize;
     mRawData = buffer;
 
-    if (allocated)
-        mSettingFlag.mBits |= 1;
-
-    else
-        mSettingFlag.mBits &= ~1;
+    mSettingFlag.changeBit(0, allocated);
 
     return doCreate_(buffer, bufferSize, heap);
 }
