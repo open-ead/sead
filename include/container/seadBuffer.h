@@ -10,6 +10,7 @@ class Buffer
 {
 public:
     Buffer() : mSize(0), mBuffer(NULL) {}
+    Buffer(s32 size, T* buffer) : mSize(size), mBuffer(buffer) {}
 
     void setBuffer(s32 size, T* bufferptr)
     {
@@ -28,6 +29,7 @@ public:
 
     const T& operator[](s32 index) const { return *unsafeGet(index); }
 
+protected:
     s32 mSize;
     T* mBuffer;
 };
