@@ -1,38 +1,19 @@
 #include <heap/seadHeap.h>
 #include <heap/seadHeapMgr.h>
+#include <prim/seadScopedLock.h>
 
 namespace sead
 {
 void Heap::appendDisposer_(IDisposer* disposer)
 {
-    // sead::ConditionalScopedLock<sead::CriticalSection>*
-    CriticalSection* cs = NULL;
-    if (mFlag.isOnBit(0))
-    {
-        cs = &mCS;
-        cs->lock();
-    }
-
+    ConditionalScopedLock<CriticalSection> lock(&mCS, mFlag.isOnBit(0));
     mDisposerList.pushBack(disposer);
-
-    if (cs != NULL)
-        cs->unlock();
 }
 
 void Heap::removeDisposer_(IDisposer* disposer)
 {
-    // sead::ConditionalScopedLock<sead::CriticalSection>*
-    CriticalSection* cs = NULL;
-    if (mFlag.isOnBit(0))
-    {
-        cs = &mCS;
-        cs->lock();
-    }
-
+    ConditionalScopedLock<CriticalSection> lock(&mCS, mFlag.isOnBit(0));
     mDisposerList.erase(disposer);
-
-    if (cs != NULL)
-        cs->unlock();
 }
 
 Heap* Heap::findContainHeap_(const void* ptr)
