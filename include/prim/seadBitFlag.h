@@ -1,7 +1,6 @@
 #ifndef SEAD_BIT_FLAG_H_
 #define SEAD_BIT_FLAG_H_
 
-#include <bitset>
 #include <limits>
 
 #include <basis/seadRawPrint.h>
