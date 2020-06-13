@@ -16,7 +16,7 @@ public:
 
     void initOffset(s32 offset) { mOffset = offset; }
 
-    void clear();
+    void clear() { ListImpl::clear(); }
 
     void pushBack(T* item)
     {
@@ -30,38 +30,54 @@ public:
         ListImpl::pushFront(objToListNode(item));
     }
 
-    T* popBack();
-    T* popFront();
+    T* popBack() { return listNodeToObj(ListImpl::popBack()); }
+    T* popFront() { return listNodeToObj(ListImpl::popFront()); }
 
-    void insertBefore(const T*, T*);
-    void insertAfter(const T*, T*);
+    void insertBefore(const T* obj, T* obj_to_insert)
+    {
+        ListImpl::insertBefore(objToListNode(obj), objToListNode(obj_to_insert));
+    }
+    void insertAfter(const T* obj, T* obj_to_insert)
+    {
+        ListImpl::insertAfter(objToListNode(obj), objToListNode(obj_to_insert));
+    }
+
     void erase(T* item) { ListImpl::erase(objToListNode(item)); }
 
-    T* front() const;
-    T* back() const;
-    T* prev(const T*) const;
-    T* next(const T*) const;
-    T* nth(int) const;
-    int indexOf(const T*) const;
+    T* front() const { return listNodeToObj(ListImpl::front()); }
+    T* back() const { return listNodeToObj(ListImpl::back()); }
+    T* prev(const T* obj) const { return listNodeToObj(objToListNode(obj)->prev()); }
+    T* next(const T* obj) const { return listNodeToObj(objToListNode(obj)->next()); }
+    T* nth(s32 n) const { return listNodeToObj(ListImpl::nth(n)); }
+    s32 indexOf(const T* obj) const { return ListImpl::indexOf(objToListNode(obj)); }
 
-    bool isNodeLinked(const T*) const;
+    bool isNodeLinked(const T* obj) const { return objToListNode(obj)->isLinked(); }
 
-    void swap(T*, T*);
-    void moveAfter(T*, T*);
-    void moveBefore(T*, T*);
+    void swap(T* obj1, T* obj2) { ListImpl::swap(objToListNode(obj1), objToListNode(obj2)); }
+    void moveAfter(T* basis, T* obj)
+    {
+        ListImpl::moveAfter(objToListNode(basis), objToListNode(obj));
+    }
+    void moveBefore(T* basis, T* obj)
+    {
+        ListImpl::moveBefore(objToListNode(basis), objToListNode(obj));
+    }
 
     using CompareCallback = int (*)(const T*, const T*);
 
-    void sort();
-    void sort(CompareCallback);
-    void mergeSort();
-    void mergeSort(CompareCallback);
+    void sort() { sort(compareT); }
+    void sort(CompareCallback cmp) { ListImpl::sort(mOffset, cmp); }
+    void mergeSort() { mergeSort(compareT); }
+    void mergeSort(CompareCallback cmp) { ListImpl::mergeSort(mOffset, cmp); }
 
-    T* find(const T*) const;
-    T* find(const T*, CompareCallback) const;
+    T* find(const T* obj) const { return find(obj, compareT); }
+    T* find(const T* obj, CompareCallback cmp) const
+    {
+        return listNodeToObj(ListImpl::find(obj, mOffset, cmp));
+    }
 
-    void uniq();
-    void uniq(CompareCallback);
+    void uniq() { uniq(compareT); }
+    void uniq(CompareCallback cmp) { ListImpl::uniq(mOffset, cmp); }
 
     class iterator
     {
@@ -90,7 +106,13 @@ public:
     }
 
 protected:
-    static int compareT(const T*, const T*);
+    static int compareT(const T* lhs, const T* rhs) {
+        if (lhs < rhs)
+            return -1;
+        if (lhs > rhs)
+            return 1;
+        return 0;
+    }
 
     ListNode* objToListNode(T* obj) const
     {
