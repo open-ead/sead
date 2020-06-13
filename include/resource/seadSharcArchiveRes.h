@@ -3,6 +3,7 @@
 
 #include <basis/seadTypes.h>
 #include <filedevice/seadFileDevice.h>
+#include <prim/seadEndian.h>
 #include <prim/seadSafeString.hpp>
 #include <resource/seadArchiveRes.h>
 

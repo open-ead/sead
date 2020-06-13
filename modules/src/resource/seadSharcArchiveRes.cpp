@@ -193,7 +193,7 @@ bool SharcArchiveRes::prepareArchive_(const void* archive)
         return false;
 
     mEndianType = Endian::markToEndian(mArchiveBlockHeader->byte_order);
-    if (mEndianType != Endian::cHostEndian)
+    if (mEndianType != Endian::getHostEndian())
         return false;
 
     if (mArchiveBlockHeader->version != cArchiveVersion)

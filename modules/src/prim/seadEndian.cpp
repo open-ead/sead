@@ -1,5 +1,7 @@
 #include <prim/seadEndian.h>
 
+namespace
+{
 u8 Swap8(u8 val)
 {
     return val;
@@ -42,21 +44,19 @@ u64 Null64(u64 val)
 {
     return val;
 }
+}  // anonymous namespace
 
 namespace sead
 {
-namespace Endian
-{
 #ifdef cafe
-Types cHostEndian = cBig;  // Temporary
+const Endian::Types Endian::cHostEndian = cBig;  // Temporary
 #elif defined(SWITCH)
-Types cHostEndian = cLittle;  // Temporary
+const Endian::Types Endian::cHostEndian = cLittle;  // Temporary
 #else
 #error "Unknown platform"
 #endif
 
-ConvFuncTable cConvFuncTable = {&Null8,  &Swap8,  &Null16, &Swap16,
-                                &Null32, &Swap32, &Null64, &Swap64};
+const Endian::ConvFuncTable cConvFuncTable = {&Null8,  &Swap8,  &Null16, &Swap16,
+                                              &Null32, &Swap32, &Null64, &Swap64};
 
-}  // namespace Endian
 }  // namespace sead
