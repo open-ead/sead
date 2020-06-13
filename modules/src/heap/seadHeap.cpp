@@ -13,7 +13,7 @@ void Heap::appendDisposer_(IDisposer* disposer)
         cs->lock();
     }
 
-    mDisposerList.insertFront(disposer);
+    mDisposerList.pushBack(disposer);
 
     if (cs != NULL)
         cs->unlock();
