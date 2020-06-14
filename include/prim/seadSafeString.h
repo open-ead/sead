@@ -89,6 +89,9 @@ public:
         mutableSafeString->getMutableStringTop_()[mBufferSize - 1] = mutableSafeString->cNullChar;
     }
 
+    T* getBuffer() { return getMutableStringTop_(); }
+    s32 getBufferSize() const { return mBufferSize; }
+
     s32 format(const T* formatStr, ...);
     s32 formatV(const T* formatStr, va_list args);
     s32 appendWithFormat(const T* formatStr, ...);
@@ -113,8 +116,7 @@ class FixedSafeStringBase : public BufferedSafeStringBase<T>
 public:
     FixedSafeStringBase() : BufferedSafeStringBase<T>(mBuffer, L) { this->clear(); }
 
-    explicit FixedSafeStringBase(const SafeStringBase<T>& str)
-        : BufferedSafeStringBase<T>(mBuffer, L)
+    FixedSafeStringBase(const SafeStringBase<T>& str) : BufferedSafeStringBase<T>(mBuffer, L)
     {
         this->copy(str);
     }
@@ -152,7 +154,7 @@ class FixedSafeString : public FixedSafeStringBase<char, L>
 public:
     FixedSafeString() : FixedSafeStringBase<char, L>() {}
 
-    explicit FixedSafeString(const SafeString& str) : FixedSafeStringBase<char, L>(str) {}
+    FixedSafeString(const SafeString& str) : FixedSafeStringBase<char, L>(str) {}
 
     SafeStringBase<char>& operator=(const SafeStringBase<char>& other) override
     {
@@ -167,7 +169,7 @@ class WFixedSafeString : public FixedSafeStringBase<char16, L>
 public:
     WFixedSafeString() : FixedSafeStringBase<char16, L>() {}
 
-    explicit WFixedSafeString(const SafeString16& str) : FixedSafeStringBase<char16, L>(str) {}
+    WFixedSafeString(const SafeString16& str) : FixedSafeStringBase<char16, L>(str) {}
 };
 
 template <s32 L>
