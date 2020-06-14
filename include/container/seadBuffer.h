@@ -186,7 +186,7 @@ public:
         if (mSize <= u32(idx))
         {
             SEAD_ASSERT(false, "index exceeded [%d/%d]", idx, mSize);
-            return mBuffer[0];
+            return mBuffer;
         }
         return &mBuffer[idx];
     }
@@ -195,7 +195,7 @@ public:
         if (mSize <= u32(idx))
         {
             SEAD_ASSERT(false, "index exceeded [%d/%d]", idx, mSize);
-            return mBuffer[0];
+            return mBuffer;
         }
         return &mBuffer[idx];
     }
