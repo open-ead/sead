@@ -63,6 +63,8 @@ public:
     ResourceMgr();
     ~ResourceMgr();
 
+    void postCreate();
+
     void registerFactory(ResourceFactory* factory, const SafeString& name);
     void unregisterFactory(ResourceFactory* factory);
     void setDefaultFactory(ResourceFactory* factory);

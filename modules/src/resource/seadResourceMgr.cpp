@@ -41,7 +41,7 @@ void ResourceMgr::registerFactory(ResourceFactory* factory, const SafeString& na
     FactoryList* list = factory->mList;
     if (list != NULL)
         list->erase(factory);
-    mFactoryList.insertFront(factory);
+    mFactoryList.pushBack(factory);
 }
 
 void ResourceMgr::registerDecompressor(Decompressor* decompressor, const SafeString& name)
@@ -52,7 +52,7 @@ void ResourceMgr::registerDecompressor(Decompressor* decompressor, const SafeStr
     DecompressorList* list = decompressor->mList;
     if (list != NULL)
         list->erase(decompressor);
-    mDecompList.insertFront(decompressor);
+    mDecompList.pushBack(decompressor);
 }
 
 void ResourceMgr::unregisterFactory(ResourceFactory* factory)

@@ -102,27 +102,13 @@ void FileDeviceMgr::mount(FileDevice* device, const SafeString& name)
     if (!name.isEqual(SafeString::cEmptyString))
         device->mDriveName.copy(name);
 
-    DeviceList* list = device->mList;
-    if (list != NULL)
-    {
-        device->mList = NULL;
-        device->erase_();
-        list->mCount -= 1;
-    }
-
-    mDeviceList.setAsListFor(device);
-    mDeviceList.insertFront(device);
-    mDeviceList.mCount += 1;
+    mDeviceList.pushBack(device);
 }
 
 void FileDeviceMgr::unmount(FileDevice* device)
 {
     if (device->mList != NULL)
-    {
-        device->mList = NULL;
-        device->erase_();
-        mDeviceList.mCount -= 1;
-    }
+        mDeviceList.erase(device);
 
     if (device == mDefaultFileDevice)
         mDefaultFileDevice = NULL;

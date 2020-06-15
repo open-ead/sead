@@ -59,8 +59,9 @@ public:
         return iterator(static_cast<TListNode<T>*>(const_cast<ListNode*>(&mStartEnd)));
     }
 
-    void insertFront(T item)
+    void pushBack(T item)
     {
+        item->erase();
         item->mList = this;
         ListImpl::pushBack(item);
     }
@@ -89,6 +90,13 @@ public:
     {
         mData = static_cast<T>(this);
         mList = NULL;
+    }
+
+    void erase()
+    {
+        TList<T>* list = mList;
+        if (list != NULL)
+            list->erase(this);
     }
 
     T mData;

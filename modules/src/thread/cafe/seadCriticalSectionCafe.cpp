@@ -7,9 +7,18 @@ CriticalSection::CriticalSection() : IDisposer(), mCriticalSectionInner()
     OSInitMutex(&mCriticalSectionInner);
 }
 
+CriticalSection::~CriticalSection()
+{
+}
+
 void CriticalSection::lock()
 {
     OSLockMutex(&mCriticalSectionInner);
+}
+
+bool CriticalSection::tryLock()
+{
+    return OSTryLockMutex(&mCriticalSectionInner);
 }
 
 void CriticalSection::unlock()
