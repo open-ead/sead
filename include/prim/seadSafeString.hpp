@@ -2,7 +2,6 @@
 
 #define SEAD_SAFE_STRING_HPP_
 
-#include <cstring>
 #include <prim/seadMemUtil.h>
 #include <prim/seadSafeString.h>
 
@@ -105,7 +104,7 @@ inline s32 BufferedSafeStringBase<T>::copy(const SafeStringBase<T>& src, s32 cop
     if (copyLength >= mBufferSize)
         copyLength = mBufferSize - 1;
 
-    std::memcpy(dst, csrc, copyLength * sizeof(T));
+    MemUtil::copy(dst, csrc, copyLength * sizeof(T));
     dst[copyLength] = SafeStringBase<T>::cNullChar;
 
     return copyLength;
@@ -133,7 +132,7 @@ inline s32 BufferedSafeStringBase<T>::copyAt(s32 at, const SafeStringBase<T>& sr
     if (copyLength <= 0)
         return 0;
 
-    std::memcpy(dst + at, src.cstr(), copyLength * sizeof(T));
+    MemUtil::copy(dst + at, src.cstr(), copyLength * sizeof(T));
     if (at + copyLength > len)
         dst[at + copyLength] = SafeStringBase<T>::cNullChar;
 

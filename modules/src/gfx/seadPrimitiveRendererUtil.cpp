@@ -19,10 +19,10 @@ void setQuadVertex(Vertex* vtx, u16* idx)
     static const u16 cIdx[6] = {0, 2, 1, 1, 2, 3};
 
     if (vtx != NULL)
-        memcpy(vtx, cVtx, sizeof(cVtx));
+        MemUtil::copy(vtx, cVtx, sizeof(cVtx));
 
     if (idx != NULL)
-        memcpy(idx, cIdx, sizeof(cIdx));
+        MemUtil::copy(idx, cIdx, sizeof(cIdx));
 }
 
 void setLineVertex(Vertex* vtx, u16* idx)
@@ -34,10 +34,10 @@ void setLineVertex(Vertex* vtx, u16* idx)
     static const u16 cIdx[2] = {0, 1};
 
     if (vtx != NULL)
-        memcpy(vtx, cVtx, sizeof(cVtx));
+        MemUtil::copy(vtx, cVtx, sizeof(cVtx));
 
     if (idx != NULL)
-        memcpy(idx, cIdx, sizeof(cIdx));
+        MemUtil::copy(idx, cIdx, sizeof(cIdx));
 }
 
 void setCubeVertex(Vertex* vtx, u16* idx)
@@ -62,10 +62,10 @@ void setCubeVertex(Vertex* vtx, u16* idx)
                                  1, 6, 0, 6, 7, 0, 0, 7, 3, 3, 7, 4, 1, 2, 6, 2, 5, 6};
 
     if (vtx != NULL)
-        memcpy(vtx, cVtx, sizeof(cVtx));
+        MemUtil::copy(vtx, cVtx, sizeof(cVtx));
 
     if (idx != NULL)
-        memcpy(idx, cIdx, sizeof(cIdx));
+        MemUtil::copy(idx, cIdx, sizeof(cIdx));
 }
 
 void setWireCubeVertex(Vertex* vtx, u16* idx)
@@ -78,7 +78,7 @@ void setWireCubeVertex(Vertex* vtx, u16* idx)
     };
 
     if (idx != NULL)
-        memcpy(idx, cIdx, sizeof(cIdx));
+        MemUtil::copy(idx, cIdx, sizeof(cIdx));
 }
 
 void setSphereVertex(Vertex* vtx, u16* idx, s32 x, s32 y)

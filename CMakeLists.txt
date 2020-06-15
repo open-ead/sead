@@ -24,6 +24,7 @@ add_library(sead OBJECT
   modules/src/prim/seadBitFlag.cpp
   modules/src/prim/seadEndian.cpp
   modules/src/prim/seadEnum.cpp
+  modules/src/prim/seadMemUtil.cpp
   modules/src/prim/seadSafeString.cpp
   modules/src/prim/seadStringUtil.cpp
 
