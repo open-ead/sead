@@ -31,7 +31,7 @@ void* NewImpl(Heap* heap, size_t size, s32 alignment, bool abortOnFailure)
     {
         SEAD_ASSERT(false, "alloc failed. size: %u, allocatable size: %u, alignment: %d, heap: %s",
                     size, heap->getMaxAllocatableSize(alignment), alignment,
-                    heap->mINamableName.cstr());
+                    heap->getName().cstr());
         return nullptr;
     }
     return result;
@@ -148,7 +148,7 @@ void operator delete[](void* ptr) noexcept
     sead::system::DeleteImpl(ptr);
 }
 
-void operator delete(void* ptr, const std::nothrow_t&)noexcept
+void operator delete(void* ptr, const std::nothrow_t&) noexcept
 {
     sead::system::DeleteImpl(ptr);
 }

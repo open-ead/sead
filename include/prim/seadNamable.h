@@ -9,11 +9,12 @@ class INamable
 {
 public:
     INamable() : mINamableName() {}
+    INamable(const SafeString& name) : mINamableName(name) {}
 
-    INamable(const char* str) : mINamableName(str) {}
+    const SafeString& getName() const { return mINamableName; }
+    void setName(const SafeString& name) { mINamableName = name; }
 
-    ~INamable() {}
-
+private:
     SafeString mINamableName;
 };
 
