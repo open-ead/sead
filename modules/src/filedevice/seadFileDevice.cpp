@@ -18,8 +18,8 @@ u32 FileHandle::read(u8* outBuffer, u32 bytesToRead)
 
 FileDevice::~FileDevice()
 {
-    if (FileDeviceMgr::sInstance != NULL)
-        FileDeviceMgr::sInstance->unmount(this);
+    if (FileDeviceMgr::instance() != NULL)
+        FileDeviceMgr::instance()->unmount(this);
 }
 
 void FileDevice::traceFilePath(const SafeString& path) const

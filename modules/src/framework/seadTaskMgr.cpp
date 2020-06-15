@@ -43,8 +43,8 @@ bool TaskMgr::changeTaskState_(TaskBase* task, TaskBase::State state)
             task->mTaskListNode.erase();
             appendToList_(mActiveList, task);
 
-            if (ResourceMgr::sInstance != NULL)
-                ResourceMgr::sInstance->postCreate();
+            if (ResourceMgr::instance() != NULL)
+                ResourceMgr::instance()->postCreate();
 
             task->enterCommon();
 

@@ -173,7 +173,7 @@ u8* SZSDecompressor::tryDecompFromDevice(const ResourceMgr::LoadArg& loadArg, Re
         device = loadArg.device->tryOpen(&handle, loadArg.path, FileDevice::cFileOpenFlag_ReadOnly,
                                          loadArg.div_size);
     else
-        device = FileDeviceMgr::sInstance->tryOpen(
+        device = FileDeviceMgr::instance()->tryOpen(
             &handle, loadArg.path, FileDevice::cFileOpenFlag_ReadOnly, loadArg.div_size);
 
     if (device != NULL &&

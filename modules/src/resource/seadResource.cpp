@@ -38,8 +38,8 @@ void DirectResource::create(u8* buffer, u32 bufferSize, u32 allocSize, bool allo
 
 ResourceFactory::~ResourceFactory()
 {
-    if (ResourceMgr::sInstance != NULL)
-        ResourceMgr::sInstance->unregisterFactory(this);
+    if (ResourceMgr::instance() != NULL)
+        ResourceMgr::instance()->unregisterFactory(this);
 }
 
 Resource* DirectResourceFactoryBase::create(const ResourceMgr::CreateArg& createArg)
@@ -87,7 +87,7 @@ Resource* DirectResourceFactoryBase::tryCreate(const ResourceMgr::LoadArg& loadA
         data = loadArg.device->tryLoad(fileLoadArg);
 
     else
-        data = FileDeviceMgr::sInstance->tryLoad(fileLoadArg);
+        data = FileDeviceMgr::instance()->tryLoad(fileLoadArg);
 
     if (data == NULL)
     {
