@@ -1,5 +1,3 @@
-#include <cstring>
-
 #include <basis/seadNew.h>
 #include <basis/seadRawPrint.h>
 #include <container/seadPtrArray.h>
@@ -58,7 +56,7 @@ bool PtrArrayImpl::tryAllocBuffer(s32 ptrNumMax, Heap* heap, s32 alignment)
 
 void PtrArrayImpl::freeBuffer()
 {
-    if (mPtrs)
+    if (isBufferReady())
     {
         delete[] mPtrs;
         mPtrs = nullptr;
@@ -89,9 +87,57 @@ void PtrArrayImpl::erase(s32 pos, s32 count)
 
     const s32 endPos = pos + count;
     if (mPtrNum > endPos)
-        std::memmove(mPtrs + pos, mPtrs + endPos, sizeof(void*) * (mPtrNum - endPos));
+        MemUtil::copyOverlap(mPtrs + pos, mPtrs + endPos, sizeof(void*) * (mPtrNum - endPos));
 
     mPtrNum -= count;
 }
+
+// TODO: PtrArrayImpl::reverse
+
+// TODO: PtrArrayImpl::shuffle
+
+void PtrArrayImpl::insert(s32 pos, void* ptr) {
+    if (!checkInsert(pos, 1))
+        return;
+
+    createVacancy(pos, 1);
+    mPtrs[pos] = ptr;
+    ++mPtrNum;
+}
+
+bool PtrArrayImpl::checkInsert(s32 pos, s32 num)
+{
+    if (pos < 0)
+    {
+        SEAD_ASSERT(false, "illegal position[%d]", pos);
+        return false;
+    }
+
+    if (mPtrNum + num > mPtrNumMax)
+    {
+        SEAD_ASSERT(false, "list is full.");
+        return false;
+    }
+
+    if (mPtrNum < pos)
+    {
+        SEAD_ASSERT(false, "pos[%d] exceed size[%d]", pos, mPtrNum);
+        return false;
+    }
+
+    return true;
+}
+
+// TODO: PtrArrayImpl::insertArray
+
+// TODO: PtrArrayImpl::sort
+
+// TODO: PtrArrayImpl::heapSort
+
+// TODO: PtrArrayImpl::compare
+
+// TODO: PtrArrayImpl::uniq
+
+// TODO: PtrArrayImpl::binarySearch
 
 }  // namespace sead
