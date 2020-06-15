@@ -235,7 +235,7 @@ public:
     class iterator
     {
     public:
-        iterator(T** pptr) : mPPtr{pptr} {}
+        iterator(T* const* pptr) : mPPtr{pptr} {}
         bool operator==(const iterator& other) const { return mPPtr == other.mPPtr; }
         bool operator!=(const iterator& other) const { return !(*this == other); }
         iterator& operator++()
@@ -243,17 +243,11 @@ public:
             ++mPPtr;
             return *this;
         }
-        iterator operator++(int)
-        {
-            iterator old = *this;
-            ++mPPtr;
-            return old;
-        }
-        T*& operator*() const { return *mPPtr; }
-        T** operator->() const { return mPPtr; }
+        T& operator*() const { return **mPPtr; }
+        T* operator->() const { return *mPPtr; }
 
     private:
-        T** mPPtr;
+        T* const* mPPtr;
     };
 
     iterator begin() const { return iterator(data()); }
@@ -262,7 +256,7 @@ public:
     class constIterator
     {
     public:
-        constIterator(const T** pptr) : mPPtr{pptr} {}
+        constIterator(const T* const* pptr) : mPPtr{pptr} {}
         bool operator==(const constIterator& other) const { return mPPtr == other.mPPtr; }
         bool operator!=(const constIterator& other) const { return !(*this == other); }
         constIterator& operator++()
@@ -270,17 +264,11 @@ public:
             ++mPPtr;
             return *this;
         }
-        constIterator operator++(int)
-        {
-            constIterator old = *this;
-            ++mPPtr;
-            return old;
-        }
-        T* operator*() const { return *mPPtr; }
-        const T** operator->() const { return mPPtr; }
+        const T& operator*() const { return **mPPtr; }
+        const T* operator->() const { return *mPPtr; }
 
     private:
-        const T** mPPtr;
+        const T* const* mPPtr;
     };
 
     constIterator constBegin() const { return constIterator(data()); }

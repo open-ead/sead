@@ -19,9 +19,9 @@ Heap* HeapMgr::findContainHeap(const void* ptr) const
 
     sHeapTreeLockCS.lock();
 
-    for (Heap* heap : sRootHeaps)
+    for (Heap& heap : sRootHeaps)
     {
-        containHeap = heap->findContainHeap_(ptr);
+        containHeap = heap.findContainHeap_(ptr);
         if (containHeap != NULL)
         {
             sHeapTreeLockCS.unlock();
@@ -29,9 +29,9 @@ Heap* HeapMgr::findContainHeap(const void* ptr) const
         }
     }
 
-    for (Heap* heap : sIndependentHeaps)
+    for (Heap& heap : sIndependentHeaps)
     {
-        containHeap = heap->findContainHeap_(ptr);
+        containHeap = heap.findContainHeap_(ptr);
         if (containHeap != NULL)
         {
             sHeapTreeLockCS.unlock();
