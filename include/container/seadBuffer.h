@@ -175,11 +175,11 @@ public:
 
     bool isBufferReady() const { return mBuffer != nullptr; }
 
-    T& operator()(s32 idx) { return *get(idx); }
-    const T& operator()(s32 idx) const { return *get(idx); }
+    T& operator()(s32 idx) { return *unsafeGet(idx); }
+    const T& operator()(s32 idx) const { return *unsafeGet(idx); }
 
-    T& operator[](s32 idx) { return *unsafeGet(idx); }
-    const T& operator[](s32 idx) const { return *unsafeGet(idx); }
+    T& operator[](s32 idx) { return *get(idx); }
+    const T& operator[](s32 idx) const { return *get(idx); }
 
     T* get(s32 idx)
     {
