@@ -96,7 +96,7 @@ public:
     {
         TList<T>* list = mList;
         if (list != NULL)
-            list->erase(this);
+            list->erase(static_cast<T>(this));
     }
 
     T mData;

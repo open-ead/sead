@@ -38,9 +38,6 @@ void ResourceMgr::registerFactory(ResourceFactory* factory, const SafeString& na
 {
     factory->mExt.copy(name);
 
-    FactoryList* list = factory->mList;
-    if (list != NULL)
-        list->erase(factory);
     mFactoryList.pushBack(factory);
 }
 
@@ -49,9 +46,6 @@ void ResourceMgr::registerDecompressor(Decompressor* decompressor, const SafeStr
     if (!name.isEqual(SafeString::cEmptyString))
         decompressor->mExt.copy(name);
 
-    DecompressorList* list = decompressor->mList;
-    if (list != NULL)
-        list->erase(decompressor);
     mDecompList.pushBack(decompressor);
 }
 
