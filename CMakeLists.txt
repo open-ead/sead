@@ -35,4 +35,5 @@ add_library(sead OBJECT
   # modules/src/resource/seadSZSDecompressor.cpp
 )
 target_compile_options(sead PRIVATE -fno-rtti -fno-exceptions)
+target_compile_options(sead PRIVATE -Wno-invalid-offsetof)
 target_include_directories(sead PUBLIC include/)

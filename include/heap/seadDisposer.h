@@ -27,6 +27,11 @@ public:
               HeapNullOption option = HeapNullOption::UseSpecifiedOrCurrentHeap);
     virtual ~IDisposer();
 
+    static u32 getListNodeOffset() { return offsetof(IDisposer, mListNode); }
+
+protected:
+    Heap* getDisposerHeap_() const { return mDisposerHeap; }
+
 private:
     friend class Heap;
 
