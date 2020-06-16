@@ -26,6 +26,8 @@ public:
     SEAD_CALENDARSPAN_MAKE_CLASS(Second)
 #undef SEAD_CALENDARSPAN_MAKE_CLASS
 
+    CalendarSpan() : mDay(0), mHour(0), mMinute(0), mSecond(0) {}
+
     CalendarSpan(const Day& day, const Hour& hour, const Minute& minute, const Second& second)
         : mDay(day), mHour(hour), mMinute(minute), mSecond(second)
     {
