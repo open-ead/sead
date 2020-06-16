@@ -66,7 +66,6 @@ private:
         bool operator==(const NAME& rhs) const { return mIdx == rhs.mIdx; }                        \
                                                                                                    \
         ValueType value() const volatile { return static_cast<ValueType>(getArray_()(mIdx)); }     \
-        operator ValueType() const volatile { return value(); }                                    \
         operator int() const volatile { return value(); }                                          \
                                                                                                    \
         bool fromText(const sead::SafeString& name)                                                \
@@ -96,13 +95,14 @@ private:
         int size() const { return cCount; }                                                        \
         int getSize() const { return size(); }                                                     \
                                                                                                    \
-        void initialize() { text(0); }                                                             \
+        static void initialize() { text(0); }                                                      \
                                                                                                    \
         class iterator                                                                             \
         {                                                                                          \
         public:                                                                                    \
             iterator(int idx) : mIdx(idx) {}                                                       \
             bool operator==(const iterator& rhs) const { return mIdx == rhs.mIdx; }                \
+            bool operator!=(const iterator& rhs) const { return mIdx != rhs.mIdx; }                \
             iterator& operator++()                                                                 \
             {                                                                                      \
                 ++mIdx;                                                                            \
@@ -113,7 +113,7 @@ private:
                 --mIdx;                                                                            \
                 return *this;                                                                      \
             }                                                                                      \
-            const int& operator*() const { return mIdx; }                                          \
+            NAME operator*() const { return NAME(mIdx); }                                          \
                                                                                                    \
         private:                                                                                   \
             int mIdx;                                                                              \
