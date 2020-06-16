@@ -28,6 +28,14 @@ public:
         T w;
     };
 
+    struct QuatBase
+    {
+        T x;
+        T y;
+        T z;
+        T w;
+    };
+
     struct Mtx34Base
     {
         union {
