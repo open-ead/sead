@@ -40,7 +40,8 @@ private:
             __VA_ARGS__                                                                            \
         };                                                                                         \
                                                                                                    \
-        NAME() = default;                                                                          \
+        /* This must be user-defined for correct codegen of static constructors. */                \
+        NAME() : mIdx(0) {}                                                                        \
         NAME(ValueType value) { setRelativeIndex(value); }                                         \
         NAME(int idx) { setRelativeIndex(idx); }                                                   \
                                                                                                    \
@@ -128,7 +129,7 @@ private:
             return count;                                                                          \
         }();                                                                                       \
                                                                                                    \
-        int mIdx = 0;                                                                              \
+        int mIdx;                                                                                  \
     };
 
 /// For use with SEAD_ENUM. Use this in the .cpp file.
@@ -180,7 +181,7 @@ private:
             __VA_ARGS__                                                                            \
         };                                                                                         \
                                                                                                    \
-        NAME() = default;                                                                          \
+        NAME() : mIdx(0) {}                                                                        \
         NAME(ValueType value)                                                                      \
         {                                                                                          \
             int idx = findRelativeIndex_(value);                                                   \
@@ -317,7 +318,7 @@ private:
             return count;                                                                          \
         }();                                                                                       \
                                                                                                    \
-        int mIdx = 0;                                                                              \
+        int mIdx;                                                                                  \
     };
 
 /// For use with SEAD_ENUM_EX. Use immediately after SEAD_ENUM_EX.

@@ -26,6 +26,8 @@ add_library(sead OBJECT
   modules/src/math/seadQuat.cpp
   modules/src/math/seadVector.cpp
 
+  modules/src/mc/seadCoreInfo.cpp
+
   modules/src/prim/seadBitFlag.cpp
   modules/src/prim/seadEndian.cpp
   modules/src/prim/seadEnum.cpp
