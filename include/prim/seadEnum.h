@@ -64,6 +64,7 @@ private:
         NAME& operator=(const NAME& other) = default;                                              \
         bool operator==(const NAME& rhs) const { return mIdx == rhs.mIdx; }                        \
                                                                                                    \
+        ValueType value() const { return static_cast<ValueType>(getArray_()(mIdx)); }              \
         ValueType value() const volatile { return static_cast<ValueType>(getArray_()(mIdx)); }     \
         operator int() const volatile { return value(); }                                          \
                                                                                                    \
@@ -80,10 +81,17 @@ private:
             return false;                                                                          \
         }                                                                                          \
         const char* text() const { return text(mIdx); }                                            \
+        const char* text() const volatile { return text(mIdx); }                                   \
         static const char* text(int idx) { return text_(idx); }                                    \
                                                                                                    \
         int getRelativeIndex() const { return mIdx; }                                              \
+        int getRelativeIndex() const volatile { return mIdx; }                                     \
         void setRelativeIndex(int idx)                                                             \
+        {                                                                                          \
+            SEAD_ASSERT(idx < size(), "range over: %d, [%d - %d)", idx, 0, size());                \
+            mIdx = idx;                                                                            \
+        }                                                                                          \
+        void setRelativeIndex(int idx) volatile                                                    \
         {                                                                                          \
             SEAD_ASSERT(idx < size(), "range over: %d, [%d - %d)", idx, 0, size());                \
             mIdx = idx;                                                                            \
@@ -91,8 +99,9 @@ private:
         static int findRelativeIndex(ValueType value) { return findRelativeIndex_(value); }        \
                                                                                                    \
         const char* getTypeText() const { return #NAME; }                                          \
-        int size() const { return cCount; }                                                        \
-        int getSize() const { return size(); }                                                     \
+        const char* getTypeText() const volatile { return #NAME; }                                 \
+        static int size() { return cCount; }                                                       \
+        static int getSize() { return size(); }                                                    \
                                                                                                    \
         static void initialize() { text(0); }                                                      \
                                                                                                    \
@@ -118,8 +127,8 @@ private:
             int mIdx;                                                                              \
         };                                                                                         \
                                                                                                    \
-        iterator begin() { return iterator(0); }                                                   \
-        iterator end() { return iterator(getArray_().size()); }                                    \
+        static iterator begin() { return iterator(0); }                                            \
+        static iterator end() { return iterator(getArray_().size()); }                             \
                                                                                                    \
     private:                                                                                       \
         class ValueArray                                                                           \
