@@ -40,6 +40,8 @@ add_library(sead OBJECT
   modules/src/resource/seadResourceMgr.cpp
   # modules/src/resource/seadSharcArchiveRes.cpp
   # modules/src/resource/seadSZSDecompressor.cpp
+
+  modules/src/time/seadTickSpan.cpp
 )
 target_compile_options(sead PRIVATE -fno-rtti -fno-exceptions)
 target_compile_options(sead PRIVATE -Wno-invalid-offsetof)
