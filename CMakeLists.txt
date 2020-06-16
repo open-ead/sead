@@ -21,6 +21,7 @@ add_library(sead OBJECT
   modules/src/heap/seadHeap.cpp
   modules/src/heap/seadHeapMgr.cpp
 
+  modules/src/math/seadBoundBox.cpp
   modules/src/math/seadMatrix.cpp
   modules/src/math/seadQuat.cpp
   modules/src/math/seadVector.cpp
