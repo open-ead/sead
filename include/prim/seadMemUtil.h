@@ -25,6 +25,7 @@ public:
 #ifdef cafe
 #include <prim/cafe/seadMemUtilCafe.hpp>
 #elif SWITCH
+#include <prim/nin/seadMemUtilNin.hpp>
 #else
 #error "Unknown platform"
 #endif  // cafe
