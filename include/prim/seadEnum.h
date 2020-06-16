@@ -23,23 +23,155 @@ private:
 };
 }  // namespace sead
 
-/// Define an enum class. Use SEAD_ENUM_VALUES and define the enum values **in the same order**.
+/// Define an enum class. Custom enumerator values are *not* supported.
 ///
 /// Example:
 ///
-/// SEAD_ENUM(AssetType, Wave, Stream, Unknown)
-/// or SEAD_ENUM(AssetType, Wave = 0, Stream = 1, Unknown = 0xFF)
+/// SEAD_ENUM(CoreId, cMain, cSub1, cSub2)
+///
+/// Finally, in the .cpp file, add SEAD_ENUM_IMPL(CoreId)
+///
+#define SEAD_ENUM(NAME, ...)                                                                       \
+    class NAME                                                                                     \
+    {                                                                                              \
+    public:                                                                                        \
+        enum ValueType                                                                             \
+        {                                                                                          \
+            __VA_ARGS__                                                                            \
+        };                                                                                         \
+                                                                                                   \
+        NAME() = default;                                                                          \
+        NAME(ValueType value) { setRelativeIndex(value); }                                         \
+        NAME(int idx) { setRelativeIndex(idx); }                                                   \
+                                                                                                   \
+        NAME& operator=(const NAME& other) = default;                                              \
+        bool operator==(const NAME& rhs) const { return mIdx == rhs.mIdx; }                        \
+                                                                                                   \
+        ValueType value() const { return static_cast<ValueType>(mIdx); }                           \
+        ValueType value() const volatile { return static_cast<ValueType>(mIdx); }                  \
+        operator int() const volatile { return value(); }                                          \
+                                                                                                   \
+        bool fromText(const sead::SafeString& name)                                                \
+        {                                                                                          \
+            for (int i = 0; i < size(); ++i)                                                       \
+            {                                                                                      \
+                if (name.isEqual(text(i)))                                                         \
+                {                                                                                  \
+                    mIdx = i;                                                                      \
+                    return true;                                                                   \
+                }                                                                                  \
+            }                                                                                      \
+            return false;                                                                          \
+        }                                                                                          \
+        const char* text() const { return text(mIdx); }                                            \
+        const char* text() const volatile { return text(mIdx); }                                   \
+        static const char* text(int idx) { return text_(idx); }                                    \
+                                                                                                   \
+        int getRelativeIndex() const { return mIdx; }                                              \
+        int getRelativeIndex() const volatile { return mIdx; }                                     \
+        void setRelativeIndex(int idx)                                                             \
+        {                                                                                          \
+            SEAD_ASSERT(idx < size(), "range over: %d, [%d - %d)", idx, 0, size());                \
+            mIdx = idx;                                                                            \
+        }                                                                                          \
+        void setRelativeIndex(int idx) volatile                                                    \
+        {                                                                                          \
+            SEAD_ASSERT(idx < size(), "range over: %d, [%d - %d)", idx, 0, size());                \
+            mIdx = idx;                                                                            \
+        }                                                                                          \
+                                                                                                   \
+        const char* getTypeText() const { return #NAME; }                                          \
+        const char* getTypeText() const volatile { return #NAME; }                                 \
+        static int size() { return cCount; }                                                       \
+        static int getSize() { return size(); }                                                    \
+                                                                                                   \
+        static void initialize() { text(0); }                                                      \
+                                                                                                   \
+        class iterator                                                                             \
+        {                                                                                          \
+        public:                                                                                    \
+            iterator(int idx) : mIdx(idx) {}                                                       \
+            bool operator==(const iterator& rhs) const { return mIdx == rhs.mIdx; }                \
+            bool operator!=(const iterator& rhs) const { return mIdx != rhs.mIdx; }                \
+            iterator& operator++()                                                                 \
+            {                                                                                      \
+                ++mIdx;                                                                            \
+                return *this;                                                                      \
+            }                                                                                      \
+            iterator& operator--()                                                                 \
+            {                                                                                      \
+                --mIdx;                                                                            \
+                return *this;                                                                      \
+            }                                                                                      \
+            NAME operator*() const { return NAME(mIdx); }                                          \
+                                                                                                   \
+        private:                                                                                   \
+            int mIdx;                                                                              \
+        };                                                                                         \
+                                                                                                   \
+        static iterator begin() { return iterator(0); }                                            \
+        static iterator end() { return iterator(size()); }                                         \
+                                                                                                   \
+    private:                                                                                       \
+        /* Returns nullptr when not found. */                                                      \
+        static const char* text_(int idx);                                                         \
+                                                                                                   \
+        static constexpr const char* cTextAll = #__VA_ARGS__;                                      \
+        static constexpr size_t cTextAllLen = sizeof(#__VA_ARGS__);                                \
+        static constexpr int cCount = [] {                                                         \
+            int count = 1;                                                                         \
+            for (int i = 0; i < cTextAllLen; ++i)                                                  \
+            {                                                                                      \
+                if (cTextAll[i] == ',')                                                            \
+                    ++count;                                                                       \
+            }                                                                                      \
+            return count;                                                                          \
+        }();                                                                                       \
+                                                                                                   \
+        int mIdx = 0;                                                                              \
+    };
+
+/// For use with SEAD_ENUM. Use this in the .cpp file.
+#define SEAD_ENUM_IMPL(NAME)                                                                       \
+    const char* NAME::text_(int idx)                                                               \
+    {                                                                                              \
+        if (u32(idx) >= cCount)                                                                    \
+            return nullptr;                                                                        \
+                                                                                                   \
+        static char** spTextPtr = nullptr;                                                         \
+        if (spTextPtr)                                                                             \
+            return spTextPtr[idx];                                                                 \
+        {                                                                                          \
+            sead::ScopedLock<sead::CriticalSection> lock(sead::EnumUtil::getParseTextCS_());       \
+            if (!spTextPtr)                                                                        \
+            {                                                                                      \
+                static char* sTextPtr[cCount];                                                     \
+                static sead::FixedSafeString<cTextAllLen> sTextAll = sead::SafeString(cTextAll);   \
+                sead::EnumUtil::parseText_(sTextPtr, sTextAll.getBuffer(), cCount);                \
+                spTextPtr = sTextPtr;                                                              \
+            }                                                                                      \
+        }                                                                                          \
+        return spTextPtr[idx];                                                                     \
+    }
+
+/// Define a complex enum class with custom enumerator values with this macro.
+/// You must then use SEAD_ENUM_EX_VALUES and define the enum values **in the same order**.
+///
+/// Example:
+///
+/// SEAD_ENUM_EX(AssetType, Wave, Stream, Unknown)
+/// or SEAD_ENUM_EX(AssetType, Wave = 0, Stream = 1, Unknown = 0xFF)
 ///
 /// followed by
 ///
-/// SEAD_ENUM_VALUES(AssetType, 0, 1, 0xFF)
-/// or SEAD_ENUM_VALUES(AssetType, Wave, Stream, Unknown)
+/// SEAD_ENUM_EX_VALUES(AssetType, 0, 1, 0xFF)
+/// or SEAD_ENUM_EX_VALUES(AssetType, Wave, Stream, Unknown)
 ///
-/// Finally, in the .cpp file, add SEAD_ENUM_IMPL(AssetType)
+/// Finally, in the .cpp file, add SEAD_ENUM_EX_IMPL(AssetType)
 ///
-/// For the common case where enumerators do not require custom values, use SEAD_ENUM_SIMPLE.
+/// For the common case where enumerators do not require custom values, use SEAD_ENUM.
 ///
-#define SEAD_ENUM(NAME, ...)                                                                       \
+#define SEAD_ENUM_EX(NAME, ...)                                                                    \
     class NAME                                                                                     \
     {                                                                                              \
     public:                                                                                        \
@@ -188,8 +320,8 @@ private:
         int mIdx = 0;                                                                              \
     };
 
-/// For use with SEAD_ENUM. Use immediately after SEAD_ENUM.
-#define SEAD_ENUM_VALUES(NAME, ...)                                                                \
+/// For use with SEAD_ENUM_EX. Use immediately after SEAD_ENUM_EX.
+#define SEAD_ENUM_EX_VALUES(NAME, ...)                                                             \
     NAME::ValueArray::ValueArray()                                                                 \
     {                                                                                              \
         sead::ScopedLock<sead::CriticalSection> lock(sead::EnumUtil::getInitValueArrayCS_());      \
@@ -204,43 +336,14 @@ private:
         mBuffer = sArray.getBufferPtr();                                                           \
     }
 
-/// Define an enum class.
-///
-/// Simpler version of SEAD_ENUM. Does not support custom enumerator values!
-///
-/// Example: SEAD_ENUM_SIMPLE(AssetType, Wave, Stream, Unknown)
-/// followed by SEAD_ENUM_IMPL in a .cpp file
-#define SEAD_ENUM_SIMPLE(NAME, ...)                                                                \
-    SEAD_ENUM(NAME, __VA_ARGS__)                                                                   \
-    SEAD_ENUM_VALUES(NAME, __VA_ARGS__)
-
-/// Use this in the .cpp file.
-#define SEAD_ENUM_IMPL(NAME)                                                                       \
+/// For use with SEAD_ENUM_EX. Use this in the .cpp file.
+#define SEAD_ENUM_EX_IMPL(NAME)                                                                    \
+    SEAD_ENUM_IMPL(NAME)                                                                           \
+                                                                                                   \
     NAME::ValueArray& NAME::getArray_()                                                            \
     {                                                                                              \
         static ValueArray sBuffer;                                                                 \
         return sBuffer;                                                                            \
-    }                                                                                              \
-                                                                                                   \
-    const char* NAME::text_(int idx)                                                               \
-    {                                                                                              \
-        if (u32(idx) >= cCount)                                                                    \
-            return nullptr;                                                                        \
-                                                                                                   \
-        static char** spTextPtr = nullptr;                                                         \
-        if (spTextPtr)                                                                             \
-            return spTextPtr[idx];                                                                 \
-        {                                                                                          \
-            sead::ScopedLock<sead::CriticalSection> lock(sead::EnumUtil::getParseTextCS_());       \
-            if (!spTextPtr)                                                                        \
-            {                                                                                      \
-                static char* sTextPtr[cCount];                                                     \
-                static sead::FixedSafeString<cTextAllLen> sTextAll = sead::SafeString(cTextAll);   \
-                sead::EnumUtil::parseText_(sTextPtr, sTextAll.getBuffer(), cCount);                \
-                spTextPtr = sTextPtr;                                                              \
-            }                                                                                      \
-        }                                                                                          \
-        return spTextPtr[idx];                                                                     \
     }                                                                                              \
                                                                                                    \
     int NAME::findRelativeIndex_(NAME::ValueType value)                                            \
