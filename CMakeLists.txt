@@ -1,6 +1,8 @@
 add_library(sead OBJECT
   modules/src/basis/seadNew.cpp
 
+  modules/src/codec/seadHashCRC32.cpp
+
   modules/src/container/seadListImpl.cpp
   modules/src/container/seadPtrArray.cpp
 
