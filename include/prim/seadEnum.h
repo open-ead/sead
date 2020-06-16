@@ -5,11 +5,10 @@
 #include <container/seadSafeArray.h>
 #include <prim/seadSafeString.hpp>
 #include <prim/seadScopedLock.h>
+#include <thread/seadCriticalSection.h>
 
 namespace sead
 {
-class CriticalSection;
-
 class EnumUtil
 {
 public:
