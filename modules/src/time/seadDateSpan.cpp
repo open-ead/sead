@@ -1,4 +1,5 @@
 #include <time/seadDateSpan.h>
+#include <time/seadDateUtil.h>
 
 namespace sead
 {
@@ -26,8 +27,10 @@ s64 DateSpan::set(const CalendarSpan::Day& d, const CalendarSpan::Hour& h,
     return setTimeImpl_(d.getValue(), h.getValue(), m.getValue(), s.getValue());
 }
 
-// TODO:
-// void DateSpan::getCalendarSpan(CalendarSpan* out_span) const {}
+void DateSpan::getCalendarSpan(CalendarSpan* out_span) const
+{
+    DateUtil::calcSecondToCalendarSpan(out_span, mSpan);
+}
 
 s64 DateSpan::setTimeImpl_(s32 d, s32 h, s32 m, s32 s)
 {
