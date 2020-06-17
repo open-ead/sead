@@ -41,6 +41,7 @@ add_library(sead OBJECT
   # modules/src/resource/seadSharcArchiveRes.cpp
   # modules/src/resource/seadSZSDecompressor.cpp
 
+  modules/src/time/seadCalendarTime.cpp
   modules/src/time/seadDateSpan.cpp
   modules/src/time/seadTickSpan.cpp
 )
