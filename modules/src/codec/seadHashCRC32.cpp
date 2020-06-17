@@ -4,6 +4,9 @@
 
 namespace sead
 {
+u32 HashCRC32::sTable[256];
+bool HashCRC32::sInitialized = false;
+
 void HashCRC32::initialize()
 {
     for (int i = 0; i < std::size(sTable); ++i)

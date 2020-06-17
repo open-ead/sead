@@ -4,6 +4,9 @@
 
 namespace sead
 {
+u16 HashCRC16::sTable[256];
+bool HashCRC16::sInitialized = false;
+
 void HashCRC16::initialize()
 {
     for (int i = 0; i < std::size(sTable); ++i)
