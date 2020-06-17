@@ -14,21 +14,18 @@ public:
 
     T& operator[](s32 idx)
     {
-        if (idx >= N)
-        {
-            SEAD_ASSERT(false, "range over [0, %d) : %d", N, idx);
-            idx = 0;
-        }
-        return mBuffer[idx];
+        if (u32(idx) < N)
+            return mBuffer[idx];
+        SEAD_ASSERT(false, "range over [0, %d) : %d", N, idx);
+        return mBuffer[0];
     }
+
     const T& operator[](s32 idx) const
     {
-        if (idx >= N)
-        {
-            SEAD_ASSERT(false, "range over [0, %d) : %d", N, idx);
-            idx = 0;
-        }
-        return mBuffer[idx];
+        if (u32(idx) < N)
+            return mBuffer[idx];
+        SEAD_ASSERT(false, "range over [0, %d) : %d", N, idx);
+        return mBuffer[0];
     }
 
     T& operator()(s32 idx) { return mBuffer[idx]; }
