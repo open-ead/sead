@@ -43,6 +43,7 @@ add_library(sead OBJECT
 
   modules/src/time/seadCalendarTime.cpp
   modules/src/time/seadDateSpan.cpp
+  modules/src/time/seadDateUtil.cpp
   modules/src/time/seadTickSpan.cpp
 )
 target_compile_options(sead PRIVATE -fno-rtti -fno-exceptions)

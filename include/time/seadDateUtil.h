@@ -8,17 +8,15 @@ namespace sead
 {
 class CalendarSpan;
 
-class DateUtil
+namespace DateUtil
 {
-public:
-    static bool isLeapYear(u32 year);
+bool isLeapYear(u32 year);
 
-    static CalendarTime::Week calcWeekDay(const CalendarTime::Year&, const CalendarTime::Month&,
-                                          const CalendarTime::Day&);
+CalendarTime::Week calcWeekDay(const CalendarTime::Year& year, const CalendarTime::Month& month,
+                               const CalendarTime::Day& day);
 
-    static void calcSecondToCalendarSpan(CalendarSpan* out_span, u64 seconds);
+void calcSecondToCalendarSpan(CalendarSpan* out_span, u64 seconds);
 
-    static bool parseW3CDTFString(CalendarTime* out_time, CalendarSpan* out_span,
-                                  const SafeString& string);
-};
+bool parseW3CDTFString(CalendarTime* out_time, CalendarSpan* out_span, const SafeString& string);
+}  // namespace DateUtil
 }  // namespace sead
