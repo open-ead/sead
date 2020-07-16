@@ -18,6 +18,10 @@ class Buffer
 public:
     Buffer() : mSize(0), mBuffer(NULL) {}
     Buffer(s32 size, T* buffer) : mSize(size), mBuffer(buffer) {}
+    template <s32 N>
+    Buffer(T (&array)[N]) : Buffer(N, array)
+    {
+    }
 
     class iterator
     {
