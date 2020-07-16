@@ -4,13 +4,13 @@ Decompilation of Nintendo's standard library (modern version)
 
 Unlike the original [sead decomp project](https://github.com/aboood40091/sead), which this repo derives from, this project targets more recent versions of sead.
 
-The objective is to recreate the standard library as accurately as possible, so that eventually interoperability can be achieved by adding support for other platforms and by making it easier to create projects that interact with sead games.
+The objective is to recreate the standard library as accurately as possible, so that interoperability can eventually be achieved by adding support for other platforms and by making it easier to create projects that interact with sead games.
 
 Because sead is statically linked into games, it is required to legally own at least one recent first-party Nintendo game. Picking a game that ships with debugging symbols is probably a good idea:
 
 * Super Mario Odyssey (version 1.0.0) ([buy it here](https://www.nintendo.com/games/detail/super-mario-odyssey-switch/))
 * Splatoon 2 (version <= 3.1.0) ([buy it here](https://www.nintendo.com/games/detail/splatoon-2-switch/))
-* [Nintendo Labo](https://labo.nintendo.com/) (the pilot build has symbols and assertions)
+* [Nintendo Labo](https://labo.nintendo.com/) (the pilot build has symbols, file names and assertions)
 * Any other title that has symbols and uses sead
 
 File names, function names and the file organization come from debugging symbols, assertions and information in all of the aforementioned titles.
@@ -59,4 +59,8 @@ Building this project requires:
 - A C++17 capable compiler (or >= Clang 4.0). While older parts of sead are written in C++03, the newer modules in sead target C++11 (or newer) and recent C++ language or library features make writing C++ more convenient.
 - CMake 3.10+
 
-When implementing .cpp functions, please compare the assembly output against the original function and make it match the original code. At this scale, that is pretty muchc the only way to ensure accuracy and functional equivalency.
+When **implementing non-inlined functions**, please compare the assembly output against the original function and make it match the original code. At this scale, that is pretty much the only reliable way to ensure accuracy and functional equivalency. However, given the large number of functions, feel free to ignore regalloc differences and mark functions as semantically equivalent when those are the only changes.
+
+For **header-only utilities** (like container classes), use pilot/debug builds, assertion messages and common sense to try to undo function inlining. For example, if you see the same assertion appear in many functions and the file name is a header file, or if you see identical snippets of code in many different places, chances are that you are dealing with an inlined function. In that case, you should refactor the inlined code into its own function.
+
+Also note that introducing inlined functions is sometimes necessary to get the desired codegen.
