@@ -77,8 +77,7 @@ protected:                                                                      
 #define SEAD_CREATE_SINGLETON_INSTANCE(CLASS)                                                      \
     CLASS* CLASS::createInstance(sead::Heap* heap)                                                 \
     {                                                                                              \
-        SEAD_ASSERT(!sInstance, "Create Singleton Twice (%s) : addr 0x%016llX", #CLASS,            \
-                    reinterpret_cast<uintptr_t>(sInstance));                                       \
+        SEAD_ASSERT(!sInstance, "Create Singleton Twice (%s) : addr %p", #CLASS, sInstance);       \
         if (!sInstance)                                                                            \
         {                                                                                          \
             auto* instance = reinterpret_cast<CLASS*>(new (heap) u8[sizeof(CLASS)]);               \

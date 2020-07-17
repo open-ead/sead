@@ -65,8 +65,8 @@ void CoreInfo::dump()
         system::Print("  [%d] : %s : PlatformCoreId=%d\n", i, i == 0 ? "Main" : "Sub ",
                       sPlatformCoreId[i]);
     }
-    system::Print("all mask : %p\n", u32(getMaskAll()));
-    system::Print("all sub mask : %p\n", u32(getMaskSubAll()));
+    system::Print("all mask : %x\n", u32(getMaskAll()));
+    system::Print("all sub mask : %x\n", u32(getMaskSubAll()));
 }
 
 u32 CoreInfo::getPlatformMask(CoreId id)
