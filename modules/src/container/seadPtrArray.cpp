@@ -96,7 +96,8 @@ void PtrArrayImpl::erase(s32 pos, s32 count)
 
 // TODO: PtrArrayImpl::shuffle
 
-void PtrArrayImpl::insert(s32 pos, void* ptr) {
+void PtrArrayImpl::insert(s32 pos, void* ptr)
+{
     if (!checkInsert(pos, 1))
         return;
 

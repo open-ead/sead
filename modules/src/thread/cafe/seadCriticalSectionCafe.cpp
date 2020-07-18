@@ -7,9 +7,7 @@ CriticalSection::CriticalSection() : IDisposer(), mCriticalSectionInner()
     OSInitMutex(&mCriticalSectionInner);
 }
 
-CriticalSection::~CriticalSection()
-{
-}
+CriticalSection::~CriticalSection() {}
 
 void CriticalSection::lock()
 {

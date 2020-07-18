@@ -1,7 +1,7 @@
 #include <container/seadTreeNode.h>
 
-namespace sead {
-
+namespace sead
+{
 void TreeNode::clearChildLinksRecursively_()
 {
     TreeNode* node = this->mChild;
@@ -60,4 +60,4 @@ void TreeNode::detachSubTree()
     mNext = NULL;
 }
 
-} // namespace sead
+}  // namespace sead

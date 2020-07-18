@@ -106,7 +106,8 @@ public:
     }
 
 protected:
-    static int compareT(const T* lhs, const T* rhs) {
+    static int compareT(const T* lhs, const T* rhs)
+    {
         if (lhs < rhs)
             return -1;
         if (lhs > rhs)

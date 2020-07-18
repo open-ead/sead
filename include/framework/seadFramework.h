@@ -12,8 +12,8 @@
 #include <prim/seadRuntimeTypeInfo.h>
 #include <time/seadTickSpan.h>
 
-namespace sead {
-
+namespace sead
+{
 class Arena;
 
 class FrameBuffer;
@@ -84,6 +84,6 @@ public:
     Heap* mMethodTreeMgrHeap;
 };
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_FRAMEWORK_H_
+#endif  // SEAD_FRAMEWORK_H_

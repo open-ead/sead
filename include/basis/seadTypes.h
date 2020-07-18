@@ -24,4 +24,4 @@ using char16 = char16_t;
 using size_t = std::size_t;
 #endif
 
-#endif // SEAD_NEW_H_
+#endif  // SEAD_NEW_H_

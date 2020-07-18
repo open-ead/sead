@@ -38,7 +38,8 @@ public:
 
     struct Mtx34Base
     {
-        union {
+        union
+        {
             T m[3][4];
             T a[12];
         };
@@ -46,7 +47,8 @@ public:
 
     struct Mtx44Base
     {
-        union {
+        union
+        {
             T m[4][4];
             T a[16];
         };

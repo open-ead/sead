@@ -5,8 +5,8 @@
 #include <heap/seadDisposer.h>
 //#include <prim/seadDelegate.h>
 
-namespace sead {
-
+namespace sead
+{
 template <typename T>
 class IDelegate1;
 
@@ -34,10 +34,7 @@ public:
         }
         */
 
-        virtual ~Slot()
-        {
-            release();
-        }
+        virtual ~Slot() { release(); }
 
         void release()
         {
@@ -50,15 +47,15 @@ public:
 
         SlotListNode mNode;
         IDelegate1<T>* mDelegatePtr;
-        struct { u8 data_[20]; } mDelegate;
+        struct
+        {
+            u8 data_[20];
+        } mDelegate;
         bool mConnectedToDelegateEvent;
     };
 
 public:
-    DelegateEvent()
-        : mList()
-    {
-    }
+    DelegateEvent() : mList() {}
 
     virtual ~DelegateEvent()
     {
@@ -69,6 +66,6 @@ public:
     SlotList mList;
 };
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_DELEGATE_EVENT_SLOT_H_
+#endif  // SEAD_DELEGATE_EVENT_SLOT_H_

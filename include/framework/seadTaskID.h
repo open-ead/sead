@@ -3,8 +3,8 @@
 
 #include <basis/seadTypes.h>
 
-namespace sead {
-
+namespace sead
+{
 class TaskBase;
 class TaskConstructArg;
 
@@ -37,6 +37,6 @@ public:
     s32 mID;
 };
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_TASK_ID_H_
+#endif  // SEAD_TASK_ID_H_

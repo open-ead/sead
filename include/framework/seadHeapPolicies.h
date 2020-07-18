@@ -3,8 +3,8 @@
 
 #include <basis/seadTypes.h>
 
-namespace sead {
-
+namespace sead
+{
 class Heap;
 
 class HeapArray
@@ -48,6 +48,6 @@ public:
     s32 mPrimaryIndex;
 };
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_HEAP_POLICIES_H_
+#endif  // SEAD_HEAP_POLICIES_H_

@@ -3,21 +3,16 @@
 #include <framework/seadTaskMgr.h>
 #include <heap/seadHeap.h>
 
-namespace sead {
-
+namespace sead
+{
 Framework::CreateSystemTaskArg::CreateSystemTaskArg()
-    : hostio_parameter(NULL)
-    , infloop_detection_span()
+    : hostio_parameter(NULL), infloop_detection_span()
 {
 }
 
 Framework::Framework()
-    : mReserveReset(false)
-    , mResetParameter(NULL)
-    , mResetEvent()
-    , mTaskMgr(NULL)
-    , mMethodTreeMgr(NULL)
-    , mMethodTreeMgrHeap(NULL)
+    : mReserveReset(false), mResetParameter(NULL), mResetEvent(), mTaskMgr(NULL),
+      mMethodTreeMgr(NULL), mMethodTreeMgrHeap(NULL)
 {
 }
 
@@ -40,4 +35,4 @@ Framework::~Framework()
         mMethodTreeMgrHeap->destroy();
 }
 
-} // namespace sead
+}  // namespace sead

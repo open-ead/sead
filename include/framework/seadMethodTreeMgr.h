@@ -5,8 +5,8 @@
 #include <prim/seadRuntimeTypeInfo.h>
 #include <thread/seadCriticalSection.h>
 
-namespace sead {
-
+namespace sead
+{
 class MethodTreeNode;
 
 class MethodTreeMgr
@@ -25,6 +25,6 @@ public:
     CriticalSection mCS;
 };
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_METHODTREEMGR_H_
+#endif  // SEAD_METHODTREEMGR_H_

@@ -3,16 +3,17 @@
 
 #include <thread/seadThread.h>
 
-namespace sead {
-
+namespace sead
+{
 class Thread : public IDisposer, public INamable
 {
 public:
     virtual ~Thread();
 
     virtual void destroy();
-    virtual bool sendMessage(s32, u32); // sendMessage(MessageQueue::Element, MessageQueue::BlockType)
-    virtual s32 recvMessage(u32); // MessageQueue::Element recvMessage(MessageQueue::BlockType)
+    virtual bool sendMessage(s32,
+                             u32);  // sendMessage(MessageQueue::Element, MessageQueue::BlockType)
+    virtual s32 recvMessage(u32);   // MessageQueue::Element recvMessage(MessageQueue::BlockType)
     virtual bool start();
     virtual void quit(bool);
     virtual void waitDone();
@@ -20,6 +21,6 @@ public:
     //...
 };
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_THREAD_H_
+#endif  // SEAD_THREAD_H_

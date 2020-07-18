@@ -6,8 +6,8 @@
 #include <resource/seadResourceMgr.h>
 #include <thread/seadDelegateThread.h>
 
-namespace sead {
-
+namespace sead
+{
 bool TaskMgr::changeTaskState_(TaskBase* task, TaskBase::State state)
 {
     mCriticalSection.lock();
@@ -147,4 +147,4 @@ void TaskMgr::finalize()
     }
 }
 
-} // namespace sead
+}  // namespace sead

@@ -11,8 +11,8 @@
 #include <prim/seadNamable.h>
 #include <prim/seadRuntimeTypeInfo.h>
 
-namespace sead {
-
+namespace sead
+{
 class FaderTaskBase;
 class MethodTreeNode;
 class TaskEvent;
@@ -86,7 +86,7 @@ public:
     virtual MethodTreeNode* getMethodTreeNode(s32 method_type) = 0;
     virtual void onDestroy();
 
-    TaskParameter *mParameter;
+    TaskParameter* mParameter;
     BitFlag32 mInternalFlag;
     ListNode mTaskListNode;
     HeapArray mHeapArray;
@@ -96,6 +96,6 @@ public:
     TaskClassID mClassID;
 };
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_TASKBASE_H_
+#endif  // SEAD_TASKBASE_H_

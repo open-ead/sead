@@ -1,12 +1,9 @@
 #include <framework/seadMethodTree.h>
 #include <thread/seadCriticalSection.h>
 
-namespace sead {
-
-void
-MethodTreeNode::attachMutexRec_(
-    CriticalSection* m
-) const
+namespace sead
+{
+void MethodTreeNode::attachMutexRec_(CriticalSection* m) const
 {
     const MethodTreeNode* node = this;
 
@@ -16,8 +13,8 @@ MethodTreeNode::attachMutexRec_(
         node->mCriticalSection = m;
         if (child != NULL && child->mData != NULL)
             child->mData->attachMutexRec_(m);
-    }
-    while (node->mNext != NULL && (node = static_cast<MethodTreeNode*>(node->mNext)->mData, node != NULL));
+    } while (node->mNext != NULL &&
+             (node = static_cast<MethodTreeNode*>(node->mNext)->mData, node != NULL));
 }
 
 void MethodTreeNode::detachAll()
@@ -49,4 +46,4 @@ void MethodTreeNode::unlock_()
     mCriticalSection->unlock();
 }
 
-} // namespace sead
+}  // namespace sead

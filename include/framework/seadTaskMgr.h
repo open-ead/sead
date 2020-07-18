@@ -7,8 +7,8 @@
 #include <heap/seadHeapMgr.h>
 #include <thread/seadCriticalSection.h>
 
-namespace sead {
-
+namespace sead
+{
 class DelegateThread;
 class Framework;
 class Heap;
@@ -19,14 +19,10 @@ class TaskMgr
 public:
     struct InitializeArg
     {
-      public:
+    public:
         InitializeArg(const TaskBase::CreateArg& roottask_arg)
-            : create_queue_size(0x20)
-            , prepare_stack_size(0x8000)
-            , prepare_priority(-1)
-            , roottask_create_arg(roottask_arg)
-            , heap(NULL)
-            , parent_framework(NULL)
+            : create_queue_size(0x20), prepare_stack_size(0x8000), prepare_priority(-1),
+              roottask_create_arg(roottask_arg), heap(NULL), parent_framework(NULL)
         {
         }
 
@@ -70,6 +66,6 @@ public:
     u32 useless2;
 };
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_TASKMGR_H_
+#endif  // SEAD_TASKMGR_H_

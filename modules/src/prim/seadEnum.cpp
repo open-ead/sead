@@ -80,7 +80,8 @@ void EnumUtil::parseText_(char** text_ptr, char* text_all, int size)
             break;
         }
 
-        // TODO: This is missing a call to skipToWordEnd_ and ParseFailed_ for the debug/develop targets.
+        // TODO: This is missing a call to skipToWordEnd_ and ParseFailed_ for the debug/develop
+        // targets.
         if (index >= size)
             break;
 

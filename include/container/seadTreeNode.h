@@ -3,11 +3,11 @@
 
 #include <basis/seadTypes.h>
 
-namespace sead {
-
+namespace sead
+{
 class TreeNode
 {
-  public:
+public:
     TreeNode();
 
     void clearChildLinksRecursively_();
@@ -36,6 +36,6 @@ public:
     T mData;
 };
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_TREENODE_H_
+#endif  // SEAD_TREENODE_H_

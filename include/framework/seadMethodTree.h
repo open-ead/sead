@@ -9,8 +9,8 @@
 #include <prim/seadRuntimeTypeInfo.h>
 //#include <thread/seadCriticalSection.h>
 
-namespace sead {
-
+namespace sead
+{
 class CriticalSection;
 
 template <typename T, typename U>
@@ -43,10 +43,7 @@ public:
         mPauseFlag = BitFlag32(0);
     } */
 
-    virtual ~MethodTreeNode()
-    {
-        detachAll();
-    }
+    virtual ~MethodTreeNode() { detachAll(); }
 
     void attachMutexRec_(CriticalSection* m) const;
     void detachAll();
@@ -55,7 +52,10 @@ public:
 
     typedef IDelegate2<MethodTreeNode*, PauseFlag> PauseEventDelegate;
 
-    struct { u32 data_[4]; } mDelegateHolder;
+    struct
+    {
+        u32 data_[4];
+    } mDelegateHolder;
     mutable CriticalSection* mCriticalSection;
     u32 mPriority;
     BitFlag32 mPauseFlag;
@@ -63,6 +63,6 @@ public:
     void* mUserID;
 };
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_METHODTREE_H_
+#endif  // SEAD_METHODTREE_H_

@@ -36,12 +36,13 @@ int BitFlagUtil::findOnBitFromRight(u32 x, int num)
 
 int BitFlagUtil::countRightOnBit64(u64 x, int bit)
 {
-  SEAD_ASSERT_NOFMT(static_cast<u64>(bit) < sizeof(u64) * 8);
-  const u64 mask = ((1ull << bit) - 1) | (1ull << bit);
-  return countOnBit64(x & mask);
+    SEAD_ASSERT_NOFMT(static_cast<u64>(bit) < sizeof(u64) * 8);
+    const u64 mask = ((1ull << bit) - 1) | (1ull << bit);
+    return countOnBit64(x & mask);
 }
 
-int BitFlagUtil::findOnBitFromRight64(u64 x, int num) {
+int BitFlagUtil::findOnBitFromRight64(u64 x, int num)
+{
     SEAD_ASSERT_NOFMT(num > 0);
     if (!x)
         return -1;

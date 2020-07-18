@@ -1,8 +1,8 @@
 #ifndef SEAD_HOST_IO_MGR_H_
 #define SEAD_HOST_IO_MGR_H_
 
-namespace sead {
-
+namespace sead
+{
 class HostIOMgr
 {
 public:
@@ -11,6 +11,6 @@ public:
     };
 };
 
-} // namespace sead
+}  // namespace sead
 
-#endif // SEAD_HOST_IO_MGR_H_
+#endif  // SEAD_HOST_IO_MGR_H_
