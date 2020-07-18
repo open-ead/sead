@@ -7,7 +7,7 @@ namespace Path
 {
 bool getDriveName(BufferedSafeString* driveName, const SafeString& path)
 {
-    driveName->trim(driveName->mBufferSize);
+    driveName->trim(driveName->getBufferSize());
 
     s32 index = path.findIndex(":");
     if (index != -1)
@@ -18,7 +18,7 @@ bool getDriveName(BufferedSafeString* driveName, const SafeString& path)
 
 void getPathExceptDrive(BufferedSafeString* pathNoDrive, const SafeString& path)
 {
-    pathNoDrive->trim(pathNoDrive->mBufferSize);
+    pathNoDrive->trim(pathNoDrive->getBufferSize());
 
     s32 index = path.findIndex("://");
     if (index == -1)

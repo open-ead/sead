@@ -2,6 +2,9 @@
 
 #define SEAD_SAFE_STRING_HPP_
 
+#include <algorithm>
+#include <type_traits>
+
 #include <prim/seadMemUtil.h>
 #include <prim/seadSafeString.h>
 
@@ -369,6 +372,16 @@ inline bool SafeStringBase<T>::endsWith(const SafeStringBase<T>& suffix) const
 }
 
 template <typename T>
+inline const T& BufferedSafeStringBase<T>::operator[](s32 idx) const
+{
+    if (idx >= 0 && idx < this->mBufferSize)
+        return this->mStringTop[idx];
+
+    SEAD_ASSERT_MSG(false, "index(%d) out of range[0, %d]", idx, this->mBufferSize - 1);
+    return this->cNullChar;
+}
+
+template <typename T>
 inline s32 BufferedSafeStringBase<T>::copy(const SafeStringBase<T>& src, s32 copyLength)
 {
     T* dst = getMutableStringTop_();
@@ -382,7 +395,7 @@ inline s32 BufferedSafeStringBase<T>::copy(const SafeStringBase<T>& src, s32 cop
     if (copyLength >= mBufferSize)
     {
         SEAD_ASSERT_MSG(false, "Buffer overflow. (Buffer Size: %d, Copy Size: %d)", mBufferSize,
-                    copyLength);
+                        copyLength);
         copyLength = mBufferSize - 1;
     }
 
@@ -414,7 +427,7 @@ inline s32 BufferedSafeStringBase<T>::copyAt(s32 at, const SafeStringBase<T>& sr
     if (copyLength >= mBufferSize - at)
     {
         SEAD_ASSERT_MSG(false, "Buffer overflow. (Buffer Size: %d, At: %d, Copy Length: %d)",
-                    mBufferSize, at, copyLength);
+                        mBufferSize, at, copyLength);
         copyLength = mBufferSize - at - 1;
     }
 
@@ -479,6 +492,200 @@ inline s32 BufferedSafeStringBase<T>::cutOffCopyAt(s32 at, const SafeStringBase<
 }
 
 template <typename T>
+inline s32 BufferedSafeStringBase<T>::copyAtWithTerminate(s32 at, const SafeStringBase<T>& src,
+                                                          s32 copyLength)
+{
+    T* dst = getMutableStringTop_();
+
+    if (at < 0)
+    {
+        const s32 len = this->calcLength();
+        at = len + at + 1;
+        if (at < 0)
+        {
+            SEAD_ASSERT_MSG(false, "at(%d) out of range[0, %d]", at, len);
+            at = 0;
+        }
+    }
+
+    if (copyLength < 0)
+        copyLength = src.calcLength();
+
+    if (copyLength >= mBufferSize - at)
+    {
+        SEAD_ASSERT_MSG(false, "Buffer overflow. (Buffer Size: %d, At: %d, Copy Length: %d)",
+                        mBufferSize, at, copyLength);
+        copyLength = mBufferSize - at - 1;
+    }
+
+    if (copyLength <= 0)
+        return 0;
+
+    MemUtil::copy(dst + at, src.cstr(), copyLength * sizeof(T));
+    dst[at + copyLength] = SafeStringBase<T>::cNullChar;
+
+    return copyLength;
+}
+
+template <typename T>
+inline s32 BufferedSafeStringBase<T>::append(const SafeStringBase<T>& str, s32 append_length)
+{
+    return copyAt(-1, str, append_length);
+}
+
+template <typename T>
+inline s32 BufferedSafeStringBase<T>::append(T c, s32 num)
+{
+    if (num < 0)
+    {
+        SEAD_ASSERT_MSG(false, "append error. num < 0, num = %d", num);
+        return 0;
+    }
+
+    if (num < 1)
+        return 0;
+
+    const s32 length = this->calcLength();
+
+    if (getBufferSize() - length <= num)
+    {
+        SEAD_ASSERT_MSG(false, "Buffer overflow. (Buffer Size: %d, Length: %d, Num: %d)",
+                        getBufferSize(), length, num);
+        num = getBufferSize() - length - 1;
+    }
+
+    T* top = getMutableStringTop_();
+    for (s32 i = 0; i < num; ++i)
+        top[length + i] = c;
+
+    top[num + length] = this->cNullChar;
+    return num;
+}
+
+// UNCHECKED
+template <typename T>
+inline s32 BufferedSafeStringBase<T>::chop(s32 chop_num)
+{
+    const s32 length = this->calcLength();
+
+    if (chop_num < 0 || chop_num > length)
+    {
+        SEAD_ASSERT_MSG(false, "chop_num(%d) out of range[0, %d]", chop_num, length);
+        chop_num = std::clamp(chop_num, 0, length);
+    }
+
+    T* buffer = getMutableStringTop_();
+    buffer[length - chop_num] = this->cNullChar;
+    return chop_num;
+}
+
+// UNCHECKED
+template <typename T>
+inline s32 BufferedSafeStringBase<T>::chopMatchedChar(T c)
+{
+    const s32 length = this->calcLength();
+    if (length < 1)
+        return 0;
+
+    T* buffer = getMutableStringTop_();
+    if (buffer[length - 1] == c)
+    {
+        buffer[length - 1] = this->cNullChar;
+        return 1;
+    }
+
+    return 0;
+}
+
+// UNCHECKED
+template <typename T>
+inline s32 BufferedSafeStringBase<T>::chopMatchedChar(const T* characters)
+{
+    const s32 length = this->calcLength();
+    if (length < 1)
+        return 0;
+
+    T* buffer = getMutableStringTop_();
+    for (T* it = characters; *it != this->cNullChar; ++it)
+    {
+        if (buffer[length - 1] == *it)
+        {
+            buffer[length - 1] = this->cNullChar;
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+// UNCHECKED
+template <typename T>
+inline s32 BufferedSafeStringBase<T>::chopUnprintableAsciiChar()
+{
+    const s32 length = this->calcLength();
+    if (length < 1)
+        return 0;
+
+    T* buffer = getMutableStringTop_();
+    if (buffer[length - 1] <= ' ' || buffer[length - 1] == 0x7F)
+    {
+        buffer[length - 1] = this->cNullChar;
+        return 1;
+    }
+
+    return 0;
+}
+
+// UNCHECKED
+template <typename T>
+inline s32 BufferedSafeStringBase<T>::rstrip(const T* characters)
+{
+    const s32 length = this->calcLength();
+    if (length < 1)
+        return 0;
+
+    T* buffer = getMutableStringTop_();
+    s32 new_length = length;
+    const auto should_strip = [&] {
+        for (T* it = characters; *it != this->cNullChar; ++it)
+        {
+            if (buffer[new_length - 1] == *it)
+                return true;
+        }
+        return false;
+    };
+    while (new_length && should_strip())
+        --new_length;
+
+    if (length <= new_length)
+        return 0;
+
+    buffer[new_length] = this->cNullChar;
+    return length - new_length;
+}
+
+// UNCHECKED
+template <typename T>
+inline s32 BufferedSafeStringBase<T>::rstripUnprintableAsciiChars()
+{
+    const s32 length = this->calcLength();
+    if (length < 1)
+        return 0;
+
+    T* buffer = getMutableStringTop_();
+    s32 new_length = length;
+    while (new_length && (buffer[new_length - 1] <= 0x20 || buffer[new_length - 1] == 0x7F))
+        --new_length;
+
+    if (length <= new_length)
+        return 0;
+
+    buffer[new_length] = this->cNullChar;
+    return length - new_length;
+}
+
+// UNCHECKED
+template <typename T>
 inline s32 BufferedSafeStringBase<T>::trim(s32 trimLength)
 {
     if (trimLength >= mBufferSize)
@@ -491,6 +698,186 @@ inline s32 BufferedSafeStringBase<T>::trim(s32 trimLength)
     mutableString[trimLength] = SafeStringBase<T>::cNullChar;
 
     return trimLength;
+}
+
+template <typename T>
+inline s32 strLength(const T* str)
+{
+    s32 length = 0;
+    while (*str++)
+        ++length;
+    return length;
+}
+
+// UNCHECKED
+template <typename T>
+inline s32 BufferedSafeStringBase<T>::trimMatchedString(const T* str)
+{
+    T* buffer = getMutableStringTop_();
+    const s32 length = this->calcLength();
+
+    const s32 trim_str_length = strLength(str);
+    const s32 new_length = length - trim_str_length;
+
+    if (length < trim_str_length)
+        return length;
+
+    T* substring = &buffer[new_length];
+    for (s32 i = 0; i < trim_str_length; ++i)
+    {
+        if (substring[i] != str[i])
+            return length;
+    }
+
+    buffer[new_length] = this->cNullChar;
+    return new_length;
+}
+
+// UNCHECKED
+template <typename T>
+inline s32 BufferedSafeStringBase<T>::replaceChar(T old_char, T new_char)
+{
+    const s32 length = this->calcLength();
+    T* buffer = getMutableStringTop_();
+
+    s32 replaced_count = 0;
+    for (s32 i = 0; i < length; ++i)
+    {
+        if (buffer[i] == old_char)
+        {
+            ++replaced_count;
+            buffer[i] = new_char;
+        }
+    }
+    return replaced_count;
+}
+
+// UNCHECKED
+template <typename T>
+inline s32 BufferedSafeStringBase<T>::replaceCharList(const SafeStringBase<T>& old_chars,
+                                                      const SafeStringBase<T>& new_chars)
+{
+    const s32 length = this->calcLength();
+    T* buffer = getMutableStringTop_();
+
+    s32 old_chars_len = old_chars.calcLength();
+    const s32 new_chars_len = new_chars.calcLength();
+
+    if (old_chars_len != new_chars_len)
+    {
+        // yes, this is undefined behavior for T = char16. Nintendo, fix your code
+        SEAD_ASSERT_MSG(false, "old_chars(%s).length is not equal to new_chars(%s).length.",
+                        old_chars.cstr(), new_chars.cstr());
+        if (old_chars_len > new_chars_len)
+            old_chars_len = new_chars_len;
+    }
+
+    const T* old_chars_c = old_chars.cstr();
+    const T* new_chars_c = new_chars.cstr();
+
+    if (length < 1)
+        return 0;
+
+    s32 replaced_count = 0;
+    for (s32 i = 0; i < length; ++i)
+    {
+        for (s32 character_idx = 0; character_idx < old_chars_len; ++character_idx)
+        {
+            if (buffer[i] == old_chars[character_idx])
+            {
+                ++replaced_count;
+                buffer[i] = new_chars[character_idx];
+                break;
+            }
+        }
+    }
+    return replaced_count;
+}
+
+template <typename T>
+inline s32 BufferedSafeStringBase<T>::setReplaceString(const SafeStringBase<T>& target_str,
+                                                       const SafeStringBase<T>& old_str,
+                                                       const SafeStringBase<T>& new_str)
+{
+    bool is_buffer_overflow = false;
+    const s32 ret =
+        replaceStringImpl_(getMutableStringTop_(), nullptr, getBufferSize(), target_str.cstr(),
+                           target_str.calcLength(), old_str, new_str, &is_buffer_overflow);
+    SEAD_ASSERT_MSG(!is_buffer_overflow, "Buffer overflow! (%s : s/%s/%s/g, Buffer Size: %d )",
+                    target_str.cstr(), old_str.cstr(), new_str.cstr(), getBufferSize());
+    return ret;
+}
+
+template <typename T>
+inline s32 BufferedSafeStringBase<T>::replaceString(const SafeStringBase<T>& old_str,
+                                                    const SafeStringBase<T>& new_str)
+{
+    bool is_buffer_overflow = false;
+    const s32 ret =
+        replaceStringImpl_(getMutableStringTop_(), nullptr, getBufferSize(), this->cstr(),
+                           this->calcLength(), old_str, new_str, &is_buffer_overflow);
+    SEAD_ASSERT_MSG(!is_buffer_overflow,
+                    "Buffer overflow! (%s(replacing) : s/%s/%s/g, Buffer Size: %d )", this->cstr(),
+                    old_str.cstr(), new_str.cstr(), getBufferSize());
+    return ret;
+}
+
+template <typename T>
+template <typename OtherType>
+inline s32 BufferedSafeStringBase<T>::convertFromOtherType_(const SafeStringBase<OtherType>& src,
+                                                            s32 src_size)
+{
+    s32 copy_size = src.calcLength();
+
+    if (src_size != -1)
+    {
+        if (src_size < 0)
+        {
+            SEAD_ASSERT_MSG(false, "src_size(%d) out of bounds [%d,%d]", src_size, 0, copy_size);
+            copy_size = 0;
+            return copy_size;
+        }
+        if (copy_size < src_size)
+            SEAD_ASSERT_MSG(false, "src_size(%d) out of bounds [%d,%d]", src_size, 0, copy_size);
+        else
+            copy_size = src_size;
+    }
+
+    if (getBufferSize() <= copy_size)
+    {
+        SEAD_ASSERT_MSG(false, "copy_size(%d) out of bounds[%d, %d)", copy_size, 0,
+                        getBufferSize());
+        copy_size = getBufferSize() - 1;
+    }
+
+    T* raw_dst = getMutableStringTop_();
+    const OtherType* raw_src = src.cstr();
+
+    for (s32 i = 0; i < copy_size; ++i)
+        raw_dst[i] = raw_src[i];
+
+    raw_dst[copy_size] = this->cNullChar;
+    return copy_size;
+}
+
+template <typename T>
+inline s32 BufferedSafeStringBase<T>::convertFromMultiByteString(const SafeStringBase<char>& str,
+                                                                 s32 str_length)
+{
+    if constexpr (std::is_same<char, T>())
+        return copy(str, str_length);
+    else
+        return convertFromOtherType_(str, str_length);
+}
+
+template <typename T>
+inline s32 BufferedSafeStringBase<T>::convertFromWideCharString(const SafeStringBase<char16>& str,
+                                                                s32 str_length)
+{
+    if constexpr (std::is_same<char16, T>())
+        return copy(str, str_length);
+    else
+        return convertFromOtherType_(str, str_length);
 }
 
 }  // namespace sead

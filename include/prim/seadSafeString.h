@@ -154,6 +154,11 @@ template <>
 const SafeStringBase<char> SafeStringBase<char>::cEmptyString;
 
 template <typename T>
+s32 replaceStringImpl_(T* dst, s32* length, s32 dst_size, const T* src, s32 src_size,
+                       const SafeStringBase<T>& old_str, const SafeStringBase<T>& new_str,
+                       bool* is_buffer_overflow);
+
+template <typename T>
 class BufferedSafeStringBase : public SafeStringBase<T>
 {
 public:
@@ -172,11 +177,7 @@ public:
         return *this;
     }
 
-    void assureTerminationImpl_() const override
-    {
-        BufferedSafeStringBase<T>* mutableSafeString = const_cast<BufferedSafeStringBase<T>*>(this);
-        mutableSafeString->getMutableStringTop_()[mBufferSize - 1] = mutableSafeString->cNullChar;
-    }
+    const T& operator[](s32 idx) const;
 
     T* getBuffer()
     {
@@ -185,22 +186,115 @@ public:
     }
     s32 getBufferSize() const { return mBufferSize; }
 
-    s32 format(const T* formatStr, ...);
-    s32 formatV(const T* formatStr, va_list args);
+    /// Copy up to copyLength characters to the beginning of the string, then writes NUL.
+    /// @param src  Source string
+    /// @param copyLength  Number of characters from src to copy (must not cause a buffer overflow)
+    inline s32 copy(const SafeStringBase<T>& src, s32 copyLength = -1);
+    /// Copy up to copyLength characters to the specified position, then writes NUL if the copy
+    /// makes this string longer.
+    /// @param at  Start position (-1 for end of string)
+    /// @param src  Source string
+    /// @param copyLength  Number of characters from src to copy (must not cause a buffer overflow)
+    inline s32 copyAt(s32 at, const SafeStringBase<T>& src, s32 copyLength = -1);
+    /// Copy up to copyLength characters to the beginning of the string, then writes NUL.
+    /// Silently truncates the source string if the buffer is too small.
+    /// @param src  Source string
+    /// @param copyLength  Number of characters from src to copy
+    inline s32 cutOffCopy(const SafeStringBase<T>& src, s32 copyLength = -1);
+    /// Copy up to copyLength characters to the specified position, then writes NUL if the copy
+    /// makes this string longer.
+    /// Silently truncates the source string if the buffer is too small.
+    /// @param at  Start position (-1 for end of string)
+    /// @param src  Source string
+    /// @param copyLength  Number of characters from src to copy
+    inline s32 cutOffCopyAt(s32 at, const SafeStringBase<T>& src, s32 copyLength = -1);
+    /// Copy up to copyLength characters to the specified position, then *always* writes NUL.
+    /// @param at  Start position (-1 for end of string)
+    /// @param src  Source string
+    /// @param copyLength  Number of characters from src to copy (must not cause a buffer overflow)
+    inline s32 copyAtWithTerminate(s32 at, const SafeStringBase<T>& src, s32 copyLength = -1);
+
+    s32 format(const T* format, ...);
+    s32 formatV(const T* format, std::va_list args);
     s32 appendWithFormat(const T* formatStr, ...);
-    s32 appendWithFormatV(const T* formatStr, va_list args);
+    s32 appendWithFormatV(const T* formatStr, std::va_list args);
 
-    static s32 formatImpl_(T* s, s32 n, const T* formatStr, va_list args);
+    /// Append append_length characters from str.
+    s32 append(const SafeStringBase<T>& str, s32 append_length);
+    /// Append a character.
+    s32 append(T c) { return append(c, 1); }
+    /// Append a character n times.
+    s32 append(T c, s32 n);
 
-    inline T* getMutableStringTop_() { return const_cast<T*>(this->mStringTop); }
+    // Implementation note: These member functions appear to be inlined in most titles.
+    // However, StringBuilderBase<T> conveniently duplicates the APIs and implementations of
+    // SafeStringBase<T> and BufferedSafeString<T>: some assertion messages are even identical,
+    // and the good news is that most StringBuilderBase<T> functions are not inlined!
+
+    /// Remove num characters from the end of the string.
+    /// @return the number of characters that were removed
+    s32 chop(s32 num);
+    /// Remove the last character if it is equal to c.
+    /// @return the number of characters that were removed
+    s32 chopMatchedChar(T c);
+    /// Remove the last character if it is equal to any of the specified characters.
+    /// @param characters  List of characters to remove
+    /// @return the number of characters that were removed
+    s32 chopMatchedChar(const T* characters);
+    /// Remove the last character if it is unprintable.
+    /// @warning The behavior of this function is not standard: a character is considered
+    /// unprintable if it is <= 0x20 or == 0x7F. In particular, the space character is unprintable.
+    /// @return the number of characters that were removed
+    s32 chopUnprintableAsciiChar();
+
+    /// Remove trailing characters that are in the specified list.
+    /// @param characters  List of characters to remove
+    /// @return the number of characters that were removed
+    s32 rstrip(const T* characters);
+    /// Remove trailing characters that are unprintable.
+    /// @warning The behavior of this function is not standard: a character is considered
+    /// unprintable if it is <= 0x20 or == 0x7F. In particular, the space character is unprintable.
+    /// @return the number of characters that were removed
+    s32 rstripUnprintableAsciiChars();
+
+    /// Trim a string to only keep trimLength characters.
+    /// @return the new length
+    inline s32 trim(s32 trimLength);
+    /// Trim a string to only keep trimLength characters.
+    /// @return the new length
+    s32 trimMatchedString(const T* str);
+
+    /// @return the number of characters that were replaced
+    s32 replaceChar(T old_char, T new_char);
+    /// @return the number of characters that were replaced
+    s32 replaceCharList(const SafeStringBase<T>& old_chars, const SafeStringBase<T>& new_chars);
+    /// Set the contents of this string to target_str, after replacing occurrences of old_str in
+    /// target_str with new_str.
+    /// @return the number of replaced occurrences
+    s32 setReplaceString(const SafeStringBase<T>& target_str, const SafeStringBase<T>& old_str,
+                         const SafeStringBase<T>& new_str);
+    /// Replace occurrences of old_str in this string with new_str.
+    /// @return the number of replaced occurrences
+    s32 replaceString(const SafeStringBase<T>& old_str, const SafeStringBase<T>& new_str);
+
+    s32 convertFromMultiByteString(const SafeStringBase<char>& str, s32 str_length);
+    s32 convertFromWideCharString(const SafeStringBase<char16>& str, s32 str_length);
 
     inline void clear() { getMutableStringTop_()[0] = this->cNullChar; }
 
-    inline s32 copy(const SafeStringBase<T>& src, s32 copyLength = -1);
-    inline s32 copyAt(s32 at, const SafeStringBase<T>& src, s32 copyLength = -1);
-    inline s32 cutOffCopy(const SafeStringBase<T>& src, s32 copyLength = -1);
-    inline s32 cutOffCopyAt(s32 at, const SafeStringBase<T>& src, s32 copyLength = -1);
-    inline s32 trim(s32 trimLength);
+protected:
+    void assureTerminationImpl_() const override
+    {
+        auto* mutableSafeString = const_cast<BufferedSafeStringBase<T>*>(this);
+        mutableSafeString->getMutableStringTop_()[mBufferSize - 1] = this->cNullChar;
+    }
+
+    T* getMutableStringTop_() { return const_cast<T*>(this->mStringTop); }
+
+    static s32 formatImpl_(T* dst, s32 dst_size, const T* format, std::va_list arg);
+
+    template <typename OtherType>
+    s32 convertFromOtherType_(const SafeStringBase<OtherType>& src, s32 src_size);
 
     s32 mBufferSize;
 };
