@@ -166,7 +166,7 @@ public:
 
     ~BufferedSafeStringBase() override = default;
 
-    SafeStringBase<T>& operator=(const SafeStringBase<T>& other) override
+    BufferedSafeStringBase<T>& operator=(const SafeStringBase<T>& other) override
     {
         copy(other);
         return *this;
@@ -251,7 +251,7 @@ public:
 
     FixedSafeString(const SafeString& str) : FixedSafeStringBase<char, L>(str) {}
 
-    SafeStringBase<char>& operator=(const SafeStringBase<char>& other) override
+    FixedSafeString<L>& operator=(const SafeStringBase<char>& other) override
     {
         this->copy(other);
         return *this;
