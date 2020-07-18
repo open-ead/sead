@@ -101,7 +101,6 @@ inline s32 SafeStringBase<T>::token_iterator::getAndForward(BufferedSafeStringBa
         return 0;
     }
 
-    out->assureTerminationImpl_();
     T* outc = out->getBuffer();
     const s32 out_max_length = out->getBufferSize() - 1;
 
@@ -119,7 +118,8 @@ inline s32 SafeStringBase<T>::token_iterator::getAndForward(BufferedSafeStringBa
         if (c == cNullChar || mDelimiter.include(c))
             break;
 
-        outc[i++] = c;
+        outc[i] = c;
+        ++i;
         ++index;
     }
 
@@ -150,7 +150,6 @@ inline s32 SafeStringBase<T>::token_iterator::cutOffGetAndForward(BufferedSafeSt
         return 0;
     }
 
-    out->assureTerminationImpl_();
     T* outc = out->getBuffer();
     const s32 out_max_length = out->getBufferSize() - 1;
 

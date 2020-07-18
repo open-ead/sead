@@ -178,7 +178,11 @@ public:
         mutableSafeString->getMutableStringTop_()[mBufferSize - 1] = mutableSafeString->cNullChar;
     }
 
-    T* getBuffer() { return getMutableStringTop_(); }
+    T* getBuffer()
+    {
+        assureTerminationImpl_();
+        return getMutableStringTop_();
+    }
     s32 getBufferSize() const { return mBufferSize; }
 
     s32 format(const T* formatStr, ...);
