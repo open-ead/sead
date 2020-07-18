@@ -91,8 +91,6 @@ inline s32 SafeStringBase<T>::token_iterator::get(BufferedSafeStringBase<T>* out
 template <typename T>
 inline s32 SafeStringBase<T>::token_iterator::getAndForward(BufferedSafeStringBase<T>* out)
 {
-    // NOT_MATCHING(SEAD_DEBUG): minor regalloc differences.
-
     s32 index = this->mIndex;
     const s32 length = this->mString->calcLength();
     if (index < 0 || index > length)
