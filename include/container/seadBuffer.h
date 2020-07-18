@@ -76,10 +76,10 @@ public:
 
     void allocBuffer(s32 size, s32 alignment)
     {
-        SEAD_ASSERT_NOFMT(mBuffer == nullptr);
+        SEAD_ASSERT(mBuffer == nullptr);
         if (size < 1)
         {
-            SEAD_ASSERT(false, "size[%d] must be larger than zero", size);
+            SEAD_ASSERT_MSG(false, "size[%d] must be larger than zero", size);
             return;
         }
         T* buffer = new (alignment) T[size];
@@ -89,18 +89,18 @@ public:
             mBuffer = buffer;
             if constexpr (!std::is_trivially_destructible<T>())
             {
-                SEAD_ASSERT(uintptr_t(mBuffer) % alignment == 0,
-                            "don't set alignment for a class with destructor");
+                SEAD_ASSERT_MSG(uintptr_t(mBuffer) % alignment == 0,
+                                "don't set alignment for a class with destructor");
             }
         }
     }
 
     void allocBuffer(s32 size, Heap* heap, s32 alignment)
     {
-        SEAD_ASSERT_NOFMT(mBuffer == nullptr);
+        SEAD_ASSERT(mBuffer == nullptr);
         if (size < 1)
         {
-            SEAD_ASSERT(false, "size[%d] must be larger than zero", size);
+            SEAD_ASSERT_MSG(false, "size[%d] must be larger than zero", size);
             return;
         }
         T* buffer = new (heap, alignment) T[size];
@@ -110,18 +110,18 @@ public:
             mBuffer = buffer;
             if constexpr (!std::is_trivially_destructible<T>())
             {
-                SEAD_ASSERT(uintptr_t(mBuffer) % alignment == 0,
-                            "don't set alignment for a class with destructor");
+                SEAD_ASSERT_MSG(uintptr_t(mBuffer) % alignment == 0,
+                                "don't set alignment for a class with destructor");
             }
         }
     }
 
     bool tryAllocBuffer(s32 size, s32 alignment)
     {
-        SEAD_ASSERT_NOFMT(mBuffer == nullptr);
+        SEAD_ASSERT(mBuffer == nullptr);
         if (size < 1)
         {
-            SEAD_ASSERT(false, "size[%d] must be larger than zero", size);
+            SEAD_ASSERT_MSG(false, "size[%d] must be larger than zero", size);
             return false;
         }
         T* buffer = new (alignment, std::nothrow) T[size];
@@ -131,8 +131,8 @@ public:
             mBuffer = buffer;
             if constexpr (!std::is_trivially_destructible<T>())
             {
-                SEAD_ASSERT(uintptr_t(mBuffer) % alignment == 0,
-                            "don't set alignment for a class with destructor");
+                SEAD_ASSERT_MSG(uintptr_t(mBuffer) % alignment == 0,
+                                "don't set alignment for a class with destructor");
             }
             return true;
         }
@@ -141,10 +141,10 @@ public:
 
     bool tryAllocBuffer(s32 size, Heap* heap, s32 alignment)
     {
-        SEAD_ASSERT_NOFMT(mBuffer == nullptr);
+        SEAD_ASSERT(mBuffer == nullptr);
         if (size < 1)
         {
-            SEAD_ASSERT(false, "size[%d] must be larger than zero", size);
+            SEAD_ASSERT_MSG(false, "size[%d] must be larger than zero", size);
             return false;
         }
         T* buffer = new (heap, alignment, std::nothrow) T[size];
@@ -154,8 +154,8 @@ public:
             mBuffer = buffer;
             if constexpr (!std::is_trivially_destructible<T>())
             {
-                SEAD_ASSERT(uintptr_t(mBuffer) % alignment == 0,
-                            "don't set alignment for a class with destructor");
+                SEAD_ASSERT_MSG(uintptr_t(mBuffer) % alignment == 0,
+                                "don't set alignment for a class with destructor");
             }
             return true;
         }
@@ -189,7 +189,7 @@ public:
     {
         if (mSize <= u32(idx))
         {
-            SEAD_ASSERT(false, "index exceeded [%d/%d]", idx, mSize);
+            SEAD_ASSERT_MSG(false, "index exceeded [%d/%d]", idx, mSize);
             return mBuffer;
         }
         return &mBuffer[idx];
@@ -198,7 +198,7 @@ public:
     {
         if (mSize <= u32(idx))
         {
-            SEAD_ASSERT(false, "index exceeded [%d/%d]", idx, mSize);
+            SEAD_ASSERT_MSG(false, "index exceeded [%d/%d]", idx, mSize);
             return mBuffer;
         }
         return &mBuffer[idx];

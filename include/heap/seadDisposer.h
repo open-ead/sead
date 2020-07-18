@@ -77,12 +77,12 @@ protected:                                                                      
 #define SEAD_CREATE_SINGLETON_INSTANCE(CLASS)                                                      \
     CLASS* CLASS::createInstance(sead::Heap* heap)                                                 \
     {                                                                                              \
-        SEAD_ASSERT(!sInstance, "Create Singleton Twice (%s) : addr %p", #CLASS, sInstance);       \
+        SEAD_ASSERT_MSG(!sInstance, "Create Singleton Twice (%s) : addr %p", #CLASS, sInstance);   \
         if (!sInstance)                                                                            \
         {                                                                                          \
             auto* instance = reinterpret_cast<CLASS*>(new (heap) u8[sizeof(CLASS)]);               \
-            SEAD_ASSERT(!SingletonDisposer_::sStaticDisposer, "Create Singleton Twice (%s).",      \
-                        #CLASS);                                                                   \
+            SEAD_ASSERT_MSG(!SingletonDisposer_::sStaticDisposer, "Create Singleton Twice (%s).",  \
+                            #CLASS);                                                               \
             auto* staticDisposer =                                                                 \
                 reinterpret_cast<SingletonDisposer_*>(instance->mSingletonDisposerBuf_);           \
                                                                                                    \

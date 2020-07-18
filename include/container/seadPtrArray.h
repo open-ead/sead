@@ -58,7 +58,7 @@ protected:
     {
         if (mPtrNum <= u32(idx))
         {
-            SEAD_ASSERT(false, "index exceeded [%d/%d]", idx, mPtrNum);
+            SEAD_ASSERT_MSG(false, "index exceeded [%d/%d]", idx, mPtrNum);
             return nullptr;
         }
         return mPtrs[idx];
@@ -74,7 +74,7 @@ protected:
     {
         if (isFull())
         {
-            SEAD_ASSERT(false, "list is full.");
+            SEAD_ASSERT_MSG(false, "list is full.");
             return;
         }
         // Simplest insert case, so this is implemented directly without using insert().

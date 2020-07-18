@@ -43,9 +43,9 @@ void CoreInfo::configure()
     sPlatformCoreId[1] = 1;
     sPlatformCoreId[2] = 2;
 
-    SEAD_ASSERT_NOFMT(nn::os::GetCurrentCoreNumber() == 0);
+    SEAD_ASSERT(nn::os::GetCurrentCoreNumber() == 0);
     const auto alloc_result = nn::os::AllocateTlsSlot(&sCoreNumberTlsSlot, nullptr);
-    SEAD_ASSERT_NOFMT(alloc_result.IsSuccess());
+    SEAD_ASSERT(alloc_result.IsSuccess());
 
     for (u32 i = 0; i != sNumCores; ++i)
     {

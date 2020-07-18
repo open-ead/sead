@@ -11,7 +11,7 @@ ResourceMgr::ResourceMgr()
 {
     if (HeapMgr::sInstancePtr == NULL)
     {
-        SEAD_ASSERT(false, "ResourceMgr need HeapMgr");
+        SEAD_ASSERT_MSG(false, "ResourceMgr need HeapMgr");
         return;
     }
 

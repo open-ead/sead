@@ -8,13 +8,13 @@ void PtrArrayImpl::setBuffer(s32 ptrNumMax, void* buf)
 {
     if (ptrNumMax < 1)
     {
-        SEAD_ASSERT(false, "ptrNumMax[%d] must be larger than zero", ptrNumMax);
+        SEAD_ASSERT_MSG(false, "ptrNumMax[%d] must be larger than zero", ptrNumMax);
         return;
     }
 
     if (buf == NULL)
     {
-        SEAD_ASSERT(false, "buf is null");
+        SEAD_ASSERT_MSG(false, "buf is null");
         return;
     }
 
@@ -25,11 +25,11 @@ void PtrArrayImpl::setBuffer(s32 ptrNumMax, void* buf)
 
 void PtrArrayImpl::allocBuffer(s32 ptrNumMax, Heap* heap, s32 alignment)
 {
-    SEAD_ASSERT_NOFMT(mPtrs == nullptr);
+    SEAD_ASSERT(mPtrs == nullptr);
 
     if (ptrNumMax < 1)
     {
-        SEAD_ASSERT(false, "ptrNumMax[%d] must be larger than zero", ptrNumMax);
+        SEAD_ASSERT_MSG(false, "ptrNumMax[%d] must be larger than zero", ptrNumMax);
         return;
     }
 
@@ -38,11 +38,11 @@ void PtrArrayImpl::allocBuffer(s32 ptrNumMax, Heap* heap, s32 alignment)
 
 bool PtrArrayImpl::tryAllocBuffer(s32 ptrNumMax, Heap* heap, s32 alignment)
 {
-    SEAD_ASSERT_NOFMT(mPtrs == nullptr);
+    SEAD_ASSERT(mPtrs == nullptr);
 
     if (ptrNumMax < 1)
     {
-        SEAD_ASSERT(false, "ptrNumMax[%d] must be larger than zero", ptrNumMax);
+        SEAD_ASSERT_MSG(false, "ptrNumMax[%d] must be larger than zero", ptrNumMax);
         return false;
     }
 
@@ -69,19 +69,19 @@ void PtrArrayImpl::erase(s32 pos, s32 count)
 {
     if (pos < 0)
     {
-        SEAD_ASSERT(false, "illegal position[%d]", pos);
+        SEAD_ASSERT_MSG(false, "illegal position[%d]", pos);
         return;
     }
 
     if (count < 0)
     {
-        SEAD_ASSERT(false, "illegal number[%d]", count);
+        SEAD_ASSERT_MSG(false, "illegal number[%d]", count);
         return;
     }
 
     if (pos + count > mPtrNum)
     {
-        SEAD_ASSERT(false, "pos[%d] + num[%d] exceed size[%d]", pos, count, mPtrNum);
+        SEAD_ASSERT_MSG(false, "pos[%d] + num[%d] exceed size[%d]", pos, count, mPtrNum);
         return;
     }
 
@@ -110,19 +110,19 @@ bool PtrArrayImpl::checkInsert(s32 pos, s32 num)
 {
     if (pos < 0)
     {
-        SEAD_ASSERT(false, "illegal position[%d]", pos);
+        SEAD_ASSERT_MSG(false, "illegal position[%d]", pos);
         return false;
     }
 
     if (mPtrNum + num > mPtrNumMax)
     {
-        SEAD_ASSERT(false, "list is full.");
+        SEAD_ASSERT_MSG(false, "list is full.");
         return false;
     }
 
     if (mPtrNum < pos)
     {
-        SEAD_ASSERT(false, "pos[%d] exceed size[%d]", pos, mPtrNum);
+        SEAD_ASSERT_MSG(false, "pos[%d] exceed size[%d]", pos, mPtrNum);
         return false;
     }
 

@@ -37,7 +37,7 @@ CalendarTime::Month::Month(u32 m)
 
 void CalendarTime::Month::setValueOneOrigin(u32 m)
 {
-    SEAD_ASSERT(1 <= m && m <= 12, "wrong month. correct range is [1, 12]. your param %d", m);
+    SEAD_ASSERT_MSG(1 <= m && m <= 12, "wrong month. correct range is [1, 12]. your param %d", m);
     mValue = m;
 }
 
@@ -45,7 +45,7 @@ s32 CalendarTime::Month::addSelf(u32 rhs)
 {
     const s32 val = (s32(rhs) + mValue + -1) % 12;
     mValue = val + 1;
-    SEAD_ASSERT_NOFMT(1 <= mValue && mValue <= 12);
+    SEAD_ASSERT(1 <= mValue && mValue <= 12);
     return val;
 }
 
@@ -53,7 +53,7 @@ s32 CalendarTime::Month::subSelf(u32 rhs)
 {
     const s32 val = (mValue - s32(rhs) % 12 + 12 - 1) % 12u;
     mValue = val + 1;
-    SEAD_ASSERT_NOFMT(1 <= mValue && mValue <= 12);
+    SEAD_ASSERT(1 <= mValue && mValue <= 12);
     return val;
 }
 
@@ -64,7 +64,7 @@ s32 CalendarTime::Month::sub(CalendarTime::Month rhs) const
 
 SafeString CalendarTime::Month::makeStringOneOrigin(u32 m)
 {
-    SEAD_ASSERT(1 <= m && m <= 12, "wrong month. correct range is [1, 12]. your param %d", m);
+    SEAD_ASSERT_MSG(1 <= m && m <= 12, "wrong month. correct range is [1, 12]. your param %d", m);
     switch (m)
     {
     case 1:
@@ -97,31 +97,31 @@ SafeString CalendarTime::Month::makeStringOneOrigin(u32 m)
 
 CalendarTime::Month CalendarTime::Month::makeFromValueOneOrigin(u32 m)
 {
-    SEAD_ASSERT_NOFMT(1 <= m && m <= 12);
+    SEAD_ASSERT(1 <= m && m <= 12);
     return Month(m);
 }
 
 void CalendarTime::Day::setValue(u32 v)
 {
-    SEAD_ASSERT(1 <= v && v <= 31, "wrong day. correct range is [1, 31]. your param %d", v);
+    SEAD_ASSERT_MSG(1 <= v && v <= 31, "wrong day. correct range is [1, 31]. your param %d", v);
     mValue = v;
 }
 
 void CalendarTime::Hour::setValue(u32 v)
 {
-    SEAD_ASSERT(0 <= v && v <= 23, "wrong hour. correct range is [0, 23]. your param %d", v);
+    SEAD_ASSERT_MSG(0 <= v && v <= 23, "wrong hour. correct range is [0, 23]. your param %d", v);
     mValue = v;
 }
 
 void CalendarTime::Minute::setValue(u32 v)
 {
-    SEAD_ASSERT(0 <= v && v <= 59, "wrong minute. correct range is [0, 59]. your param %d", v);
+    SEAD_ASSERT_MSG(0 <= v && v <= 59, "wrong minute. correct range is [0, 59]. your param %d", v);
     mValue = v;
 }
 
 void CalendarTime::Second::setValue(u32 v)
 {
-    SEAD_ASSERT(0 <= v && v <= 59, "wrong day. correct range is [0, 59]. your param %d", v);
+    SEAD_ASSERT_MSG(0 <= v && v <= 59, "wrong day. correct range is [0, 59]. your param %d", v);
     mValue = v;
 }
 
@@ -159,7 +159,7 @@ void CalendarTime::setDate(const CalendarTime::Date& date)
 u32 CalendarTime::getYearDays() const
 {
     const u32 m = mDate.mMonth.getValueOneOrigin();
-    SEAD_ASSERT(1 <= m && m <= 12, "wrong month. correct range is [1, 12]. your param %d", m);
+    SEAD_ASSERT_MSG(1 <= m && m <= 12, "wrong month. correct range is [1, 12]. your param %d", m);
 
     static const u32 sCumulativeNumberOfDays[] = {
         0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334,

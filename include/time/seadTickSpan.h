@@ -58,7 +58,7 @@ public:
 
     static TickSpan fromNanoSeconds(s64 ns)
     {
-        SEAD_ASSERT_NOFMT(LLONG_MIN / cFrequency <= ns && ns < LLONG_MAX / cFrequency);
+        SEAD_ASSERT(LLONG_MIN / cFrequency <= ns && ns < LLONG_MAX / cFrequency);
         TickSpan span;
         span.setNanoSeconds(ns);
         return span;
@@ -66,7 +66,7 @@ public:
 
     static TickSpan fromMicroSeconds(s64 us)
     {
-        SEAD_ASSERT_NOFMT(LLONG_MIN / cFrequency <= us && us < LLONG_MAX / cFrequency);
+        SEAD_ASSERT(LLONG_MIN / cFrequency <= us && us < LLONG_MAX / cFrequency);
         TickSpan span;
         span.setMicroSeconds(us);
         return span;
@@ -74,7 +74,7 @@ public:
 
     static TickSpan fromMilliSeconds(s64 ms)
     {
-        SEAD_ASSERT_NOFMT(LLONG_MIN / cFrequency <= ms && ms < LLONG_MAX / cFrequency);
+        SEAD_ASSERT(LLONG_MIN / cFrequency <= ms && ms < LLONG_MAX / cFrequency);
         TickSpan span;
         span.setMilliSeconds(ms);
         return span;
@@ -82,7 +82,7 @@ public:
 
     static TickSpan fromSeconds(s64 s)
     {
-        SEAD_ASSERT_NOFMT(LLONG_MIN / cFrequency <= s && s < LLONG_MAX / cFrequency);
+        SEAD_ASSERT(LLONG_MIN / cFrequency <= s && s < LLONG_MAX / cFrequency);
         TickSpan span;
         span.setSeconds(s);
         return span;

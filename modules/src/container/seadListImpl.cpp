@@ -5,7 +5,7 @@ namespace sead
 {
 void ListNode::insertBack_(ListNode* node)
 {
-    SEAD_ASSERT(!node->isLinked(), "node is already linked.");
+    SEAD_ASSERT_MSG(!node->isLinked(), "node is already linked.");
     ListNode* next = mNext;
     mNext = node;
     node->mPrev = this;
@@ -17,7 +17,7 @@ void ListNode::insertBack_(ListNode* node)
 
 void ListNode::insertFront_(ListNode* node)
 {
-    SEAD_ASSERT(!node->isLinked(), "node is already linked.");
+    SEAD_ASSERT_MSG(!node->isLinked(), "node is already linked.");
     ListNode* prev = mPrev;
     this->mPrev = node;
     node->mPrev = prev;
@@ -30,7 +30,7 @@ void ListNode::insertFront_(ListNode* node)
 
 void ListNode::erase_()
 {
-    SEAD_ASSERT(isLinked(), "node is not linked.");
+    SEAD_ASSERT_MSG(isLinked(), "node is not linked.");
     if (mPrev != nullptr)
         mPrev->mNext = mNext;
 
@@ -69,7 +69,7 @@ ListNode* ListImpl::nth(s32 index) const
 {
     if (mCount <= u32(index))
     {
-        SEAD_ASSERT(false, "index exceeded[%d/%d]", index, mCount);
+        SEAD_ASSERT_MSG(false, "index exceeded[%d/%d]", index, mCount);
         return nullptr;
     }
 
@@ -110,7 +110,7 @@ void ListImpl::clear()
 
 void ListImpl::swap(ListNode* n1, ListNode* n2)
 {
-    SEAD_ASSERT_NOFMT(n1->mPrev && n1->mNext && n2->mPrev && n2->mNext);
+    SEAD_ASSERT(n1->mPrev && n1->mNext && n2->mPrev && n2->mNext);
     if (n1 == n2)
         return;
 

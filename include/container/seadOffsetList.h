@@ -20,13 +20,13 @@ public:
 
     void pushBack(T* item)
     {
-        SEAD_ASSERT_NOFMT(mOffset >= 0);
+        SEAD_ASSERT(mOffset >= 0);
         ListImpl::pushBack(objToListNode(item));
     }
 
     void pushFront(T* item)
     {
-        SEAD_ASSERT_NOFMT(mOffset >= 0);
+        SEAD_ASSERT(mOffset >= 0);
         ListImpl::pushFront(objToListNode(item));
     }
 

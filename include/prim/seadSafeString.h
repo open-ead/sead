@@ -78,7 +78,7 @@ public:
     SafeStringBase() : mStringTop(cNullString) {}
     SafeStringBase(const T* str) : mStringTop(str)
     {
-        SEAD_ASSERT(str != nullptr, "str must not be nullptr.");
+        SEAD_ASSERT_MSG(str != nullptr, "str must not be nullptr.");
     }
 
     virtual ~SafeStringBase() = default;

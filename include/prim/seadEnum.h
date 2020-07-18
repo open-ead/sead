@@ -72,12 +72,12 @@ private:
         int getRelativeIndex() const volatile { return mIdx; }                                     \
         void setRelativeIndex(int idx)                                                             \
         {                                                                                          \
-            SEAD_ASSERT(idx < size(), "range over: %d, [%d - %d)", idx, 0, size());                \
+            SEAD_ASSERT_MSG(idx < size(), "range over: %d, [%d - %d)", idx, 0, size());            \
             mIdx = idx;                                                                            \
         }                                                                                          \
         void setRelativeIndex(int idx) volatile                                                    \
         {                                                                                          \
-            SEAD_ASSERT(idx < size(), "range over: %d, [%d - %d)", idx, 0, size());                \
+            SEAD_ASSERT_MSG(idx < size(), "range over: %d, [%d - %d)", idx, 0, size());            \
             mIdx = idx;                                                                            \
         }                                                                                          \
                                                                                                    \
@@ -187,7 +187,7 @@ private:
             int idx = findRelativeIndex_(value);                                                   \
             if (idx == -1)                                                                         \
             {                                                                                      \
-                SEAD_ASSERT(false, "could not convert to relative index: %d", idx);                \
+                SEAD_ASSERT_MSG(false, "could not convert to relative index: %d", idx);            \
                 idx = 0;                                                                           \
             }                                                                                      \
             setRelativeIndex(idx);                                                                 \
@@ -221,12 +221,12 @@ private:
         int getRelativeIndex() const volatile { return mIdx; }                                     \
         void setRelativeIndex(int idx)                                                             \
         {                                                                                          \
-            SEAD_ASSERT(idx < size(), "range over: %d, [%d - %d)", idx, 0, size());                \
+            SEAD_ASSERT_MSG(idx < size(), "range over: %d, [%d - %d)", idx, 0, size());            \
             mIdx = idx;                                                                            \
         }                                                                                          \
         void setRelativeIndex(int idx) volatile                                                    \
         {                                                                                          \
-            SEAD_ASSERT(idx < size(), "range over: %d, [%d - %d)", idx, 0, size());                \
+            SEAD_ASSERT_MSG(idx < size(), "range over: %d, [%d - %d)", idx, 0, size());            \
             mIdx = idx;                                                                            \
         }                                                                                          \
         static int findRelativeIndex(ValueType value) { return findRelativeIndex_(value); }        \
@@ -278,7 +278,7 @@ private:
             {                                                                                      \
                 if (mSize <= u32(idx))                                                             \
                 {                                                                                  \
-                    SEAD_ASSERT(false, "index exceeded [%d/%d]", idx, mSize);                      \
+                    SEAD_ASSERT_MSG(false, "index exceeded [%d/%d]", idx, mSize);                  \
                     return mBuffer;                                                                \
                 }                                                                                  \
                 return &mBuffer[idx];                                                              \
@@ -288,7 +288,7 @@ private:
             {                                                                                      \
                 if (mSize <= u32(idx))                                                             \
                 {                                                                                  \
-                    SEAD_ASSERT(false, "index exceeded [%d/%d]", idx, mSize);                      \
+                    SEAD_ASSERT_MSG(false, "index exceeded [%d/%d]", idx, mSize);                  \
                     return mBuffer;                                                                \
                 }                                                                                  \
                 return &mBuffer[idx];                                                              \

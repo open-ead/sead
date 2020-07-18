@@ -46,7 +46,7 @@ void ParseFailed_(char** text_ptr, int v)
     for (int i = 0; i < v; ++i)
         system::Print("  text[%d] \"%s\"\n", i, text_ptr[i]);
     system::Print("----------------------------------------\n");
-    SEAD_ASSERT(false, "SEAD_ENUM failed to parse text. Is number of comma correct?");
+    SEAD_ASSERT_MSG(false, "SEAD_ENUM failed to parse text. Is number of comma correct?");
 #endif
 }
 

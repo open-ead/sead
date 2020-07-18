@@ -5,13 +5,13 @@
 #include <basis/seadTypes.h>
 
 #ifdef SEAD_DEBUG
-#define SEAD_ASSERT(condition, message, ...)                                                       \
+#define SEAD_ASSERT_MSG(condition, message, ...)                                                   \
     do                                                                                             \
     {                                                                                              \
         if (!(condition))                                                                          \
             sead::system::HaltWithDetail(__FILE__, __LINE__, message, ##__VA_ARGS__);              \
     } while (0)
-#define SEAD_ASSERT_NOFMT(condition)                                                               \
+#define SEAD_ASSERT(condition)                                                                     \
     do                                                                                             \
     {                                                                                              \
         if (!(condition))                                                                          \
@@ -22,13 +22,13 @@
         sead::system::Warning(__FILE__, __LINE__, message, ##__VA_ARGS__);                         \
     while (0)
 #else
-#define SEAD_ASSERT(condition, message, ...)                                                       \
+#define SEAD_ASSERT_MSG(condition, message, ...)                                                   \
     do                                                                                             \
     {                                                                                              \
         if (!(condition))                                                                          \
             sead::system::detail::CheckFormat(message, ##__VA_ARGS__);                             \
     } while (0)
-#define SEAD_ASSERT_NOFMT(condition) static_cast<void>(condition)
+#define SEAD_ASSERT(condition) static_cast<void>(condition)
 #define SEAD_WARN(message, ...) sead::system::detail::CheckFormat(message, ##__VA_ARGS__)
 #endif
 

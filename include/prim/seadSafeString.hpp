@@ -16,7 +16,7 @@ inline typename SafeStringBase<T>::token_iterator& SafeStringBase<T>::token_iter
     {
         while (true)
         {
-            SEAD_ASSERT_NOFMT(0 <= index && index <= length);
+            SEAD_ASSERT(0 <= index && index <= length);
             if (this->mString->unsafeAt_(index) == cNullChar)
                 break;
             if (mDelimiter.include(this->mString->unsafeAt_(index)))
@@ -28,7 +28,7 @@ inline typename SafeStringBase<T>::token_iterator& SafeStringBase<T>::token_iter
     }
     else
     {
-        SEAD_ASSERT(false, "index(%d) out of range [0, %d].\n", index, length);
+        SEAD_ASSERT_MSG(false, "index(%d) out of range [0, %d].\n", index, length);
     }
     return *this;
 }
@@ -55,7 +55,7 @@ inline typename SafeStringBase<T>::token_iterator& SafeStringBase<T>::token_iter
         while (true)
         {
             j = index;
-            SEAD_ASSERT_NOFMT(0 <= index && index <= length);
+            SEAD_ASSERT(0 <= index && index <= length);
             if (this->mString->unsafeAt_(index) == cNullChar)
                 break;
             if (mDelimiter.include(this->mString->unsafeAt_(index)))
@@ -72,7 +72,7 @@ inline typename SafeStringBase<T>::token_iterator& SafeStringBase<T>::token_iter
     }
     else
     {
-        SEAD_ASSERT(false, "index(%d) out of range [0, %d].\n", index, length + 1);
+        SEAD_ASSERT_MSG(false, "index(%d) out of range [0, %d].\n", index, length + 1);
     }
     return *this;
 }
@@ -97,7 +97,7 @@ inline s32 SafeStringBase<T>::token_iterator::getAndForward(BufferedSafeStringBa
     const s32 length = this->mString->calcLength();
     if (index < 0 || index > length)
     {
-        SEAD_ASSERT(false, "index(%d) out of range [0, %d].\n", index, length);
+        SEAD_ASSERT_MSG(false, "index(%d) out of range [0, %d].\n", index, length);
         return 0;
     }
 
@@ -107,10 +107,10 @@ inline s32 SafeStringBase<T>::token_iterator::getAndForward(BufferedSafeStringBa
     s32 i = 0;
     while (true)
     {
-        SEAD_ASSERT_NOFMT(0 <= index && index <= length);
+        SEAD_ASSERT(0 <= index && index <= length);
         if (out_max_length < i)
         {
-            SEAD_ASSERT(false, "token str exceeds out buffer length[%d]", out_max_length);
+            SEAD_ASSERT_MSG(false, "token str exceeds out buffer length[%d]", out_max_length);
             return 0;
         }
 
@@ -146,7 +146,7 @@ inline s32 SafeStringBase<T>::token_iterator::cutOffGetAndForward(BufferedSafeSt
     const s32 length = this->mString->calcLength();
     if (index < 0 || index > length)
     {
-        SEAD_ASSERT(false, "index(%d) out of range [0, %d].\n", index, length);
+        SEAD_ASSERT_MSG(false, "index(%d) out of range [0, %d].\n", index, length);
         return 0;
     }
 
@@ -156,7 +156,7 @@ inline s32 SafeStringBase<T>::token_iterator::cutOffGetAndForward(BufferedSafeSt
     s32 i = 0;
     while (true)
     {
-        SEAD_ASSERT_NOFMT(0 <= index && index <= length);
+        SEAD_ASSERT(0 <= index && index <= length);
 
         const T& c = this->mString->unsafeAt_(index);
         if (c == cNullChar || mDelimiter.include(c))
@@ -167,7 +167,7 @@ inline s32 SafeStringBase<T>::token_iterator::cutOffGetAndForward(BufferedSafeSt
         ++index;
     }
 
-    SEAD_ASSERT_NOFMT(i <= out_max_length);
+    SEAD_ASSERT(i <= out_max_length);
     outc[i] = cNullChar;
     this->mIndex = index + 1;
     return i;
@@ -180,7 +180,7 @@ inline const T& SafeStringBase<T>::at(s32 idx) const
     if (idx >= 0 && idx < length)
         return mStringTop[idx];
 
-    SEAD_ASSERT(false, "index(%d) out of range[0, %d]", idx, length);
+    SEAD_ASSERT_MSG(false, "index(%d) out of range[0, %d]", idx, length);
     return cNullChar;
 }
 
@@ -190,7 +190,7 @@ inline SafeStringBase<T> SafeStringBase<T>::getPart(s32 at) const
     s32 len = calcLength();
     if (at < 0 || at > len)
     {
-        SEAD_ASSERT(false, "index(%d) out of range[0, %d]", at, len);
+        SEAD_ASSERT_MSG(false, "index(%d) out of range[0, %d]", at, len);
         return SafeStringBase<T>::cEmptyString;
     }
 
@@ -212,7 +212,7 @@ inline SafeStringBase<T> SafeStringBase<T>::getPart(const SafeStringBase::token_
 template <typename T>
 inline s32 SafeStringBase<T>::calcLength() const
 {
-    SEAD_ASSERT_NOFMT(mStringTop);
+    SEAD_ASSERT(mStringTop);
     assureTerminationImpl_();
     s32 length = 0;
 
@@ -226,7 +226,7 @@ inline s32 SafeStringBase<T>::calcLength() const
 
     if (length > cMaximumLength)
     {
-        SEAD_ASSERT(false, "too long string");
+        SEAD_ASSERT_MSG(false, "too long string");
         return 0;
     }
 
@@ -269,7 +269,7 @@ inline bool SafeStringBase<T>::isEqual(const SafeStringBase<T>& str) const
             return true;
     }
 
-    SEAD_ASSERT(false, "too long string\n");
+    SEAD_ASSERT_MSG(false, "too long string\n");
     return false;
 }
 
@@ -282,7 +282,7 @@ inline s32 SafeStringBase<T>::comparen(const SafeStringBase<T>& str, s32 n) cons
 
     if (n > cMaximumLength)
     {
-        SEAD_ASSERT(false, "paramater(%d) out of bounds [0, %d]", n, cMaximumLength);
+        SEAD_ASSERT_MSG(false, "paramater(%d) out of bounds [0, %d]", n, cMaximumLength);
         n = cMaximumLength;
     }
 
@@ -308,7 +308,7 @@ inline s32 SafeStringBase<T>::findIndex(const SafeStringBase<T>& str, s32 start_
 
     if (start_pos < 0 || start_pos > len)
     {
-        SEAD_ASSERT(false, "start_pos(%d) out of range[0, %d]", start_pos, len);
+        SEAD_ASSERT_MSG(false, "start_pos(%d) out of range[0, %d]", start_pos, len);
         return -1;
     }
 
@@ -383,7 +383,7 @@ inline s32 BufferedSafeStringBase<T>::copy(const SafeStringBase<T>& src, s32 cop
 
     if (copyLength >= mBufferSize)
     {
-        SEAD_ASSERT(false, "Buffer overflow. (Buffer Size: %d, Copy Size: %d)", mBufferSize,
+        SEAD_ASSERT_MSG(false, "Buffer overflow. (Buffer Size: %d, Copy Size: %d)", mBufferSize,
                     copyLength);
         copyLength = mBufferSize - 1;
     }
@@ -405,7 +405,7 @@ inline s32 BufferedSafeStringBase<T>::copyAt(s32 at, const SafeStringBase<T>& sr
         at = len + at + 1;
         if (at < 0)
         {
-            SEAD_ASSERT(false, "at(%d) out of range[0, %d]", at, len);
+            SEAD_ASSERT_MSG(false, "at(%d) out of range[0, %d]", at, len);
             at = 0;
         }
     }
@@ -415,7 +415,7 @@ inline s32 BufferedSafeStringBase<T>::copyAt(s32 at, const SafeStringBase<T>& sr
 
     if (copyLength >= mBufferSize - at)
     {
-        SEAD_ASSERT(false, "Buffer overflow. (Buffer Size: %d, At: %d, Copy Length: %d)",
+        SEAD_ASSERT_MSG(false, "Buffer overflow. (Buffer Size: %d, At: %d, Copy Length: %d)",
                     mBufferSize, at, copyLength);
         copyLength = mBufferSize - at - 1;
     }

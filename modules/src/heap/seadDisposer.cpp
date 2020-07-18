@@ -24,7 +24,7 @@ IDisposer::IDisposer(Heap* const disposer_heap, HeapNullOption option)
     switch (option)
     {
     case HeapNullOption::AlwaysUseSpecifiedHeap:
-        SEAD_ASSERT(false, "disposer_heap must not be nullptr");
+        SEAD_ASSERT_MSG(false, "disposer_heap must not be nullptr");
     case HeapNullOption::UseSpecifiedOrContainHeap:
         if (!sead::HeapMgr::sInstancePtr)
             return;
@@ -42,7 +42,7 @@ IDisposer::IDisposer(Heap* const disposer_heap, HeapNullOption option)
             mDisposerHeap->appendDisposer_(this);
         return;
     default:
-        SEAD_ASSERT(false, "illegal option[%d]", int(option));
+        SEAD_ASSERT_MSG(false, "illegal option[%d]", int(option));
         return;
     }
 }

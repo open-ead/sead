@@ -21,7 +21,7 @@ void* NewImpl(Heap* heap, size_t size, s32 alignment, bool abortOnFailure)
         heap = sead::HeapMgr::sInstancePtr->getCurrentHeap();
         if (!heap)
         {
-            SEAD_ASSERT(false, "Current heap is null. Cannot alloc.");
+            SEAD_ASSERT_MSG(false, "Current heap is null. Cannot alloc.");
             return nullptr;
         }
     }
@@ -29,9 +29,9 @@ void* NewImpl(Heap* heap, size_t size, s32 alignment, bool abortOnFailure)
     void* result = heap->tryAlloc(size, alignment);
     if (!result && abortOnFailure)
     {
-        SEAD_ASSERT(false,
-                    "alloc failed. size: %zu, allocatable size: %zu, alignment: %d, heap: %s", size,
-                    heap->getMaxAllocatableSize(alignment), alignment, heap->getName().cstr());
+        SEAD_ASSERT_MSG(
+            false, "alloc failed. size: %zu, allocatable size: %zu, alignment: %d, heap: %s", size,
+            heap->getMaxAllocatableSize(alignment), alignment, heap->getName().cstr());
         return nullptr;
     }
     return result;
@@ -53,7 +53,7 @@ void DeleteImpl(void* ptr)
     if (containHeap)
         containHeap->free(ptr);
     else
-        SEAD_ASSERT(false, "delete bad pointer [0x%p]", ptr);
+        SEAD_ASSERT_MSG(false, "delete bad pointer [0x%p]", ptr);
 }
 }  // namespace system
 }  // namespace sead

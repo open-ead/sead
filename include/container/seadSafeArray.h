@@ -16,7 +16,7 @@ public:
     {
         if (u32(idx) < N)
             return mBuffer[idx];
-        SEAD_ASSERT(false, "range over [0, %d) : %d", N, idx);
+        SEAD_ASSERT_MSG(false, "range over [0, %d) : %d", N, idx);
         return mBuffer[0];
     }
 
@@ -24,7 +24,7 @@ public:
     {
         if (u32(idx) < N)
             return mBuffer[idx];
-        SEAD_ASSERT(false, "range over [0, %d) : %d", N, idx);
+        SEAD_ASSERT_MSG(false, "range over [0, %d) : %d", N, idx);
         return mBuffer[0];
     }
 
