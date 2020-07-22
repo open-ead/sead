@@ -10,16 +10,6 @@ static const char16 cEmptyStringChar16[1] = u"";
 namespace sead
 {
 template <>
-void SafeStringBase<char>::assureTerminationImpl_() const
-{
-}
-
-template <>
-void SafeStringBase<char16>::assureTerminationImpl_() const
-{
-}
-
-template <>
 const char SafeStringBase<char>::cNullChar = '\0';
 
 template <>
@@ -42,6 +32,53 @@ const char16 SafeStringBase<char16>::cNullString[1] = {SafeStringBase<char16>::c
 
 template <>
 const SafeStringBase<char16> SafeStringBase<char16>::cEmptyString(cEmptyStringChar16);
+
+template <>
+void SafeStringBase<char>::assureTerminationImpl_() const
+{
+}
+
+template <>
+void SafeStringBase<char16>::assureTerminationImpl_() const
+{
+}
+
+template <>
+SafeStringBase<char>& SafeStringBase<char>::operator=(const SafeStringBase<char>& other) = default;
+
+template <>
+SafeStringBase<char16>&
+SafeStringBase<char16>::operator=(const SafeStringBase<char16>& other) = default;
+
+template <>
+BufferedSafeStringBase<char>&
+BufferedSafeStringBase<char>::operator=(const SafeStringBase<char>& other)
+{
+    copy(other);
+    return *this;
+}
+
+template <>
+BufferedSafeStringBase<char16>&
+BufferedSafeStringBase<char16>::operator=(const SafeStringBase<char16>& other)
+{
+    copy(other);
+    return *this;
+}
+
+template <>
+void BufferedSafeStringBase<char>::assureTerminationImpl_() const
+{
+    auto* mutableSafeString = const_cast<BufferedSafeStringBase<char>*>(this);
+    mutableSafeString->getMutableStringTop_()[mBufferSize - 1] = cNullChar;
+}
+
+template <>
+void BufferedSafeStringBase<char16>::assureTerminationImpl_() const
+{
+    auto* mutableSafeString = const_cast<BufferedSafeStringBase<char16>*>(this);
+    mutableSafeString->getMutableStringTop_()[mBufferSize - 1] = cNullChar;
+}
 
 template <>
 s32 BufferedSafeStringBase<char>::formatImpl_(char* s, s32 n, const char* formatStr, va_list args)

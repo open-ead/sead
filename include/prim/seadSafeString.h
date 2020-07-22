@@ -83,11 +83,7 @@ public:
 
     virtual ~SafeStringBase() = default;
 
-    virtual SafeStringBase& operator=(const SafeStringBase& other)
-    {
-        mStringTop = other.mStringTop;
-        return *this;
-    }
+    virtual SafeStringBase& operator=(const SafeStringBase& other);
 
     bool operator==(const SafeStringBase& rhs) const { return isEqual(rhs); }
     bool operator!=(const SafeStringBase& rhs) const { return !(rhs == *this); }
@@ -171,11 +167,7 @@ public:
 
     ~BufferedSafeStringBase() override = default;
 
-    BufferedSafeStringBase<T>& operator=(const SafeStringBase<T>& other) override
-    {
-        copy(other);
-        return *this;
-    }
+    BufferedSafeStringBase<T>& operator=(const SafeStringBase<T>& other) override;
 
     const T& operator[](s32 idx) const;
 
@@ -283,11 +275,7 @@ public:
     inline void clear() { getMutableStringTop_()[0] = this->cNullChar; }
 
 protected:
-    void assureTerminationImpl_() const override
-    {
-        auto* mutableSafeString = const_cast<BufferedSafeStringBase<T>*>(this);
-        mutableSafeString->getMutableStringTop_()[mBufferSize - 1] = this->cNullChar;
-    }
+    void assureTerminationImpl_() const override;
 
     T* getMutableStringTop_() { return const_cast<T*>(this->mStringTop); }
 
