@@ -350,18 +350,30 @@ public:
 };
 
 template <s32 L>
-class FormatFixedSafeString : public FixedSafeStringBase<char, L>
+class FormatFixedSafeString : public FixedSafeString<L>
 {
 public:
-    FormatFixedSafeString(const char* str, ...);
+    explicit FormatFixedSafeString(const char* format, ...) : FixedSafeString<L>()
+    {
+        std::va_list args;
+        va_start(args, format);
+        this->formatV(format, args);
+        va_end(args);
+    }
     ~FormatFixedSafeString() override = default;
 };
 
 template <s32 L>
-class WFormatFixedSafeString : public FixedSafeStringBase<char16, L>
+class WFormatFixedSafeString : public WFixedSafeString<L>
 {
 public:
-    WFormatFixedSafeString(const char16* str, ...);
+    explicit WFormatFixedSafeString(const char16* format, ...)
+    {
+        std::va_list args;
+        va_start(args, format);
+        this->formatV(format, args);
+        va_end(args);
+    }
     ~WFormatFixedSafeString() override = default;
 };
 
