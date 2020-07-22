@@ -67,6 +67,21 @@ BufferedSafeStringBase<char16>::operator=(const SafeStringBase<char16>& other)
 }
 
 template <>
+HeapSafeStringBase<char>& HeapSafeStringBase<char>::operator=(const SafeStringBase<char>& other)
+{
+    this->copy(other);
+    return *this;
+}
+
+template <>
+HeapSafeStringBase<char16>&
+HeapSafeStringBase<char16>::operator=(const SafeStringBase<char16>& other)
+{
+    this->copy(other);
+    return *this;
+}
+
+template <>
 void BufferedSafeStringBase<char>::assureTerminationImpl_() const
 {
     auto* mutableSafeString = const_cast<BufferedSafeStringBase<char>*>(this);

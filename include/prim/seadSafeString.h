@@ -398,6 +398,14 @@ public:
     {
         this->copy(string);
     }
+
+    ~HeapSafeStringBase() override
+    {
+        if (this->mStringTop)
+            delete[] this->mStringTop;
+    }
+
+    HeapSafeStringBase<T>& operator=(const SafeStringBase<T>& other) override;
 };
 
 using HeapSafeString = HeapSafeStringBase<char>;
