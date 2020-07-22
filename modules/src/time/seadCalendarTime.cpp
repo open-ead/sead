@@ -25,14 +25,14 @@ const CalendarTime::Hour CalendarTime::cDefaultHour = 0;
 const CalendarTime::Minute CalendarTime::cDefaultMinute = 0;
 const CalendarTime::Second CalendarTime::cDefaultSecond = 0;
 
-void CalendarTime::Year::setValue(u32 y)
+void CalendarTime::Year::setValue(u32 year)
 {
-    mValue = y;
+    mValue = year;
 }
 
-CalendarTime::Month::Month(u32 m)
+CalendarTime::Month::Month(u32 month)
 {
-    setValueOneOrigin(m);
+    setValueOneOrigin(month);
 }
 
 void CalendarTime::Month::setValueOneOrigin(u32 m)
@@ -101,28 +101,32 @@ CalendarTime::Month CalendarTime::Month::makeFromValueOneOrigin(u32 m)
     return Month(m);
 }
 
-void CalendarTime::Day::setValue(u32 v)
+void CalendarTime::Day::setValue(u32 day)
 {
-    SEAD_ASSERT_MSG(1 <= v && v <= 31, "wrong day. correct range is [1, 31]. your param %d", v);
-    mValue = v;
+    SEAD_ASSERT_MSG(1 <= day && day <= 31, "wrong day. correct range is [1, 31]. your param %d",
+                    day);
+    mValue = day;
 }
 
-void CalendarTime::Hour::setValue(u32 v)
+void CalendarTime::Hour::setValue(u32 hour)
 {
-    SEAD_ASSERT_MSG(0 <= v && v <= 23, "wrong hour. correct range is [0, 23]. your param %d", v);
-    mValue = v;
+    SEAD_ASSERT_MSG(0 <= hour && hour <= 23, "wrong hour. correct range is [0, 23]. your param %d",
+                    hour);
+    mValue = hour;
 }
 
-void CalendarTime::Minute::setValue(u32 v)
+void CalendarTime::Minute::setValue(u32 minute)
 {
-    SEAD_ASSERT_MSG(0 <= v && v <= 59, "wrong minute. correct range is [0, 59]. your param %d", v);
-    mValue = v;
+    SEAD_ASSERT_MSG(0 <= minute && minute <= 59,
+                    "wrong minute. correct range is [0, 59]. your param %d", minute);
+    mValue = minute;
 }
 
-void CalendarTime::Second::setValue(u32 v)
+void CalendarTime::Second::setValue(u32 second)
 {
-    SEAD_ASSERT_MSG(0 <= v && v <= 59, "wrong day. correct range is [0, 59]. your param %d", v);
-    mValue = v;
+    SEAD_ASSERT_MSG(0 <= second && second <= 59,
+                    "wrong day. correct range is [0, 59]. your param %d", second);
+    mValue = second;
 }
 
 CalendarTime::Date::Date(const CalendarTime::Year& y, const CalendarTime::Month& m,

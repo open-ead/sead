@@ -60,8 +60,7 @@ public:
 
         bool operator==(const token_iterator& rhs) const
         {
-            return static_cast<const iterator&>(*this) == static_cast<const iterator&>(rhs) &&
-                   mDelimiter == rhs.mDelimiter;
+            return static_cast<const iterator&>(*this) == static_cast<const iterator&>(rhs);
         }
         bool operator!=(const token_iterator& rhs) const { return !(rhs == *this); }
 
@@ -100,7 +99,7 @@ public:
 
     token_iterator tokenEnd(const SafeStringBase& delimiter)
     {
-        return token_iterator(this, calcLength(), delimiter);
+        return token_iterator(this, calcLength() + 1, delimiter);
     }
 
     const T* cstr() const

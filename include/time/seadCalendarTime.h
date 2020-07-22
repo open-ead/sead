@@ -15,23 +15,23 @@ class Reflexible;
 class CalendarTime
 {
 public:
-#define SEAD_CALENDARTIME_MAKE_CLASS(NAME)                                                         \
+#define SEAD_CALENDARTIME_MAKE_CLASS(NAME, VARIABLE_NAME)                                          \
     class NAME                                                                                     \
     {                                                                                              \
     public:                                                                                        \
-        NAME(u32 v) { setValue(v); }                                                               \
+        NAME(u32 VARIABLE_NAME) { setValue(VARIABLE_NAME); }                                       \
         u32 getValue() const { return mValue; }                                                    \
-        void setValue(u32 v);                                                                      \
+        void setValue(u32 VARIABLE_NAME);                                                          \
                                                                                                    \
     private:                                                                                       \
         u32 mValue;                                                                                \
     };
 
-    SEAD_CALENDARTIME_MAKE_CLASS(Year)
-    SEAD_CALENDARTIME_MAKE_CLASS(Day)
-    SEAD_CALENDARTIME_MAKE_CLASS(Hour)
-    SEAD_CALENDARTIME_MAKE_CLASS(Minute)
-    SEAD_CALENDARTIME_MAKE_CLASS(Second)
+    SEAD_CALENDARTIME_MAKE_CLASS(Year, year)
+    SEAD_CALENDARTIME_MAKE_CLASS(Day, day)
+    SEAD_CALENDARTIME_MAKE_CLASS(Hour, hour)
+    SEAD_CALENDARTIME_MAKE_CLASS(Minute, minute)
+    SEAD_CALENDARTIME_MAKE_CLASS(Second, second)
 #undef SEAD_CALENDARTIME_MAKE_CLASS
 
     class Month
@@ -39,15 +39,15 @@ public:
     public:
         Month(u32 month);
 
-        void setValueOneOrigin(u32);
+        void setValueOneOrigin(u32 month);
         s32 getValueOneOrigin() const { return mValue; }
 
         s32 addSelf(u32);
         s32 subSelf(u32);
         s32 sub(Month) const;
 
-        static Month makeFromValueOneOrigin(u32);
-        static SafeString makeStringOneOrigin(u32);
+        static Month makeFromValueOneOrigin(u32 month);
+        static SafeString makeStringOneOrigin(u32 month);
 
     private:
         s32 mValue;

@@ -178,11 +178,12 @@ template <typename T>
 inline const T& SafeStringBase<T>::at(s32 idx) const
 {
     const int length = calcLength();
-    if (idx >= 0 && idx < length)
-        return mStringTop[idx];
-
-    SEAD_ASSERT_MSG(false, "index(%d) out of range[0, %d]", idx, length);
-    return cNullChar;
+    if (idx < 0 || idx > length)
+    {
+        SEAD_ASSERT_MSG(false, "index(%d) out of range[0, %d]", idx, length);
+        return cNullChar;
+    }
+    return mStringTop[idx];
 }
 
 template <typename T>
