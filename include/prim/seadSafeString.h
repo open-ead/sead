@@ -10,6 +10,8 @@
 
 namespace sead
 {
+class Heap;
+
 template <typename T>
 class BufferedSafeStringBase;
 
@@ -162,7 +164,16 @@ public:
         : SafeStringBase<T>(buffer)
     {
         mBufferSize = size;
-        assureTerminationImpl_();
+        if (size <= 0)
+        {
+            SEAD_ASSERT_MSG(false, "Invalied buffer size(%d).\n", this->getBufferSize());
+            this->mStringTop = nullptr;
+            this->mBufferSize = 0;
+        }
+        else
+        {
+            this->assureTerminationImpl_();
+        }
     }
 
     ~BufferedSafeStringBase() override = default;
@@ -376,5 +387,20 @@ public:
     }
     ~WFormatFixedSafeString() override = default;
 };
+
+template <typename T>
+class HeapSafeStringBase : public BufferedSafeStringBase<T>
+{
+public:
+    HeapSafeStringBase(Heap* heap, const SafeStringBase<T>& string, s32 alignment = sizeof(void*))
+        : BufferedSafeStringBase<T>(new (heap, alignment) T[string.calcLength() + 1](),
+                                    string.calcLength() + 1)
+    {
+        this->copy(string);
+    }
+};
+
+using HeapSafeString = HeapSafeStringBase<char>;
+using WHeapSafeString = HeapSafeStringBase<char16>;
 
 }  // namespace sead
