@@ -43,6 +43,8 @@ add_library(sead OBJECT
 
   modules/src/time/seadCalendarTime.cpp
   modules/src/time/seadDateSpan.cpp
+  modules/src/time/seadDateTime.cpp
+  modules/src/time/seadDateTimeUtc.cpp
   modules/src/time/seadDateUtil.cpp
   modules/src/time/seadTickSpan.cpp
 )

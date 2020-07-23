@@ -8,7 +8,7 @@ namespace sead
 class DateSpan
 {
 public:
-    DateSpan(s64 span);
+    explicit DateSpan(s64 span);
     DateSpan(const CalendarSpan::Day& d, const CalendarSpan::Hour& h, const CalendarSpan::Minute& m,
              const CalendarSpan::Second& s);
     DateSpan(const CalendarSpan& span);
@@ -16,6 +16,8 @@ public:
     s64 set(const CalendarSpan& span);
     s64 set(const CalendarSpan::Day& d, const CalendarSpan::Hour& h, const CalendarSpan::Minute& m,
             const CalendarSpan::Second& s);
+
+    s64 getSpan() const { return mSpan; }
 
     void getCalendarSpan(CalendarSpan* out_span) const;
 

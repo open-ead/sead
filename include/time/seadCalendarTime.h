@@ -67,7 +67,8 @@ public:
 
     struct Time
     {
-        Time(const Hour& h, const Minute& m, const Second& s);
+        Time(const Hour& h = cDefaultHour, const Minute& m = cDefaultMinute,
+             const Second& s = cDefaultSecond);
 
         Hour mHour;
         Minute mMinute;
@@ -76,7 +77,8 @@ public:
 
     struct Date
     {
-        Date(const Year& y, const Month& month, const Day& day);
+        Date(const Year& y = cDefaultYear, const Month& month = cDefaultMonth,
+             const Day& day = cDefaultDay);
 
         void calcWeek();
 
@@ -107,8 +109,12 @@ public:
     static const Second cDefaultSecond;
 
     CalendarTime(const Date& date, const Time& time);
-    CalendarTime(const Year& year, const Month& month, const Day& day, const Hour& hour,
-                 const Minute& minute, const Second& second);
+    CalendarTime(const Year& year = cDefaultYear, const Month& month = cDefaultMonth,
+                 const Day& day = cDefaultDay, const Hour& hour = cDefaultHour,
+                 const Minute& minute = cDefaultMinute, const Second& second = cDefaultSecond);
+
+    const Date& getDate() const { return mDate; }
+    const Time& getTime() const { return mTime; }
 
     void setDate(const Date& date);
     void setTime(const Time& time) { mTime = time; }
