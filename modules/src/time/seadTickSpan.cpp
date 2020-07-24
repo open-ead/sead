@@ -1,7 +1,7 @@
 #include <cstdlib>
 #include <limits>
 
-#ifdef SWITCH
+#ifdef NNSDK
 #include <nn/os.h>
 #endif
 
@@ -9,7 +9,7 @@
 
 namespace sead
 {
-#ifdef SWITCH
+#ifdef NNSDK
 const s64 TickSpan::cFrequency = nn::os::GetSystemTickFrequency();
 #else
 #error "Unknown platform"

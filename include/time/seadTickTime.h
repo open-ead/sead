@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef SWITCH
+#ifdef NNSDK
 #include <nn/os.h>
 #endif
 
@@ -17,7 +17,7 @@ public:
 
     u64 toTicks() const { return mTick; }
 
-#ifdef SWITCH
+#ifdef NNSDK
     void setNow() { mTick = nn::os::GetSystemTick(); }
 #else
     void setNow();

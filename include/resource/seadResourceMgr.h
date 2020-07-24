@@ -34,7 +34,7 @@ public:
         Heap* heap = nullptr;
         s32 alignment = 0x20;
     };
-#ifdef SWITCH
+#ifdef NNSDK
     static_assert(sizeof(CreateArg) == 0x40);
 #endif
 
@@ -55,7 +55,7 @@ public:
         bool _4C = true;
         bool* has_tried_create_with_decomp = nullptr;
     };
-#ifdef SWITCH
+#ifdef NNSDK
     static_assert(sizeof(LoadArg) == 0x58);
 #endif
 
@@ -86,7 +86,7 @@ public:
     ResourceFactory* mNullResourceFactory = nullptr;
     ResourceFactory* mDefaultResourceFactory = nullptr;
 };
-#ifdef SWITCH
+#ifdef NNSDK
 static_assert(sizeof(ResourceMgr) == 0x60);
 #endif
 

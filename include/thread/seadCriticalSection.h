@@ -3,7 +3,7 @@
 
 #if defined(cafe)
 #include <cafe.h>
-#elif defined(SWITCH)
+#elif defined(NNSDK)
 #include <nn/os.h>
 #endif
 
@@ -24,7 +24,7 @@ public:
 
 #if defined(cafe)
     OSMutex mCriticalSectionInner;
-#elif defined(SWITCH)
+#elif defined(NNSDK)
     nn::os::MutexType mCriticalSectionInner;
 #else
 #error "Unknown platform"

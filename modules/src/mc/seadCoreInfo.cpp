@@ -8,7 +8,7 @@ SEAD_ENUM_IMPL(CoreId)
 u32 CoreInfo::sNumCores = 1;
 u32 CoreInfo::sPlatformCoreId[32]{};
 CoreId CoreInfo::sCoreIdFromPlatformCoreIdTable[32]{};
-#ifdef SWITCH
+#ifdef NNSDK
 nn::os::TlsSlot CoreInfo::sCoreNumberTlsSlot{};
 #endif
 
@@ -37,7 +37,7 @@ u32 CoreIdMask::countOnBits() const
 
 void CoreInfo::configure()
 {
-#ifdef SWITCH
+#ifdef NNSDK
     sNumCores = 3;
     sPlatformCoreId[0] = 0;
     sPlatformCoreId[1] = 1;

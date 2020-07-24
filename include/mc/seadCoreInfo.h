@@ -51,7 +51,7 @@ public:
 
     static CoreId getCurrentCoreId()
     {
-#ifdef SWITCH
+#ifdef NNSDK
         // Based on the BotW implementation
         const auto number = nn::os::GetTlsValue(sCoreNumberTlsSlot);
         if (number)
@@ -86,7 +86,7 @@ public:
         return mask;
     }
 
-#ifdef SWITCH
+#ifdef NNSDK
     static nn::os::TlsSlot getCoreNumberTlsSlot() { return sCoreNumberTlsSlot; }
 #endif
 
@@ -94,7 +94,7 @@ protected:
     static u32 sNumCores;
     static u32 sPlatformCoreId[32];
     static CoreId sCoreIdFromPlatformCoreIdTable[32];
-#ifdef SWITCH
+#ifdef NNSDK
     static nn::os::TlsSlot sCoreNumberTlsSlot;
 #endif
 };

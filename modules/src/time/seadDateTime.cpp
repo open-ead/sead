@@ -1,8 +1,7 @@
-#ifdef SWITCH
+#ifdef NNSDK
 #include <nn/time.h>
 #else
-#include <chrono>
-#include <ctime>
+#error "Unknown platform"
 #endif
 
 #include "basis/seadRawPrint.h"
@@ -129,7 +128,7 @@ DateTime::DateTime(const CalendarTime::Year& year, const CalendarTime::Month& mo
 
 u64 DateTime::setNow()
 {
-#ifdef SWITCH
+#ifdef NNSDK
     initializeSystemTimeModule();
 
     std::aligned_storage_t<sizeof(CalendarTime::Date)> date;
@@ -149,9 +148,6 @@ u64 DateTime::setNow()
     auto* date_ = new (&date) CalendarTime::Date(year, month, day);
     auto* time_ = new (&time) CalendarTime::Time(hour, minute, second);
     mUnixTime = convertCalendarDateTimeToSeconds(*date_, *time_);
-#else
-    const auto now = std::chrono::system_clock::now();
-    mUnixTime = std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch()).count();
 #endif
     return mUnixTime;
 }
@@ -208,7 +204,7 @@ void DateTime::initializeSystemTimeModule()
     if (mIsInitialized)
         return;
 
-#ifdef SWITCH
+#ifdef NNSDK
     if (!nn::time::IsInitialized())
         nn::time::Initialize();
 #endif
