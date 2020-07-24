@@ -2,6 +2,7 @@
 #include <heap/seadHeap.h>
 #include <heap/seadHeapMgr.h>
 #include <math/seadMathCalcCommon.hpp>
+#include <prim/seadBitUtil.h>
 #include <prim/seadEndian.h>
 #include <prim/seadPtrUtil.h>
 #include <prim/seadSafeString.hpp>
@@ -273,12 +274,12 @@ u8* SZSDecompressor::tryDecompFromDevice(const ResourceMgr::LoadArg& loadArg, Re
 
 u32 SZSDecompressor::getDecompAlignment(const void* src)
 {
-    return Endian::toHostU32(Endian::cBig, PtrUtil::bitCastPtr<u32>(src, 8));
+    return Endian::toHostU32(Endian::cBig, BitUtil::bitCastPtr<u32>(src, 8));
 }
 
 u32 SZSDecompressor::getDecompSize(const void* src)
 {
-    return Endian::toHostU32(Endian::cBig, PtrUtil::bitCastPtr<u32>(src, 4));
+    return Endian::toHostU32(Endian::cBig, BitUtil::bitCastPtr<u32>(src, 4));
 }
 
 s32 SZSDecompressor::readHeader_(DecompContext* context, const u8* src, u32 srcSize)
@@ -420,7 +421,7 @@ s32 SZSDecompressor::streamDecomp(DecompContext* context, const void* src, u32 s
 
 s32 SZSDecompressor::decomp(void* dst, u32 dstSize, const void* src, u32 srcSize)
 {
-    u32 magic = Endian::toHostU32(Endian::cBig, PtrUtil::bitCastPtr<u32>(src));
+    u32 magic = Endian::toHostU32(Endian::cBig, BitUtil::bitCastPtr<u32>(src));
     if (magic != 0x59617A30)
         return -1;
 

@@ -2,7 +2,7 @@
 #define SEAD_ENDIAN_H_
 
 #include <basis/seadTypes.h>
-#include <prim/seadPtrUtil.h>
+#include <prim/seadBitUtil.h>
 
 namespace sead
 {
@@ -53,7 +53,7 @@ public:
     static s16 swapS16(s16 v) { return swapU16(v); }
     static s32 swapS32(s32 v) { return swapU32(v); }
     static s64 swapS64(s64 v) { return swapU64(v); }
-    static f32 swapF32(f32 v) { return PtrUtil::bitCast<f32>(swapU32(PtrUtil::bitCast<u32>(v))); }
+    static f32 swapF32(f32 v) { return BitUtil::bitCast<f32>(swapU32(BitUtil::bitCast<u32>(v))); }
 
     static u8 convertU8(Types from, Types to, u8 v) { return cConvFuncTable.conv8[from ^ to](v); }
     static u16 convertU16(Types from, Types to, u16 v)
@@ -100,7 +100,7 @@ public:
 
     static f32 toHostF32(Types from, const u32* ptr)
     {
-        return PtrUtil::bitCast<f32>(convertF32(from, cHostEndian, ptr));
+        return BitUtil::bitCast<f32>(convertF32(from, cHostEndian, ptr));
     }
     static u32 fromHostF32(Types to, const f32* ptr) { return convertF32(cHostEndian, to, ptr); }
 

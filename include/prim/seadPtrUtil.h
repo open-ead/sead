@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstring>
-
 #include <basis/seadTypes.h>
 
 namespace sead
@@ -9,27 +7,6 @@ namespace sead
 class PtrUtil
 {
 public:
-    // Convenience function to avoid UB.
-    // Nintendo doesn't care and seems to just perform type punning, but we care about UB.
-    template <typename To, typename From>
-    static inline To bitCast(From value)
-    {
-        static_assert(sizeof(To) == sizeof(From), "To and From must have the same size");
-        To result;
-        std::memcpy(&result, &value, sizeof(value));
-        return result;
-    }
-
-    // Convenience function to avoid UB.
-    // Nintendo doesn't care and seems to just perform type punning, but we care about UB.
-    template <typename To>
-    static inline To bitCastPtr(const void* value, intptr_t offset = 0)
-    {
-        To result;
-        std::memcpy(&result, addOffset(value, offset), sizeof(To));
-        return result;
-    }
-
     // XXX: these probably do not match Nintendo's implementation
 
     static void* roundUpPow2(const void* ptr, u32 n)

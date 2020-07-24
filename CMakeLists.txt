@@ -80,6 +80,7 @@ add_library(sead OBJECT
   modules/src/mc/seadCoreInfo.cpp
 
   include/prim/seadBitFlag.h
+  include/prim/seadBitUtil.h
   include/prim/seadDelegateEventSlot.h
   include/prim/seadEndian.h
   include/prim/seadEnum.h
