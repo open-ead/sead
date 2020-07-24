@@ -77,7 +77,6 @@ protected:                                                                      
 #define SEAD_CREATE_SINGLETON_INSTANCE(CLASS)                                                      \
     CLASS* CLASS::createInstance(sead::Heap* heap)                                                 \
     {                                                                                              \
-        SEAD_ASSERT_MSG(!sInstance, "Create Singleton Twice (%s) : addr %p", #CLASS, sInstance);   \
         if (!sInstance)                                                                            \
         {                                                                                          \
             auto* buffer = new (heap) u8[sizeof(CLASS)];                                           \
@@ -91,6 +90,10 @@ protected:                                                                      
              * every member when CLASS has no user-provided constructor. This is especially        \
              * dangerous because the singleton disposer will get clobbered */                      \
             sInstance = new (buffer) CLASS;                                                        \
+        }                                                                                          \
+        else                                                                                       \
+        {                                                                                          \
+            SEAD_ASSERT_MSG(false, "Create Singleton Twice (%s) : addr %p", #CLASS, sInstance);    \
         }                                                                                          \
                                                                                                    \
         return CLASS::sInstance;                                                                   \
