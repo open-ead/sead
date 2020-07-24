@@ -99,6 +99,11 @@ add_library(sead OBJECT
   modules/src/prim/seadSafeString.cpp
   modules/src/prim/seadStringUtil.cpp
 
+  include/random/seadGlobalRandom.h
+  include/random/seadRandom.h
+  modules/src/random/seadGlobalRandom.cpp
+  modules/src/random/seadRandom.cpp
+
   include/resource/seadArchiveRes.h
   include/resource/seadDecompressor.h
   include/resource/seadResource.h
