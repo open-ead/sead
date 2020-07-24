@@ -80,14 +80,17 @@ protected:                                                                      
         SEAD_ASSERT_MSG(!sInstance, "Create Singleton Twice (%s) : addr %p", #CLASS, sInstance);   \
         if (!sInstance)                                                                            \
         {                                                                                          \
-            auto* instance = reinterpret_cast<CLASS*>(new (heap) u8[sizeof(CLASS)]);               \
+            auto* buffer = new (heap) u8[sizeof(CLASS)];                                           \
             SEAD_ASSERT_MSG(!SingletonDisposer_::sStaticDisposer, "Create Singleton Twice (%s).",  \
                             #CLASS);                                                               \
-            auto* staticDisposer =                                                                 \
-                reinterpret_cast<SingletonDisposer_*>(instance->mSingletonDisposerBuf_);           \
+            auto* disposer_buffer = buffer + offsetof(CLASS, mSingletonDisposerBuf_);              \
                                                                                                    \
-            SingletonDisposer_::sStaticDisposer = new (staticDisposer) SingletonDisposer_(heap);   \
-            sInstance = new (instance) CLASS();                                                    \
+            /* FIXME: this is UB and actually dangerous */                                         \
+            SingletonDisposer_::sStaticDisposer = new (disposer_buffer) SingletonDisposer_(heap);  \
+            /* Note: This must not be new (buffer) CLASS() or {} as that will zero initialize      \
+             * every member when CLASS has no user-provided constructor. This is especially        \
+             * dangerous because the singleton disposer will get clobbered */                      \
+            sInstance = new (buffer) CLASS;                                                        \
         }                                                                                          \
                                                                                                    \
         return CLASS::sInstance;                                                                   \
