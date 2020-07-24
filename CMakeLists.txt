@@ -1,3 +1,7 @@
+project(sead CXX ASM)
+
+option(SEAD_DEBUG "Enable debug assertions and warnings" OFF)
+
 add_library(sead OBJECT
   include/basis/seadNew.h
   include/basis/seadRawPrint.h
@@ -124,6 +128,10 @@ add_library(sead OBJECT
   modules/src/time/seadDateUtil.cpp
   modules/src/time/seadTickSpan.cpp
 )
-target_compile_options(sead PRIVATE -fno-rtti -fno-exceptions)
+target_compile_options(sead PRIVATE -fno-exceptions)
 target_compile_options(sead PRIVATE -Wno-invalid-offsetof)
 target_include_directories(sead PUBLIC include/)
+
+if(SEAD_DEBUG)
+  target_compile_definitions(sead PUBLIC SEAD_DEBUG=1)
+endif()
