@@ -91,12 +91,14 @@ add_library(sead OBJECT
   include/prim/seadSafeString.h
   include/prim/seadSafeString.hpp
   include/prim/seadScopedLock.h
+  include/prim/seadStringBuilder.h
   include/prim/seadStringUtil.h
   modules/src/prim/seadBitFlag.cpp
   modules/src/prim/seadEndian.cpp
   modules/src/prim/seadEnum.cpp
   modules/src/prim/seadMemUtil.cpp
   modules/src/prim/seadSafeString.cpp
+  modules/src/prim/seadStringBuilder.cpp
   modules/src/prim/seadStringUtil.cpp
 
   include/random/seadGlobalRandom.h

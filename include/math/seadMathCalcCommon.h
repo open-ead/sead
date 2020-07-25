@@ -1,5 +1,9 @@
 #pragma once
 
+#ifndef SEAD_MATH_CALC_COMMON_HPP_
+#error "Include <math/seadMathCalcCommon.hpp>"
+#endif
+
 #include <basis/seadTypes.h>
 
 namespace sead

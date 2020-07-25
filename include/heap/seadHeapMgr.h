@@ -17,6 +17,9 @@ public:
     Heap* getCurrentHeap();
     Heap* findContainHeap(const void* ptr) const;
 
+    static HeapMgr* instance() { return sInstancePtr; }
+
+    // TODO: these should be private
     static HeapMgr sInstance;
     static HeapMgr* sInstancePtr;
 

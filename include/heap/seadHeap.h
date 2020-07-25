@@ -70,7 +70,14 @@ public:
     void removeDisposer_(IDisposer* disposer);
     Heap* findContainHeap_(const void* ptr);
 
-    inline void* alloc(size_t size, s32 alignment) { return tryAlloc(size, alignment); }
+    void* alloc(size_t size, s32 alignment)
+    {
+        void* ptr = tryAlloc(size, alignment);
+        SEAD_ASSERT_MSG(ptr,
+                        "alloc failed. size: %zu, allocatable size: %zu, alignment: %d, heap: %s",
+                        size, getMaxAllocatableSize(alignment), alignment, getName().cstr());
+        return ptr;
+    }
 
     using HeapList = OffsetList<Heap>;
     using DisposerList = OffsetList<IDisposer>;
