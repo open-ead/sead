@@ -314,9 +314,9 @@ public:
 };
 
 typedef SafeStringBase<char> SafeString;
-typedef SafeStringBase<char16> SafeString16;
+typedef SafeStringBase<char16> WSafeString;
 typedef BufferedSafeStringBase<char> BufferedSafeString;
-typedef BufferedSafeStringBase<char16> BufferedSafeString16;
+typedef BufferedSafeStringBase<char16> WBufferedSafeString;
 
 template <>
 s32 BufferedSafeStringBase<char>::format(const char* formatStr, ...);
@@ -356,7 +356,7 @@ class WFixedSafeString : public FixedSafeStringBase<char16, L>
 public:
     WFixedSafeString() : FixedSafeStringBase<char16, L>() {}
 
-    WFixedSafeString(const SafeString16& str) : FixedSafeStringBase<char16, L>(str) {}
+    WFixedSafeString(const WSafeString& str) : FixedSafeStringBase<char16, L>(str) {}
 };
 
 template <s32 L>

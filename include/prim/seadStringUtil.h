@@ -71,10 +71,10 @@ s32 convertUtf8ToSjis(char* dst, u32 dst_len, const char* src, s32 src_len);
 char16 replace(char16 c, const Buffer<const Char16Pair>& sorted_table);
 
 char16 toUpperCapital(char16 c);
-void toUpperCapitalFirstCharactor(BufferedSafeString16* str);
+void toUpperCapitalFirstCharactor(WBufferedSafeString* str);
 
 char16 toLowerCapital(char16 c);
-void toLowerCapitalFirstCharactor(BufferedSafeString16* str);
+void toLowerCapitalFirstCharactor(WBufferedSafeString* str);
 
 }  // namespace StringUtil
 }  // namespace sead
