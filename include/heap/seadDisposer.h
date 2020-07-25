@@ -84,11 +84,14 @@ protected:                                                                      
                             #CLASS);                                                               \
             auto* disposer_buffer = buffer + offsetof(CLASS, mSingletonDisposerBuf_);              \
                                                                                                    \
-            /* FIXME: this is UB and actually dangerous */                                         \
+            /* FIXME: do this after creating the instance to ensure the disposer is not clobbered  \
+             * by CLASS's constructor */                                                           \
             SingletonDisposer_::sStaticDisposer = new (disposer_buffer) SingletonDisposer_(heap);  \
-            /* Note: This must not be new (buffer) CLASS() or {} as that will zero initialize      \
-             * every member when CLASS has no user-provided constructor. This is especially        \
-             * dangerous because the singleton disposer will get clobbered */                      \
+            /* Note: When compiling as C++03 (or a newer standard), this must not be `new CLASS()` \
+             * as that will value initialize (C++17 [dcl.init]/11), which eventually leads to zero \
+             * initialisation when CLASS has no user-provided constructor (C++17 [dcl.init]/8).    \
+             * This is dangerous because the singleton disposer would get clobbered.               \
+             */                                                                                    \
             sInstance = new (buffer) CLASS;                                                        \
         }                                                                                          \
         else                                                                                       \
