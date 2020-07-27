@@ -190,15 +190,6 @@ protected:
 using StringBuilder = StringBuilderBase<char>;
 using WStringBuilder = StringBuilderBase<char16>;
 
-template <typename T>
-inline s32 calcStrLength_(const T* str)
-{
-    s32 len = 0;
-    while (str[len])
-        ++len;
-    return len;
-}
-
 // UNCHECKED
 template <typename T>
 inline const T* StringBuilderBase<T>::cstr() const

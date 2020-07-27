@@ -567,16 +567,26 @@ inline s32 BufferedSafeStringBase<T>::append(T c, s32 num)
 template <typename T>
 inline s32 BufferedSafeStringBase<T>::chop(s32 chop_num)
 {
-    const s32 length = this->calcLength();
-
-    if (chop_num < 0 || chop_num > length)
-    {
+    s32 length = this->calcLength();
+    T* buffer = getMutableStringTop_();
+    const auto fail = [=] {
         SEAD_ASSERT_MSG(false, "chop_num(%d) out of range[0, %d]", chop_num, length);
-        chop_num = std::clamp(chop_num, 0, length);
+    };
+
+    if (chop_num < 0)
+    {
+        fail();
+        return 0;
     }
 
-    T* buffer = getMutableStringTop_();
-    buffer[length - chop_num] = this->cNullChar;
+    if (chop_num > length)
+    {
+        fail();
+        chop_num = length;
+    }
+
+    const s32 new_length = length - chop_num;
+    buffer[new_length] = SafeStringBase<T>::cNullChar;
     return chop_num;
 }
 
@@ -588,10 +598,11 @@ inline s32 BufferedSafeStringBase<T>::chopMatchedChar(T c)
     if (length < 1)
         return 0;
 
+    const s32 new_length = length - 1;
     T* buffer = getMutableStringTop_();
-    if (buffer[length - 1] == c)
+    if (buffer[new_length] == c)
     {
-        buffer[length - 1] = this->cNullChar;
+        buffer[new_length] = SafeStringBase<T>::cNullChar;
         return 1;
     }
 
@@ -607,11 +618,11 @@ inline s32 BufferedSafeStringBase<T>::chopMatchedChar(const T* characters)
         return 0;
 
     T* buffer = getMutableStringTop_();
-    for (T* it = characters; *it != this->cNullChar; ++it)
+    for (const T* it = characters; *it; ++it)
     {
         if (buffer[length - 1] == *it)
         {
-            buffer[length - 1] = this->cNullChar;
+            buffer[length - 1] = SafeStringBase<T>::cNullChar;
             return 1;
         }
     }
@@ -642,26 +653,26 @@ template <typename T>
 inline s32 BufferedSafeStringBase<T>::rstrip(const T* characters)
 {
     const s32 length = this->calcLength();
-    if (length < 1)
+    if (length <= 0)
         return 0;
 
     T* buffer = getMutableStringTop_();
     s32 new_length = length;
-    const auto should_strip = [&] {
-        for (T* it = characters; *it != this->cNullChar; ++it)
+    const auto should_strip = [characters, buffer](s32 idx) {
+        for (auto it = characters; *it; ++it)
         {
-            if (buffer[new_length - 1] == *it)
+            if (buffer[idx] == *it)
                 return true;
         }
         return false;
     };
-    while (new_length && should_strip())
+    while (new_length >= 1 && should_strip(new_length - 1))
         --new_length;
 
     if (length <= new_length)
         return 0;
 
-    buffer[new_length] = this->cNullChar;
+    buffer[new_length] = SafeStringBase<T>::cNullChar;
     return length - new_length;
 }
 
@@ -687,27 +698,33 @@ inline s32 BufferedSafeStringBase<T>::rstripUnprintableAsciiChars()
 
 // UNCHECKED
 template <typename T>
-inline s32 BufferedSafeStringBase<T>::trim(s32 trimLength)
+inline s32 BufferedSafeStringBase<T>::trim(s32 trim_length)
 {
-    if (trimLength >= mBufferSize)
-        return this->calcLength();
-
-    if (trimLength < 0)
-        trimLength = 0;
-
     T* mutableString = getMutableStringTop_();
-    mutableString[trimLength] = SafeStringBase<T>::cNullChar;
 
-    return trimLength;
+    if (trim_length >= mBufferSize)
+    {
+        SEAD_ASSERT_MSG(false, "trim_length(%d) out of bounds.  [0, %d)", trim_length, mBufferSize);
+        return this->calcLength();
+    }
+
+    if (trim_length < 0)
+    {
+        SEAD_ASSERT_MSG(false, "trim_length(%d) out of bounds.  [0, %d)", trim_length, mBufferSize);
+        trim_length = 0;
+    }
+
+    mutableString[trim_length] = SafeStringBase<T>::cNullChar;
+    return trim_length;
 }
 
 template <typename T>
-inline s32 strLength(const T* str)
+inline s32 calcStrLength_(const T* str)
 {
-    s32 length = 0;
-    while (*str++)
-        ++length;
-    return length;
+    s32 len = 0;
+    while (str[len])
+        ++len;
+    return len;
 }
 
 // UNCHECKED
@@ -717,7 +734,7 @@ inline s32 BufferedSafeStringBase<T>::trimMatchedString(const T* str)
     T* buffer = getMutableStringTop_();
     const s32 length = this->calcLength();
 
-    const s32 trim_str_length = strLength(str);
+    const s32 trim_str_length = calcStrLength_(str);
     const s32 new_length = length - trim_str_length;
 
     if (length < trim_str_length)
@@ -730,7 +747,7 @@ inline s32 BufferedSafeStringBase<T>::trimMatchedString(const T* str)
             return length;
     }
 
-    buffer[new_length] = this->cNullChar;
+    buffer[new_length] = SafeStringBase<T>::cNullChar;
     return new_length;
 }
 
@@ -758,8 +775,8 @@ template <typename T>
 inline s32 BufferedSafeStringBase<T>::replaceCharList(const SafeStringBase<T>& old_chars,
                                                       const SafeStringBase<T>& new_chars)
 {
-    const s32 length = this->calcLength();
     T* buffer = getMutableStringTop_();
+    const s32 length = this->calcLength();
 
     s32 old_chars_len = old_chars.calcLength();
     const s32 new_chars_len = new_chars.calcLength();
@@ -784,10 +801,10 @@ inline s32 BufferedSafeStringBase<T>::replaceCharList(const SafeStringBase<T>& o
     {
         for (s32 character_idx = 0; character_idx < old_chars_len; ++character_idx)
         {
-            if (buffer[i] == old_chars[character_idx])
+            if (buffer[i] == old_chars_c[character_idx])
             {
                 ++replaced_count;
-                buffer[i] = new_chars[character_idx];
+                buffer[i] = new_chars_c[character_idx];
                 break;
             }
         }

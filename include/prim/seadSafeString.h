@@ -261,7 +261,7 @@ public:
 
     /// Trim a string to only keep trimLength characters.
     /// @return the new length
-    inline s32 trim(s32 trimLength);
+    inline s32 trim(s32 trim_length);
     /// Trim a string to only keep trimLength characters.
     /// @return the new length
     s32 trimMatchedString(const T* str);
