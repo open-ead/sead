@@ -18,6 +18,9 @@ public:
     static bool isStack(const void* addr);
     static bool isHeap(const void* addr);
 
+    /// Checks whether a region of memory is filled with 0.
+    static bool checkFillType(const void* ptr, size_t size);
+
     static void dumpMemoryBinary(const void* ptr, u32 size_front, u32 size_back, bool is_align);
 };
 }  // namespace sead

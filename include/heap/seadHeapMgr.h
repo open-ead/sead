@@ -16,6 +16,7 @@ public:
 
     Heap* getCurrentHeap();
     Heap* findContainHeap(const void* ptr) const;
+    static bool isContainedInAnyHeap(const void* ptr);
 
     static HeapMgr* instance() { return sInstancePtr; }
 
