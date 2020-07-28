@@ -131,6 +131,7 @@ add_library(sead OBJECT
   include/thread/seadMutex.h
   include/thread/seadSemaphore.h
   include/thread/seadThread.h
+  include/thread/seadThreadLocalStorage.h
   include/thread/seadThreadUtil.h
   modules/src/thread/seadThreadUtil.cpp
 
@@ -150,6 +151,7 @@ add_library(sead OBJECT
 )
 if(SEAD_PLATFORM STREQUAL "nin")
   target_sources(sead PRIVATE
+    include/thread/nin/seadThreadLocalStorageNin.hpp
     modules/src/thread/nin/seadCriticalSectionNin.cpp
     modules/src/thread/nin/seadEventNin.cpp
     modules/src/thread/nin/seadMessageQueueNin.cpp
