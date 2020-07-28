@@ -131,6 +131,8 @@ add_library(sead OBJECT
   include/thread/seadMutex.h
   include/thread/seadSemaphore.h
   include/thread/seadThread.h
+  include/thread/seadThreadUtil.h
+  modules/src/thread/seadThreadUtil.cpp
 
   include/time/seadCalendarSpan.h
   include/time/seadCalendarTime.h
