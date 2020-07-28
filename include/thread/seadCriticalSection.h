@@ -12,15 +12,24 @@
 
 namespace sead
 {
+class Heap;
+
 class CriticalSection : public IDisposer
 {
 public:
     CriticalSection();
-    virtual ~CriticalSection();
+    explicit CriticalSection(Heap* disposer_heap);
+    ~CriticalSection() override;
+
+    CriticalSection(const CriticalSection&) = delete;
+    CriticalSection& operator=(const CriticalSection&) = delete;
 
     void lock();
     bool tryLock();
     void unlock();
+
+    // For compatibility with the standard Lockable concept.
+    bool try_lock() { return tryLock(); }
 
 #if defined(cafe)
     OSMutex mCriticalSectionInner;

@@ -1,6 +1,11 @@
 project(sead CXX ASM)
 
 option(SEAD_DEBUG "Enable debug assertions and warnings" OFF)
+set(SEAD_PLATFORM "nin" CACHE STRING "Target platform (default: nin)")
+set_property(
+  CACHE SEAD_PLATFORM
+  PROPERTY STRINGS "nin"
+)
 
 add_library(sead OBJECT
   include/basis/seadNew.h
@@ -137,6 +142,12 @@ add_library(sead OBJECT
   modules/src/time/seadDateUtil.cpp
   modules/src/time/seadTickSpan.cpp
 )
+if(SEAD_PLATFORM STREQUAL "nin")
+  target_sources(sead PRIVATE
+    modules/src/thread/nin/seadCriticalSectionNin.cpp
+  )
+endif()
+
 target_compile_options(sead PRIVATE -fno-exceptions)
 target_compile_options(sead PRIVATE -Wno-invalid-offsetof)
 target_include_directories(sead PUBLIC include/)

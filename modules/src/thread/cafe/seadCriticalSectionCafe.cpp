@@ -7,6 +7,12 @@ CriticalSection::CriticalSection() : IDisposer(), mCriticalSectionInner()
     OSInitMutex(&mCriticalSectionInner);
 }
 
+CriticalSection::CriticalSection(Heap* disposer_heap)
+    : IDisposer(disposer_heap, HeapNullOption::UseSpecifiedOrContainHeap)
+{
+    OSInitMutex(&mCriticalSectionInner);
+}
+
 CriticalSection::~CriticalSection() {}
 
 void CriticalSection::lock()
@@ -23,5 +29,4 @@ void CriticalSection::unlock()
 {
     OSUnlockMutex(&mCriticalSectionInner);
 }
-
 }  // namespace sead
