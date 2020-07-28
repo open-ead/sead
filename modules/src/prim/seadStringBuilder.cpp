@@ -677,9 +677,19 @@ s32 StringBuilderBase<T>::replaceCharList(const SafeStringBase<T>& old_chars,
 
     if (old_chars_len != new_chars_len)
     {
-        // yes, this is undefined behavior for T = char16. Nintendo, fix your code
-        SEAD_ASSERT_MSG(false, "old_chars(%s).length is not equal to new_chars(%s).length.",
-                        old_chars.cstr(), new_chars.cstr());
+        // Nintendo's code just uses the same format string for both T = char and T = char16_t,
+        // which is undefined behavior and produces annoying format warnings, so let's fix it...
+        if constexpr (std::is_same<T, char>())
+        {
+            SEAD_ASSERT_MSG(false, "old_chars(%s).length is not equal to new_chars(%s).length.",
+                            old_chars.cstr(), new_chars.cstr());
+        }
+        else if constexpr (std::is_same<T, char16>())
+        {
+            // There is no standard format specifier for char16_t strings :/
+            SEAD_ASSERT_MSG(false, "old_chars(%p).length is not equal to new_chars(%p).length.",
+                            old_chars.cstr(), new_chars.cstr());
+        }
         if (old_chars_len > new_chars_len)
             old_chars_len = new_chars_len;
     }
