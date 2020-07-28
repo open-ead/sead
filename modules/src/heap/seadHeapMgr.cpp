@@ -43,4 +43,13 @@ Heap* HeapMgr::findContainHeap(const void* ptr) const
     return NULL;
 }
 
+FindContainHeapCache::FindContainHeapCache() = default;
+
+bool FindContainHeapCache::tryRemoveHeap(Heap* heap)
+{
+    uintptr_t original;
+    if (mHeap.compareExchange(uintptr_t(heap), 0, &original))
+        return true;
+    return (original & ~1u) != uintptr_t(heap);
+}
 }  // namespace sead

@@ -4,6 +4,7 @@
 #include <container/seadPtrArray.h>
 #include <heap/seadArena.h>
 #include <heap/seadHeap.h>
+#include <thread/seadAtomic.h>
 #include <thread/seadCriticalSection.h>
 
 namespace sead
@@ -34,6 +35,17 @@ public:
 
     void*
         mAllocFailedCallback;  // IAllocFailedCallback* = IDelegate1<const AllocFailedCallbackArg*>*
+};
+
+class FindContainHeapCache
+{
+public:
+    FindContainHeapCache();
+
+    bool tryRemoveHeap(Heap* heap);
+    // getHeap and setHeap probably exist too
+
+    Atomic<uintptr_t> mHeap;
 };
 
 }  // namespace sead

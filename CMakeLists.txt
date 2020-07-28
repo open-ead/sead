@@ -124,6 +124,7 @@ add_library(sead OBJECT
   # modules/src/resource/seadSharcArchiveRes.cpp
   # modules/src/resource/seadSZSDecompressor.cpp
 
+  include/thread/seadAtomic.h
   include/thread/seadCriticalSection.h
   include/thread/seadDelegateThread.h
   include/thread/seadEvent.h
@@ -133,6 +134,7 @@ add_library(sead OBJECT
   include/thread/seadThread.h
   include/thread/seadThreadLocalStorage.h
   include/thread/seadThreadUtil.h
+  modules/src/thread/seadThread.cpp
   modules/src/thread/seadThreadUtil.cpp
 
   include/time/seadCalendarSpan.h
