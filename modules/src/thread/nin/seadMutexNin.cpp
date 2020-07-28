@@ -7,8 +7,12 @@ Mutex::Mutex() : IDisposer()
     nn::os::InitializeMutex(&mMutexInner, true, 0);
 }
 
-Mutex::Mutex(Heap* disposer_heap)
-    : IDisposer(disposer_heap, HeapNullOption::UseSpecifiedOrContainHeap)
+Mutex::Mutex(Heap* disposer_heap) : Mutex(disposer_heap, HeapNullOption::UseSpecifiedOrContainHeap)
+{
+}
+
+Mutex::Mutex(Heap* disposer_heap, HeapNullOption heap_null_option)
+    : IDisposer(disposer_heap, heap_null_option)
 {
     nn::os::InitializeMutex(&mMutexInner, true, 0);
 }

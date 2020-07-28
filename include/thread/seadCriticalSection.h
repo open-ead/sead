@@ -19,6 +19,7 @@ class CriticalSection : public IDisposer
 public:
     CriticalSection();
     explicit CriticalSection(Heap* disposer_heap);
+    CriticalSection(Heap* disposer_heap, HeapNullOption heap_null_option);
     ~CriticalSection() override;
 
     CriticalSection(const CriticalSection&) = delete;

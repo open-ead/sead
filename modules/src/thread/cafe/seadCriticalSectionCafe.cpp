@@ -13,6 +13,12 @@ CriticalSection::CriticalSection(Heap* disposer_heap)
     OSInitMutex(&mCriticalSectionInner);
 }
 
+CriticalSection::CriticalSection(Heap* disposer_heap, HeapNullOption heap_null_option)
+    : IDisposer(disposer_heap, heap_null_option)
+{
+    OSInitMutex(&mCriticalSectionInner);
+}
+
 CriticalSection::~CriticalSection() {}
 
 void CriticalSection::lock()

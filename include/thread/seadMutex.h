@@ -18,6 +18,7 @@ class Mutex : public IDisposer
 public:
     Mutex();
     explicit Mutex(Heap* disposer_heap);
+    Mutex(Heap* disposer_heap, HeapNullOption heap_null_option);
     ~Mutex() override;
 
     Mutex(const Mutex&) = delete;

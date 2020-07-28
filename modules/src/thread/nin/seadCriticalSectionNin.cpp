@@ -13,6 +13,12 @@ CriticalSection::CriticalSection(Heap* disposer_heap)
     nn::os::InitializeMutex(&mCriticalSectionInner, true, 0);
 }
 
+CriticalSection::CriticalSection(Heap* disposer_heap, HeapNullOption heap_null_option)
+    : IDisposer(disposer_heap, heap_null_option)
+{
+    nn::os::InitializeMutex(&mCriticalSectionInner, true, 0);
+}
+
 CriticalSection::~CriticalSection()
 {
     nn::os::FinalizeMutex(&mCriticalSectionInner);
