@@ -128,6 +128,7 @@ add_library(sead OBJECT
   include/thread/seadDelegateThread.h
   include/thread/seadEvent.h
   include/thread/seadMutex.h
+  include/thread/seadSemaphore.h
   include/thread/seadThread.h
 
   include/time/seadCalendarSpan.h
@@ -149,6 +150,7 @@ if(SEAD_PLATFORM STREQUAL "nin")
     modules/src/thread/nin/seadCriticalSectionNin.cpp
     modules/src/thread/nin/seadEventNin.cpp
     modules/src/thread/nin/seadMutexNin.cpp
+    modules/src/thread/nin/seadSemaphoreNin.cpp
   )
 endif()
 
