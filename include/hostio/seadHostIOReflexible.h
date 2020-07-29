@@ -37,7 +37,7 @@ public:
 #ifdef SEAD_DEBUG
     Reflexible();
     Reflexible(Heap* heap, IDisposer::HeapNullOption heap_null_option);
-    ~Reflexible() override;
+    ~Reflexible() override { disposeHostIOImpl_(); }
 
     void listenNodeEvent(const NodeEvent* event) override {}
     virtual void genMessage(Context* context) {}

@@ -25,30 +25,19 @@ public:
             return *this;
         }
 
-        iterator operator++(int)
-        {
-            const iterator it(*this);
-            (void)++*this;
-            return it;
-        }
-
         iterator& operator--()
         {
             mPtr = static_cast<TListNode<T>*>(mPtr->prev());
             return *this;
         }
 
-        iterator operator--(int)
-        {
-            const iterator it(*this);
-            (void)--*this;
-            return it;
-        }
+        T& operator*() const { return mPtr->mData; }
+        T* operator->() const { return &mPtr->mData; }
 
         friend bool operator==(iterator it1, iterator it2) { return it1.mPtr == it2.mPtr; }
-
         friend bool operator!=(iterator it1, iterator it2) { return !(it1 == it2); }
 
+    private:
         TListNode<T>* mPtr;
     };
 
@@ -59,14 +48,14 @@ public:
         return iterator(static_cast<TListNode<T>*>(const_cast<ListNode*>(&mStartEnd)));
     }
 
-    void pushBack(T item)
+    void pushBack(TListNode<T>* item)
     {
         item->erase();
         item->mList = this;
         ListImpl::pushBack(item);
     }
 
-    void erase(T item)
+    void erase(TListNode<T>* item)
     {
         item->mList = nullptr;
         ListImpl::erase(item);
@@ -92,11 +81,13 @@ public:
         mList = NULL;
     }
 
+    TListNode(T data) : ListNode(), mData(data), mList(nullptr) {}
+
     void erase()
     {
         TList<T>* list = mList;
         if (list != NULL)
-            list->erase(static_cast<T>(this));
+            list->erase(this);
     }
 
     T mData;

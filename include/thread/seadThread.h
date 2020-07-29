@@ -7,11 +7,15 @@
 #include <container/seadTList.h>
 #include <heap/seadDisposer.h>
 #include <heap/seadHeapMgr.h>
+#include <hostio/seadHostIONode.h>
+#include <hostio/seadHostIOReflexible.h>
 #include <mc/seadCoreInfo.h>
 #include <prim/seadEnum.h>
 #include <prim/seadNamable.h>
 #include <prim/seadSafeString.hpp>
+#include <prim/seadScopedLock.h>
 #include <thread/seadMessageQueue.h>
+#include <thread/seadThreadLocalStorage.h>
 #include <time/seadTickSpan.h>
 
 namespace sead
@@ -19,9 +23,10 @@ namespace sead
 class Heap;
 class Thread;
 
+using ThreadList = TList<Thread*>;
 using ThreadListNode = TListNode<Thread*>;
 
-class Thread : public IDisposer, public INamable
+class Thread : public IDisposer, public INamable, public hostio::Reflexible
 {
 public:
     SEAD_ENUM(State, cInitialized, cRunning, cQuitting, cTerminated, cReleased);
@@ -53,16 +58,20 @@ public:
 
     u32 getId() const { return mId; }
     State getState() const { return mState; }
+    bool isDone() const { return mState == State::cTerminated || mState == State::cReleased; }
+
     const CoreIdMask& getAffinity() const { return mAffinity; }
     void setAffinity(const CoreIdMask& affinity);
 
-    void yield();
-    void sleep(TickSpan howLong);
+    static void yield();
+    static void sleep(TickSpan howLong);
 
     void checkStackOverFlow(const char*, s32) const;
     void checkStackEndCorruption(const char*, s32) const;
     void checkStackPointerOverFlow(const char*, s32) const;
     void setStackOverflowExceptionEnable(bool);
+
+    ThreadListNode* getThreadListNode() { return &mListNode; }
 
     static const s32 cDefaultPriority;
 
@@ -97,5 +106,60 @@ protected:
     void* mStackTop;
     s32 mPriority;
     s32 mCoreNo;  // XXX(leoetlino): this is in my BotW database - is this actually part of Thread?
+};
+
+class ThreadMgr : public hostio::Node
+{
+public:
+    SEAD_SINGLETON_DISPOSER(ThreadMgr)
+
+    ThreadMgr();
+    ~ThreadMgr() override;
+
+    void initialize(Heap* heap);
+    void destroy();
+
+    bool isMainThread() const;
+    Thread* getMainThread() const { return mMainThread; }
+    Thread* getCurrentThread() const { return reinterpret_cast<Thread*>(mThreadPtrTLS.getValue()); }
+
+    static void quitAndWaitDoneMultipleThread(Thread**, s32, bool);
+
+    static void checkCurrentThreadStackOverFlow(const char*, s32);
+    static void checkCurrentThreadStackEndCorruption(const char*, s32);
+    static void checkCurrentThreadStackPointerOverFlow(const char*, s32);
+
+    CriticalSection* getListCS() { return &mListCS; }
+
+#ifdef SEAD_DEBUG
+    void initHostIO();
+    void genMessage(hostio::Context* context) override;
+    void listenPropertyEvent(const hostio::PropertyEvent* event) override;
+#endif
+
+protected:
+    friend class Thread;
+
+    void addThread_(Thread* thread)
+    {
+        ScopedLock<CriticalSection> lock(getListCS());
+        mList.pushBack(thread->getThreadListNode());
+    }
+
+    void removeThread_(Thread* thread)
+    {
+        ScopedLock<CriticalSection> lock(getListCS());
+        mList.erase(thread->getThreadListNode());
+    }
+
+    void initMainThread_(Heap* heap);
+    void destroyMainThread_();
+    static u32 getCurrentThreadID_();
+
+private:
+    ThreadList mList;
+    CriticalSection mListCS;
+    Thread* mMainThread = nullptr;
+    ThreadLocalStorage mThreadPtrTLS;
 };
 }  // namespace sead

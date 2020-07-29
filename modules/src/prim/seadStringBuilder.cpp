@@ -167,7 +167,7 @@ check_buffer_overflow:
     if (mLength < at + copy_length)
         dst[at + copy_length] = SafeStringBase<T>::cNullChar;
 
-#ifndef NON_MATCHING
+#ifdef MATCHING_HACK_NX_CLANG
     // Required to prevent Clang from merging the two branches for T = char16.
     asm("");
 #endif
@@ -256,7 +256,7 @@ check_buffer_overflow:
     if (mLength < at + copy_length)
         dst[at + copy_length] = SafeStringBase<T>::cNullChar;
 
-#ifndef NON_MATCHING
+#ifdef MATCHING_HACK_NX_CLANG
     // Required to prevent Clang from merging the two branches for T = char16.
     asm("");
 #endif

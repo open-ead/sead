@@ -7,18 +7,6 @@ namespace sead::hostio
 u32 LifeCheckable::sCurrentCreateID = 1;
 LifeCheckable* LifeCheckable::sTopInstance = nullptr;
 
-// NON_MATCHING: reorderings
-LifeCheckable::~LifeCheckable()
-{
-    if (mDisposer && mDisposer->mInstance)
-    {
-        mDisposer->mInstance = nullptr;
-        mDisposer->~DisposeHostIOCaller();
-        this->disposeHostIOImpl_();
-    }
-    mDisposer = nullptr;
-}
-
 LifeCheckable* LifeCheckable::searchInstanceFromCreateID(u32 createID)
 {
     ThreadLock lock;

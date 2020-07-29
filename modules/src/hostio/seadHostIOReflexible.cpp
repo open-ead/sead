@@ -28,11 +28,6 @@ Reflexible::Reflexible(Heap* heap, IDisposer::HeapNullOption heap_null_option)
     setNodeMeta("");
 }
 
-Reflexible::~Reflexible()
-{
-    disposeHostIOImpl_();
-}
-
 void Reflexible::setNodeName(const SafeString& name)
 {
     if (mName != name.cstr() && mAllocFlg.isOn(u8(AllocFlg::Name)))

@@ -31,7 +31,17 @@ public:
         initialize_();
     }
 
-    virtual ~LifeCheckable();
+    virtual ~LifeCheckable()
+    {
+        DisposeHostIOCaller* disposer = mDisposer;
+        if (disposer && disposer->hasInstance())
+        {
+            mDisposer->clearInstance();
+            mDisposer->~DisposeHostIOCaller();
+            disposeHostIOImpl_();
+        }
+        mDisposer = nullptr;
+    }
 
     u32 getCreateID() const { return mCreateID; }
     static LifeCheckable* searchInstanceFromCreateID(u32 createID);
@@ -54,8 +64,17 @@ private:
 
         ~DisposeHostIOCaller() override;
 
+        bool hasInstance() const { return mInstance != nullptr; }
+
+        void clearInstance()
+        {
+            mInstance = nullptr;
+#ifdef MATCHING_HACK_NX_CLANG
+            asm("");
+#endif
+        }
+
     private:
-        friend class LifeCheckable;
         LifeCheckable* mInstance;
     };
 

@@ -168,6 +168,7 @@ if(SEAD_PLATFORM STREQUAL "nin")
     modules/src/thread/nin/seadMessageQueueNin.cpp
     modules/src/thread/nin/seadMutexNin.cpp
     modules/src/thread/nin/seadSemaphoreNin.cpp
+    modules/src/thread/nin/seadThreadNin.cpp
   )
 endif()
 

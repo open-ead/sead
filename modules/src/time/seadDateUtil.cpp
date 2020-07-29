@@ -8,11 +8,11 @@ namespace DateUtil
 {
 bool isLeapYear(u32 year)
 {
-#ifdef NON_MATCHING
-    return (year % 4 == 0 && year % 100 != 0) || year % 400 == 0;
-#else
+#ifdef MATCHING_HACK_NX_CLANG
     bool div100, div4;
     return (div100 = year % 100 == 0, div4 = year % 4 == 0, !div100 & div4) | (year % 400 == 0);
+#else
+    return (year % 4 == 0 && year % 100 != 0) || year % 400 == 0;
 #endif
 }
 

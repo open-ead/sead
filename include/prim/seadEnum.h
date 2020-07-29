@@ -47,6 +47,9 @@ private:
                                                                                                    \
         NAME& operator=(const NAME& other) = default;                                              \
         bool operator==(const NAME& rhs) const { return mIdx == rhs.mIdx; }                        \
+        bool operator!=(const NAME& rhs) const { return mIdx != rhs.mIdx; }                        \
+        bool operator==(ValueType value) const { return ValueType(mIdx) == value; }                \
+        bool operator!=(ValueType value) const { return ValueType(mIdx) != value; }                \
                                                                                                    \
         ValueType value() const { return static_cast<ValueType>(mIdx); }                           \
         ValueType value() const volatile { return static_cast<ValueType>(mIdx); }                  \
@@ -196,6 +199,9 @@ private:
                                                                                                    \
         NAME& operator=(const NAME& other) = default;                                              \
         bool operator==(const NAME& rhs) const { return mIdx == rhs.mIdx; }                        \
+        bool operator!=(const NAME& rhs) const { return mIdx != rhs.mIdx; }                        \
+        bool operator==(ValueType value) const { return mIdx == findRelativeIndex_(value); }       \
+        bool operator!=(ValueType value) const { return mIdx != findRelativeIndex_(value); }       \
                                                                                                    \
         ValueType value() const { return static_cast<ValueType>(getArray_()(mIdx)); }              \
         ValueType value() const volatile { return static_cast<ValueType>(getArray_()(mIdx)); }     \
