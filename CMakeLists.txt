@@ -28,6 +28,7 @@ add_library(sead OBJECT
   include/container/seadTreeNode.h
   modules/src/container/seadListImpl.cpp
   modules/src/container/seadPtrArray.cpp
+  modules/src/container/seadTreeNode.cpp
 
   include/filedevice/seadFileDevice.h
   include/filedevice/seadFileDeviceMgr.h
