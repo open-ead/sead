@@ -40,6 +40,7 @@ protected:
 template <class T>
 struct Atomic : AtomicBase<T>
 {
+    using AtomicBase<T>::AtomicBase;
     T fetchAdd(T x);
     T fetchSub(T x);
     T fetchAnd(T x);
@@ -53,6 +54,7 @@ struct Atomic : AtomicBase<T>
 template <class T>
 struct Atomic<T*> : AtomicBase<T*>
 {
+    using AtomicBase<T>::AtomicBase;
 };
 
 // Implementation.
