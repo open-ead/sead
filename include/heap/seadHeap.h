@@ -70,7 +70,7 @@ public:
     void removeDisposer_(IDisposer* disposer);
     Heap* findContainHeap_(const void* ptr);
 
-    void* alloc(size_t size, s32 alignment)
+    void* alloc(size_t size, s32 alignment = sizeof(void*))
     {
         void* ptr = tryAlloc(size, alignment);
         SEAD_ASSERT_MSG(ptr,

@@ -64,6 +64,14 @@ public:
     bool isOnAll(T val) const { return (mBits & val) == val; }
     bool isOff(T val) const { return !isOn(val); }
 
+    bool testAndClear(T val)
+    {
+        if (!isOn(val))
+            return false;
+        reset(val);
+        return true;
+    }
+
     // TODO
     T getMask(T v) const;
     static T makeMask(int bit);
@@ -74,6 +82,7 @@ public:
     void toggleBit(int bit) { toggle(1u << bit); }
     bool isOnBit(int bit) const { return isOn(1u << bit); }
     bool isOffBit(int bit) const { return isOff(1u << bit); }
+    bool testAndClearBit(int bit) { return testAndClear(1u << bit); }
 
     /// Popcount.
     int countOnBit() const

@@ -70,6 +70,7 @@ add_library(sead OBJECT
   include/hostio/seadHostIOReflexible.h
   include/hostio/seadHostIOThreadLock.h
   modules/src/hostio/seadHostIOEventListener.cpp
+  modules/src/hostio/seadHostIOReflexible.cpp
   modules/src/hostio/seadHostIOThreadLock.cpp
 
   include/math/seadBoundBox.h

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "hostio/seadHostIOEventListener.h"
+#include "prim/seadBitFlag.h"
 #include "prim/seadSafeString.hpp"
 
 namespace sead
@@ -38,43 +39,50 @@ public:
     Reflexible(Heap* heap, IDisposer::HeapNullOption heap_null_option);
     ~Reflexible() override;
 
-    void listenNodeEvent(const NodeEvent* event) override;
-    virtual void genMessage(Context* context);
-    virtual SafeString getMetaFilename();
+    void listenNodeEvent(const NodeEvent* event) override {}
+    virtual void genMessage(Context* context) {}
+    virtual SafeString getMetaFilename() { return SafeString::cEmptyString; }
     virtual void genObjectInfo(const GenEvent* event, u32);
-    virtual Reflexible* searchNode(const SafeString& name);
-    virtual void calcURL(BufferedSafeString* url);
-    virtual void calcNodeURL(const Reflexible* reflexible, BufferedSafeString* url);
+    virtual Reflexible* searchNode(const SafeString& name) { return nullptr; }
+    virtual void calcURL(BufferedSafeString* url) const { url->copy(""); }
+    virtual void calcNodeURL(const Reflexible* reflexible, BufferedSafeString* url)
+    {
+        return reflexible->calcURL(url);
+    }
 
     void callGenMessage(Context*, u32);
     void correctChildNodeInfo(Context*);
     void baseListen(const PropertyEvent* event);
     void applyEventDataToMemory(const PropertyEvent* event);
 
-    SafeString getNodeName() const;
+    SafeString getNodeName() const { return mName; }
     void setNodeName(const SafeString& name);
     void setNodeNameCopyString(const SafeString& name, Heap* heap);
 
-    SafeString getNodeMeta() const;
+    SafeString getNodeMeta() const { return mMeta; }
     void setNodeMeta(const SafeString& meta);
     void setNodeMetaCopyString(const SafeString& meta, Heap* heap);
 
 protected:
-    void disposeHostIO() override;
+    void disposeHostIO() override
+    {
+        disposeHostIOImpl_();
+        NodeEventListener::disposeHostIO();
+    }
     virtual void genChildNode(Context* context);
-    virtual bool isHaveChild() const;
+    virtual bool isHaveChild() const { return false; }
 
 private:
     using ApplyEventDataToMemoryCallback = bool (*)(const PropertyEvent* event);
 
     void safeDelete_(AllocFlg flag);
-    const char* createStringBuffer_(AllocFlg flag, const SafeString&, Heap* heap);
+    const char* createStringBuffer_(AllocFlg flag, const SafeString& name, Heap* heap);
     void disposeHostIOImpl_();
 
     const char* mName;
     const char* mMeta;
     bool mIsGenerated = false;
-    u8 mAllocFlg = 0;
+    BitFlag8 mAllocFlg;
     static ApplyEventDataToMemoryCallback sApplyEventDataToMemoryCallback;
 #endif
 };

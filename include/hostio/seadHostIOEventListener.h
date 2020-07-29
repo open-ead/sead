@@ -25,6 +25,12 @@ public:
         initialize_();
     }
 
+    LifeCheckable(Heap* disposer_heap, IDisposer::HeapNullOption option)
+    {
+        mDisposer = new (&mDisposerBuf) DisposeHostIOCaller(this, disposer_heap, option);
+        initialize_();
+    }
+
     virtual ~LifeCheckable();
 
     u32 getCreateID() const { return mCreateID; }
@@ -34,13 +40,18 @@ public:
     LifeCheckable& operator=(const LifeCheckable&) = delete;
 
 protected:
-    virtual void disposeHostIO();
+    virtual void disposeHostIO() { disposeHostIOImpl_(); }
 
 private:
     class DisposeHostIOCaller : public IDisposer
     {
     public:
         explicit DisposeHostIOCaller(LifeCheckable* instance) : mInstance(instance) {}
+        DisposeHostIOCaller(LifeCheckable* instance, Heap* disposer_heap, HeapNullOption option)
+            : IDisposer(disposer_heap, option), mInstance(instance)
+        {
+        }
+
         ~DisposeHostIOCaller() override;
 
     private:
@@ -66,6 +77,8 @@ class PropertyEventListener : public LifeCheckable
 {
 #ifdef SEAD_DEBUG
 public:
+    using LifeCheckable::LifeCheckable;
+
     virtual void listenPropertyEvent(const PropertyEvent* event) = 0;
 #endif
 };
@@ -74,6 +87,8 @@ class NodeEventListener : public PropertyEventListener
 {
 #ifdef SEAD_DEBUG
 public:
+    using PropertyEventListener::PropertyEventListener;
+
     void listenPropertyEvent(const PropertyEvent* event) override {}
     virtual void listenNodeEvent(const NodeEvent* event) {}
 #endif

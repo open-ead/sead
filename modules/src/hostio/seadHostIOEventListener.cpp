@@ -30,11 +30,6 @@ LifeCheckable* LifeCheckable::searchInstanceFromCreateID(u32 createID)
     return nullptr;
 }
 
-void LifeCheckable::disposeHostIO()
-{
-    disposeHostIOImpl_();
-}
-
 // NON_MATCHING: regalloc
 void LifeCheckable::disposeHostIOImpl_()
 {
