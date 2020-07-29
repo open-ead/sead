@@ -52,15 +52,28 @@ Platform-specific files are usually placed into a subdirectory that is called:
 * **ctr** for 3DS
 * **nin** for Switch (or any other platform that uses nn?)
 
-## Building and contributing
+## Building
 
 Building this project requires:
 
 - A C++17 capable compiler (or >= Clang 4.0). While older parts of sead are written in C++03, the newer modules in sead target C++11 (or newer) and recent C++ language or library features make writing C++ more convenient.
 - CMake 3.10+
 
-When **implementing non-inlined functions**, please compare the assembly output against the original function and make it match the original code. At this scale, that is pretty much the only reliable way to ensure accuracy and functional equivalency. However, given the large number of functions, feel free to ignore regalloc differences and mark functions as semantically equivalent when those are the only changes.
+## Contributing
 
+### Non-inlined functions
+When **implementing non-inlined functions**, please compare the assembly output against the original function and make it match the original code. At this scale, that is pretty much the only reliable way to ensure accuracy and functional equivalency.
+
+However, given the large number of functions, feel free to ignore regalloc differences and mark functions as semantically equivalent when those are the only changes. Add a `// NOT_MATCHING: explanation` comment and explain what does not match.
+
+You may also ignore:
+
+* Instruction reorderings when it is obvious the function is still semantically equivalent (e.g. two add/mov instructions that operate on entirely different registers being reordered)
+* [AArch64] [Extra `clrex` instruction for atomic compare-and-swap ops](https://reviews.llvm.org/D13033)
+
+### Header utilities or inlined functions
 For **header-only utilities** (like container classes), use pilot/debug builds, assertion messages and common sense to try to undo function inlining. For example, if you see the same assertion appear in many functions and the file name is a header file, or if you see identical snippets of code in many different places, chances are that you are dealing with an inlined function. In that case, you should refactor the inlined code into its own function.
 
 Also note that introducing inlined functions is sometimes necessary to get the desired codegen.
+
+If a function is inlined, you should try as hard as possible to make it match perfectly.
