@@ -6,24 +6,24 @@
 
 namespace sead
 {
-ThreadLocalStorage::ThreadLocalStorage()
+inline ThreadLocalStorage::ThreadLocalStorage()
 {
     [[maybe_unused]] auto result = nn::os::AllocateTlsSlot(&mTlsSlot, nullptr);
     SEAD_ASSERT(result.IsSuccess());
 }
 
-ThreadLocalStorage::~ThreadLocalStorage()
+inline ThreadLocalStorage::~ThreadLocalStorage()
 {
     nn::os::FreeTlsSlot(mTlsSlot);
 }
 
-void ThreadLocalStorage::setValue(uintptr_t value)
+inline void ThreadLocalStorage::setValue(uintptr_t value)
 {
     static_assert(sizeof(uintptr_t) == sizeof(u64), "uintptr_t and u64 should have the same size");
     nn::os::SetTlsValue(mTlsSlot, value);
 }
 
-uintptr_t ThreadLocalStorage::getValue() const
+inline uintptr_t ThreadLocalStorage::getValue() const
 {
     return nn::os::GetTlsValue(mTlsSlot);
 }
