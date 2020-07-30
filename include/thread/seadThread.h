@@ -113,7 +113,7 @@ class ThreadMgr : public hostio::Node
     SEAD_SINGLETON_DISPOSER(ThreadMgr)
 public:
     ThreadMgr();
-    ~ThreadMgr() override;
+    virtual ~ThreadMgr();
 
     void initialize(Heap* heap);
     void destroy();

@@ -66,16 +66,6 @@ add_library(sead OBJECT
   modules/src/heap/seadHeap.cpp
   modules/src/heap/seadHeapMgr.cpp
 
-  include/hostio/seadHostIOEventListener.h
-  include/hostio/seadHostIOMgr.h
-  include/hostio/seadHostIONode.h
-  include/hostio/seadHostIOReflexible.h
-  include/hostio/seadHostIOThreadLock.h
-  modules/src/hostio/seadHostIOEventListener.cpp
-  modules/src/hostio/seadHostIONode.cpp
-  modules/src/hostio/seadHostIOReflexible.cpp
-  modules/src/hostio/seadHostIOThreadLock.cpp
-
   include/math/seadBoundBox.h
   include/math/seadMathCalcCommon.h
   include/math/seadMathCalcCommon.hpp
@@ -164,6 +154,21 @@ add_library(sead OBJECT
   modules/src/time/seadDateUtil.cpp
   modules/src/time/seadTickSpan.cpp
 )
+
+if(SEAD_DEBUG)
+  target_sources(sead PRIVATE
+    include/hostio/seadHostIOEventListener.h
+    include/hostio/seadHostIOMgr.h
+    include/hostio/seadHostIONode.h
+    include/hostio/seadHostIOReflexible.h
+    include/hostio/seadHostIOThreadLock.h
+    modules/src/hostio/seadHostIOEventListener.cpp
+    modules/src/hostio/seadHostIONode.cpp
+    modules/src/hostio/seadHostIOReflexible.cpp
+    modules/src/hostio/seadHostIOThreadLock.cpp
+  )
+endif()
+
 if(SEAD_PLATFORM STREQUAL "nin")
   target_sources(sead PRIVATE
     include/thread/nin/seadThreadLocalStorageNin.hpp

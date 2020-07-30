@@ -7,6 +7,7 @@ namespace sead::hostio
 {
 class Node : public Reflexible
 {
+#ifdef SEAD_DEBUG
 public:
     Node();
     Node(Heap* heap, IDisposer::HeapNullOption heap_null_option);
@@ -44,5 +45,6 @@ private:
     void calcURLImpl_(BufferedSafeString* url, bool) const;
 
     TTreeNode<Node*> mTreeNode;
+#endif
 };
 }  // namespace sead::hostio
