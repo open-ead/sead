@@ -25,6 +25,7 @@
 #define SEAD_ASSERT_MSG(condition, message, ...)                                                   \
     do                                                                                             \
     {                                                                                              \
+        static_cast<void>(condition);                                                              \
         if (false)                                                                                 \
             sead::system::detail::CheckFormat(message, ##__VA_ARGS__);                             \
     } while (0)
