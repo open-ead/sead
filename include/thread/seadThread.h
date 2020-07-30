@@ -110,9 +110,8 @@ protected:
 
 class ThreadMgr : public hostio::Node
 {
-public:
     SEAD_SINGLETON_DISPOSER(ThreadMgr)
-
+public:
     ThreadMgr();
     ~ThreadMgr() override;
 
