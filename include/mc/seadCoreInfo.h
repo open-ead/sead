@@ -17,6 +17,7 @@ class CoreIdMask
 {
 public:
     CoreIdMask() = default;
+    explicit CoreIdMask(CoreId id) { mMask = makeCoreMask_(id); }
 
     void set(u32 mask) volatile { mMask = mask; }
     operator u32() const volatile { return mMask; }
@@ -34,6 +35,8 @@ public:
     u32 countOnBits() const;
 
 protected:
+    static u32 makeCoreMask_(CoreId id) { return 1u << u32(int(id)); }
+
     // It seems that mMask is a u32 and not a BitFlag32 because this class is intended to be
     // volatile, and BitFlag isn't compatible with volatile...
     u32 mMask = 0;

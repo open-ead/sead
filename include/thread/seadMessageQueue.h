@@ -34,6 +34,8 @@ public:
     Element peek(BlockType block_type) const;
     bool jam(Element message, BlockType block_type);
 
+    static constexpr Element cNullElement = 0;
+
 private:
 #ifdef NNSDK
     nn::os::MessageQueueType mMessageQueueInner;

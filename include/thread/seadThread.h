@@ -38,27 +38,28 @@ public:
     Thread(const Thread&) = delete;
     Thread& operator=(const Thread&) = delete;
 
-    virtual void destroy();
+    virtual void destroy() { waitDone(); }
 
     virtual bool sendMessage(MessageQueue::Element msg, MessageQueue::BlockType block_type);
     virtual MessageQueue::Element recvMessage(MessageQueue::BlockType block_type);
-    virtual const MessageQueue& getMessageQueue() const;
+    virtual const MessageQueue& getMessageQueue() const { return mMessageQueue; }
 
     virtual bool start();
     virtual void quit(bool is_jam);
     virtual void waitDone();
-    virtual void quitAndDestroySingleThread(bool is_jam);
+    virtual void quitAndDestroySingleThread(bool is_jam) { quitAndWaitDoneSingleThread(is_jam); }
     virtual void quitAndWaitDoneSingleThread(bool is_jam);
 
     virtual void setPriority(s32 prio);
     virtual s32 getPriority() const;
-    virtual MessageQueue::BlockType getBlockType() const;
-    virtual s32 getStackSize() const;
+    virtual MessageQueue::BlockType getBlockType() const { return mBlockType; }
+    virtual s32 getStackSize() const { return mStackSize; }
     virtual s32 calcStackUsedSizePeak() const;
 
     u32 getId() const { return mId; }
     State getState() const { return mState; }
     bool isDone() const { return mState == State::cTerminated || mState == State::cReleased; }
+    bool isActive() const { return mState == State::cRunning || mState == State::cQuitting; }
 
     const CoreIdMask& getAffinity() const { return mAffinity; }
     void setAffinity(const CoreIdMask& affinity);
@@ -66,12 +67,17 @@ public:
     static void yield();
     static void sleep(TickSpan howLong);
 
-    void checkStackOverFlow(const char*, s32) const;
-    void checkStackEndCorruption(const char*, s32) const;
-    void checkStackPointerOverFlow(const char*, s32) const;
+    void checkStackOverFlow(const char* source_file, s32 source_line) const;
+    void checkStackEndCorruption(const char* source_file, s32 source_line) const;
+    void checkStackPointerOverFlow(const char* source_file, s32 source_line) const;
     void setStackOverflowExceptionEnable(bool);
 
     ThreadListNode* getThreadListNode() { return &mListNode; }
+
+#ifdef SEAD_DEBUG
+    void listenPropertyEvent(const hostio::PropertyEvent* event) override;
+    void genMessage(hostio::Context* context) override;
+#endif
 
     static const s32 cDefaultPriority;
 
@@ -82,7 +88,7 @@ protected:
 
     virtual void run_();
     virtual void calc_(MessageQueue::Element msg) = 0;
-    virtual u64 getStackCheckStartAddress_() const;
+    virtual uintptr_t getStackCheckStartAddress_() const;
 
     void initStackCheck_();
     void initStackCheckWithCurrentStackPointer_();
@@ -90,22 +96,21 @@ protected:
     static void ninThreadFunc_(void*);
 
     MessageQueue mMessageQueue;
-    s32 mStackSize;
+    s32 mStackSize = 0;
     ThreadListNode mListNode;
-    Heap* mCurrentHeap;
+    Heap* mCurrentHeap = nullptr;
     FindContainHeapCache mFindContainHeapCache;
-    MessageQueue::BlockType mBlockType;
-    MessageQueue::Element mQuitMsg;
-    u32 mId;
-    State mState;
-    CoreIdMask mAffinity;
+    MessageQueue::BlockType mBlockType = MessageQueue::BlockType::Blocking;
+    MessageQueue::Element mQuitMsg = 0;
+    u32 mId = 0;
+    State mState = State::cInitialized;
+    CoreIdMask mAffinity{CoreId::cMain};
 #ifdef NNSDK
-    nn::os::ThreadType* mThreadInner;
+    nn::os::ThreadType* mThreadInner = nullptr;
 #endif
-    void* mStackTop2;
-    void* mStackTop;
-    s32 mPriority;
-    s32 mCoreNo;  // XXX(leoetlino): this is in my BotW database - is this actually part of Thread?
+    void* mStackTop = nullptr;
+    void* mStackTopForCheck = nullptr;
+    s32 mPriority = 0;
 };
 
 class ThreadMgr : public hostio::Node
@@ -148,7 +153,8 @@ protected:
     void removeThread_(Thread* thread)
     {
         ScopedLock<CriticalSection> lock(getListCS());
-        mList.erase(thread->getThreadListNode());
+        if (thread->getThreadListNode()->mList)
+            mList.erase(thread->getThreadListNode());
     }
 
     void initMainThread_(Heap* heap);
