@@ -54,7 +54,7 @@ struct Atomic : AtomicBase<T>
 template <class T>
 struct Atomic<T*> : AtomicBase<T*>
 {
-    using AtomicBase<T>::AtomicBase;
+    using AtomicBase<T*>::AtomicBase;
 };
 
 // Implementation.
