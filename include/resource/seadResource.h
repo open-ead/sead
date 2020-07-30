@@ -43,7 +43,7 @@ public:
 class ResourceFactory : public TListNode<ResourceFactory*>, public IDisposer
 {
 public:
-    ResourceFactory() : TListNode<ResourceFactory*>(), IDisposer(), mExt() {}
+    ResourceFactory() : TListNode<ResourceFactory*>(this), IDisposer(), mExt() {}
 
     virtual ~ResourceFactory();
 

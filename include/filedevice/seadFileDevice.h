@@ -75,10 +75,10 @@ public:
     };
 
 public:
-    FileDevice() : TListNode<FileDevice*>(), IDisposer(), mDriveName(), mPermission(true) {}
+    FileDevice() : TListNode<FileDevice*>(this), IDisposer(), mDriveName(), mPermission(true) {}
 
     FileDevice(const SafeString& name)
-        : TListNode<FileDevice*>(), IDisposer(), mDriveName(), mPermission(true)
+        : TListNode<FileDevice*>(this), IDisposer(), mDriveName(), mPermission(true)
     {
         mDriveName.copy(name);
     }

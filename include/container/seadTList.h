@@ -77,7 +77,7 @@ class TListNode : public ListNode
 public:
     TListNode() : ListNode()
     {
-        mData = static_cast<T>(this);
+        mData = nullptr;
         mList = NULL;
     }
 
