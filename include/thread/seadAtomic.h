@@ -89,7 +89,7 @@ inline bool AtomicBase<T>::compareExchange(T expected, T desired, T* original)
     T value = expected;
     if (mValue.compare_exchange_strong(value, desired, std::memory_order_relaxed))
         return true;
-    if (*original)
+    if (original)
         *original = value;
     return false;
 }
