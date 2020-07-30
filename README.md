@@ -82,12 +82,13 @@ This project sometimes uses small hacks to force particular code to be generated
 ### Non-inlined functions
 When **implementing non-inlined functions**, please compare the assembly output against the original function and make it match the original code. At this scale, that is pretty much the only reliable way to ensure accuracy and functional equivalency.
 
-However, given the large number of functions, feel free to ignore regalloc differences and mark functions as semantically equivalent when those are the only changes. Add a `// NOT_MATCHING: explanation` comment and explain what does not match.
+However, given the large number of functions, certain kinds of small differences can be ignored when a function would otherwise be equivalent:
 
-You may also ignore:
+* Regalloc differences.
 
 * Instruction reorderings when it is obvious the function is still semantically equivalent (e.g. two add/mov instructions that operate on entirely different registers being reordered)
-* [AArch64] [Extra `clrex` instruction for atomic compare-and-swap ops](https://reviews.llvm.org/D13033)
+
+When ignoring minor differences, add a `// NOT_MATCHING: explanation` comment and explain what does not match.
 
 ### Header utilities or inlined functions
 For **header-only utilities** (like container classes), use pilot/debug builds, assertion messages and common sense to try to undo function inlining. For example, if you see the same assertion appear in many functions and the file name is a header file, or if you see identical snippets of code in many different places, chances are that you are dealing with an inlined function. In that case, you should refactor the inlined code into its own function.
