@@ -25,11 +25,16 @@
 #define SEAD_ASSERT_MSG(condition, message, ...)                                                   \
     do                                                                                             \
     {                                                                                              \
-        if (!(condition))                                                                          \
+        if (false)                                                                                 \
             sead::system::detail::CheckFormat(message, ##__VA_ARGS__);                             \
     } while (0)
 #define SEAD_ASSERT(condition) static_cast<void>(condition)
-#define SEAD_WARN(message, ...) sead::system::detail::CheckFormat(message, ##__VA_ARGS__)
+#define SEAD_WARN(message, ...)                                                                    \
+    do                                                                                             \
+    {                                                                                              \
+        if (false)                                                                                 \
+            sead::system::detail::CheckFormat(message, ##__VA_ARGS__);                             \
+    } while (0)
 #endif
 
 namespace sead
