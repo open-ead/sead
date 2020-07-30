@@ -86,12 +86,29 @@ inline T AtomicBase<T>::exchange(T value)
 template <class T>
 inline bool AtomicBase<T>::compareExchange(T expected, T desired, T* original)
 {
+#ifdef MATCHING_HACK_NX_CLANG
+    // Nintendo appears to have reimplemented compare_exchange_strong manually
+    // without using Clang's atomic intrinsics.
+    // Unlike Clang (https://reviews.llvm.org/D13033), their version does not use clrex.
+    do
+    {
+        T value = __builtin_arm_ldrex(reinterpret_cast<volatile T*>(&mValue));
+        if (value != expected)
+        {
+            if (original)
+                *original = value;
+            return false;
+        }
+    } while (__builtin_arm_strex(desired, reinterpret_cast<volatile T*>(&mValue)));
+    return true;
+#else
     T value = expected;
     if (mValue.compare_exchange_strong(value, desired, std::memory_order_relaxed))
         return true;
     if (original)
         *original = value;
     return false;
+#endif
 }
 
 template <class T>
