@@ -140,9 +140,11 @@ add_library(sead OBJECT
   include/thread/seadMessageQueue.h
   include/thread/seadMutex.h
   include/thread/seadSemaphore.h
+  include/thread/seadSpinLock.h
   include/thread/seadThread.h
   include/thread/seadThreadLocalStorage.h
   include/thread/seadThreadUtil.h
+  modules/src/thread/seadSpinLock.cpp
   modules/src/thread/seadThread.cpp
   modules/src/thread/seadThreadUtil.cpp
 
