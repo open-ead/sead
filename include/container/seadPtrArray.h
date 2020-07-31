@@ -4,6 +4,7 @@
 #include <basis/seadRawPrint.h>
 #include <basis/seadTypes.h>
 #include <prim/seadMemUtil.h>
+#include <random/seadRandom.h>
 
 namespace sead
 {
@@ -47,8 +48,11 @@ public:
         mPtrs[pos2] = ptr;
     }
     void reverse();
-    // TODO
-    void shuffle();
+    void shuffle()
+    {
+        Random random;
+        shuffle(&random);
+    }
     void shuffle(Random* random);
 
 protected:

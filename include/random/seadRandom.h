@@ -28,6 +28,8 @@ public:
     u32 getU32();
     /// Generate a random u64.
     u64 getU64();
+    /// Generate a random u32 in [0 .. a].
+    u32 getU32(u32 max);
     /// Generate a random s32 in [a .. b].
     /// Note that this does not provide a uniform distribution.
     s32 getS32Range(s32 a, s32 b);
@@ -53,6 +55,11 @@ private:
     u32 mZ;
     u32 mW;
 };
+
+inline u32 Random::getU32(u32 max)
+{
+    return getU32() * u64(max) >> 32u;
+}
 
 // UNCHECKED
 inline s32 Random::getS32Range(s32 a, s32 b)

@@ -92,9 +92,20 @@ void PtrArrayImpl::erase(s32 pos, s32 count)
     mPtrNum -= count;
 }
 
-// TODO: PtrArrayImpl::reverse
+// NON_MATCHING: semantically equivalent
+void PtrArrayImpl::reverse()
+{
+    for (s32 i = 0; i < mPtrNum / 2; ++i)
+        swap(mPtrNum - i - 1, i);
+}
 
-// TODO: PtrArrayImpl::shuffle
+// NON_MATCHING: semantically equivalent (Fisher–Yates)
+void PtrArrayImpl::shuffle(Random* random)
+{
+    SEAD_ASSERT(random);
+    for (s32 i = mPtrNum - 1; i > 0; --i)
+        swap(random->getU32(i), i);
+}
 
 void PtrArrayImpl::insert(s32 pos, void* ptr)
 {
