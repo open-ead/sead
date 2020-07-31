@@ -250,4 +250,51 @@ bool ThreadMgr::isMainThread() const
 {
     return getCurrentThread() == mMainThread;
 }
+
+void ThreadMgr::waitDoneMultipleThread(Thread* const* threads, s32 num)
+{
+    bool all_done;
+    do
+    {
+        all_done = true;
+        for (s32 i = 0; i < num; ++i)
+            all_done &= threads[i]->isDone();
+        Thread::yield();
+    } while (!all_done);
+
+    for (s32 i = 0; i < num; ++i)
+        threads[i]->waitDone();
+}
+
+void ThreadMgr::quitAndWaitDoneMultipleThread(Thread** threads, s32 num, bool is_jam)
+{
+    for (s32 i = 0; i < num; ++i)
+        threads[i]->quit(is_jam);
+
+    waitDoneMultipleThread(threads, num);
+}
+
+void ThreadMgr::checkCurrentThreadStackOverFlow(const char* source_file, s32 source_line)
+{
+    if (!ThreadMgr::instance())
+        return;
+    if (Thread* thread = ThreadMgr::instance()->getCurrentThread())
+        thread->checkStackOverFlow(source_file, source_line);
+}
+
+void ThreadMgr::checkCurrentThreadStackEndCorruption(const char* source_file, s32 source_line)
+{
+    if (!ThreadMgr::instance())
+        return;
+    if (Thread* thread = ThreadMgr::instance()->getCurrentThread())
+        thread->checkStackEndCorruption(source_file, source_line);
+}
+
+void ThreadMgr::checkCurrentThreadStackPointerOverFlow(const char* source_file, s32 source_line)
+{
+    if (!ThreadMgr::instance())
+        return;
+    if (Thread* thread = ThreadMgr::instance()->getCurrentThread())
+        thread->checkStackPointerOverFlow(source_file, source_line);
+}
 }  // namespace sead

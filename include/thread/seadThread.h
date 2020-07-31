@@ -130,11 +130,12 @@ public:
     Thread* getMainThread() const { return mMainThread; }
     Thread* getCurrentThread() const { return reinterpret_cast<Thread*>(mThreadPtrTLS.getValue()); }
 
-    static void quitAndWaitDoneMultipleThread(Thread**, s32, bool);
+    static void waitDoneMultipleThread(Thread* const* threads, s32 num);
+    static void quitAndWaitDoneMultipleThread(Thread** threads, s32 num, bool is_jam);
 
-    static void checkCurrentThreadStackOverFlow(const char*, s32);
-    static void checkCurrentThreadStackEndCorruption(const char*, s32);
-    static void checkCurrentThreadStackPointerOverFlow(const char*, s32);
+    static void checkCurrentThreadStackOverFlow(const char* source_file, s32 source_line);
+    static void checkCurrentThreadStackEndCorruption(const char* source_file, s32 source_line);
+    static void checkCurrentThreadStackPointerOverFlow(const char* source_file, s32 source_line);
 
     CriticalSection* getListCS() { return &mListCS; }
 

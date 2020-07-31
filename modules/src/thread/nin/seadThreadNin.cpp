@@ -185,4 +185,17 @@ u32 ThreadMgr::getCurrentThreadID_()
 {
     return u32(uintptr_t(nn::os::GetCurrentThread()));
 }
+
+void ThreadMgr::initMainThread_(Heap* heap)
+{
+    nn::os::ThreadType* nn_thread = nn::os::GetCurrentThread();
+    nn::os::ChangeThreadPriority(nn::os::GetCurrentThread(), 16);
+    const u64 nn_thread_id = nn::os::GetThreadId(nn_thread);
+
+    auto thread = new (heap) MainThread(heap, nn_thread, nn_thread_id);
+    mMainThread = thread;
+    mThreadPtrTLS.setValue(uintptr_t(thread));
+
+    nn::os::SetTlsValue(CoreInfo::getCoreNumberTlsSlot(), int(nn::os::GetCurrentCoreNumber()) + 1);
+}
 }  // namespace sead
