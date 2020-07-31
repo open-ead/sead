@@ -4,6 +4,8 @@
 
 namespace sead
 {
+Heap::~Heap() = default;
+
 void Heap::appendDisposer_(IDisposer* disposer)
 {
     ConditionalScopedLock<CriticalSection> lock(&mCS, mFlag.isOnBit(0));

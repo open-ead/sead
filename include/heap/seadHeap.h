@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 
+#include <basis/seadRawPrint.h>
 #include <basis/seadTypes.h>
 #include <container/seadOffsetList.h>
 #include <heap/seadDisposer.h>
@@ -34,7 +35,7 @@ public:
 
     Heap(const SafeString& name, Heap* parent, void* address, size_t size, HeapDirection direction,
          bool);
-    virtual ~Heap() {}
+    ~Heap() override;
 
     SEAD_RTTI_BASE(Heap)
 
@@ -60,9 +61,9 @@ public:
     virtual void dump() const {}
     virtual void dumpYAML(WriteStream& stream, int) const;
 
-    virtual void listenPropertyEvent(const hostio::PropertyEvent* event);
-    virtual void genMessage(hostio::Context*);
-    virtual void genInformation_(hostio::Context*) {}
+    void listenPropertyEvent(const hostio::PropertyEvent* event) override;
+    void genMessage(hostio::Context*) override;
+    virtual void genInformation_(hostio::Context*);
     virtual void makeMetaString_(BufferedSafeString*);
 
     virtual void pushBackChild_(Heap* child);
@@ -95,6 +96,12 @@ public:
     u16 mHeapCheckTag;
     void* _140;
 };
+
+inline void* Heap::tryRealloc(void*, size_t, s32)
+{
+    SEAD_ASSERT_MSG(false, "tryRealloc is not implement.");
+    return nullptr;
+}
 
 }  // namespace sead
 
