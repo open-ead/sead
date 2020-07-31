@@ -91,7 +91,9 @@ public:
     DisposerList mDisposerList;
     HeapDirection mDirection;
     CriticalSection mCS;
-    BitFlag32 mFlag;
+    BitFlag16 mFlag;
+    u16 mHeapCheckTag;
+    void* _140;
 };
 
 }  // namespace sead
