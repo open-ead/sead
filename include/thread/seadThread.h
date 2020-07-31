@@ -4,6 +4,7 @@
 #include <nn/os.h>
 #endif
 
+#include <basis/seadRawPrint.h>
 #include <container/seadTList.h>
 #include <heap/seadDisposer.h>
 #include <heap/seadHeapMgr.h>
@@ -93,7 +94,9 @@ protected:
     void initStackCheck_();
     void initStackCheckWithCurrentStackPointer_();
 
+#ifdef NNSDK
     static void ninThreadFunc_(void*);
+#endif
 
     MessageQueue mMessageQueue;
     s32 mStackSize = 0;
@@ -166,5 +169,29 @@ private:
     CriticalSection mListCS;
     Thread* mMainThread = nullptr;
     ThreadLocalStorage mThreadPtrTLS;
+};
+
+class MainThread : public Thread
+{
+public:
+#ifdef NNSDK
+    MainThread(Heap* heap, nn::os::ThreadType* nn_thread, u32 thread_id)
+        : Thread(heap, nn_thread, thread_id)
+    {
+    }
+#endif
+    ~MainThread() override { mState = State::cTerminated; }
+
+    void destroy() override { SEAD_ASSERT_MSG(false, "Main thread can not destroy"); }
+    void quit(bool) override { SEAD_ASSERT_MSG(false, "Main thread can not quit"); }
+    void waitDone() override { SEAD_ASSERT_MSG(false, "Main thread can not waitDone"); }
+    void quitAndDestroySingleThread(bool) override
+    {
+        SEAD_ASSERT_MSG(false, "Main thread can not quit");
+    }
+    void setPriority(s32) override { SEAD_ASSERT_MSG(false, "Main thread can not set priority"); }
+
+protected:
+    void calc_(MessageQueue::Element msg) override {}
 };
 }  // namespace sead
