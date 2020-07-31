@@ -6,6 +6,7 @@
 #include <basis/seadTypes.h>
 #include <container/seadOffsetList.h>
 #include <heap/seadDisposer.h>
+#include <hostio/seadHostIOReflexible.h>
 #include <prim/seadBitFlag.h>
 #include <prim/seadNamable.h>
 #include <prim/seadRuntimeTypeInfo.h>
@@ -22,7 +23,7 @@ class Context;
 class PropertyEvent;
 }  // namespace hostio
 
-class Heap : public IDisposer, public INamable
+class Heap : public IDisposer, public INamable, public hostio::Reflexible
 {
 public:
     enum HeapDirection
@@ -82,8 +83,6 @@ public:
     using HeapList = OffsetList<Heap>;
     using DisposerList = OffsetList<IDisposer>;
 
-    // TODO: this appears to be a hostio::Node. In Labo, there is even a hostio::Reflexible here.
-    void* hostioNode;
     void* mStart;
     size_t mSize;
     Heap* mParent;
