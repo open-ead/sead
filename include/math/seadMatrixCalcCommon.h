@@ -1,5 +1,4 @@
-#ifndef SEAD_MATRIXCALCCOMMON_H_
-#define SEAD_MATRIXCALCCOMMON_H_
+#pragma once
 
 #include <math/seadMathPolicies.h>
 
@@ -16,4 +15,6 @@ public:
 
 }  // namespace sead
 
-#endif  // SEAD_MATRIXCALCCOMMON_H_
+#define SEAD_MATH_MATRIX_CALC_COMMON_H_
+#include <math/seadMatrixCalcCommon.hpp>
+#undef SEAD_MATH_MATRIX_CALC_COMMON_H_

@@ -6,7 +6,7 @@
 #include <heap/seadDisposer.h>
 #include <heap/seadHeap.h>
 #include <prim/seadRuntimeTypeInfo.h>
-#include <prim/seadSafeString.hpp>
+#include <prim/seadSafeString.h>
 
 namespace sead
 {

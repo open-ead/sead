@@ -4,7 +4,7 @@
 #include <basis/seadTypes.h>
 #include <filedevice/seadFileDevice.h>
 #include <heap/seadHeap.h>
-#include <prim/seadSafeString.hpp>
+#include <prim/seadSafeString.h>
 #include <resource/seadResource.h>
 
 namespace sead

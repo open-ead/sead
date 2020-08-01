@@ -8,7 +8,7 @@
 #include <basis/seadTypes.h>
 #include <filedevice/seadFileDevice.h>
 #include <prim/seadRuntimeTypeInfo.h>
-#include <prim/seadSafeString.hpp>
+#include <prim/seadSafeString.h>
 
 namespace sead
 {

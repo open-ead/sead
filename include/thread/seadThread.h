@@ -13,7 +13,7 @@
 #include <mc/seadCoreInfo.h>
 #include <prim/seadEnum.h>
 #include <prim/seadNamable.h>
-#include <prim/seadSafeString.hpp>
+#include <prim/seadSafeString.h>
 #include <prim/seadScopedLock.h>
 #include <thread/seadMessageQueue.h>
 #include <thread/seadThreadLocalStorage.h>

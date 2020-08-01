@@ -10,7 +10,7 @@
 #include <filedevice/seadFileDevice.h>
 #include <filedevice/seadMainFileDevice.h>
 #include <heap/seadDisposer.h>
-#include <prim/seadSafeString.hpp>
+#include <prim/seadSafeString.h>
 
 namespace sead
 {

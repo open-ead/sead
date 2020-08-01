@@ -25,6 +25,7 @@ public:
 };
 }  // namespace sead
 
+#define SEAD_PRIM_MEM_UTIL_H_
 #ifdef cafe
 #include <prim/cafe/seadMemUtilCafe.hpp>
 #elif NNSDK
@@ -32,5 +33,6 @@ public:
 #else
 #error "Unknown platform"
 #endif  // cafe
+#undef SEAD_PRIM_MEM_UTIL_H_
 
 #endif  // SEAD_MEM_UTIL_H_

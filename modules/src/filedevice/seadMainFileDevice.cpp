@@ -1,5 +1,5 @@
 #include <filedevice/seadMainFileDevice.h>
-#include <prim/seadSafeString.hpp>
+#include <prim/seadSafeString.h>
 
 namespace sead
 {

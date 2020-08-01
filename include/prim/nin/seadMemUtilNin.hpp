@@ -3,6 +3,9 @@
 #include <cstring>
 
 #include <basis/seadRawPrint.h>
+#ifndef SEAD_PRIM_MEM_UTIL_H_
+#include <prim/seadMemUtil.h>
+#endif
 #include <prim/seadPtrUtil.h>
 
 namespace sead
@@ -25,8 +28,8 @@ inline void* MemUtil::copyOverlap(void* dest, const void* src, size_t size)
 inline void* MemUtil::copy(void* dest, const void* src, size_t size)
 {
     SEAD_ASSERT_MSG(!((src >= dest && PtrUtil::addOffset(dest, size) > src) ||
-                  (dest >= src && PtrUtil::addOffset(src, size) > dest)),
-                "cross copy area");
+                      (dest >= src && PtrUtil::addOffset(src, size) > dest)),
+                    "cross copy area");
 
     return std::memcpy(dest, src, size);
 }

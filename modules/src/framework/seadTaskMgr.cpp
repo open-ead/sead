@@ -2,7 +2,7 @@
 #include <framework/seadMethodTreeMgr.h>
 #include <framework/seadTaskBase.h>
 #include <framework/seadTaskMgr.h>
-#include <prim/seadSafeString.hpp>
+#include <prim/seadSafeString.h>
 #include <resource/seadResourceMgr.h>
 #include <thread/seadDelegateThread.h>
 

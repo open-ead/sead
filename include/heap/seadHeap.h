@@ -11,7 +11,7 @@
 #include <prim/seadBitFlag.h>
 #include <prim/seadNamable.h>
 #include <prim/seadRuntimeTypeInfo.h>
-#include <prim/seadSafeString.hpp>
+#include <prim/seadSafeString.h>
 #include <thread/seadCriticalSection.h>
 
 namespace sead

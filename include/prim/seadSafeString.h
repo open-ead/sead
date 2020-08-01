@@ -1,11 +1,8 @@
 #pragma once
 
-#ifndef SEAD_SAFE_STRING_HPP_
-#error "Include <sead/seadSafeString.hpp>"
-#endif
-
 #include <cstdarg>
 
+#include <basis/seadRawPrint.h>
 #include <basis/seadTypes.h>
 
 namespace sead
@@ -411,3 +408,7 @@ using HeapSafeString = HeapSafeStringBase<char>;
 using WHeapSafeString = HeapSafeStringBase<char16>;
 
 }  // namespace sead
+
+#define SEAD_PRIM_SAFE_STRING_H_
+#include <prim/seadSafeString.hpp>
+#undef SEAD_PRIM_SAFE_STRING_H_

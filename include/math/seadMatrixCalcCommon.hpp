@@ -1,6 +1,8 @@
 #pragma once
 
+#ifndef SEAD_MATH_MATRIX_CALC_COMMON_H_
 #include <math/seadMatrixCalcCommon.h>
+#endif
 
 namespace sead {
 

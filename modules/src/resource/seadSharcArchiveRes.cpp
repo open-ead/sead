@@ -1,7 +1,7 @@
 #include <cstring>
 
 #include <container/seadBuffer.h>
-#include <prim/seadSafeString.hpp>
+#include <prim/seadSafeString.h>
 #include <resource/seadSharcArchiveRes.h>
 
 namespace

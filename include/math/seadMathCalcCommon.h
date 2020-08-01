@@ -1,9 +1,5 @@
 #pragma once
 
-#ifndef SEAD_MATH_CALC_COMMON_HPP_
-#error "Include <math/seadMathCalcCommon.hpp>"
-#endif
-
 #include <basis/seadTypes.h>
 
 namespace sead
@@ -23,3 +19,7 @@ typedef MathCalcCommon<s32> MathCalcCommonS32;
 typedef MathCalcCommon<u32> MathCalcCommonU32;
 
 }  // namespace sead
+
+#define SEAD_MATH_MATH_CALC_COMMON_H_
+#include <math/seadMathCalcCommon.hpp>
+#undef SEAD_MATH_MATH_CALC_COMMON_H_

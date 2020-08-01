@@ -3,6 +3,10 @@
 #include <cafe.h>
 #include <string.h>
 
+#ifndef SEAD_PRIM_MEM_UTIL_H_
+#include <prim/seadMemUtil.h>
+#endif
+
 namespace sead
 {
 inline void* MemUtil::fill(void* ptr, u8 c, size_t size)

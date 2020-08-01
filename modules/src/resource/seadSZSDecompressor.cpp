@@ -1,11 +1,11 @@
 #include <filedevice/seadFileDeviceMgr.h>
 #include <heap/seadHeap.h>
 #include <heap/seadHeapMgr.h>
-#include <math/seadMathCalcCommon.hpp>
+#include <math/seadMathCalcCommon.h>
 #include <prim/seadBitUtil.h>
 #include <prim/seadEndian.h>
 #include <prim/seadPtrUtil.h>
-#include <prim/seadSafeString.hpp>
+#include <prim/seadSafeString.h>
 #include <resource/seadSZSDecompressor.h>
 
 namespace

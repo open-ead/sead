@@ -7,7 +7,7 @@
 #include <gfx/seadPrimitiveRendererUtil.h>
 #include <math/seadMatrix.h>
 #include <math/seadVector.h>
-#include <prim/seadSafeString.hpp>
+#include <prim/seadSafeString.h>
 
 namespace sead
 {

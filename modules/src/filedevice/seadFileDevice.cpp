@@ -1,7 +1,7 @@
 #include <basis/seadNew.h>
 #include <filedevice/seadFileDevice.h>
 #include <filedevice/seadFileDeviceMgr.h>
-#include <math/seadMathCalcCommon.hpp>
+#include <math/seadMathCalcCommon.h>
 #include <stdlib.h>
 
 namespace sead

@@ -1,9 +1,9 @@
 #pragma once
 
-#define SEAD_MATH_CALC_COMMON_HPP_
-
 #include <basis/seadRawPrint.h>
+#ifndef SEAD_MATH_MATH_CALC_COMMON_H_
 #include <math/seadMathCalcCommon.h>
+#endif
 
 namespace sead
 {

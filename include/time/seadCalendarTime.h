@@ -1,7 +1,7 @@
 #pragma once
 
 #include <basis/seadTypes.h>
-#include <prim/seadSafeString.hpp>
+#include <prim/seadSafeString.h>
 
 namespace sead
 {

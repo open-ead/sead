@@ -1,7 +1,7 @@
 #ifndef SEAD_PATH_H_
 #define SEAD_PATH_H_
 
-#include <prim/seadSafeString.hpp>
+#include <prim/seadSafeString.h>
 
 namespace sead
 {

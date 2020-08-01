@@ -1,6 +1,6 @@
 #include "prim/seadStringBuilder.h"
 #include "heap/seadHeapMgr.h"
-#include "math/seadMathCalcCommon.hpp"
+#include "math/seadMathCalcCommon.h"
 #include "prim/seadPtrUtil.h"
 #include "prim/seadStringUtil.h"
 

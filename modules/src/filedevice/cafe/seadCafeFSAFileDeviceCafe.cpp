@@ -3,7 +3,7 @@
 #include <filedevice/cafe/seadCafeFSAFileDeviceCafe.h>
 #include <filedevice/seadFileDevice.h>
 #include <filedevice/seadFileDeviceMgr.h>
-#include <prim/seadSafeString.hpp>
+#include <prim/seadSafeString.h>
 
 namespace sead
 {

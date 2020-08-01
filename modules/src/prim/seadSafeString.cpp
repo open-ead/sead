@@ -1,4 +1,4 @@
-#include <prim/seadSafeString.hpp>
+#include <prim/seadSafeString.h>
 #include <prim/seadStringUtil.h>
 
 namespace
