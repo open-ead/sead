@@ -19,8 +19,8 @@ typedef MathCalcCommon<s32> MathCalcS32;
 typedef MathCalcCommon<u32> MathCalcU32;
 typedef MathCalcCommon<f32> MathCalcF32;
 
-template <typename T>
-T lerp(T a, T b, T t);
+template <typename T, typename T2 = float>
+T lerp(T a, T b, T2 t);
 
 template <typename T>
 T clamp(T value, T low, T high);

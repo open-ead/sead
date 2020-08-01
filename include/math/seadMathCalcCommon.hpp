@@ -14,8 +14,8 @@ inline s32 MathCalcCommon<T>::roundUpPow2(T val, s32 base)
     return val + base - 1 & (u32)-base;
 }
 
-template <typename T>
-inline T lerp(T a, T b, T t)
+template <typename T, typename T2>
+inline T lerp(T a, T b, T2 t)
 {
     return a + (b - a) * t;
 }
