@@ -15,9 +15,15 @@ public:
     static T lcm(T x, T y);
 };
 
-typedef MathCalcCommon<s32> MathCalcCommonS32;
-typedef MathCalcCommon<u32> MathCalcCommonU32;
+typedef MathCalcCommon<s32> MathCalcS32;
+typedef MathCalcCommon<u32> MathCalcU32;
+typedef MathCalcCommon<f32> MathCalcF32;
 
+template <typename T>
+T lerp(T a, T b, T t);
+
+template <typename T>
+T clamp(T value, T low, T high);
 }  // namespace sead
 
 #define SEAD_MATH_MATH_CALC_COMMON_H_

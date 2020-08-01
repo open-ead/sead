@@ -14,4 +14,19 @@ inline s32 MathCalcCommon<T>::roundUpPow2(T val, s32 base)
     return val + base - 1 & (u32)-base;
 }
 
+template <typename T>
+inline T lerp(T a, T b, T t)
+{
+    return a + (b - a) * t;
+}
+
+template <typename T>
+inline T clamp(T value, T low, T high)
+{
+    if (value < low)
+        value = low;
+    else if (value > high)
+        value = high;
+    return value;
+}
 }  // namespace sead

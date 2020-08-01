@@ -44,8 +44,7 @@ StringBuilderBase<T>* StringBuilderBase<T>::createImpl_(s32 buffer_size, Heap* h
 
     if (alignment > s32(alignof(StringBuilderBase<T>)))
     {
-        const s32 buffer_offset =
-            MathCalcCommonS32::roundUpPow2(sizeof(StringBuilderBase<T>), alignment);
+        const s32 buffer_offset = MathCalcS32::roundUpPow2(sizeof(StringBuilderBase<T>), alignment);
         void* buffer = heap->alloc(buffer_offset + buffer_size * sizeof(T), alignment);
         return new (buffer) StringBuilderBase<T>(
             static_cast<T*>(PtrUtil::addOffset(buffer, buffer_offset)), buffer_size);
