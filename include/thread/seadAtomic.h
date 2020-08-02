@@ -11,7 +11,15 @@ template <class T>
 struct AtomicBase
 {
 public:
-    explicit AtomicBase(T value = {});
+    AtomicBase(T value = {});
+
+    operator T() const { return load(); }
+
+    AtomicBase& operator=(T value)
+    {
+        store(value);
+        return *this;
+    }
 
     /// Load the current value, as if with memory_order_relaxed.
     T load() const;
@@ -41,6 +49,8 @@ template <class T>
 struct Atomic : AtomicBase<T>
 {
     using AtomicBase<T>::AtomicBase;
+    using AtomicBase<T>::operator=;
+
     T fetchAdd(T x);
     T fetchSub(T x);
     T fetchAnd(T x);
@@ -48,6 +58,16 @@ struct Atomic : AtomicBase<T>
     T fetchXor(T x);
     T increment() { return fetchAdd(1); }
     T decrement() { return fetchSub(1); }
+
+    T operator+=(T x) { return fetchAdd(x); }
+    T operator-=(T x) { return fetchSub(x); }
+    T operator&=(T x) { return fetchAnd(x); }
+    T operator|=(T x) { return fetchOr(x); }
+    T operator^=(T x) { return fetchXor(x); }
+    T operator++() { return fetchAdd(1) + 1; }
+    T operator++(int) { return fetchAdd(1); }
+    T operator--() { return fetchSub(1) - 1; }
+    T operator--(int) { return fetchSub(1); }
 };
 
 /// Specialization for pointer types.
@@ -55,6 +75,10 @@ template <class T>
 struct Atomic<T*> : AtomicBase<T*>
 {
     using AtomicBase<T*>::AtomicBase;
+    using AtomicBase<T*>::operator=;
+
+    T& operator*() const { return *this->load(); }
+    T* operator->() const { return this->load(); }
 };
 
 // Implementation.
