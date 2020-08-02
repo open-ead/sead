@@ -1,40 +1,33 @@
-#ifndef SEAD_DELEGATE_EVENT_SLOT_H_
-#define SEAD_DELEGATE_EVENT_SLOT_H_
+#pragma once
+
+// DelegateEvent is used to implement a Qt-style signal/slot mechanism.
 
 #include <container/seadTList.h>
 #include <heap/seadDisposer.h>
-//#include <prim/seadDelegate.h>
+#include <prim/seadDelegate.h>
 
 namespace sead
 {
-template <typename T>
-class IDelegate1;
-
+/// Manages signal and slots for an event.
 template <typename T>
 class DelegateEvent
 {
 public:
     class Slot;
+    using SlotList = TList<Slot*>;
+    using SlotListNode = TListNode<Slot*>;
 
-    typedef TList<Slot*> SlotList;
-    typedef TListNode<Slot*> SlotListNode;
-
-public:
+    /// A Slot is a wrapper around a Delegate that is invoked when a signal is emitted.
     class Slot : public IDisposer
     {
     public:
-        template <typename U>
-        Slot(U*, void (U::*)(T)); /*
-            : IDisposer()
-            , mNode()
-            , mDelegatePtr(NULL)
-            , mConnectedToDelegateEvent(false)
+        Slot(AnyDelegate1<T> delegate)
         {
-            mDelegatePtr = new (mDelegate) Delegate1<U, T>();
+            mDelegate = std::move(delegate);
+            mDelegatePtr = &mDelegate;
         }
-        */
 
-        virtual ~Slot() { release(); }
+        ~Slot() override { release(); }
 
         void release()
         {
@@ -45,27 +38,37 @@ public:
             }
         }
 
-        SlotListNode mNode;
-        IDelegate1<T>* mDelegatePtr;
-        struct
-        {
-            u8 data_[20];
-        } mDelegate;
-        bool mConnectedToDelegateEvent;
-    };
+    private:
+        friend class DelegateEvent;
 
-public:
-    DelegateEvent() : mList() {}
+        SlotListNode mNode{this};
+        IDelegate1<T>* mDelegatePtr;
+        AnyDelegate1<T> mDelegate;
+        bool mConnectedToDelegateEvent = false;
+    };
 
     virtual ~DelegateEvent()
     {
-        for (SlotList::iterator it = mList.begin(); it != mList.end(); it++)
-            it.mPtr->mData->release();
+        for (Slot* slot : mList)
+            slot->release();
     }
 
+    void connect(Slot& slot)
+    {
+        mList.pushBack(&slot.mNode);
+        slot.mConnectedToDelegateEvent = true;
+    }
+
+    void disconnect(Slot& slot) { slot.release(); }
+
+    void emit(T arg)
+    {
+        for (Slot* slot : mList)
+            slot->mDelegatePtr->invoke(arg);
+    }
+
+protected:
     SlotList mList;
 };
 
 }  // namespace sead
-
-#endif  // SEAD_DELEGATE_EVENT_SLOT_H_
