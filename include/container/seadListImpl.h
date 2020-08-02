@@ -12,7 +12,7 @@ class ListNode
 public:
     ListNode* next() const { return mNext; }
     ListNode* prev() const { return mPrev; }
-    bool isLinked() const { return mPrev || mNext; }
+    bool isLinked() const { return mNext || mPrev; }
 
 private:
     friend class ListImpl;
