@@ -55,6 +55,7 @@ public:
 
     void connect(Slot& slot)
     {
+        slot.release();
         mList.pushBack(&slot.mNode);
         slot.mConnectedToDelegateEvent = true;
     }
@@ -63,8 +64,8 @@ public:
 
     void emit(T arg)
     {
-        for (Slot* slot : mList)
-            slot->mDelegatePtr->invoke(arg);
+        for (auto it = mList.begin(); it != mList.end(); ++it)
+            (*it)->mDelegatePtr->invoke(arg);
     }
 
 protected:

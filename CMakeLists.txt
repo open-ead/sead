@@ -30,6 +30,9 @@ add_library(sead OBJECT
   modules/src/container/seadPtrArray.cpp
   modules/src/container/seadTreeNode.cpp
 
+  include/devenv/seadAssertConfig.h
+  modules/src/devenv/seadAssertConfig.cpp
+
   include/filedevice/seadFileDevice.h
   include/filedevice/seadFileDeviceMgr.h
   include/filedevice/seadMainFileDevice.h
