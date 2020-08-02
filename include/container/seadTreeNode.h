@@ -16,11 +16,11 @@ public:
     void detachSubTree();
     TreeNode* findRoot();
     const TreeNode* findRoot() const;
-    void insertAfterSelf(TreeNode*);
-    void insertBeforeSelf(TreeNode*);
-    void pushBackChild(TreeNode*);
-    void pushBackSibling(TreeNode*);
-    void pushFrontChild(TreeNode*);
+    void insertAfterSelf(TreeNode* node);
+    void insertBeforeSelf(TreeNode* node);
+    void pushBackChild(TreeNode* node);
+    void pushBackSibling(TreeNode* node);
+    void pushFrontChild(TreeNode* node);
 
 protected:
     void clearChildLinksRecursively_();
