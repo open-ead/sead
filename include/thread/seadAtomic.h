@@ -12,8 +12,15 @@ struct AtomicBase
 {
 public:
     AtomicBase(T value = {});
+    AtomicBase(const AtomicBase& rhs) { *this = rhs; }
 
     operator T() const { return load(); }
+
+    AtomicBase& operator=(const AtomicBase& rhs)
+    {
+        store(rhs.load());
+        return *this;
+    }
 
     AtomicBase& operator=(T value)
     {
