@@ -48,6 +48,53 @@ public:
         return iterator(static_cast<TListNode<T>*>(const_cast<ListNode*>(&mStartEnd)));
     }
 
+    class robustIterator
+    {
+    public:
+        robustIterator(TListNode<T>* ptr) : mPtr(ptr)
+        {
+            mPtrNext = static_cast<TListNode<T>*>(mPtr->next());
+        }
+
+        robustIterator& operator++()
+        {
+            mPtr = mPtrNext;
+            mPtrNext = static_cast<TListNode<T>*>(mPtrNext->next());
+            return *this;
+        }
+
+        T& operator*() const { return mPtr->mData; }
+        T* operator->() const { return &mPtr->mData; }
+
+        friend bool operator==(robustIterator it1, robustIterator it2)
+        {
+            return it1.mPtr == it2.mPtr;
+        }
+        friend bool operator!=(robustIterator it1, robustIterator it2) { return !(it1 == it2); }
+
+    private:
+        TListNode<T>* mPtr;
+        TListNode<T>* mPtrNext;
+    };
+
+    robustIterator robustBegin() const
+    {
+        return robustIterator(static_cast<TListNode<T>*>(mStartEnd.next()));
+    }
+
+    robustIterator robustEnd() const
+    {
+        return robustIterator(static_cast<TListNode<T>*>(const_cast<ListNode*>(&mStartEnd)));
+    }
+
+    struct RobustRange
+    {
+        auto begin() const { return mList.robustBegin(); }
+        auto end() const { return mList.robustEnd(); }
+        const TList& mList;
+    };
+    RobustRange robustRange() const { return {*this}; }
+
     void pushBack(TListNode<T>* item)
     {
         item->erase();

@@ -41,16 +41,27 @@ public:
     private:
         friend class DelegateEvent;
 
+        void invoke_(T arg)
+        {
+            if (mDelegatePtr)
+                (*mDelegatePtr)(arg);
+        }
+
         SlotListNode mNode{this};
-        IDelegate1<T>* mDelegatePtr;
+        AnyDelegate1<T>* mDelegatePtr;
         AnyDelegate1<T> mDelegate;
         bool mConnectedToDelegateEvent = false;
     };
 
     virtual ~DelegateEvent()
     {
-        for (Slot* slot : mList)
-            slot->release();
+        auto it = mList.begin();
+        while (it != mList.end())
+        {
+            Slot* ptr = *it;
+            ++it;
+            ptr->release();
+        }
     }
 
     void connect(Slot& slot)
@@ -64,8 +75,8 @@ public:
 
     void emit(T arg)
     {
-        for (auto it = mList.begin(); it != mList.end(); ++it)
-            (*it)->mDelegatePtr->invoke(arg);
+        for (Slot* slot : mList.robustRange())
+            slot->invoke_(arg);
     }
 
 protected:
