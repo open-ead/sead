@@ -47,7 +47,7 @@ public:
 #ifdef cafe
     CafeContentFileDevice* mFileDevice;
 #else
-#error "Unknown platform"
+#warning "Unknown platform"
 #endif  // cafe
 };
 

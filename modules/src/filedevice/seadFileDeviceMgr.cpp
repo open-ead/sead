@@ -134,10 +134,9 @@ FileDevice* FileDeviceMgr::findDeviceFromPath(const SafeString& path,
 
 FileDevice* FileDeviceMgr::findDevice(const SafeString& name) const
 {
-    for (TListNode<FileDevice*>* node = mDeviceList.root(); !mDeviceList.isAtEnd(node);
-         node = mDeviceList.next(node))
-        if (node->mData->mDriveName.isEqual(name))
-            return node->mData;
+    for (auto* device : mDeviceList)
+        if (device->mDriveName.isEqual(name))
+            return device;
 
     return NULL;
 }

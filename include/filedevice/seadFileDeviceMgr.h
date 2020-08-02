@@ -50,7 +50,7 @@ public:
     u8 _17A4[128];
     u32 _1824;
 #else
-#error "Unknown platform"
+#warning "Unknown platform"
 #endif  // cafe
 };
 

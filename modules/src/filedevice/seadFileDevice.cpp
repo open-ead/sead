@@ -60,8 +60,7 @@ u8* FileDevice::doLoad_(LoadArg& arg)
         {
             u32 bytesToRead = arg.buffer_size;
             if (bytesToRead == 0)
-                bytesToRead =
-                    MathCalcCommonS32::roundUpPow2(fileSize, FileDevice::cBufferMinAlignment);
+                bytesToRead = MathCalcS32::roundUpPow2(fileSize, FileDevice::cBufferMinAlignment);
 
             else if (bytesToRead < fileSize)
                 goto return_fail;

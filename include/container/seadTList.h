@@ -12,7 +12,59 @@ template <typename T>
 class TList : public ListImpl
 {
 public:
+    using CompareCallback = int (*)(const T*, const T*);
+
     TList() : ListImpl() {}
+
+    void pushBack(TListNode<T>* item)
+    {
+        item->erase();
+        item->mList = this;
+        ListImpl::pushBack(item);
+    }
+
+    TListNode<T>* popBack() { return static_cast<TListNode<T>*>(ListImpl::popBack()); }
+    TListNode<T>* popFront() { return static_cast<TListNode<T>*>(ListImpl::popFront()); }
+
+    void insertBefore(TListNode<T>* node, TListNode<T>* node_to_insert)
+    {
+        ListImpl::insertBefore(node, node_to_insert);
+    }
+
+    void insertAfter(TListNode<T>* node, TListNode<T>* node_to_insert)
+    {
+        ListImpl::insertAfter(node, node_to_insert);
+    }
+
+    void erase(TListNode<T>* item)
+    {
+        item->mList = nullptr;
+        ListImpl::erase(item);
+    }
+
+    TListNode<T>* front() const { return static_cast<TListNode<T>*>(ListImpl::front()); }
+    TListNode<T>* back() const { return static_cast<TListNode<T>*>(ListImpl::back()); }
+    TListNode<T>* nth(int n) const { return static_cast<TListNode<T>*>(ListImpl::nth(n)); }
+    s32 indexOf(const TListNode<T>* node) const { return ListImpl::indexOf(node); }
+
+    void swap(TListNode<T>* n1, TListNode<T>* n2) { ListImpl::swap(n1, n2); }
+    void moveAfter(TListNode<T>* basis, TListNode<T>* n) { ListImpl::moveAfter(basis, n); }
+    void moveBefore(TListNode<T>* basis, TListNode<T>* n) { ListImpl::moveBefore(basis, n); }
+
+    void sort(s32 offset, CompareCallback cmp) { ListImpl::sort(offset, cmp); }
+    void mergeSort(s32 offset, CompareCallback cmp) { ListImpl::mergeSort(offset, cmp); }
+
+    TListNode<T>* find(const void* ptr, s32 offset, CompareCallback cmp) const
+    {
+        return static_cast<TListNode<T>*>(ListImpl::find(ptr, offset, cmp));
+    }
+    void uniq(s32 offset, CompareCallback cmp) { ListImpl::uniq(offset, cmp); }
+    void clear() { ListImpl::clear(); }
+
+    static TListNode<T>* next(TListNode<T>* node)
+    {
+        return static_cast<TListNode<T>*>(node->next());
+    }
 
     class iterator
     {
@@ -95,27 +147,15 @@ public:
     };
     RobustRange robustRange() const { return {*this}; }
 
-    void pushBack(TListNode<T>* item)
+private:
+    static int compareT(const T* a, const T* b)
     {
-        item->erase();
-        item->mList = this;
-        ListImpl::pushBack(item);
+        if (*a < *b)
+            return -1;
+        if (*a > *b)
+            return 1;
+        return 0;
     }
-
-    void erase(TListNode<T>* item)
-    {
-        item->mList = nullptr;
-        ListImpl::erase(item);
-    }
-
-    TListNode<T>* root() const { return static_cast<TListNode<T>*>(mStartEnd.next()); }
-
-    static TListNode<T>* next(TListNode<T>* node)
-    {
-        return static_cast<TListNode<T>*>(node->next());
-    }
-
-    bool isAtEnd(TListNode<T>* node) const { return node == &mStartEnd; }
 };
 
 template <typename T>
