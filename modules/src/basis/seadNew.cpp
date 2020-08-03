@@ -56,6 +56,19 @@ void DeleteImpl(void* ptr)
         SEAD_ASSERT_MSG(false, "delete bad pointer [0x%p]", ptr);
 }
 }  // namespace system
+
+void AllocFailAssert(Heap* heap, size_t size, u32 alignment)
+{
+    if (!heap)
+    {
+        heap = HeapMgr::instance()->getCurrentHeap();
+        SEAD_ASSERT_MSG(heap, "Current heap is null. Cannot alloc.");
+    }
+
+    SEAD_ASSERT_MSG(false,
+                    "alloc failed. size: %zu, allocatable size: %zu, alignment: %u, heap: %s", size,
+                    heap->getMaxAllocatableSize(alignment), alignment, heap->getName().cstr());
+}
 }  // namespace sead
 
 // operator new(size_t)

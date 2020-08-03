@@ -9,7 +9,9 @@
 namespace sead
 {
 class Heap;
-}
+
+void AllocFailAssert(Heap* heap, size_t size, u32 alignment);
+}  // namespace sead
 
 void* operator new(size_t size);
 void* operator new[](size_t size);
