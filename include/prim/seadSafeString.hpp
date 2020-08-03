@@ -290,11 +290,10 @@ inline s32 SafeStringBase<T>::comparen(const SafeStringBase<T>& str, s32 n) cons
 
     for (s32 i = 0; i < n; ++i)
     {
-        if (unsafeAt_(i) < str.unsafeAt_(i))
-            return -1;
+        const s32 cmp = unsafeAt_(i) - str.unsafeAt_(i);
 
-        if (unsafeAt_(i) > str.unsafeAt_(i))
-            return 1;
+        if (cmp != 0)
+            return cmp < 0 ? -1 : 1;
 
         if (unsafeAt_(i) == cNullChar)
             return 0;

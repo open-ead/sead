@@ -20,11 +20,14 @@ add_library(sead OBJECT
   modules/src/codec/seadHashCRC32.cpp
 
   include/container/seadBuffer.h
+  include/container/seadFreeList.h
   include/container/seadListImpl.h
   include/container/seadOffsetList.h
   include/container/seadPtrArray.h
   include/container/seadSafeArray.h
+  include/container/seadStrTreeMap.h
   include/container/seadTList.h
+  include/container/seadTreeMap.h
   include/container/seadTreeNode.h
   modules/src/container/seadListImpl.cpp
   modules/src/container/seadPtrArray.cpp

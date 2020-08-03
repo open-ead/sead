@@ -49,4 +49,18 @@ void operator delete[](void* ptr, sead::Heap*, s32);
 void operator delete(void* ptr, sead::Heap*, s32, const std::nothrow_t&);
 void operator delete[](void* ptr, sead::Heap*, s32, const std::nothrow_t&);
 
+namespace sead
+{
+inline u8* AllocBuffer(size_t size, Heap* heap, s32 alignment)
+{
+    u8* buffer = new (heap, alignment, std::nothrow) u8[size];
+    if (buffer)
+        return buffer;
+
+#ifdef SEAD_DEBUG
+    sead::AllocFailAssert(heap, size, alignment);
+#endif
+    return nullptr;
+}
+}  // namespace sead
 #endif  // SEAD_NEW_H_

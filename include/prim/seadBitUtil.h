@@ -35,5 +35,14 @@ inline To bitCastPtr(const void* value, intptr_t offset = 0)
     std::memcpy(&result, addOffset(value, offset), sizeof(To));
     return result;
 }
+
+// Convenience function to avoid UB.
+// Nintendo appears to perform type punning, but we care about UB.
+template <typename To, typename From>
+inline void bitCastWrite(const From& value, To* ptr)
+{
+    static_assert(sizeof(To) == sizeof(From), "To and From must have the same size");
+    std::memcpy(ptr, &value, sizeof(To));
+}
 }  // namespace BitUtil
 }  // namespace sead
