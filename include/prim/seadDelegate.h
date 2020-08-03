@@ -34,7 +34,7 @@ class IDelegate
 {
 public:
     virtual void invoke() = 0;
-    virtual IDelegate* clone(Heap* heap) const { return nullptr; }
+    virtual IDelegate* clone(Heap*) const { return nullptr; }
     virtual bool isNoDummy() const { return true; }
     void operator()() { return invoke(); }
 };
@@ -45,7 +45,7 @@ class IDelegateR
 {
 public:
     virtual R invoke() = 0;
-    virtual IDelegateR* clone(Heap* heap) const { return nullptr; }
+    virtual IDelegateR* clone(Heap*) const { return nullptr; }
     virtual bool isNoDummy() const { return true; }
     R operator()() { return invoke(); }
 };
@@ -57,7 +57,7 @@ class IDelegate1
 {
 public:
     virtual void invoke(A1 a1) = 0;
-    virtual IDelegate1* clone(Heap* heap) const { return nullptr; }
+    virtual IDelegate1* clone(Heap*) const { return nullptr; }
     virtual bool isNoDummy() const { return true; }
     void operator()(A1 a1) { return invoke(a1); }
 };
@@ -69,7 +69,7 @@ class IDelegate1R
 {
 public:
     virtual R invoke(A1 a1) = 0;
-    virtual IDelegate1R* clone(Heap* heap) const { return nullptr; }
+    virtual IDelegate1R* clone(Heap*) const { return nullptr; }
     virtual bool isNoDummy() const { return true; }
     R operator()(A1 a1) { return invoke(a1); }
 };
@@ -82,7 +82,7 @@ class IDelegate2
 {
 public:
     virtual void invoke(A1 a1, A2 a2) = 0;
-    virtual IDelegate2* clone(Heap* heap) const { return nullptr; }
+    virtual IDelegate2* clone(Heap*) const { return nullptr; }
     virtual bool isNoDummy() const { return true; }
     void operator()(A1 a1, A2 a2) { return invoke(a1, a2); }
 };
@@ -95,7 +95,7 @@ class IDelegate2R
 {
 public:
     virtual R invoke(A1 a1, A2 a2) = 0;
-    virtual IDelegate2R* clone(Heap* heap) const { return nullptr; }
+    virtual IDelegate2R* clone(Heap*) const { return nullptr; }
     virtual bool isNoDummy() const { return true; }
     R operator()(A1 a1, A2 a2) { return invoke(a1, a2); }
 };
