@@ -52,9 +52,6 @@ void TreeNode::detachSubTree()
     if (mParent && mParent->mChild == this)
     {
         mParent->mChild = mNext;
-#ifdef MATCHING_HACK_NX_CLANG
-        asm("");
-#endif
         if (mNext)
         {
             mNext->mPrev = mPrev;
@@ -65,9 +62,6 @@ void TreeNode::detachSubTree()
     {
         if (mPrev)
             mPrev->mNext = mNext;
-#ifdef MATCHING_HACK_NX_CLANG
-        asm("");
-#endif
         if (mNext)
         {
             mNext->mPrev = mPrev;
@@ -126,9 +120,6 @@ void TreeNode::insertAfterSelf(TreeNode* node)
         next->mPrev = node;
     else if (mParent)
         mParent->mChild->mPrev = node;
-#ifdef MATCHING_HACK_NX_CLANG
-    asm("");
-#endif
     node->mParent = mParent;
 }
 
@@ -158,9 +149,6 @@ void TreeNode::pushBackChild(TreeNode* node)
         n->mNext = node;
         node->mPrev = n;
         node->mParent = n->mParent;
-#ifdef MATCHING_HACK_NX_CLANG
-        asm("");
-#endif
         mChild->mPrev = node;
     }
     else
@@ -198,13 +186,7 @@ void TreeNode::pushFrontChild(TreeNode* node)
     if (mChild)
     {
         node->mNext = mChild;
-#ifdef MATCHING_HACK_NX_CLANG
-        asm("");
-#endif
         node->mPrev = mChild->mPrev;
-#ifdef MATCHING_HACK_NX_CLANG
-        asm("");
-#endif
         mChild->mPrev = node;
         mChild = node;
         node->mParent = this;

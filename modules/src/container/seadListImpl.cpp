@@ -34,34 +34,31 @@ void ListNode::erase_()
     if (mPrev != nullptr)
         mPrev->mNext = mNext;
 
-    // In some versions of sead, mPrev is reloaded from memory. This requires volatile.
     if (mNext != nullptr)
-        mNext->mPrev = static_cast<volatile ListNode*>(this)->mPrev;
+        mNext->mPrev = mPrev;
 
     mPrev = mNext = NULL;
 }
 
 ListNode* ListImpl::popBack()
 {
-    volatile s32* count = &mCount;
-    if (*count < 1)
+    if (mCount < 1)
         return nullptr;
 
     ListNode* back = mStartEnd.mPrev;
     back->erase_();
-    --*count;
+    --mCount;
     return back;
 }
 
 ListNode* ListImpl::popFront()
 {
-    volatile s32* count = &mCount;
-    if (*count < 1)
+    if (mCount < 1)
         return nullptr;
 
     ListNode* front = mStartEnd.mNext;
     front->erase_();
-    --*count;
+    --mCount;
     return front;
 }
 

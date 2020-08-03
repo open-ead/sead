@@ -65,14 +65,7 @@ private:
         ~DisposeHostIOCaller() override;
 
         bool hasInstance() const { return mInstance != nullptr; }
-
-        void clearInstance()
-        {
-            mInstance = nullptr;
-#ifdef MATCHING_HACK_NX_CLANG
-            asm("");
-#endif
-        }
+        void clearInstance() { mInstance = nullptr; }
 
     private:
         LifeCheckable* mInstance;
