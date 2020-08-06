@@ -123,7 +123,12 @@ template <typename T>
 class Delegate : public DelegateBase<T, void (T::*)(), IDelegate>
 {
 public:
-    void invoke() override { return (this->mInstance->*(this->mFunctionPtr))(); }
+    void invoke() override { operator()(); }
+    void operator()() const
+    {
+        if (this->mInstance && this->mFunctionPtr)
+            return (this->mInstance->*(this->mFunctionPtr))();
+    }
     Delegate* clone(Heap* heap) const override { return new (heap) Delegate(*this); }
 };
 
@@ -133,7 +138,13 @@ template <typename T, typename R>
 class DelegateR : public DelegateBase<T, R (T::*)(), IDelegateR<R>>
 {
 public:
-    R invoke() override { return (this->mInstance->*(this->mFunctionPtr))(); }
+    R invoke() override { return operator()(); }
+    R operator()() const
+    {
+        if (this->mInstance && this->mFunctionPtr)
+            return (this->mInstance->*(this->mFunctionPtr))();
+        return {};
+    }
     DelegateR* clone(Heap* heap) const override { return new (heap) DelegateR(*this); }
 };
 
@@ -144,7 +155,12 @@ template <typename T, typename A1>
 class Delegate1 : public DelegateBase<T, void (T::*)(A1), IDelegate1<A1>>
 {
 public:
-    void invoke(A1 a1) override { return (this->mInstance->*(this->mFunctionPtr))(a1); }
+    void invoke(A1 a1) override { operator()(a1); }
+    void operator()(A1 a1) const
+    {
+        if (this->mInstance && this->mFunctionPtr)
+            return (this->mInstance->*(this->mFunctionPtr))(a1);
+    }
     Delegate1* clone(Heap* heap) const override { return new (heap) Delegate1(*this); }
 };
 
@@ -155,7 +171,13 @@ template <typename T, typename A1, typename R>
 class Delegate1R : public DelegateBase<T, R (T::*)(A1), IDelegate1R<A1, R>>
 {
 public:
-    R invoke(A1 a1) override { return (this->mInstance->*(this->mFunctionPtr))(a1); }
+    R invoke(A1 a1) override { return operator()(a1); }
+    R operator()(A1 a1) const
+    {
+        if (this->mInstance && this->mFunctionPtr)
+            return (this->mInstance->*(this->mFunctionPtr))(a1);
+        return {};
+    }
     Delegate1R* clone(Heap* heap) const override { return new (heap) Delegate1R(*this); }
 };
 
@@ -167,7 +189,12 @@ template <typename T, typename A1, typename A2>
 class Delegate2 : public DelegateBase<T, void (T::*)(A1, A2), IDelegate2<A1, A2>>
 {
 public:
-    void invoke(A1 a1, A2 a2) override { return (this->mInstance->*(this->mFunctionPtr))(a1, a2); }
+    void invoke(A1 a1, A2 a2) override { return operator()(a1, a2); }
+    void operator()(A1 a1, A2 a2) const
+    {
+        if (this->mInstance && this->mFunctionPtr)
+            return (this->mInstance->*(this->mFunctionPtr))(a1, a2);
+    }
     Delegate2* clone(Heap* heap) const override { return new (heap) Delegate2(*this); }
 };
 
@@ -179,7 +206,13 @@ template <typename T, typename A1, typename A2, typename R>
 class Delegate2R : public DelegateBase<T, R (T::*)(A1, A2), IDelegate2R<A1, A2, R>>
 {
 public:
-    R invoke(A1 a1, A2 a2) override { return (this->mInstance->*(this->mFunctionPtr))(a1, a2); }
+    R invoke(A1 a1, A2 a2) override { return operator()(a1, a2); }
+    R operator()(A1 a1, A2 a2) const
+    {
+        if (this->mInstance && this->mFunctionPtr)
+            return (this->mInstance->*(this->mFunctionPtr))(a1, a2);
+        return {};
+    }
     Delegate2R* clone(Heap* heap) const override { return new (heap) Delegate2R(*this); }
 };
 
@@ -189,6 +222,7 @@ class LambdaDelegate : public IDelegate
 public:
     explicit LambdaDelegate(Lambda l) : mLambda(std::move(l)) {}
     auto invoke() override { return mLambda(); }
+    auto operator()() const { return mLambda(); }
     auto clone(Heap* heap) const override { return new (heap) LambdaDelegate(*this); }
 
 protected:
@@ -201,6 +235,7 @@ class LambdaDelegateR : public IDelegateR<R>
 public:
     explicit LambdaDelegateR(Lambda l) : mLambda(std::move(l)) {}
     auto invoke() override { return mLambda(); }
+    auto operator()() const { return mLambda(); }
     auto clone(Heap* heap) const override { return new (heap) LambdaDelegateR(*this); }
 
 protected:
@@ -213,6 +248,7 @@ class LambdaDelegate1 : public IDelegate1<A1>
 public:
     explicit LambdaDelegate1(Lambda l) : mLambda(std::move(l)) {}
     auto invoke(A1 a1) override { return mLambda(a1); }
+    auto operator()(A1 a1) const { return mLambda(a1); }
     auto clone(Heap* heap) const override { return new (heap) LambdaDelegate1(*this); }
 
 protected:
@@ -225,6 +261,7 @@ class LambdaDelegate1R : public IDelegate1R<A1, R>
 public:
     explicit LambdaDelegate1R(Lambda l) : mLambda(std::move(l)) {}
     auto invoke(A1 a1) override { return mLambda(a1); }
+    auto operator()(A1 a1) const { return mLambda(a1); }
     auto clone(Heap* heap) const override { return new (heap) LambdaDelegate1R(*this); }
 
 protected:
@@ -237,6 +274,7 @@ class LambdaDelegate2 : public IDelegate2<A1, A2>
 public:
     explicit LambdaDelegate2(Lambda l) : mLambda(std::move(l)) {}
     auto invoke(A1 a1, A2 a2) override { return mLambda(a1, a2); }
+    auto operator()(A1 a1, A2 a2) const { return mLambda(a1, a2); }
     auto clone(Heap* heap) const override { return new (heap) LambdaDelegate2(*this); }
 
 protected:
@@ -249,6 +287,7 @@ class LambdaDelegate2R : public IDelegate2R<A1, A2, R>
 public:
     explicit LambdaDelegate2R(Lambda l) : mLambda(std::move(l)) {}
     auto invoke(A1 a1, A2 a2) override { return mLambda(a1, a2); }
+    auto operator()(A1 a1, A2 a2) const { return mLambda(a1, a2); }
     auto clone(Heap* heap) const override { return new (heap) LambdaDelegate2R(*this); }
 
 protected:
