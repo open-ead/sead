@@ -123,6 +123,8 @@ template <typename T>
 class Delegate : public DelegateBase<T, void (T::*)(), IDelegate>
 {
 public:
+    using Base = DelegateBase<T, void (T::*)(), IDelegate>;
+    using Base::Base;
     void invoke() override { operator()(); }
     void operator()() const
     {
@@ -138,6 +140,8 @@ template <typename T, typename R>
 class DelegateR : public DelegateBase<T, R (T::*)(), IDelegateR<R>>
 {
 public:
+    using Base = DelegateBase<T, R (T::*)(), IDelegateR<R>>;
+    using Base::Base;
     R invoke() override { return operator()(); }
     R operator()() const
     {
@@ -155,6 +159,8 @@ template <typename T, typename A1>
 class Delegate1 : public DelegateBase<T, void (T::*)(A1), IDelegate1<A1>>
 {
 public:
+    using Base = DelegateBase<T, void (T::*)(A1), IDelegate1<A1>>;
+    using Base::Base;
     void invoke(A1 a1) override { operator()(a1); }
     void operator()(A1 a1) const
     {
@@ -171,6 +177,8 @@ template <typename T, typename A1, typename R>
 class Delegate1R : public DelegateBase<T, R (T::*)(A1), IDelegate1R<A1, R>>
 {
 public:
+    using Base = DelegateBase<T, R (T::*)(A1), IDelegate1R<A1, R>>;
+    using Base::Base;
     R invoke(A1 a1) override { return operator()(a1); }
     R operator()(A1 a1) const
     {
@@ -189,6 +197,8 @@ template <typename T, typename A1, typename A2>
 class Delegate2 : public DelegateBase<T, void (T::*)(A1, A2), IDelegate2<A1, A2>>
 {
 public:
+    using Base = DelegateBase<T, void (T::*)(A1, A2), IDelegate2<A1, A2>>;
+    using Base::Base;
     void invoke(A1 a1, A2 a2) override { return operator()(a1, a2); }
     void operator()(A1 a1, A2 a2) const
     {
@@ -206,6 +216,8 @@ template <typename T, typename A1, typename A2, typename R>
 class Delegate2R : public DelegateBase<T, R (T::*)(A1, A2), IDelegate2R<A1, A2, R>>
 {
 public:
+    using Base = DelegateBase<T, R (T::*)(A1, A2), IDelegate2R<A1, A2, R>>;
+    using Base::Base;
     R invoke(A1 a1, A2 a2) override { return operator()(a1, a2); }
     R operator()(A1 a1, A2 a2) const
     {
