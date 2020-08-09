@@ -49,9 +49,11 @@ add_library(sead OBJECT
   include/framework/seadHeapPolicies.h
   include/framework/seadMethodTree.h
   include/framework/seadMethodTreeMgr.h
+  include/framework/seadProcessMeterBar.h
   include/framework/seadTaskBase.h
   include/framework/seadTaskID.h
   include/framework/seadTaskMgr.h
+  modules/src/framework/seadProcessMeterBar.cpp
 
   include/gfx/seadCamera.h
   include/gfx/seadColor.h

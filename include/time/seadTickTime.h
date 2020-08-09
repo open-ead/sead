@@ -23,7 +23,7 @@ public:
     void setNow();
 #endif
 
-    TickSpan diff(const TickTime& other) const { return s64(mTick) - s64(other.mTick); }
+    TickSpan diff(const TickTime& other) const { return s64(mTick - other.mTick); }
     TickSpan diffToNow() const { return diff(TickTime()); }
 
     TickTime& operator+=(const TickSpan& span)

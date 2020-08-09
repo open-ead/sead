@@ -170,11 +170,18 @@ public:
 
     void setBuffer(s32 size, T* bufferptr)
     {
-        if (size > 0 && bufferptr)
+        if (size < 1)
         {
-            mSize = size;
-            mBuffer = bufferptr;
+            SEAD_ASSERT_MSG(false, "size[%d] must be larger than zero", size);
+            return;
         }
+        if (!bufferptr)
+        {
+            SEAD_ASSERT_MSG(false, "bufferptr is null");
+            return;
+        }
+        mSize = size;
+        mBuffer = bufferptr;
     }
 
     bool isBufferReady() const { return mBuffer != nullptr; }
@@ -182,24 +189,42 @@ public:
     T& operator()(s32 idx) { return *unsafeGet(idx); }
     const T& operator()(s32 idx) const { return *unsafeGet(idx); }
 
-    T& operator[](s32 idx) { return *get(idx); }
-    const T& operator[](s32 idx) const { return *get(idx); }
+    T& operator[](s32 idx)
+    {
+        if (mSize <= u32(idx))
+        {
+            SEAD_ASSERT_MSG(false, "index exceeded [%d/%d]", idx, mSize);
+            return mBuffer[0];
+        }
+        return mBuffer[idx];
+    }
+
+    const T& operator[](s32 idx) const
+    {
+        if (mSize <= u32(idx))
+        {
+            SEAD_ASSERT_MSG(false, "index exceeded [%d/%d]", idx, mSize);
+            return mBuffer[0];
+        }
+        return mBuffer[idx];
+    }
 
     T* get(s32 idx)
     {
         if (mSize <= u32(idx))
         {
             SEAD_ASSERT_MSG(false, "index exceeded [%d/%d]", idx, mSize);
-            return mBuffer;
+            return nullptr;
         }
         return &mBuffer[idx];
     }
+
     const T* get(s32 idx) const
     {
         if (mSize <= u32(idx))
         {
             SEAD_ASSERT_MSG(false, "index exceeded [%d/%d]", idx, mSize);
-            return mBuffer;
+            return nullptr;
         }
         return &mBuffer[idx];
     }
