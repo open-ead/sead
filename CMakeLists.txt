@@ -89,7 +89,10 @@ add_library(sead OBJECT
   modules/src/math/seadVector.cpp
 
   include/mc/seadCoreInfo.h
+  include/mc/seadJob.h
+  include/mc/seadJobQueue.h
   modules/src/mc/seadCoreInfo.cpp
+  modules/src/mc/seadJobQueue.cpp
 
   include/prim/seadBitFlag.h
   include/prim/seadBitUtil.h

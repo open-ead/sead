@@ -67,6 +67,7 @@ protected:
 template <size_t N>
 class MultiProcessMeterBar : public ProcessMeterBarBase
 {
+public:
     MultiProcessMeterBar(const SafeString& name, const Color4f& color)
         : ProcessMeterBarBase(mSections, N, name, color)
     {

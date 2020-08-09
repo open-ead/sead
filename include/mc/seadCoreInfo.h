@@ -8,6 +8,7 @@
 
 namespace sead
 {
+#line 46
 SEAD_ENUM(CoreId, cMain, cSub1, cSub2, cSub3, cSub4, cSub5, cSub6, cSub7, cSub8, cSub9, cSub10,
           cSub11, cSub12, cSub13, cSub14, cSub15, cSub16, cSub17, cSub18, cSub19, cSub20, cSub21,
           cSub22, cSub23, cSub24, cSub25, cSub26, cSub27, cSub28, cSub29, cSub30, cSub31, cSub32,
@@ -28,9 +29,9 @@ public:
         return *this;
     }
 
-    bool isOn(const CoreId& id) const volatile { return (mMask & id) != 0; }
-    void setOff(CoreId id) volatile { mMask &= ~id; }
-    void setOn(CoreId id) volatile { mMask |= id; }
+    bool isOn(const CoreId& id) const volatile { return (mMask & makeCoreMask_(id)) != 0; }
+    void setOff(CoreId id) volatile { mMask &= ~makeCoreMask_(id); }
+    void setOn(CoreId id) volatile { mMask |= makeCoreMask_(id); }
     void clear() volatile { mMask = 0; }
     u32 countOnBits() const;
 

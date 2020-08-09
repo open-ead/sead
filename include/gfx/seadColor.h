@@ -58,10 +58,10 @@ public:
     friend Color4f operator/(const Color4f& lhs, f32 x);
     friend bool operator==(const Color4f& lhs, const Color4f& rhs);
 
-    f32 r;
-    f32 g;
-    f32 b;
-    f32 a;
+    f32 r = cElementMin;
+    f32 g = cElementMin;
+    f32 b = cElementMin;
+    f32 a = cElementMax;
 
     static const f32 cElementMax;
     static const f32 cElementMin;

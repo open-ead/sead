@@ -75,12 +75,12 @@ private:
         int getRelativeIndex() const volatile { return mIdx; }                                     \
         void setRelativeIndex(int idx)                                                             \
         {                                                                                          \
-            SEAD_ASSERT_MSG(idx < size(), "range over: %d, [%d - %d)", idx, 0, size());            \
+            SEAD_ASSERT_MSG(u32(idx) < size(), "range over: %d, [%d - %d)", idx, 0, size());       \
             mIdx = idx;                                                                            \
         }                                                                                          \
         void setRelativeIndex(int idx) volatile                                                    \
         {                                                                                          \
-            SEAD_ASSERT_MSG(idx < size(), "range over: %d, [%d - %d)", idx, 0, size());            \
+            SEAD_ASSERT_MSG(u32(idx) < size(), "range over: %d, [%d - %d)", idx, 0, size());       \
             mIdx = idx;                                                                            \
         }                                                                                          \
                                                                                                    \
@@ -227,12 +227,12 @@ private:
         int getRelativeIndex() const volatile { return mIdx; }                                     \
         void setRelativeIndex(int idx)                                                             \
         {                                                                                          \
-            SEAD_ASSERT_MSG(idx < size(), "range over: %d, [%d - %d)", idx, 0, size());            \
+            SEAD_ASSERT_MSG(u32(idx) < size(), "range over: %d, [%d - %d)", idx, 0, size());       \
             mIdx = idx;                                                                            \
         }                                                                                          \
         void setRelativeIndex(int idx) volatile                                                    \
         {                                                                                          \
-            SEAD_ASSERT_MSG(idx < size(), "range over: %d, [%d - %d)", idx, 0, size());            \
+            SEAD_ASSERT_MSG(u32(idx) < size(), "range over: %d, [%d - %d)", idx, 0, size());       \
             mIdx = idx;                                                                            \
         }                                                                                          \
         static int findRelativeIndex(ValueType value) { return findRelativeIndex_(value); }        \
