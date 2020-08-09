@@ -16,6 +16,12 @@ public:
     {
         if (u32(idx) < N)
             return mBuffer[idx];
+#ifdef MATCHING_HACK_NX_CLANG
+            // Force __LINE__ to be an odd number that cannot be encoded as an immediate for ORR.
+            // Otherwise, LLVM's register coalescer can get rid of too many register copies,
+            // which messes up register allocation.
+#line 44
+#endif
         SEAD_ASSERT_MSG(false, "range over [0, %d) : %d", N, idx);
         return mBuffer[0];
     }
@@ -24,6 +30,12 @@ public:
     {
         if (u32(idx) < N)
             return mBuffer[idx];
+#ifdef MATCHING_HACK_NX_CLANG
+            // Force __LINE__ to be an even number that can be encoded as an immediate for ORR.
+            // Otherwise, LLVM's register coalescer can fail to get rid of some register copies,
+            // which messes up register allocation.
+#line 59
+#endif
         SEAD_ASSERT_MSG(false, "range over [0, %d) : %d", N, idx);
         return mBuffer[0];
     }
