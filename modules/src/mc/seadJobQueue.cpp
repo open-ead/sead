@@ -5,6 +5,8 @@
 
 namespace sead
 {
+SEAD_ENUM_IMPL(SyncType)
+
 // NON_MATCHING
 JobQueue::JobQueue()
 {
@@ -53,7 +55,7 @@ void JobQueue::setGranularity(u32 x)
         setGranularity(i, x);
 }
 
-// NON_MATCHING: CMP (AND x y), #0 gets optimized into a TST; stack
+// NON_MATCHING: CMP (AND x y), #0 gets optimized into a TST
 void JobQueue::setCoreMaskAndWaitType(CoreIdMask mask, SyncType type)
 {
     mStatus = Status::_6;
@@ -79,11 +81,11 @@ void JobQueue::wait_AT_WORKER()
 
     switch (mSyncType)
     {
-    case SyncType::WaitForWorker:
+    case SyncType::cCore:
         if (!isDone_())
             mEvent.wait();
         break;
-    case SyncType::_2:
+    case SyncType::cThread:
         SEAD_ASSERT_MSG(false, "*NOT YET\n");
         if (!isDone_())
             mEvent.wait();
@@ -97,7 +99,7 @@ void JobQueue::wait()
 {
     if (u32(mSyncType) >= 2)
     {
-        if (mSyncType != SyncType::_2)
+        if (mSyncType != SyncType::cThread)
             return;
         SEAD_ASSERT_MSG(false, "NOT IMPLEMENTED.\n");
     }

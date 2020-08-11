@@ -6,6 +6,7 @@
 #include "hostio/seadHostIONode.h"
 #include "mc/seadCoreInfo.h"
 #include "mc/seadJob.h"
+#include "prim/seadEnum.h"
 #include "prim/seadNamable.h"
 #include "thread/seadAtomic.h"
 #include "thread/seadEvent.h"
@@ -14,12 +15,7 @@ namespace sead
 {
 class Worker;
 
-enum class SyncType : int
-{
-    _0 = 0,
-    WaitForWorker = 1,
-    _2 = 2,
-};
+SEAD_ENUM(SyncType, cNoSync, cCore, cThread)
 
 class JobQueue : public hostio::Node, public INamable
 {
@@ -51,7 +47,7 @@ public:
 protected:
     virtual bool isDone_();
 
-    SyncType mSyncType = SyncType::_0;
+    SyncType mSyncType = SyncType::cNoSync;
     u32 mSpinLock = 0;
     CoreIdMask mMask;
     Event mEvent{true};
