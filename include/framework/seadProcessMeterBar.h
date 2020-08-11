@@ -43,6 +43,8 @@ public:
     ProcessMeter* getParentProcessMeter() const { return mParent; }
     void setParentProcessMeter(ProcessMeter* parent);
 
+    void setColor(const Color4f& color) { mColor = color; }
+
 protected:
     void measureBeginImpl_(const TickTime& start_time, Color4f color);
     void measureEndImpl_(const TickTime& end_time);
@@ -64,11 +66,12 @@ protected:
     bool mEnabled = false;
 };
 
-template <size_t N>
+template <s32 N>
 class MultiProcessMeterBar : public ProcessMeterBarBase
 {
 public:
-    MultiProcessMeterBar(const SafeString& name, const Color4f& color)
+    MultiProcessMeterBar(const SafeString& name = SafeString::cEmptyString,
+                         const Color4f& color = Color4f::cRed)
         : ProcessMeterBarBase(mSections, N, name, color)
     {
     }

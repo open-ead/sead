@@ -1,15 +1,9 @@
 #include "framework/seadProcessMeterBar.h"
 #include "basis/seadRawPrint.h"
+#include "framework/seadProcessMeter.h"
 
 namespace sead
 {
-// FIXME: remove this when ProcessMeter is implemented
-class ProcessMeter
-{
-public:
-    void detachProcessMeterBar(ProcessMeterBarBase* bar);
-};
-
 ProcessMeterBarBase::ProcessMeterBarBase(ProcessMeterBarBase::Section* sections, s32 num_sections,
                                          const SafeString& name, const Color4f& color)
     : INamable(name), mColor(color)

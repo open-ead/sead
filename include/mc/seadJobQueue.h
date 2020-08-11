@@ -10,12 +10,36 @@
 #include "prim/seadNamable.h"
 #include "thread/seadAtomic.h"
 #include "thread/seadEvent.h"
+#include "container/seadBuffer.h"
 
 namespace sead
 {
+class Heap;
 class Worker;
 
 SEAD_ENUM(SyncType, cNoSync, cCore, cThread)
+
+class PerfJobQueue
+{
+public:
+    void initialize(const char* name, Heap* heap);
+    void finalize();
+    void reset();
+
+    void measureBeginDeque();
+    void measureEndDeque();
+    void measureBeginRun();
+    void measureEndRun();
+
+    const Color4f& getBarColor(u32 idx) const;
+    void attachProcessMeter();
+    void detachProcessMeter();
+
+private:
+    Buffer<MultiProcessMeterBar<512>> mBars;
+    Buffer<u32> mInts;
+    MultiProcessMeterBar<1> mProcessMeterBar;
+};
 
 class JobQueue : public hostio::Node, public INamable
 {
@@ -59,12 +83,7 @@ protected:
     const char* description = "NoName";
 
 #ifdef SEAD_DEBUG
-    u32 _108 = 0;
-    void* _110 = nullptr;
-    u32 _118 = 0;
-    void* _120 = nullptr;
-
-    MultiProcessMeterBar<1> mProcessMeterBar{SafeString::cNullString, Color4f::cRed};
+    PerfJobQueue mPerf;
 #endif
 };
 
