@@ -79,76 +79,80 @@ public:
     void allocBuffer(s32 size, s32 alignment)
     {
         SEAD_ASSERT(mBuffer == nullptr);
-        if (size < 1)
+        if (size > 0)
+        {
+            T* buffer = new (alignment) T[size];
+            if (buffer)
+            {
+                mSize = size;
+                mBuffer = buffer;
+                SEAD_ASSERT_MSG(PtrUtil::isAlignedPow2(mBuffer, sead::abs(alignment)),
+                                "don't set alignment for a class with destructor");
+            }
+        }
+        else
         {
             SEAD_ASSERT_MSG(false, "size[%d] must be larger than zero", size);
-            return;
-        }
-        T* buffer = new (alignment) T[size];
-        if (buffer)
-        {
-            mSize = size;
-            mBuffer = buffer;
-            SEAD_ASSERT_MSG(PtrUtil::isAlignedPow2(mBuffer, sead::abs(alignment)),
-                            "don't set alignment for a class with destructor");
         }
     }
 
     void allocBuffer(s32 size, Heap* heap, s32 alignment = sizeof(void*))
     {
         SEAD_ASSERT(mBuffer == nullptr);
-        if (size < 1)
+        if (size > 0)
+        {
+            T* buffer = new (heap, alignment) T[size];
+            if (buffer)
+            {
+                mSize = size;
+                mBuffer = buffer;
+                SEAD_ASSERT_MSG(PtrUtil::isAlignedPow2(mBuffer, sead::abs(alignment)),
+                                "don't set alignment for a class with destructor");
+            }
+        }
+        else
         {
             SEAD_ASSERT_MSG(false, "size[%d] must be larger than zero", size);
-            return;
-        }
-        T* buffer = new (heap, alignment) T[size];
-        if (buffer)
-        {
-            mSize = size;
-            mBuffer = buffer;
-            SEAD_ASSERT_MSG(PtrUtil::isAlignedPow2(mBuffer, sead::abs(alignment)),
-                            "don't set alignment for a class with destructor");
         }
     }
 
     bool tryAllocBuffer(s32 size, s32 alignment = sizeof(void*))
     {
         SEAD_ASSERT(mBuffer == nullptr);
-        if (size < 1)
+        if (size > 0)
         {
-            SEAD_ASSERT_MSG(false, "size[%d] must be larger than zero", size);
+            T* buffer = new (alignment, std::nothrow) T[size];
+            if (buffer)
+            {
+                mSize = size;
+                mBuffer = buffer;
+                SEAD_ASSERT_MSG(PtrUtil::isAlignedPow2(mBuffer, sead::abs(alignment)),
+                                "don't set alignment for a class with destructor");
+                return true;
+            }
             return false;
         }
-        T* buffer = new (alignment, std::nothrow) T[size];
-        if (buffer)
-        {
-            mSize = size;
-            mBuffer = buffer;
-            SEAD_ASSERT_MSG(PtrUtil::isAlignedPow2(mBuffer, sead::abs(alignment)),
-                            "don't set alignment for a class with destructor");
-            return true;
-        }
+        SEAD_ASSERT_MSG(false, "size[%d] must be larger than zero", size);
         return false;
     }
 
     bool tryAllocBuffer(s32 size, Heap* heap, s32 alignment = sizeof(void*))
     {
         SEAD_ASSERT(mBuffer == nullptr);
-        if (size < 1)
+        if (size > 0)
         {
-            SEAD_ASSERT_MSG(false, "size[%d] must be larger than zero", size);
+            T* buffer = new (heap, alignment, std::nothrow) T[size];
+            if (buffer)
+            {
+                mSize = size;
+                mBuffer = buffer;
+                SEAD_ASSERT_MSG(PtrUtil::isAlignedPow2(mBuffer, sead::abs(alignment)),
+                                "don't set alignment for a class with destructor");
+                return true;
+            }
             return false;
         }
-        T* buffer = new (heap, alignment, std::nothrow) T[size];
-        if (buffer)
-        {
-            mSize = size;
-            mBuffer = buffer;
-            SEAD_ASSERT_MSG(PtrUtil::isAlignedPow2(mBuffer, sead::abs(alignment)),
-                            "don't set alignment for a class with destructor");
-            return true;
-        }
+        SEAD_ASSERT_MSG(false, "size[%d] must be larger than zero", size);
         return false;
     }
 
