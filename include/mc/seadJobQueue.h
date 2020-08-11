@@ -1,6 +1,7 @@
 #pragma once
 
 #include "basis/seadTypes.h"
+#include "container/seadBuffer.h"
 #include "container/seadSafeArray.h"
 #include "framework/seadProcessMeterBar.h"
 #include "hostio/seadHostIONode.h"
@@ -10,7 +11,6 @@
 #include "prim/seadNamable.h"
 #include "thread/seadAtomic.h"
 #include "thread/seadEvent.h"
-#include "container/seadBuffer.h"
 
 namespace sead
 {
@@ -41,12 +41,25 @@ private:
     MultiProcessMeterBar<1> mProcessMeterBar;
 };
 
+class JobQueueLock
+{
+public:
+    void lock();
+    void unlock();
+
+private:
+    Atomic<u32> mSpinLock = 0;
+};
+
 class JobQueue : public hostio::Node, public INamable
 {
 public:
     enum class Status : int
     {
         _0 = 0,
+        _1 = 1,
+        _3 = 3,
+        _5 = 5,
         _6 = 6,
     };
 
@@ -72,14 +85,14 @@ protected:
     virtual bool isDone_();
 
     SyncType mSyncType = SyncType::cNoSync;
-    u32 mSpinLock = 0;
+    JobQueueLock mLock;
     CoreIdMask mMask;
     Event mEvent{true};
     SafeArray<u32, 3> mGranularity;
     SafeArray<u32, 3> mCoreEnabled;
     volatile u32 mNumDoneJobs = 0;
 
-    Status mStatus = Status::_0;
+    Atomic<Status> mStatus = Status::_0;
     const char* description = "NoName";
 
 #ifdef SEAD_DEBUG
@@ -87,4 +100,36 @@ protected:
 #endif
 };
 
+class FixedSizeJQ : public JobQueue
+{
+public:
+    FixedSizeJQ();
+
+#ifdef SEAD_DEBUG
+    void listenPropertyEvent(const hostio::PropertyEvent* event) override;
+    void genMessage(hostio::Context* context) override;
+#endif
+
+    void begin() override;
+    bool run(u32 size, u32* finished_jobs, Worker* worker) override;
+    u32 getNumJobs() const override;
+
+    void initialize(u32 size, Heap* heap);
+    void finalize();
+
+    bool enque(Job* job);
+    bool enqueSafe(Job* job);
+    Job* deque();
+    u32 deque(Job** jobs, u32 count);
+    bool rewind();
+    void clear();
+
+    bool debug_IsAllJobDone();
+
+protected:
+    Buffer<Job*> mJobs;
+    u32 mNumJobs;
+    u32 mNumProcessedJobs;
+    bool _230;
+};
 }  // namespace sead

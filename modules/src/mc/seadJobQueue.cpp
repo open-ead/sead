@@ -3,6 +3,7 @@
 #include "basis/seadRawPrint.h"
 #include "framework/seadProcessMeter.h"
 #include "mc/seadJobQueue.h"
+#include "prim/seadScopedLock.h"
 
 namespace sead
 {
@@ -204,5 +205,127 @@ void PerfJobQueue::detachProcessMeter()
         ProcessMeter::instance()->detachProcessMeterBar(&mBars[i]);
 
     ProcessMeter::instance()->detachProcessMeterBar(&mProcessMeterBar);
+}
+
+void JobQueueLock::lock()
+{
+    while (mSpinLock.load() == 1)
+        continue;
+    while (!mSpinLock.compareExchange(0, 1))
+        continue;
+}
+
+void JobQueueLock::unlock()
+{
+    std::atomic_thread_fence(std::memory_order_seq_cst);
+    while (!mSpinLock.compareExchange(1, 0))
+        continue;
+}
+
+FixedSizeJQ::FixedSizeJQ()
+{
+    _230 = true;
+    mStatus = Status::_0;
+    mNumJobs = 0;
+    mNumProcessedJobs = 0;
+}
+
+void FixedSizeJQ::begin() {}
+
+u32 FixedSizeJQ::getNumJobs() const
+{
+    return mNumJobs;
+}
+
+void FixedSizeJQ::initialize(u32 size, Heap* heap)
+{
+#ifdef SEAD_DEBUG
+    mPerf.initialize(getName().cstr(), heap);
+#endif
+
+    ScopedLock<JobQueueLock> lock(&mLock);
+    mJobs.allocBufferAssert(size, heap);
+    mNumJobs = 0;
+    mNumProcessedJobs = 0;
+    mStatus = Status::_1;
+}
+
+void FixedSizeJQ::finalize()
+{
+#ifdef SEAD_DEBUG
+    mPerf.finalize();
+#endif
+    mJobs.freeBuffer();
+}
+
+bool FixedSizeJQ::enque(Job* job)
+{
+    mStatus = Status::_3;
+
+    if (mNumJobs >= mJobs.size())
+        return false;
+
+    mJobs[mNumJobs++] = job;
+    return true;
+}
+
+bool FixedSizeJQ::enqueSafe(Job* job)
+{
+    mStatus = Status::_3;
+
+    ScopedLock<JobQueueLock> lock(&mLock);
+    if (mNumJobs >= mJobs.size())
+        return false;
+
+    mJobs[mNumJobs++] = job;
+    return true;
+}
+
+Job* FixedSizeJQ::deque()
+{
+    ScopedLock<JobQueueLock> lock(&mLock);
+
+    if (mNumProcessedJobs >= mNumJobs)
+        return nullptr;
+
+    return mJobs[mNumProcessedJobs++];
+}
+
+u32 FixedSizeJQ::deque(Job** jobs, u32 count)
+{
+    ScopedLock<JobQueueLock> lock(&mLock);
+
+    u32 ret = 0;
+    while (mNumProcessedJobs < mNumJobs && ret < count)
+    {
+        jobs[ret] = mJobs[mNumProcessedJobs++];
+        ++ret;
+    }
+    return ret;
+}
+
+bool FixedSizeJQ::rewind()
+{
+#ifdef SEAD_DEBUG
+    mPerf.reset();
+#endif
+    mNumProcessedJobs = 0;
+    return true;
+}
+
+void FixedSizeJQ::clear()
+{
+    mStatus = Status::_5;
+#ifdef SEAD_DEBUG
+    mPerf.reset();
+#endif
+    mNumJobs = 0;
+    mNumProcessedJobs = 0;
+    mSyncType = SyncType::cNoSync;
+}
+
+bool FixedSizeJQ::debug_IsAllJobDone()
+{
+    return mNumProcessedJobs >= mNumJobs;
 }
 }  // namespace sead
