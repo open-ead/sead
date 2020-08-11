@@ -1,12 +1,12 @@
 # sead
 
-Decompilation of Nintendo's standard library (modern version)
+This is a decompilation of sead, the standard C++ library for first-party Nintendo games.
 
-Unlike the original [sead decomp project](https://github.com/aboood40091/sead), which this repo derives from, this project targets more recent versions of sead.
+Unlike the original [sead decompilation project](https://github.com/aboood40091/sead), which this repo derives from, this project targets more recent versions of sead.
 
 The objective is to recreate the standard library as accurately as possible, so that interoperability can eventually be achieved by adding support for other platforms and by making it easier to create projects that interact with sead games.
 
-Because sead is statically linked into games, it is required to legally own at least one recent first-party Nintendo game. Picking a game that ships with debugging symbols is probably a good idea:
+Because sead is statically linked into games, it is required to legally own at least one recent first-party Nintendo game. Picking a game that ships with debugging symbols is strongly recommended:
 
 * Super Mario Odyssey (version 1.0.0) ([buy it here](https://www.nintendo.com/games/detail/super-mario-odyssey-switch/))
 * Splatoon 2 (version <= 3.1.0) ([buy it here](https://www.nintendo.com/games/detail/splatoon-2-switch/))
@@ -50,7 +50,7 @@ Platform-specific files are usually placed into a subdirectory that is called:
 
 * **cafe** for Wii U
 * **ctr** for 3DS
-* **nin** for Switch (or any other platform that uses nn?)
+* **nin** for nnSdk (Switch)
 
 ## Building
 
