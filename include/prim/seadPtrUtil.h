@@ -49,7 +49,7 @@ public:
     }
 
     static bool isAligned(const void* ptr, s32 n) { return uintptr_t(ptr) % n == 0; }
-    static bool isAlignedPow2(const void* ptr, u32 n) { return uintptr_t(ptr) % n == 0; }
+    static bool isAlignedPow2(const void* ptr, u32 n) { return (uintptr_t(ptr) & (n - 1)) == 0; }
     static bool isAlignedN(const void* ptr, s32 n) { return uintptr_t(ptr) % n == 0; }
 };
 }  // namespace sead

@@ -7,6 +7,8 @@
 #include <basis/seadNew.h>
 #include <basis/seadRawPrint.h>
 #include <basis/seadTypes.h>
+#include <math/seadMathCalcCommon.h>
+#include <prim/seadPtrUtil.h>
 
 namespace sead
 {
@@ -87,11 +89,8 @@ public:
         {
             mSize = size;
             mBuffer = buffer;
-            if constexpr (!std::is_trivially_destructible<T>())
-            {
-                SEAD_ASSERT_MSG(uintptr_t(mBuffer) % alignment == 0,
-                                "don't set alignment for a class with destructor");
-            }
+            SEAD_ASSERT_MSG(PtrUtil::isAlignedPow2(mBuffer, sead::abs(alignment)),
+                            "don't set alignment for a class with destructor");
         }
     }
 
@@ -108,7 +107,7 @@ public:
         {
             mSize = size;
             mBuffer = buffer;
-            SEAD_ASSERT_MSG(uintptr_t(mBuffer) % alignment == 0,
+            SEAD_ASSERT_MSG(PtrUtil::isAlignedPow2(mBuffer, sead::abs(alignment)),
                             "don't set alignment for a class with destructor");
         }
     }
@@ -126,7 +125,7 @@ public:
         {
             mSize = size;
             mBuffer = buffer;
-            SEAD_ASSERT_MSG(uintptr_t(mBuffer) % alignment == 0,
+            SEAD_ASSERT_MSG(PtrUtil::isAlignedPow2(mBuffer, sead::abs(alignment)),
                             "don't set alignment for a class with destructor");
             return true;
         }
@@ -146,7 +145,7 @@ public:
         {
             mSize = size;
             mBuffer = buffer;
-            SEAD_ASSERT_MSG(uintptr_t(mBuffer) % alignment == 0,
+            SEAD_ASSERT_MSG(PtrUtil::isAlignedPow2(mBuffer, sead::abs(alignment)),
                             "don't set alignment for a class with destructor");
             return true;
         }

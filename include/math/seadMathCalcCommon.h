@@ -24,6 +24,12 @@ T lerp(T a, T b, T2 t);
 
 template <typename T>
 T clamp(T value, T low, T high);
+
+/// Branchless version of abs for signed 32-bit integers
+constexpr s32 abs(s32 x)
+{
+    return (x ^ (x >> 31)) - (x >> 31);
+}
 }  // namespace sead
 
 #define SEAD_MATH_MATH_CALC_COMMON_H_
