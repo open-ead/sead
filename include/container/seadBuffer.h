@@ -95,7 +95,7 @@ public:
         }
     }
 
-    void allocBuffer(s32 size, Heap* heap, s32 alignment)
+    void allocBuffer(s32 size, Heap* heap, s32 alignment = sizeof(void*))
     {
         SEAD_ASSERT(mBuffer == nullptr);
         if (size < 1)
@@ -108,15 +108,12 @@ public:
         {
             mSize = size;
             mBuffer = buffer;
-            if constexpr (!std::is_trivially_destructible<T>())
-            {
-                SEAD_ASSERT_MSG(uintptr_t(mBuffer) % alignment == 0,
-                                "don't set alignment for a class with destructor");
-            }
+            SEAD_ASSERT_MSG(uintptr_t(mBuffer) % alignment == 0,
+                            "don't set alignment for a class with destructor");
         }
     }
 
-    bool tryAllocBuffer(s32 size, s32 alignment)
+    bool tryAllocBuffer(s32 size, s32 alignment = sizeof(void*))
     {
         SEAD_ASSERT(mBuffer == nullptr);
         if (size < 1)
@@ -129,17 +126,14 @@ public:
         {
             mSize = size;
             mBuffer = buffer;
-            if constexpr (!std::is_trivially_destructible<T>())
-            {
-                SEAD_ASSERT_MSG(uintptr_t(mBuffer) % alignment == 0,
-                                "don't set alignment for a class with destructor");
-            }
+            SEAD_ASSERT_MSG(uintptr_t(mBuffer) % alignment == 0,
+                            "don't set alignment for a class with destructor");
             return true;
         }
         return false;
     }
 
-    bool tryAllocBuffer(s32 size, Heap* heap, s32 alignment)
+    bool tryAllocBuffer(s32 size, Heap* heap, s32 alignment = sizeof(void*))
     {
         SEAD_ASSERT(mBuffer == nullptr);
         if (size < 1)
@@ -152,14 +146,17 @@ public:
         {
             mSize = size;
             mBuffer = buffer;
-            if constexpr (!std::is_trivially_destructible<T>())
-            {
-                SEAD_ASSERT_MSG(uintptr_t(mBuffer) % alignment == 0,
-                                "don't set alignment for a class with destructor");
-            }
+            SEAD_ASSERT_MSG(uintptr_t(mBuffer) % alignment == 0,
+                            "don't set alignment for a class with destructor");
             return true;
         }
         return false;
+    }
+
+    void allocBufferAssert(s32 size, Heap* heap, s32 alignment = sizeof(void*))
+    {
+        if (!tryAllocBuffer(size, heap, alignment))
+            AllocFailAssert(heap, sizeof(T) * size, alignment);
     }
 
     void freeBuffer()
