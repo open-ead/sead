@@ -85,12 +85,12 @@ void JobQueue::wait_AT_WORKER()
     {
     case SyncType::cCore:
         if (!isDone_())
-            mEvent.wait();
+            mFinishEvent.wait();
         break;
     case SyncType::cThread:
         SEAD_ASSERT_MSG(false, "*NOT YET\n");
         if (!isDone_())
-            mEvent.wait();
+            mFinishEvent.wait();
         break;
     default:
         break;
@@ -106,7 +106,7 @@ void JobQueue::wait()
         SEAD_ASSERT_MSG(false, "NOT IMPLEMENTED.\n");
     }
     if (!isDone_())
-        mEvent.wait();
+        mFinishEvent.wait();
 }
 
 bool JobQueue::isDone_()

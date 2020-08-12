@@ -85,6 +85,7 @@ public:
     virtual u32 getNumJobs() const { return 0; }
     bool isAllParticipantThrough() const;
 
+    u32 getGranularity(u32 core) { return mGranularity[core]; }
     void setGranularity(CoreId core, u32 x);
     void setGranularity(u32);
     void setCoreMaskAndWaitType(CoreIdMask mask, SyncType type);
@@ -96,16 +97,20 @@ public:
     const char* getDescription() const { return mDescription; }
     void setDescription(const char* description) { mDescription = description; }
 
+    void signalFinishEvent() { mFinishEvent.setSignal(); }
+    void resetFinishEvent() { mFinishEvent.resetSignal(); }
+    u32 addNumDoneJobs(u32 num) { return mNumDoneJobs.fetchAdd(num); }
+
 protected:
     virtual bool isDone_();
 
     SyncType mSyncType = SyncType::cNoSync;
     JobQueueLock mLock;
     CoreIdMask mMask;
-    Event mEvent{true};
+    Event mFinishEvent{true};
     SafeArray<u32, 3> mGranularity;
     SafeArray<u32, 3> mCoreEnabled;
-    volatile u32 mNumDoneJobs = 0;
+    Atomic<u32> mNumDoneJobs = 0;
 
     Atomic<Status> mStatus = Status::_0;
     const char* mDescription = "NoName";

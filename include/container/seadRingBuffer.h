@@ -205,21 +205,8 @@ public:
     T& operator()(s32 idx) { return *unsafeGet(idx); }
     const T& operator()(s32 idx) const { return *unsafeGet(idx); }
 
-    T* unsafeGet(s32 idx)
-    {
-        s32 real_idx = mHead + idx;
-        if (real_idx >= mCapacity)
-            real_idx -= mCapacity;
-        return &mBuffer[real_idx];
-    }
-
-    const T* unsafeGet(s32 idx) const
-    {
-        s32 real_idx = mHead + idx;
-        if (real_idx >= mCapacity)
-            real_idx -= mCapacity;
-        return &mBuffer[real_idx];
-    }
+    T* unsafeGet(s32 idx) { return &mBuffer[calcRealIdx(idx)]; }
+    const T* unsafeGet(s32 idx) const { return &mBuffer[calcRealIdx(idx)]; }
 
     T& front() { return *unsafeGet(0); }
     const T& front() const { return *unsafeGet(0); }
@@ -245,29 +232,74 @@ public:
     }
 
     s32 capacity() const { return mCapacity; }
+    s32 size() const { return mSize; }
+
+    bool empty() const { return mSize == 0; }
+    explicit operator bool() const { return !empty(); }
+
     T* data() { return mBuffer; }
     const T* data() const { return mBuffer; }
 
-    void pushBack(const T& item)
+    void forcePushBack(const T& item)
     {
-        if (mSize == mCapacity)
+        if (mSize < mCapacity)
         {
-            mBuffer[mHead] = item;
-            ++mHead;
-        }
-        else
-        {
-            *unsafeGet(mSize) = item;
-            ++mSize;
+            pushBack(item);
+            return;
         }
 
-        if (mHead >= mCapacity)
-            mHead -= mCapacity;
+        if (mSize >= 1)
+            popFront();
+        pushBack(item);
     }
 
-    void pop() { --mSize; }
+    bool pushBack(const T& item)
+    {
+        if (mSize >= mCapacity)
+            return false;
+        *unsafeGet(mSize++) = item;
+        return true;
+    }
+
+    void forcePushBackwards(const T& item, u32 offset = 1)
+    {
+        mHead = (mHead < 1 ? mCapacity : mHead) - offset;
+        ++mSize;
+        *unsafeGet(0) = item;
+    }
+
+    bool pushBackwards(const T& item)
+    {
+        if (mSize >= mCapacity)
+            return false;
+        forcePushBackwards(item);
+        return true;
+    }
+
+    T popFront()
+    {
+        if (mSize >= 1)
+        {
+            T item = *unsafeGet(0);
+            mHead = mHead + 1 < mCapacity ? mHead + 1 : 0;
+            --mSize;
+            return item;
+        }
+        SEAD_ASSERT_MSG(false, "no element");
+        return {};
+    }
+
+    void clear() { mHead = mSize = 0; }
 
 protected:
+    s32 calcRealIdx(s32 idx) const
+    {
+        s32 real_idx = mHead + idx;
+        if (real_idx >= mCapacity)
+            real_idx -= mCapacity;
+        return real_idx;
+    }
+
     T* mBuffer = nullptr;
     s32 mCapacity = 0;
     s32 mHead = 0;
