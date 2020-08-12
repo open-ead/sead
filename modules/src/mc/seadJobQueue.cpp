@@ -3,6 +3,7 @@
 #include "basis/seadRawPrint.h"
 #include "framework/seadProcessMeter.h"
 #include "mc/seadJobQueue.h"
+#include "mc/seadWorker.h"
 #include "prim/seadScopedLock.h"
 
 namespace sead
@@ -216,6 +217,71 @@ FixedSizeJQ::FixedSizeJQ()
 }
 
 void FixedSizeJQ::begin() {}
+
+bool FixedSizeJQ::run(u32 size, u32* finished_jobs, Worker* worker)
+{
+    *finished_jobs = 0;
+
+#ifdef SEAD_DEBUG
+    mPerf.measureBeginDeque();
+#endif
+    u32 num_finished = 0;
+    // NON_MATCHING: Clang refuses to materialize these variables here...
+    bool ret = true;
+    s32 begin = 0;
+    s32 end = -1;
+    if (size > 0 && mNumJobs > 0)
+    {
+        if (worker)
+            worker->setState(Worker::State::cRunning_WaitLock);
+
+        mLock.lock();
+
+        if (worker)
+            worker->setState(Worker::State::cRunning_GetLock);
+
+        begin = mNumProcessedJobs;
+        const auto num_jobs = mNumJobs;
+        num_finished = std::min(num_jobs - begin, size);
+
+        mNumProcessedJobs = num_finished + begin;
+        mLock.unlock();
+        end = num_finished + begin - 1;
+        ret = num_finished + begin >= num_jobs;
+    }
+#ifdef SEAD_DEBUG
+    mPerf.measureEndDeque();
+#endif
+
+#ifdef SEAD_DEBUG
+    mPerf.measureBeginRun();
+#endif
+    if (worker)
+        worker->setState(Worker::State::cRunning_Run);
+
+    for (s32 i = begin; i <= end; ++i)
+        mJobs[i]->invoke();
+
+    if (worker)
+        worker->setState(Worker::State::cRunning_AfterRun);
+#ifdef SEAD_DEBUG
+    mPerf.measureEndRun();
+#endif
+
+    if (ret)
+    {
+        if (worker)
+            worker->setState(Worker::State::cRunning_AllJobDoneReturn);
+    }
+    else
+    {
+        if (worker)
+            worker->setState(Worker::State::cRunning_BeforeReturn);
+    }
+
+    *finished_jobs = num_finished;
+    return ret;
+}
 
 u32 FixedSizeJQ::getNumJobs() const
 {

@@ -76,7 +76,6 @@ public:
     };
 
     JobQueue();
-    virtual ~JobQueue() = default;
 
     virtual void begin() {}
     virtual bool run(u32 size, u32* finished_jobs, Worker* worker);

@@ -30,6 +30,8 @@ public:
     bool pushJobQueue(const char* name, JobQueue* queue, JobQueuePushType type);
     void clearJobQQ();
 
+    void setState(Worker::State state) { mWorkerState = state; }
+
 protected:
     void calc_(MessageQueue::Element msg) override;
     virtual void proc_();
