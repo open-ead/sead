@@ -28,12 +28,12 @@ public:
     class iterator
     {
     public:
-        iterator(T* buffer, s32 index = 0) : mBuffer(buffer), mIndex(index) {}
+        explicit iterator(T* buffer, s32 index = 0) : mIndex(index), mBuffer(buffer) {}
         bool operator==(const iterator& rhs) const
         {
             return mIndex == rhs.mIndex && mBuffer == rhs.mBuffer;
         }
-        bool operator!=(const iterator& rhs) const { return !(*this == rhs); }
+        bool operator!=(const iterator& rhs) const { return !operator==(rhs); }
         iterator& operator++()
         {
             ++mIndex;
@@ -51,12 +51,12 @@ public:
     class constIterator
     {
     public:
-        constIterator(const T* buffer, s32 index = 0) : mBuffer(buffer), mIndex(index) {}
+        explicit constIterator(const T* buffer, s32 index = 0) : mIndex(index), mBuffer(buffer) {}
         bool operator==(const constIterator& rhs) const
         {
             return mIndex == rhs.mIndex && mBuffer == rhs.mBuffer;
         }
-        bool operator!=(const constIterator& rhs) const { return !(*this == rhs); }
+        bool operator!=(const constIterator& rhs) const { return !operator==(rhs); }
         constIterator& operator++()
         {
             ++mIndex;
@@ -195,7 +195,7 @@ public:
 
     T& operator[](s32 idx)
     {
-        if (mSize <= u32(idx))
+        if (u32(mSize) <= u32(idx))
         {
             SEAD_ASSERT_MSG(false, "index exceeded [%d/%d]", idx, mSize);
             return mBuffer[0];
@@ -205,7 +205,7 @@ public:
 
     const T& operator[](s32 idx) const
     {
-        if (mSize <= u32(idx))
+        if (u32(mSize) <= u32(idx))
         {
             SEAD_ASSERT_MSG(false, "index exceeded [%d/%d]", idx, mSize);
             return mBuffer[0];
@@ -215,7 +215,7 @@ public:
 
     T* get(s32 idx)
     {
-        if (mSize <= u32(idx))
+        if (u32(mSize) <= u32(idx))
         {
             SEAD_ASSERT_MSG(false, "index exceeded [%d/%d]", idx, mSize);
             return nullptr;
@@ -225,7 +225,7 @@ public:
 
     const T* get(s32 idx) const
     {
-        if (mSize <= u32(idx))
+        if (u32(mSize) <= u32(idx))
         {
             SEAD_ASSERT_MSG(false, "index exceeded [%d/%d]", idx, mSize);
             return nullptr;
@@ -268,7 +268,7 @@ public:
 
     void heapSort(s32 x, s32 y) { heapSort(compareT, x, y); }
 
-    s32 binarySearch(const T& item) const { return binarySearch(item, defaultBinarySearchCompare); }
+    s32 binarySearch(const T& item) const { return binarySearch(item, compareT); }
 
     s32 binarySearch(const T& item, CompareCallback cmp) const
     {
@@ -280,7 +280,7 @@ public:
             if (sum < 0)
                 ++sum;
             const s32 m = sum >> 1;
-            const s32 c = cmp(mBuffer[m], item);
+            const s32 c = cmp(&mBuffer[m], &item);
             if (c == 0)
                 return m;
             if (c < 0)
@@ -296,13 +296,9 @@ protected:
     {
         if (*lhs < *rhs)
             return -1;
-        if (*lhs > *rhs)
+        if (*rhs < *lhs)
             return 1;
         return 0;
-    }
-    static s32 defaultBinarySearchCompare(const T& lhs, const T& rhs)
-    {
-        return compareT(&lhs, &rhs);
     }
 
     s32 mSize;
