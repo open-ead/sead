@@ -207,21 +207,6 @@ void PerfJobQueue::detachProcessMeter()
     ProcessMeter::instance()->detachProcessMeterBar(&mProcessMeterBar);
 }
 
-void JobQueueLock::lock()
-{
-    while (mSpinLock.load() == 1)
-        continue;
-    while (!mSpinLock.compareExchange(0, 1))
-        continue;
-}
-
-void JobQueueLock::unlock()
-{
-    std::atomic_thread_fence(std::memory_order_seq_cst);
-    while (!mSpinLock.compareExchange(1, 0))
-        continue;
-}
-
 FixedSizeJQ::FixedSizeJQ()
 {
     _230 = true;

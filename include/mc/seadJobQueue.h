@@ -44,8 +44,20 @@ private:
 class JobQueueLock
 {
 public:
-    void lock();
-    void unlock();
+    void lock()
+    {
+        while (mSpinLock.load() == 1)
+            continue;
+        while (!mSpinLock.compareExchange(0, 1))
+            continue;
+    }
+
+    void unlock()
+    {
+        std::atomic_thread_fence(std::memory_order_seq_cst);
+        while (!mSpinLock.compareExchange(1, 0))
+            continue;
+    }
 
 private:
     Atomic<u32> mSpinLock = 0;
@@ -81,6 +93,9 @@ public:
     void wait_AT_WORKER();
     void wait();
 
+    const char* getDescription() const { return mDescription; }
+    void setDescription(const char* description) { mDescription = description; }
+
 protected:
     virtual bool isDone_();
 
@@ -93,7 +108,7 @@ protected:
     volatile u32 mNumDoneJobs = 0;
 
     Atomic<Status> mStatus = Status::_0;
-    const char* description = "NoName";
+    const char* mDescription = "NoName";
 
 #ifdef SEAD_DEBUG
     PerfJobQueue mPerf;
