@@ -51,7 +51,7 @@ inline void FreeList::setWork(void* work, s32 elem_size, s32 num)
     mWork = work;
 }
 
-void FreeList::reset()
+inline void FreeList::reset()
 {
     mFree = nullptr;
     mWork = nullptr;
