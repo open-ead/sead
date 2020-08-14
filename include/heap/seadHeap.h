@@ -61,8 +61,10 @@ public:
     virtual void dump() const {}
     virtual void dumpYAML(WriteStream& stream, int) const;
 
+#ifdef SEAD_DEBUG
     void listenPropertyEvent(const hostio::PropertyEvent* event) override;
     void genMessage(hostio::Context*) override;
+#endif
     virtual void genInformation_(hostio::Context*);
     virtual void makeMetaString_(BufferedSafeString*);
 
