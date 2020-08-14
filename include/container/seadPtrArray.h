@@ -60,7 +60,7 @@ protected:
 
     void* at(s32 idx) const
     {
-        if (mPtrNum <= u32(idx))
+        if (u32(mPtrNum) <= u32(idx))
         {
             SEAD_ASSERT_MSG(false, "index exceeded [%d/%d]", idx, mPtrNum);
             return nullptr;
