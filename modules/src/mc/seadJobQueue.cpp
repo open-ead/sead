@@ -218,6 +218,8 @@ FixedSizeJQ::FixedSizeJQ()
 
 void FixedSizeJQ::begin() {}
 
+// TODO: Splatoon 2 and BotW sead have a different implementation which checks _230 and the current
+// core number...
 bool FixedSizeJQ::run(u32 size, u32* finished_jobs, Worker* worker)
 {
     *finished_jobs = 0;
