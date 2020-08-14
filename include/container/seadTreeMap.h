@@ -53,9 +53,6 @@ private:
     Node* mRoot = nullptr;
 };
 
-template <typename Key>
-using IntrusiveTreeMap = TreeMapImpl<Key>;
-
 /// Requires Key to have a compare() member function, which returns -1 if lhs < rhs, 0 if lhs = rhs
 /// and 1 if lhs > rhs.
 template <typename Key>
@@ -166,6 +163,25 @@ private:
     FreeList mFreeList;
     s32 mSize = 0;
     s32 mCapacity = 0;
+};
+
+template <typename Key, typename Node>
+class IntrusiveTreeMap : public TreeMapImpl<TreeMapKeyImpl<Key>>
+{
+public:
+    using MapImpl = TreeMapImpl<TreeMapKeyImpl<Key>>;
+
+    Node* find(const Key& key) const { return static_cast<Node*>(MapImpl::find(key)); }
+
+    // Callable must have the signature Node*
+    template <typename Callable>
+    void forEach(const Callable& delegate) const
+    {
+        MapImpl::forEach([&delegate](auto* base_node) {
+            auto* node = static_cast<Node*>(base_node);
+            delegate(node);
+        });
+    }
 };
 
 template <typename Key>
