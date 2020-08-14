@@ -7,13 +7,14 @@ namespace sead::hostio
 {
 class Node : public Reflexible
 {
+public:
+    NodeClassType getNodeClassType() const override { return Reflexible::NodeClassType::Node; }
+
 #ifdef SEAD_DEBUG
 public:
     Node();
     Node(Heap* heap, IDisposer::HeapNullOption heap_null_option);
     ~Node() override { disposeHostIOImpl_(); }
-
-    NodeClassType getNodeClassType() const override { return Reflexible::NodeClassType::Node; }
 
     void appendChild(Node* node);
     void insertAfterSelf(Node* node);
