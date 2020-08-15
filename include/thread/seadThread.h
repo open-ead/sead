@@ -193,6 +193,6 @@ public:
     void setPriority(s32) override { SEAD_ASSERT_MSG(false, "Main thread can not set priority"); }
 
 protected:
-    void calc_(MessageQueue::Element msg) override {}
+    void calc_(MessageQueue::Element) override {}
 };
 }  // namespace sead

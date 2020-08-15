@@ -75,12 +75,12 @@ private:
         int getRelativeIndex() const volatile { return mIdx; }                                     \
         void setRelativeIndex(int idx)                                                             \
         {                                                                                          \
-            SEAD_ASSERT_MSG(u32(idx) < size(), "range over: %d, [%d - %d)", idx, 0, size());       \
+            SEAD_ASSERT_MSG(u32(idx) < u32(size()), "range over: %d, [%d - %d)", idx, 0, size());  \
             mIdx = idx;                                                                            \
         }                                                                                          \
         void setRelativeIndex(int idx) volatile                                                    \
         {                                                                                          \
-            SEAD_ASSERT_MSG(u32(idx) < size(), "range over: %d, [%d - %d)", idx, 0, size());       \
+            SEAD_ASSERT_MSG(u32(idx) < u32(size()), "range over: %d, [%d - %d)", idx, 0, size());  \
             mIdx = idx;                                                                            \
         }                                                                                          \
                                                                                                    \
@@ -124,7 +124,7 @@ private:
         static constexpr size_t cTextAllLen = sizeof(#__VA_ARGS__);                                \
         static constexpr int cCount = [] {                                                         \
             int count = 1;                                                                         \
-            for (int i = 0; i < cTextAllLen; ++i)                                                  \
+            for (size_t i = 0; i < cTextAllLen; ++i)                                               \
             {                                                                                      \
                 if (cTextAll[i] == ',')                                                            \
                     ++count;                                                                       \
