@@ -30,10 +30,10 @@ public:
     u64 getU64();
     /// Generate a random u32 in [0 .. a].
     u32 getU32(u32 max);
-    /// Generate a random s32 in [a .. b].
+    /// Generate a random s32 in [a .. b).
     /// Note that this does not provide a uniform distribution.
     s32 getS32Range(s32 a, s32 b);
-    /// Generate a random s64 in [a .. b].
+    /// Generate a random s64 in [a .. b).
     /// Note that this does not provide a uniform distribution.
     s64 getS64Range(s64 a, s64 b);
     /// Generate a random f32 in [0, 1].

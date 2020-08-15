@@ -104,7 +104,7 @@ void PtrArrayImpl::shuffle(Random* random)
 {
     SEAD_ASSERT(random);
     for (s32 i = mPtrNum - 1; i > 0; --i)
-        swap(random->getU32(i), i);
+        swap(i, random->getS32Range(0, i + 1));
 }
 
 void PtrArrayImpl::insert(s32 pos, void* ptr)
