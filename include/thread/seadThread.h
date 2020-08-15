@@ -80,6 +80,8 @@ public:
     void genMessage(hostio::Context* context) override;
 #endif
 
+    bool isDefaultPriority() const { return getPriority() == cDefaultPriority; }
+
     static const s32 cDefaultPriority;
 
 protected:
