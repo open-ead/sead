@@ -16,6 +16,12 @@ protected:
 };
 
 template <typename T>
+inline ScopedLock<T> makeScopedLock(T& lock)
+{
+    return ScopedLock<T>(&lock);
+}
+
+template <typename T>
 class ConditionalScopedLock
 {
 public:
@@ -37,4 +43,10 @@ public:
 protected:
     T* mLocked = nullptr;
 };
+
+template <typename T>
+inline ConditionalScopedLock<T> makeScopedLock(T& lock, bool do_lock)
+{
+    return ConditionalScopedLock<T>(&lock, do_lock);
+}
 }  // namespace sead
