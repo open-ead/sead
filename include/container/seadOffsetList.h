@@ -105,6 +105,48 @@ public:
         return iterator(listNodeToObj(const_cast<ListNode*>(&mStartEnd)), mOffset);
     }
 
+    class robustIterator
+    {
+    public:
+        robustIterator(T* ptr, s32 offset) : mPtr{ptr}, mOffset{offset}
+        {
+            mNextNode = static_cast<ListNode*>(PtrUtil::addOffset(mPtr, mOffset))->next();
+        }
+        bool operator==(const robustIterator& other) const { return mPtr == other.mPtr; }
+        bool operator!=(const robustIterator& other) const { return !operator==(other); }
+        robustIterator& operator++()
+        {
+            mPtr = static_cast<T*>(PtrUtil::addOffset(mNextNode, -mOffset));
+            mNextNode = mNextNode->next();
+            return *this;
+        }
+        T& operator*() const { return *mPtr; }
+        T* operator->() const { return mPtr; }
+
+    private:
+        T* mPtr;
+        ListNode* mNextNode;
+        s32 mOffset;
+    };
+
+    robustIterator robustBegin() const
+    {
+        return robustIterator(listNodeToObj(mStartEnd.next()), mOffset);
+    }
+
+    robustIterator robustEnd() const
+    {
+        return robustIterator(listNodeToObj(const_cast<ListNode*>(&mStartEnd)), mOffset);
+    }
+
+    struct RobustRange
+    {
+        auto begin() const { return mList.robustBegin(); }
+        auto end() const { return mList.robustEnd(); }
+        const OffsetList& mList;
+    };
+    RobustRange robustRange() const { return {*this}; }
+
 protected:
     static int compareT(const T* lhs, const T* rhs)
     {
