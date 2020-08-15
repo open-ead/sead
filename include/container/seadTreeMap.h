@@ -32,7 +32,7 @@ public:
             forEach(mRoot, callable);
     }
 
-private:
+protected:
     Node* insert(Node* root, Node* node);
     Node* erase(Node* root, const Key& key);
     Node* find(Node* root, const Key& key) const;
@@ -169,7 +169,7 @@ template <typename Key, typename Node>
 class IntrusiveTreeMap : public TreeMapImpl<Key>
 {
 public:
-    using MapImpl = TreeMapImpl<TreeMapKeyImpl<Key>>;
+    using MapImpl = TreeMapImpl<Key>;
 
     Node* find(const Key& key) const { return static_cast<Node*>(MapImpl::find(key)); }
 
