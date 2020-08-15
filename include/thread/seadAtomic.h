@@ -99,7 +99,14 @@ inline AtomicBase<T>::AtomicBase(T value) : mValue{value}
 template <class T>
 inline T AtomicBase<T>::load() const
 {
+#ifdef MATCHING_HACK_NX_CLANG
+    // Using std::atomic<T>::load prevents LLVM from folding ldr+sext into ldrsw.
+    // Considering the compareExchange implementation also does not match LLVM's,
+    // it is likely that Nintendo manually implemented atomics with volatile and intrinsics.
+    return *reinterpret_cast<const volatile T*>(&mValue);
+#else
     return mValue.load(std::memory_order_relaxed);
+#endif
 }
 
 template <class T>
