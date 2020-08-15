@@ -6,7 +6,7 @@ Unlike the original [sead decompilation project](https://github.com/aboood40091/
 
 The objective is to recreate the standard library as accurately as possible, so that interoperability can eventually be achieved by adding support for other platforms and by making it easier to create projects that interact with sead games.
 
-Because sead is statically linked into games, it is required to legally own at least one recent first-party Nintendo game. Picking a game that ships with debugging symbols is strongly recommended:
+Because sead is statically linked in games (and only in games), acquiring the original sead requires legally owning at least one recent first-party Nintendo game. Picking a game that ships with debugging symbols is strongly recommended:
 
 * Super Mario Odyssey (version 1.0.0) ([buy it here](https://www.nintendo.com/games/detail/super-mario-odyssey-switch/))
 * Splatoon 2 (version <= 3.1.0) ([buy it here](https://www.nintendo.com/games/detail/splatoon-2-switch/))
