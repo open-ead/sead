@@ -166,7 +166,7 @@ private:
 };
 
 template <typename Key, typename Node>
-class IntrusiveTreeMap : public TreeMapImpl<TreeMapKeyImpl<Key>>
+class IntrusiveTreeMap : public TreeMapImpl<Key>
 {
 public:
     using MapImpl = TreeMapImpl<TreeMapKeyImpl<Key>>;
