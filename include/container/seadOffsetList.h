@@ -120,9 +120,19 @@ protected:
         return static_cast<ListNode*>(PtrUtil::addOffset(obj, mOffset));
     }
 
+    const ListNode* objToListNode(const T* obj) const
+    {
+        return static_cast<const ListNode*>(PtrUtil::addOffset(obj, mOffset));
+    }
+
     T* listNodeToObj(ListNode* node) const
     {
         return static_cast<T*>(PtrUtil::addOffset(node, -mOffset));
+    }
+
+    const T* listNodeToObj(const ListNode* node) const
+    {
+        return static_cast<const T*>(PtrUtil::addOffset(node, -mOffset));
     }
 
     s32 mOffset = -1;
