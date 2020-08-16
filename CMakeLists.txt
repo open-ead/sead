@@ -114,6 +114,7 @@ add_library(sead OBJECT
   include/prim/seadScopedLock.h
   include/prim/seadStringBuilder.h
   include/prim/seadStringUtil.h
+  include/prim/seadTypedBitFlag.h
   modules/src/prim/seadBitFlag.cpp
   modules/src/prim/seadEndian.cpp
   modules/src/prim/seadEnum.cpp
