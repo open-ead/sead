@@ -92,8 +92,9 @@ struct Atomic<T*> : AtomicBase<T*>
 
 #ifdef NNSDK
 template <class T>
-inline AtomicBase<T>::AtomicBase(T value) : mValue{value}
+inline AtomicBase<T>::AtomicBase(T value)
 {
+    store(value);
 }
 
 template <class T>
