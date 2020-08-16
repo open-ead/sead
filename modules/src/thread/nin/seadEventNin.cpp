@@ -3,7 +3,7 @@
 
 namespace sead
 {
-Event::Event() : IDisposer(), mInitialized(false) {}
+Event::Event() : IDisposer() {}
 
 Event::Event(bool manual_reset) : Event()
 {
@@ -20,7 +20,7 @@ Event::Event(Heap* disposer_heap, bool manual_reset) : Event(disposer_heap)
 }
 
 Event::Event(Heap* disposer_heap, IDisposer::HeapNullOption heap_null_option)
-    : IDisposer(disposer_heap, heap_null_option), mInitialized(false)
+    : IDisposer(disposer_heap, heap_null_option)
 {
 }
 
@@ -32,38 +32,48 @@ Event::Event(Heap* disposer_heap, IDisposer::HeapNullOption heap_null_option, bo
 
 Event::~Event()
 {
-    mInitialized = false;
+    setInitialized(false);
     nn::os::FinalizeLightEvent(&mEventInner);
 }
 
 void Event::initialize(bool manual_reset)
 {
+#ifdef SEAD_DEBUG
     SEAD_ASSERT_MSG(!mInitialized, "Event is already initialized.");
+#endif
     nn::os::InitializeLightEvent(&mEventInner, false, !manual_reset);
-    mInitialized = true;
+    setInitialized(true);
 }
 
 void Event::wait()
 {
+#ifdef SEAD_DEBUG
     SEAD_ASSERT_MSG(mInitialized, "Event is not initialized.");
+#endif
     nn::os::WaitLightEvent(&mEventInner);
 }
 
 bool Event::wait(TickSpan duration)
 {
+#ifdef SEAD_DEBUG
     SEAD_ASSERT_MSG(mInitialized, "Event is not initialized.");
+#endif
     return nn::os::TimedWaitLightEvent(&mEventInner, nn::os::ConvertToTimeSpan(duration.toTicks()));
 }
 
 void Event::setSignal()
 {
+#ifdef SEAD_DEBUG
     SEAD_ASSERT_MSG(mInitialized, "Event is not initialized.");
+#endif
     nn::os::SignalLightEvent(&mEventInner);
 }
 
 void Event::resetSignal()
 {
+#ifdef SEAD_DEBUG
     SEAD_ASSERT_MSG(mInitialized, "Event is not initialized.");
+#endif
     nn::os::ClearLightEvent(&mEventInner);
 }
 }  // namespace sead

@@ -32,11 +32,21 @@ public:
     void resetSignal();
 
 private:
+    void setInitialized([[maybe_unused]] bool initialized)
+    {
+#ifdef SEAD_DEBUG
+        mInitialized = initialized;
+#endif
+    }
+
 #ifdef NNSDK
     nn::os::LightEventType mEventInner;
 #else
 #error "Unknown platform"
 #endif
-    bool mInitialized;
+
+#ifdef SEAD_DEBUG
+    bool mInitialized = false;
+#endif
 };
 }  // namespace sead
