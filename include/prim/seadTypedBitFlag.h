@@ -6,7 +6,7 @@
 
 namespace sead
 {
-template <typename Enum>
+template <typename Enum, typename Storage = std::underlying_type_t<Enum>>
 class TypedBitFlag
 {
 public:
@@ -79,6 +79,6 @@ public:
     }
 
 protected:
-    UnderlyingType mBits;
+    Storage mBits;
 };
 }  // namespace sead
