@@ -171,13 +171,13 @@ inline T Atomic<T>::fetchAnd(T x)
 template <class T>
 inline T Atomic<T>::fetchOr(T x)
 {
-    return this->mValue.fetch_or(x);
+    return this->mValue.fetch_or(x, std::memory_order_relaxed);
 }
 
 template <class T>
 inline T Atomic<T>::fetchXor(T x)
 {
-    return this->mValue.fetch_xor(x);
+    return this->mValue.fetch_xor(x, std::memory_order_relaxed);
 }
 #else  // NNSDK
 #error "Unknown platform"
