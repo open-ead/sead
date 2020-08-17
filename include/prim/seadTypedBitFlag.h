@@ -22,16 +22,10 @@ public:
     void setDirect(UnderlyingType bits) { mBits = bits; }
     UnderlyingType getDirect() const { return mBits; }
 
-    void set(Enum val) { mBits |= UnderlyingType(val); }
-    void reset(Enum val) { mBits &= ~UnderlyingType(val); }
-    void toggle(Enum val) { mBits ^= UnderlyingType(val); }
-    void change(Enum val, bool on)
-    {
-        if (on)
-            set(val);
-        else
-            reset(val);
-    }
+    UnderlyingType set(Enum val) { return mBits |= UnderlyingType(val); }
+    UnderlyingType reset(Enum val) { return mBits &= ~UnderlyingType(val); }
+    UnderlyingType toggle(Enum val) { mBits ^= UnderlyingType(val); }
+    UnderlyingType change(Enum val, bool on) { return on ? set(val) : reset(val); }
     bool isZero() const { return mBits == 0; }
     /// Checks if (at least) one of the bits are set.
     bool isOn(Enum val) const { return (mBits & UnderlyingType(val)) != 0; }
