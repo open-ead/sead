@@ -15,8 +15,16 @@ public:
     using UnderlyingType = std::underlying_type_t<Enum>;
 
     TypedBitFlag() : mBits(0) {}
-    TypedBitFlag(UnderlyingType bits) : mBits(bits) {}
+    explicit TypedBitFlag(UnderlyingType bits) : mBits(bits) {}
     TypedBitFlag(Enum bits) : mBits(UnderlyingType(bits)) {}
+    template <typename T>
+    explicit TypedBitFlag(const TypedBitFlag<Enum, T>& other) { *this = other; }
+
+    template <typename T>
+    TypedBitFlag& operator=(const TypedBitFlag<Enum, T>& other) {
+        mBits = other.getDirect();
+        return *this;
+    }
 
     void makeAllZero() { mBits = 0; }
     void makeAllOne() { mBits = std::numeric_limits<UnderlyingType>::max(); }
