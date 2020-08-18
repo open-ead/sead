@@ -1,5 +1,6 @@
 #pragma once
 
+#include <initializer_list>
 #include <type_traits>
 
 #include "prim/seadBitFlag.h"
@@ -15,11 +16,13 @@ public:
 
     TypedBitFlag() : mBits(0) {}
     TypedBitFlag(UnderlyingType bits) : mBits(bits) {}
+    TypedBitFlag(Enum bits) : mBits(UnderlyingType(bits)) {}
 
     void makeAllZero() { mBits = 0; }
     void makeAllOne() { mBits = std::numeric_limits<UnderlyingType>::max(); }
 
     void setDirect(UnderlyingType bits) { mBits = bits; }
+    void setDirect(Enum bits) { mBits = UnderlyingType(bits); }
     UnderlyingType getDirect() const { return mBits; }
 
     UnderlyingType set(Enum val) { return mBits |= UnderlyingType(val); }
@@ -29,6 +32,7 @@ public:
     bool isZero() const { return mBits == 0; }
     /// Checks if (at least) one of the bits are set.
     bool isOn(Enum val) const { return (mBits & UnderlyingType(val)) != 0; }
+    bool isAnyOn(std::initializer_list<Enum> list) const { return (mBits & orEnums_(list)) != 0; }
     /// Checks if all of the bits are set.
     bool isOnAll(Enum val) const { return (mBits & UnderlyingType(val)) == UnderlyingType(val); }
     bool isOff(Enum val) const { return !isOn(val); }
@@ -73,6 +77,14 @@ public:
     }
 
 protected:
+    static constexpr UnderlyingType orEnums_(std::initializer_list<Enum> list)
+    {
+        UnderlyingType value{};
+        for (auto x : list)
+            value |= static_cast<UnderlyingType>(x);
+        return value;
+    }
+
     Storage mBits;
 };
 }  // namespace sead
