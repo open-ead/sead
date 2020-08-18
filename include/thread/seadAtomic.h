@@ -162,22 +162,51 @@ inline T Atomic<T>::fetchSub(T x)
     return this->mValue.fetch_sub(x, std::memory_order_relaxed);
 }
 
+namespace detail
+{
+// To match Nintendo's implementation of atomics.
+template <typename T, typename F>
+inline T atomicReadModifyWrite(std::atomic<T>& atomic, F op)
+{
+    static_assert(sizeof(atomic) == sizeof(volatile T));
+    static_assert(alignof(decltype(atomic)) == alignof(volatile T));
+    T value;
+    do
+    {
+        value = __builtin_arm_ldrex(reinterpret_cast<volatile T*>(&atomic));
+    } while (__builtin_arm_strex(op(value), reinterpret_cast<volatile T*>(&atomic)));
+    return value;
+}
+}  // namespace detail
+
 template <class T>
 inline T Atomic<T>::fetchAnd(T x)
 {
+#ifdef MATCHING_HACK_NX_CLANG
+    return detail::atomicReadModifyWrite(this->mValue, [x](T val) { return val & x; });
+#else
     return this->mValue.fetch_and(x, std::memory_order_relaxed);
+#endif
 }
 
 template <class T>
 inline T Atomic<T>::fetchOr(T x)
 {
+#ifdef MATCHING_HACK_NX_CLANG
+    return detail::atomicReadModifyWrite(this->mValue, [x](T val) { return val | x; });
+#else
     return this->mValue.fetch_or(x, std::memory_order_relaxed);
+#endif
 }
 
 template <class T>
 inline T Atomic<T>::fetchXor(T x)
 {
+#ifdef MATCHING_HACK_NX_CLANG
+    return detail::atomicReadModifyWrite(this->mValue, [x](T val) { return val ^ x; });
+#else
     return this->mValue.fetch_xor(x, std::memory_order_relaxed);
+#endif
 }
 #else  // NNSDK
 #error "Unknown platform"
