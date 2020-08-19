@@ -40,9 +40,9 @@ void Color4f::setLerp(const Color4f& color1, const Color4f& color2, f32 t)
 void Color4f::setGammaCollection(const Color4f& value, f32 gamma)
 {
     a = value.a;
-    r = std::powf(value.r, gamma);
-    g = std::powf(value.g, gamma);
-    b = std::powf(value.b, gamma);
+    r = std::pow(value.r, gamma);
+    g = std::pow(value.g, gamma);
+    b = std::pow(value.b, gamma);
 }
 
 void Color4f::adjustOverflow()
@@ -133,9 +133,9 @@ void Color4u8::setLerp(const Color4u8& color1, const Color4u8& color2, f32 t)
 void Color4u8::setGammaCollection(const Color4u8& value, f32 gamma)
 {
     a = value.a;
-    r = sead::clamp(std::powf(f32(value.r) / 255.0f, gamma), 0.0f, 1.0f) * 255.0f;
-    g = sead::clamp(std::powf(f32(value.g) / 255.0f, gamma), 0.0f, 1.0f) * 255.0f;
-    b = sead::clamp(std::powf(f32(value.b) / 255.0f, gamma), 0.0f, 1.0f) * 255.0f;
+    r = sead::clamp(std::pow(f32(value.r) / 255.0f, gamma), 0.0f, 1.0f) * 255.0f;
+    g = sead::clamp(std::pow(f32(value.g) / 255.0f, gamma), 0.0f, 1.0f) * 255.0f;
+    b = sead::clamp(std::pow(f32(value.b) / 255.0f, gamma), 0.0f, 1.0f) * 255.0f;
 }
 
 #define SEAD_Color4u8_OPERATORS(OP, OP2)                                                           \
