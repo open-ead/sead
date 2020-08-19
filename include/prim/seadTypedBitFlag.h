@@ -26,6 +26,11 @@ public:
         return *this;
     }
 
+    TypedBitFlag& operator=(Enum value) {
+        setDirect(value);
+        return *this;
+    }
+
     void makeAllZero() { mBits = 0; }
     void makeAllOne() { mBits = std::numeric_limits<UnderlyingType>::max(); }
 
