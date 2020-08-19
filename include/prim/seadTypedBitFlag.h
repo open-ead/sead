@@ -18,15 +18,20 @@ public:
     explicit TypedBitFlag(UnderlyingType bits) : mBits(bits) {}
     TypedBitFlag(Enum bits) : mBits(UnderlyingType(bits)) {}
     template <typename T>
-    explicit TypedBitFlag(const TypedBitFlag<Enum, T>& other) { *this = other; }
+    explicit TypedBitFlag(const TypedBitFlag<Enum, T>& other)
+    {
+        *this = other;
+    }
 
     template <typename T>
-    TypedBitFlag& operator=(const TypedBitFlag<Enum, T>& other) {
+    TypedBitFlag& operator=(const TypedBitFlag<Enum, T>& other)
+    {
         mBits = other.getDirect();
         return *this;
     }
 
-    TypedBitFlag& operator=(Enum value) {
+    TypedBitFlag& operator=(Enum value)
+    {
         setDirect(value);
         return *this;
     }
