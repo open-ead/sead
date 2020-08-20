@@ -112,6 +112,7 @@ add_library(sead OBJECT
   include/prim/seadSafeString.h
   include/prim/seadSafeString.hpp
   include/prim/seadScopedLock.h
+  include/prim/seadScopeGuard.h
   include/prim/seadStringBuilder.h
   include/prim/seadStringUtil.h
   include/prim/seadTypedBitFlag.h
