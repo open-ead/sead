@@ -39,11 +39,21 @@ public:
     bool try_lock() { return tryLock(); }
 
 private:
+    void setInitialized([[maybe_unused]] bool initialized)
+    {
+#ifdef SEAD_DEBUG
+        mInitialized = initialized;
+#endif
+    }
+
 #ifdef NNSDK
     nn::os::SemaphoreType mSemaphoreInner;
 #else
 #error "Unknown platform"
 #endif
+
+#ifdef SEAD_DEBUG
     bool mInitialized = false;
+#endif
 };
 }  // namespace sead

@@ -48,31 +48,39 @@ Semaphore::Semaphore(Heap* heap, IDisposer::HeapNullOption heap_null_option, s32
 Semaphore::~Semaphore()
 {
     nn::os::FinalizeSemaphore(&mSemaphoreInner);
-    mInitialized = false;
+    setInitialized(false);
 }
 
 void Semaphore::initialize(s32 initial_count, s32 max_count)
 {
+#ifdef SEAD_DEBUG
     SEAD_ASSERT_MSG(!mInitialized, "Semaphore is already initialized.");
+#endif
     nn::os::InitializeSemaphore(&mSemaphoreInner, initial_count, max_count);
-    mInitialized = true;
+    setInitialized(true);
 }
 
 void Semaphore::lock()
 {
+#ifdef SEAD_DEBUG
     SEAD_ASSERT_MSG(mInitialized, "Semaphore is not initialized.");
+#endif
     nn::os::AcquireSemaphore(&mSemaphoreInner);
 }
 
 bool Semaphore::tryLock()
 {
+#ifdef SEAD_DEBUG
     SEAD_ASSERT_MSG(mInitialized, "Semaphore is not initialized.");
+#endif
     return nn::os::TryAcquireSemaphore(&mSemaphoreInner);
 }
 
 void Semaphore::unlock()
 {
+#ifdef SEAD_DEBUG
     SEAD_ASSERT_MSG(mInitialized, "Semaphore is not initialized.");
+#endif
     nn::os::ReleaseSemaphore(&mSemaphoreInner);
 }
 }  // namespace sead
