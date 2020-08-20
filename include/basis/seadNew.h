@@ -11,6 +11,10 @@ namespace sead
 class Heap;
 
 void AllocFailAssert(Heap* heap, size_t size, u32 alignment);
+
+#ifndef SEAD_DEBUG
+inline void AllocFailAssert(Heap*, size_t, u32) {}
+#endif
 }  // namespace sead
 
 void* operator new(size_t size);

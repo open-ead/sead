@@ -57,6 +57,7 @@ void DeleteImpl(void* ptr)
 }
 }  // namespace system
 
+#ifdef SEAD_DEBUG
 void AllocFailAssert(Heap* heap, size_t size, u32 alignment)
 {
     if (!heap)
@@ -69,6 +70,7 @@ void AllocFailAssert(Heap* heap, size_t size, u32 alignment)
                     "alloc failed. size: %zu, allocatable size: %zu, alignment: %u, heap: %s", size,
                     heap->getMaxAllocatableSize(alignment), alignment, heap->getName().cstr());
 }
+#endif
 }  // namespace sead
 
 // operator new(size_t)
