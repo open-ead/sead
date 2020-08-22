@@ -4,7 +4,7 @@ namespace sead
 {
 void ArchiveRes::doPostCreate_() {}
 
-s32 ArchiveRes::getLoadDataAlignment()
+s32 ArchiveRes::getLoadDataAlignment() const
 {
     return 0x80;
 }

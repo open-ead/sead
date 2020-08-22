@@ -29,7 +29,7 @@ public:
     ~ArchiveRes() override = default;
 
     virtual void doPostCreate_();
-    virtual s32 getLoadDataAlignment();
+    s32 getLoadDataAlignment() const override;
     void doCreate_(u8* buf, u32, Heap*) override;
     virtual void* getFileImpl_(const SafeString& file_path, FileInfo* file_info = NULL) = 0;
     virtual void* getFileFastImpl_(s32 entry_id, FileInfo* file_info) = 0;
