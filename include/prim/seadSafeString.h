@@ -84,7 +84,7 @@ public:
     virtual SafeStringBase& operator=(const SafeStringBase& other);
 
     bool operator==(const SafeStringBase& rhs) const { return isEqual(rhs); }
-    bool operator!=(const SafeStringBase& rhs) const { return !(rhs == *this); }
+    bool operator!=(const SafeStringBase& rhs) const { return !(*this == rhs); }
 
     iterator begin() const { return iterator(this, 0); }
     iterator end() const { return iterator(this, calcLength()); }
