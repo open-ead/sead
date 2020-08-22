@@ -8,14 +8,184 @@
 
 namespace sead
 {
+bool FileHandle::close()
+{
+    if (!mOriginalDevice)
+    {
+        SEAD_ASSERT_MSG(false, "handle not opened");
+        return false;
+    }
+    return mOriginalDevice->close(this);
+}
+
+bool FileHandle::tryClose()
+{
+    if (!mOriginalDevice)
+    {
+        SEAD_ASSERT_MSG(false, "handle not opened");
+        return false;
+    }
+    return mOriginalDevice->tryClose(this);
+}
+
+bool FileHandle::flush()
+{
+    if (!mOriginalDevice)
+    {
+        SEAD_ASSERT_MSG(false, "handle not opened");
+        return false;
+    }
+    return mOriginalDevice->flush(this);
+}
+
+bool FileHandle::tryFlush()
+{
+    if (!mOriginalDevice)
+    {
+        SEAD_ASSERT_MSG(false, "handle not opened");
+        return false;
+    }
+    return mOriginalDevice->tryFlush(this);
+}
+
 u32 FileHandle::read(u8* outBuffer, u32 bytesToRead)
 {
-    if (mDevice == NULL)
+    if (!mDevice)
+    {
+        SEAD_ASSERT_MSG(false, "handle not opened");
         return 0;
+    }
+    return mDevice->read(this, outBuffer, bytesToRead);
+}
 
-    u32 bytesRead = 0;
-    mDevice->tryRead(&bytesRead, this, outBuffer, bytesToRead);
-    return bytesRead;
+bool FileHandle::tryRead(u32* actual_size, u8* data, u32 size)
+{
+    if (!mDevice)
+    {
+        SEAD_ASSERT_MSG(false, "handle not opened");
+        return false;
+    }
+    return mDevice->tryRead(actual_size, this, data, size);
+}
+
+u32 FileHandle::write(const u8* data, u32 size)
+{
+    if (!mDevice)
+    {
+        SEAD_ASSERT_MSG(false, "handle not opened");
+        return 0;
+    }
+    return mDevice->write(this, data, size);
+}
+
+bool FileHandle::tryWrite(u32* actual_size, const u8* data, u32 size)
+{
+    if (!mDevice)
+    {
+        SEAD_ASSERT_MSG(false, "handle not opened");
+        return false;
+    }
+    return mDevice->tryWrite(actual_size, this, data, size);
+}
+
+bool FileHandle::seek(s32 offset, FileDevice::SeekOrigin origin)
+{
+    if (!mDevice)
+    {
+        SEAD_ASSERT_MSG(false, "handle not opened");
+        return false;
+    }
+    return mDevice->seek(this, offset, origin);
+}
+
+bool FileHandle::trySeek(s32 offset, FileDevice::SeekOrigin origin)
+{
+    if (!mDevice)
+    {
+        SEAD_ASSERT_MSG(false, "handle not opened");
+        return false;
+    }
+    return mDevice->trySeek(this, offset, origin);
+}
+
+u32 FileHandle::getCurrentSeekPos()
+{
+    if (!mDevice)
+    {
+        SEAD_ASSERT_MSG(false, "handle not opened");
+        return 0;
+    }
+    return mDevice->getCurrentSeekPos(this);
+}
+
+bool FileHandle::tryGetCurrentSeekPos(u32* pos)
+{
+    if (!mDevice)
+    {
+        SEAD_ASSERT_MSG(false, "handle not opened");
+        return false;
+    }
+    return mDevice->tryGetCurrentSeekPos(pos, this);
+}
+
+u32 FileHandle::getFileSize()
+{
+    if (!mDevice)
+    {
+        SEAD_ASSERT_MSG(false, "handle not opened");
+        return 0;
+    }
+    return mDevice->getFileSize(this);
+}
+
+bool FileHandle::tryGetFileSize(u32* size)
+{
+    if (!mDevice)
+    {
+        SEAD_ASSERT_MSG(false, "handle not opened");
+        return false;
+    }
+    return mDevice->tryGetFileSize(size, this);
+}
+
+bool DirectoryHandle::close()
+{
+    if (!mOriginalDevice)
+    {
+        SEAD_ASSERT_MSG(false, "handle not opened");
+        return false;
+    }
+    return mOriginalDevice->closeDirectory(this);
+}
+
+bool DirectoryHandle::tryClose()
+{
+    if (!mOriginalDevice)
+    {
+        SEAD_ASSERT_MSG(false, "handle not opened");
+        return false;
+    }
+    return mOriginalDevice->tryCloseDirectory(this);
+}
+
+u32 DirectoryHandle::read(DirectoryEntry* entries, u32 count)
+{
+    if (!mDevice)
+    {
+        SEAD_ASSERT_MSG(false, "handle not opened");
+        return false;
+    }
+    return mDevice->readDirectory(this, entries, count);
+}
+
+bool DirectoryHandle::tryRead(u32* actual_count, DirectoryEntry* entries, u32 count)
+{
+    if (!mDevice)
+    {
+        SEAD_ASSERT_MSG(false, "handle not opened");
+        return false;
+    }
+    return mDevice->tryReadDirectory(actual_count, this, entries, count);
 }
 
 FileDevice::~FileDevice()

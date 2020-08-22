@@ -25,6 +25,7 @@ public:
 
     FileDevice* getDevice() const { return mDevice; }
     FileDevice* getOriginalDevice() const { return mOriginalDevice; }
+    bool isOpened() const { return mOriginalDevice != nullptr; }
 
 protected:
     friend class FileDevice;
@@ -105,25 +106,192 @@ public:
     bool isAvailable() const;
 
     u8* tryLoad(LoadArg& arg);
+
+    bool save(SaveArg& arg)
+    {
+        if (!trySave(arg))
+        {
+            SEAD_ASSERT_MSG(false, "file save error");
+            return false;
+        }
+        return true;
+    }
     bool trySave(SaveArg& arg);
+
+    FileDevice* open(FileHandle* handle, const SafeString& path, FileOpenFlag flag, u32 divSize = 0)
+    {
+        auto* device = tryOpen(handle, path, flag, divSize);
+        if (!device)
+        {
+            SEAD_ASSERT_MSG(false, "file open error");
+            return nullptr;
+        }
+        return device;
+    }
     FileDevice* tryOpen(FileHandle* handle, const SafeString& path, FileOpenFlag flag,
                         u32 divSize = 0);
+
+    bool close(FileHandle* handle)
+    {
+        if (!tryClose(handle))
+        {
+            SEAD_ASSERT_MSG(false, "file close error");
+            return false;
+        }
+        return true;
+    }
     bool tryClose(FileHandle* handle);
+
+    bool flush(FileHandle* handle)
+    {
+        if (!tryFlush(handle))
+        {
+            SEAD_ASSERT_MSG(false, "file flush error");
+            return false;
+        }
+        return true;
+    }
     bool tryFlush(FileHandle* handle);
+
+    bool remove(const SafeString& str)
+    {
+        if (!tryRemove(str))
+        {
+            SEAD_ASSERT_MSG(false, "file remove error");
+            return false;
+        }
+        return true;
+    }
     bool tryRemove(const SafeString& str);
+
+    u32 read(FileHandle* handle, u8* data, u32 size)
+    {
+        u32 bytes_read = 0;
+        if (!tryRead(&bytes_read, handle, data, size))
+            SEAD_ASSERT_MSG(false, "file read error");
+        return bytes_read;
+    }
     bool tryRead(u32* bytesRead, FileHandle* handle, u8* outBuffer, u32 bytesToRead);
+
+    u32 write(FileHandle* handle, const u8* data, u32 size)
+    {
+        u32 bytes_written = 0;
+        if (!tryWrite(&bytes_written, handle, data, size))
+            SEAD_ASSERT_MSG(false, "file write error");
+        return bytes_written;
+    }
     bool tryWrite(u32* bytesWritten, FileHandle* handle, const u8* inBuffer, u32 bytesToWrite);
+
+    bool seek(FileHandle* handle, s32 offset, SeekOrigin origin)
+    {
+        if (!trySeek(handle, offset, origin))
+        {
+            SEAD_ASSERT_MSG(false, "file seek error");
+            return false;
+        }
+        return true;
+    }
     bool trySeek(FileHandle* handle, s32 offset, SeekOrigin origin);
+
+    u32 getCurrentSeekPos(FileHandle* handle)
+    {
+        u32 seek_pos = 0;
+        if (!tryGetCurrentSeekPos(&seek_pos, handle))
+            SEAD_ASSERT_MSG(false, "tryGetCurrentSeekPos error");
+        return seek_pos;
+    }
     bool tryGetCurrentSeekPos(u32* seekPos, FileHandle* handle);
+
+    u32 getFileSize(const SafeString& path)
+    {
+        u32 file_size = 0;
+        if (!tryGetFileSize(&file_size, path))
+            SEAD_ASSERT_MSG(false, "tryGetFileSize error");
+        return file_size;
+    }
     bool tryGetFileSize(u32* fileSize, const SafeString& path);
+
+    u32 getFileSize(FileHandle* handle)
+    {
+        u32 file_size = 0;
+        if (!tryGetFileSize(&file_size, handle))
+            SEAD_ASSERT_MSG(false, "tryGetFileSize error");
+        return file_size;
+    }
     bool tryGetFileSize(u32* size, FileHandle* handle);
+
+    bool isExistFile(const SafeString& path)
+    {
+        bool exists = false;
+        if (!tryIsExistFile(&exists, path))
+            SEAD_ASSERT_MSG(false, "tryIsExistFile error");
+        return exists;
+    }
     bool tryIsExistFile(bool* exists, const SafeString& path);
+
+    bool isExistDirectory(const SafeString& path)
+    {
+        bool exists = false;
+        if (!tryIsExistDirectory(&exists, path))
+            SEAD_ASSERT_MSG(false, "tryIsExistingDirectory error");
+        return exists;
+    }
     bool tryIsExistDirectory(bool* exists, const SafeString& path);
+
+    FileDevice* openDirectory(DirectoryHandle* handle, const SafeString& path)
+    {
+        auto* device = tryOpenDirectory(handle, path);
+        if (!device)
+        {
+            SEAD_ASSERT_MSG(false, "directory open error");
+            return nullptr;
+        }
+        return device;
+    }
     FileDevice* tryOpenDirectory(DirectoryHandle* handle, const SafeString& path);
+
+    bool closeDirectory(DirectoryHandle* handle)
+    {
+        if (!tryCloseDirectory(handle))
+        {
+            SEAD_ASSERT_MSG(false, "directory close error");
+            return false;
+        }
+        return true;
+    }
     bool tryCloseDirectory(DirectoryHandle* handle);
+
+    u32 readDirectory(DirectoryHandle* handle, DirectoryEntry* entries, u32 num_entries)
+    {
+        u32 entries_read = 0;
+        if (!tryReadDirectory(&entries_read, handle, entries, num_entries))
+            SEAD_ASSERT_MSG(false, "directory read error");
+        return entries_read;
+    }
     bool tryReadDirectory(u32* entriesRead, DirectoryHandle* handle, DirectoryEntry* entries,
+
                           u32 entriesToRead);
+
+    bool makeDirectory(const SafeString& path, u32 x)
+    {
+        if (!tryMakeDirectory(path, x))
+        {
+            SEAD_ASSERT_MSG(false, "directory make error");
+            return false;
+        }
+        return true;
+    }
     bool tryMakeDirectory(const SafeString& path, u32);
+
+    bool makeDirectoryWithParent(const SafeString& path, u32 x)
+    {
+        if (!tryMakeDirectoryWithParent(path, x))
+        {
+            SEAD_ASSERT_MSG(false, "directory make with parent error");
+            return false;
+        }
+        return true;
+    }
     bool tryMakeDirectoryWithParent(const SafeString& path, u32);
 
     s32 getLastRawError() const;
@@ -229,7 +397,7 @@ public:
 
     bool close();
     bool tryClose();
-    bool read(DirectoryEntry* entries, u32 count);
+    u32 read(DirectoryEntry* entries, u32 count);
     bool tryRead(u32* actual_count, DirectoryEntry* entries, u32 count);
 };
 
