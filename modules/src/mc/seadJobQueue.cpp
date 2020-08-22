@@ -18,7 +18,7 @@ JobQueue::JobQueue()
     mGranularity.fill(8);
 }
 
-bool JobQueue::run(u32 size, u32* finished_jobs, Worker* worker)
+bool JobQueue::run(u32, u32* finished_jobs, Worker*)
 {
     *finished_jobs = 0;
     return true;
@@ -315,7 +315,7 @@ bool FixedSizeJQ::enque(Job* job)
 {
     mStatus = Status::_3;
 
-    if (mNumJobs >= mJobs.size())
+    if (mNumJobs >= u32(mJobs.size()))
         return false;
 
     mJobs[mNumJobs++] = job;
@@ -327,7 +327,7 @@ bool FixedSizeJQ::enqueSafe(Job* job)
     mStatus = Status::_3;
 
     ScopedLock<JobQueueLock> lock(&mLock);
-    if (mNumJobs >= mJobs.size())
+    if (mNumJobs >= u32(mJobs.size()))
         return false;
 
     mJobs[mNumJobs++] = job;
