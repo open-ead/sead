@@ -52,7 +52,7 @@ void LifeCheckable::initialize_()
     ThreadLock lock;
     mCreateID = sCurrentCreateID;
     // NON_MATCHING: weird increment code
-    sCurrentCreateID += sCurrentCreateID == -1 ? 2 : 1;
+    sCurrentCreateID += sCurrentCreateID == 0xffffffff ? 2 : 1;
 
     if (sTopInstance)
     {

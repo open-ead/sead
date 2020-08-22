@@ -9,7 +9,7 @@ bool HashCRC32::sInitialized = false;
 
 void HashCRC32::initialize()
 {
-    for (int i = 0; i < std::size(sTable); ++i)
+    for (u32 i = 0; i < std::size(sTable); ++i)
     {
         u32 val = i;
         for (int j = 0; j < 8; ++j)

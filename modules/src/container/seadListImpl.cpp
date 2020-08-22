@@ -64,7 +64,7 @@ ListNode* ListImpl::popFront()
 
 ListNode* ListImpl::nth(s32 index) const
 {
-    if (mCount <= u32(index))
+    if (u32(mCount) <= u32(index))
     {
         SEAD_ASSERT_MSG(false, "index exceeded[%d/%d]", index, mCount);
         return nullptr;

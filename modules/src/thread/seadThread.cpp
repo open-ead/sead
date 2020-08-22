@@ -166,7 +166,7 @@ void Thread::initStackCheck_()
 
     const size_t len = uintptr_t(end) + (-uintptr_t(start) - 1);
 
-    for (s32 i = 0; i < ((len / 4 + 1) % 8); ++i)
+    for (u32 i = 0; i < ((len / 4 + 1) % 8); ++i)
         *addr++ = cStackCanaryMagic;
 
     if (len >= 0x1C)
@@ -191,7 +191,7 @@ void Thread::initStackCheckWithCurrentStackPointer_()
 
     const size_t len = uintptr_t(end) + (-uintptr_t(start) - 1);
 
-    for (s32 i = 0; i < ((len / 4 + 1) % 8); ++i)
+    for (u32 i = 0; i < ((len / 4 + 1) % 8); ++i)
         *addr++ = cStackCanaryMagic;
 
     if (len >= 0x1C)

@@ -183,7 +183,7 @@ void CalendarTime::Date::calcWeek()
 
 void CalendarTime::makeWeekDayNameLabel_(BufferedSafeString* out_str, CalendarTime::Week week)
 {
-    static const SafeArray<const char*, 7> labels = {"日", "月", "火", "水", "木", "金", "土"};
+    static const SafeArray<const char*, 7> labels = {{"日", "月", "火", "水", "木", "金", "土"}};
     out_str->format("曜日:%s", labels[s32(week)]);
 }
 

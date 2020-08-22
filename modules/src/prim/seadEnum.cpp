@@ -39,7 +39,7 @@ CriticalSection* EnumUtil::getInitValueArrayCS_()
     return sEnumInitValueArrayCriticalSection.getObject();
 }
 
-void ParseFailed_(char** text_ptr, int v)
+void ParseFailed_([[maybe_unused]] char** text_ptr, [[maybe_unused]] int v)
 {
 #ifdef SEAD_DEBUG
     system::Print("----------------------------------------\n");
