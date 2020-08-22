@@ -8,9 +8,24 @@
 namespace sead
 {
 template <typename T>
+inline T MathCalcCommon<T>::roundUp(T x, s32 multNumber)
+{
+    SEAD_ASSERT(multNumber > 0);
+    return (x + multNumber - 1) / multNumber * multNumber;
+}
+
+template <typename T>
 inline s32 MathCalcCommon<T>::roundUpPow2(T val, s32 base)
 {
     SEAD_ASSERT_MSG((u32(base - 1) & u32(base)) == 0, "illegal param[val:%d, base:%d]", val, base);
+    return val + base - 1 & (u32)-base;
+}
+
+template <typename T>
+inline s32 MathCalcCommon<T>::roundUpPow2Positive(T val, s32 base)
+{
+    SEAD_ASSERT_MSG(val >= 0 && (u32(base - 1) & u32(base)) == 0, "illegal param[val:%d, base:%d]",
+                    val, base);
     return val + base - 1 & (u32)-base;
 }
 

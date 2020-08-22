@@ -220,7 +220,7 @@ public:
     s32 appendWithFormatV(const T* formatStr, std::va_list args);
 
     /// Append append_length characters from str.
-    s32 append(const SafeStringBase<T>& str, s32 append_length);
+    s32 append(const SafeStringBase<T>& str, s32 append_length = -1);
     /// Append a character.
     s32 append(T c) { return append(c, 1); }
     /// Append a character n times.

@@ -21,6 +21,10 @@
     do                                                                                             \
         sead::system::Warning(__FILE__, __LINE__, message, ##__VA_ARGS__);                         \
     while (0)
+#define SEAD_DEBUG_PRINT(format, ...)                                                              \
+    do                                                                                             \
+        sead::system::Print(format, ##__VA_ARGS__);                                                \
+    while (0)
 #else
 #define SEAD_ASSERT_MSG(condition, message, ...)                                                   \
     do                                                                                             \
@@ -35,6 +39,12 @@
     {                                                                                              \
         if (false)                                                                                 \
             sead::system::detail::CheckFormat(message, ##__VA_ARGS__);                             \
+    } while (0)
+#define SEAD_DEBUG_PRINT(format, ...)                                                              \
+    do                                                                                             \
+    {                                                                                              \
+        if (false)                                                                                 \
+            sead::system::detail::CheckFormat(format, ##__VA_ARGS__);                              \
     } while (0)
 #endif
 

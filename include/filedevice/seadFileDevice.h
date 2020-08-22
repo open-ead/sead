@@ -60,33 +60,27 @@ public:
 
     struct LoadArg
     {
-        LoadArg()
-            : path(""), buffer(NULL), buffer_size(0), heap(NULL), alignment(0), div_size(0),
-              read_size(0), roundup_size(0), need_unload(false)
-        {
-        }
-
-        LoadArg(const LoadArg& arg)
-            : path(arg.path), buffer(arg.buffer), buffer_size(arg.buffer_size), heap(arg.heap),
-              alignment(arg.alignment), div_size(arg.div_size), read_size(arg.read_size),
-              roundup_size(arg.roundup_size), need_unload(arg.need_unload)
-        {
-        }
-
-        SafeString path;
-        u8* buffer;
-        u32 buffer_size;
-        Heap* heap;
-        s32 alignment;
-        u32 div_size;
-        u32 read_size;
-        u32 roundup_size;
-        bool need_unload;
+        SafeString path = "";
+        u8* buffer = nullptr;
+        u32 buffer_size = 0;
+        Heap* heap = nullptr;
+        s32 alignment = 0;
+        s32 buffer_size_alignment = 0;
+        /// Read chunk size
+        u32 div_size = 0;
+        bool assert_on_alloc_fail = false;
+        bool check_read_entire_file = false;
+        u32 read_size = 0;
+        u32 roundup_size = 0;
+        bool need_unload = false;
     };
 
-    // FIXME
     struct SaveArg
     {
+        SafeString path = "";
+        const u8* buffer = nullptr;
+        u32 buffer_size = 0;
+        u32 write_size = 0;
     };
 
 public:
@@ -95,6 +89,8 @@ public:
     FileDevice(const SafeString& name)
         : TListNode<FileDevice*>(this), IDisposer(), mDriveName(), mPermission(true)
     {
+        if (name.include(":"))
+            SEAD_WARN("drive name should not include ':'. (in %s)", name.cstr());
         mDriveName.copy(name);
     }
 
@@ -110,7 +106,8 @@ public:
 
     u8* tryLoad(LoadArg& arg);
     bool trySave(SaveArg& arg);
-    FileDevice* tryOpen(FileHandle* handle, const SafeString& path, FileOpenFlag flag, u32 divSize);
+    FileDevice* tryOpen(FileHandle* handle, const SafeString& path, FileOpenFlag flag,
+                        u32 divSize = 0);
     bool tryClose(FileHandle* handle);
     bool tryFlush(FileHandle* handle);
     bool tryRemove(const SafeString& str);
@@ -119,7 +116,7 @@ public:
     bool trySeek(FileHandle* handle, s32 offset, SeekOrigin origin);
     bool tryGetCurrentSeekPos(u32* seekPos, FileHandle* handle);
     bool tryGetFileSize(u32* fileSize, const SafeString& path);
-    bool tryGetFileSize(u32* fileSize, FileHandle* handle);
+    bool tryGetFileSize(u32* size, FileHandle* handle);
     bool tryIsExistFile(bool* exists, const SafeString& path);
     bool tryIsExistDirectory(bool* exists, const SafeString& path);
     FileDevice* tryOpenDirectory(DirectoryHandle* handle, const SafeString& path);
@@ -137,7 +134,11 @@ public:
     virtual void resolveDirectoryPath(BufferedSafeString* out, const SafeString& path) const;
     virtual bool isMatchDevice_(const HandleBase* handle) const;
 
+#ifdef SWITCH
+    static const s32 cBufferMinAlignment = 0x20;
+#else
     static const s32 cBufferMinAlignment = 0x40;
+#endif
 
 protected:
     virtual bool doIsAvailable_() const = 0;
