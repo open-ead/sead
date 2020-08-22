@@ -2,6 +2,7 @@
 #define SEAD_FILEDEVICE_H_
 
 #include <basis/seadTypes.h>
+#include <container/seadSafeArray.h>
 #include <container/seadTList.h>
 #include <heap/seadDisposer.h>
 #include <heap/seadHeap.h>
@@ -12,16 +13,25 @@ namespace sead
 {
 class FileDevice;
 
-class HandleBase : public IDisposer
+using HandleBuffer = SafeArray<u8, 32>;
+
+class HandleBase
 {
 public:
-    HandleBase() : IDisposer(), mDevice(NULL), mOriginalDevice(NULL), mHandleBuffer() {}
+    HandleBase() = default;
+    HandleBase(const HandleBase&) = delete;
+    HandleBase& operator=(const HandleBase&) = delete;
+    virtual ~HandleBase() = default;
 
-    virtual ~HandleBase() {}
+    FileDevice* getDevice() const { return mDevice; }
+    FileDevice* getOriginalDevice() const { return mOriginalDevice; }
 
-    FileDevice* mDevice;
-    FileDevice* mOriginalDevice;
-    u8 mHandleBuffer[0x20];  // HandleBuffer = SafeArray<u8, 32>
+protected:
+    friend class FileDevice;
+
+    FileDevice* mDevice = nullptr;
+    FileDevice* mOriginalDevice = nullptr;
+    HandleBuffer mHandleBuffer{};
 };
 
 class FileHandle;
@@ -74,6 +84,11 @@ public:
         bool need_unload;
     };
 
+    // FIXME
+    struct SaveArg
+    {
+    };
+
 public:
     FileDevice() : TListNode<FileDevice*>(this), IDisposer(), mDriveName(), mPermission(true) {}
 
@@ -83,17 +98,55 @@ public:
         mDriveName.copy(name);
     }
 
-    virtual ~FileDevice();
+    ~FileDevice() override;
+
+    const SafeString& getDriveName() const { return mDriveName; }
+    void setDriveName(const SafeString& name) { mDriveName = name; }
+
+    bool hasPermission() const { return mPermission; }
+    void setHasPermission(bool perm) { mPermission = perm; }
+
+    bool isAvailable() const;
+
+    u8* tryLoad(LoadArg& arg);
+    bool trySave(SaveArg& arg);
+    FileDevice* tryOpen(FileHandle* handle, const SafeString& path, FileOpenFlag flag, u32 divSize);
+    bool tryClose(FileHandle* handle);
+    bool tryFlush(FileHandle* handle);
+    bool tryRemove(const SafeString& str);
+    bool tryRead(u32* bytesRead, FileHandle* handle, u8* outBuffer, u32 bytesToRead);
+    bool tryWrite(u32* bytesWritten, FileHandle* handle, const u8* inBuffer, u32 bytesToWrite);
+    bool trySeek(FileHandle* handle, s32 offset, SeekOrigin origin);
+    bool tryGetCurrentSeekPos(u32* seekPos, FileHandle* handle);
+    bool tryGetFileSize(u32* fileSize, const SafeString& path);
+    bool tryGetFileSize(u32* fileSize, FileHandle* handle);
+    bool tryIsExistFile(bool* exists, const SafeString& path);
+    bool tryIsExistDirectory(bool* exists, const SafeString& path);
+    FileDevice* tryOpenDirectory(DirectoryHandle* handle, const SafeString& path);
+    bool tryCloseDirectory(DirectoryHandle* handle);
+    bool tryReadDirectory(u32* entriesRead, DirectoryHandle* handle, DirectoryEntry* entries,
+                          u32 entriesToRead);
+    bool tryMakeDirectory(const SafeString& path, u32);
+    bool tryMakeDirectoryWithParent(const SafeString& path, u32);
+
+    s32 getLastRawError() const;
 
     virtual void traceFilePath(const SafeString& path) const;
     virtual void traceDirectoryPath(const SafeString& path) const;
     virtual void resolveFilePath(BufferedSafeString* out, const SafeString& path) const;
     virtual void resolveDirectoryPath(BufferedSafeString* out, const SafeString& path) const;
     virtual bool isMatchDevice_(const HandleBase* handle) const;
+
+    static const s32 cBufferMinAlignment = 0x40;
+
+protected:
     virtual bool doIsAvailable_() const = 0;
     virtual u8* doLoad_(LoadArg& arg);
+    virtual bool doSave_(SaveArg& arg);
     virtual FileDevice* doOpen_(FileHandle* handle, const SafeString& path, FileOpenFlag flag) = 0;
     virtual bool doClose_(FileHandle* handle) = 0;
+    virtual bool doFlush_(FileHandle* handle) = 0;
+    virtual bool doRemove_(const SafeString& str) = 0;
     virtual bool doRead_(u32* bytesRead, FileHandle* handle, u8* outBuffer, u32 bytesToRead) = 0;
     virtual bool doWrite_(u32* bytesWritten, FileHandle* handle, const u8* inBuffer,
                           u32 bytesToWrite) = 0;
@@ -112,35 +165,10 @@ public:
     virtual void doTracePath_(const SafeString& path) const;
     virtual void doResolvePath_(BufferedSafeString* out, const SafeString& path) const;
 
-    bool isAvailable() const;
-    u8* tryLoad(LoadArg& arg);
-    FileDevice* tryOpen(FileHandle* handle, const SafeString& path, FileOpenFlag flag, u32 divSize);
-    bool tryClose(FileHandle* handle);
-    bool tryRead(u32* bytesRead, FileHandle* handle, u8* outBuffer, u32 bytesToRead);
-    bool tryWrite(u32* bytesWritten, FileHandle* handle, const u8* inBuffer, u32 bytesToWrite);
-    bool trySeek(FileHandle* handle, s32 offset, SeekOrigin origin);
-    bool tryGetCurrentSeekPos(u32* seekPos, FileHandle* handle);
-    bool tryGetFileSize(u32* fileSize, const SafeString& path);
-    bool tryGetFileSize(u32* fileSize, FileHandle* handle);
-    bool tryIsExistFile(bool* exists, const SafeString& path);
-    bool tryIsExistDirectory(bool* exists, const SafeString& path);
-    FileDevice* tryOpenDirectory(DirectoryHandle* handle, const SafeString& path);
-    bool tryCloseDirectory(DirectoryHandle* handle);
-    bool tryReadDirectory(u32* entriesRead, DirectoryHandle* handle, DirectoryEntry* entries,
-                          u32 entriesToRead);
-    bool tryMakeDirectory(const SafeString& path, u32);
-    s32 getLastRawError() const;
-
     void setFileHandleDivSize_(FileHandle* handle, u32 divSize) const;
     void setHandleBaseFileDevice_(HandleBase* handle, FileDevice* device) const;
     void setHandleBaseOriginalFileDevice_(HandleBase* handle, FileDevice* device) const;
-
-    inline u8* getHandleBaseHandleBuffer_(HandleBase* handle) const
-    {
-        return handle->mHandleBuffer;
-    }
-
-    static const s32 cBufferMinAlignment = 0x40;
+    HandleBuffer& getHandleBaseHandleBuffer_(HandleBase* handle) const;
 
     FixedSafeString<32> mDriveName;
     bool mPermission;
@@ -158,7 +186,30 @@ public:
             _device->tryClose(this);
     }
 
+    bool close();
+    bool tryClose();
+
+    bool flush();
+    bool tryFlush();
+
     u32 read(u8* outBuffer, u32 bytesToRead);
+    bool tryRead(u32* actual_size, u8* data, u32 size);
+
+    u32 write(const u8* data, u32 size);
+    bool tryWrite(u32* actual_size, const u8* data, u32 size);
+
+    bool seek(s32 offset, FileDevice::SeekOrigin origin);
+    bool trySeek(s32 offset, FileDevice::SeekOrigin origin);
+    u32 getCurrentSeekPos();
+    bool tryGetCurrentSeekPos(u32* pos);
+
+    u32 getFileSize();
+    bool tryGetFileSize(u32* size);
+
+    u32 getDivSize() const { return mDivSize; }
+
+protected:
+    friend class FileDevice;
 
     s32 mDivSize;
 };
@@ -174,6 +225,11 @@ public:
         if (_device != NULL)
             _device->tryCloseDirectory(this);
     }
+
+    bool close();
+    bool tryClose();
+    bool read(DirectoryEntry* entries, u32 count);
+    bool tryRead(u32* actual_count, DirectoryEntry* entries, u32 count);
 };
 
 struct DirectoryEntry
