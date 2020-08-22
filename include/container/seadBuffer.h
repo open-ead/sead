@@ -258,16 +258,6 @@ public:
 
     using CompareCallback = s32 (*)(const T* lhs, const T* rhs);
 
-    void heapSort(CompareCallback cmp, s32 x, s32 y)
-    {
-        // TODO: implement this manually
-        std::make_heap(mBuffer, mBuffer + mSize,
-                       [cmp](const T& lhs, const T& rhs) { return cmp(&lhs, &rhs) < 0; });
-        std::sort_heap(mBuffer, mBuffer + mSize);
-    }
-
-    void heapSort(s32 x, s32 y) { heapSort(compareT, x, y); }
-
     s32 binarySearch(const T& item) const { return binarySearch(item, compareT); }
 
     s32 binarySearch(const T& item, CompareCallback cmp) const

@@ -39,11 +39,11 @@ public:
     Reflexible(Heap* heap, IDisposer::HeapNullOption heap_null_option);
     ~Reflexible() override { disposeHostIOImpl_(); }
 
-    void listenNodeEvent(const NodeEvent* event) override {}
-    virtual void genMessage(Context* context) {}
+    void listenNodeEvent([[maybe_unused]] const NodeEvent* event) override {}
+    virtual void genMessage([[maybe_unused]] Context* context) {}
     virtual SafeString getMetaFilename() { return SafeString::cEmptyString; }
     virtual void genObjectInfo(const GenEvent* event, u32);
-    virtual Reflexible* searchNode(const SafeString& name) { return nullptr; }
+    virtual Reflexible* searchNode([[maybe_unused]] const SafeString& name) { return nullptr; }
     virtual void calcURL(BufferedSafeString* url) const { url->copy(""); }
     virtual void calcNodeURL(const Reflexible* reflexible, BufferedSafeString* url)
     {

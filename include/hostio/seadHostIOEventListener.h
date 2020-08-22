@@ -101,8 +101,8 @@ class NodeEventListener : public PropertyEventListener
 public:
     using PropertyEventListener::PropertyEventListener;
 
-    void listenPropertyEvent(const PropertyEvent* event) override {}
-    virtual void listenNodeEvent(const NodeEvent* event) {}
+    void listenPropertyEvent([[maybe_unused]] const PropertyEvent* event) override {}
+    virtual void listenNodeEvent([[maybe_unused]] const NodeEvent* event) {}
 #endif
 };
 }  // namespace hostio

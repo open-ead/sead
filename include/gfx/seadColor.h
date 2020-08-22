@@ -81,7 +81,7 @@ class Color4u8
 {
 public:
     Color4u8() = default;
-    Color4u8(u8 r, u8 g, u8 b, u8 a) : r(r), g(g), b(b), a(a) {}
+    Color4u8(u8 r, u8 g, u8 b, u8 a) : a(a), b(b), g(g), r(r) {}
 
     static Color4u8 lerp(const Color4u8& color1, const Color4u8& color2, f32 t);
 

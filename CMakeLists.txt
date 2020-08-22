@@ -35,7 +35,9 @@ add_library(sead OBJECT
   modules/src/container/seadTreeNode.cpp
 
   include/devenv/seadAssertConfig.h
+  include/devenv/seadGameConfig.h
   modules/src/devenv/seadAssertConfig.cpp
+  modules/src/devenv/seadGameConfig.cpp
 
   include/filedevice/seadFileDevice.h
   include/filedevice/seadFileDeviceMgr.h
@@ -202,6 +204,7 @@ endif()
 
 target_compile_options(sead PRIVATE -fno-exceptions)
 target_compile_options(sead PRIVATE -fno-strict-aliasing)
+target_compile_options(sead PRIVATE -Wall -Wextra)
 target_compile_options(sead PRIVATE -Wno-invalid-offsetof)
 target_include_directories(sead PUBLIC include/)
 
