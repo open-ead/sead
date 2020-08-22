@@ -89,12 +89,12 @@ public:
     iterator begin() const { return iterator(this, 0); }
     iterator end() const { return iterator(this, calcLength()); }
 
-    token_iterator tokenBegin(const SafeStringBase& delimiter)
+    token_iterator tokenBegin(const SafeStringBase& delimiter) const
     {
         return token_iterator(this, delimiter);
     }
 
-    token_iterator tokenEnd(const SafeStringBase& delimiter)
+    token_iterator tokenEnd(const SafeStringBase& delimiter) const
     {
         return token_iterator(this, calcLength() + 1, delimiter);
     }
