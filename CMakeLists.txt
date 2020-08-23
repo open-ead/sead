@@ -191,6 +191,11 @@ if(SEAD_DEBUG)
 endif()
 
 if(SEAD_PLATFORM STREQUAL "nin")
+  if(NOT TARGET NintendoSDK)
+    add_subdirectory(../NintendoSDK)
+  endif()
+  target_link_libraries(sead PUBLIC NintendoSDK)
+
   target_sources(sead PRIVATE
     include/thread/nin/seadThreadLocalStorageNin.hpp
     modules/src/thread/nin/seadCriticalSectionNin.cpp
