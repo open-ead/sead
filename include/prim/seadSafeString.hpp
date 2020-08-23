@@ -278,8 +278,13 @@ inline bool SafeStringBase<T>::isEqual(const SafeStringBase<T>& str) const
 template <typename T>
 inline s32 SafeStringBase<T>::comparen(const SafeStringBase<T>& str, s32 n) const
 {
+#ifdef SEAD_DEBUG
     assureTerminationImpl_();
-    if (cstr() == str.cstr())
+    const char* top = cstr();
+#else
+    const char* top = mStringTop;
+#endif
+    if (top == str.cstr())
         return 0;
 
     if (n > cMaximumLength)
@@ -300,6 +305,20 @@ inline s32 SafeStringBase<T>::comparen(const SafeStringBase<T>& str, s32 n) cons
     }
 
     return 0;
+}
+
+template <typename T>
+inline s32 SafeStringBase<T>::findIndex(const SafeStringBase<T>& str) const
+{
+    const s32 len = calcLength();
+    const s32 sub_str_len = str.calcLength();
+
+    for (s32 i = 0; i <= len - sub_str_len; ++i)
+    {
+        if (SafeStringBase<T>(&mStringTop[i]).comparen(str, sub_str_len) == 0)
+            return i;
+    }
+    return -1;
 }
 
 template <typename T>
