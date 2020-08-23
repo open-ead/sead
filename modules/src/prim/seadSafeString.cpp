@@ -34,16 +34,6 @@ template <>
 const SafeStringBase<char16> SafeStringBase<char16>::cEmptyString(cEmptyStringChar16);
 
 template <>
-void SafeStringBase<char>::assureTerminationImpl_() const
-{
-}
-
-template <>
-void SafeStringBase<char16>::assureTerminationImpl_() const
-{
-}
-
-template <>
 SafeStringBase<char>& SafeStringBase<char>::operator=(const SafeStringBase<char>& other) = default;
 
 template <>
