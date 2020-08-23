@@ -5,13 +5,18 @@
 
 namespace sead
 {
-namespace Path
+class Path
 {
-bool getDriveName(BufferedSafeString* driveName, const SafeString& path);
-void getPathExceptDrive(BufferedSafeString* pathNoDrive, const SafeString& path);
-
-bool getDirectoryName(BufferedSafeString* directory_name, const SafeString& path);
-}  // namespace Path
+public:
+    static bool getDriveName(BufferedSafeString* drive_name, const SafeString& path);
+    static void getPathExceptDrive(BufferedSafeString* out, const SafeString& path);
+    static bool getExt(BufferedSafeString* ext, const SafeString& path);
+    static bool getFileName(BufferedSafeString* name, const SafeString& path);
+    static bool getBaseFileName(BufferedSafeString* name, const SafeString& path);
+    static bool getDirectoryName(BufferedSafeString* name, const SafeString& path);
+    static void join(BufferedSafeString* out, const char* path1, const char* path2);
+    static void changeDelimiter(BufferedSafeString* out, char delimiter);
+};
 }  // namespace sead
 
 #endif  // SEAD_PATH_H_
