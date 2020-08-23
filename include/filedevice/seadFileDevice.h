@@ -87,11 +87,13 @@ public:
 public:
     FileDevice() : TListNode<FileDevice*>(this), IDisposer(), mDriveName(), mPermission(true) {}
 
-    FileDevice(const SafeString& name)
+    explicit FileDevice(const SafeString& name)
         : TListNode<FileDevice*>(this), IDisposer(), mDriveName(), mPermission(true)
     {
+#ifdef SEAD_DEBUG
         if (name.include(":"))
             SEAD_WARN("drive name should not include ':'. (in %s)", name.cstr());
+#endif
         mDriveName.copy(name);
     }
 

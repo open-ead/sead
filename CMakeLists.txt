@@ -197,6 +197,9 @@ if(SEAD_PLATFORM STREQUAL "nin")
   target_link_libraries(sead PUBLIC NintendoSDK)
 
   target_sources(sead PRIVATE
+    include/filedevice/nin/seadNinFileDeviceBaseNin.h
+    modules/src/filedevice/nin/seadNinFileDeviceBaseNin.cpp
+
     include/thread/nin/seadThreadLocalStorageNin.hpp
     modules/src/thread/nin/seadCriticalSectionNin.cpp
     modules/src/thread/nin/seadEventNin.cpp
