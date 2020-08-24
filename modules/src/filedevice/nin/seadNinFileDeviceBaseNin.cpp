@@ -403,7 +403,7 @@ bool NinFileDeviceBase::doReadDirectory_(u32* entries_read, DirectoryHandle* han
     return true;
 }
 
-bool NinFileDeviceBase::doMakeDirectory_(const SafeString& path, u32 u_32)
+bool NinFileDeviceBase::doMakeDirectory_(const SafeString& path, u32)
 {
     FixedSafeString<256> fs_path;
     if (!formatPathForFS_(&fs_path, path))
