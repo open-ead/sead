@@ -45,7 +45,7 @@ add_library(sead OBJECT
   include/filedevice/seadPath.h
   modules/src/filedevice/seadFileDevice.cpp
   # modules/src/filedevice/seadFileDeviceMgr.cpp
-  # modules/src/filedevice/seadMainFileDevice.cpp
+  modules/src/filedevice/seadMainFileDevice.cpp
   modules/src/filedevice/seadPath.cpp
 
   include/framework/seadFramework.h
