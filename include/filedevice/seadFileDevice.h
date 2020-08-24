@@ -90,17 +90,20 @@ public:
     explicit FileDevice(const SafeString& name)
         : TListNode<FileDevice*>(this), IDisposer(), mDriveName(), mPermission(true)
     {
-#ifdef SEAD_DEBUG
-        if (name.include(":"))
-            SEAD_WARN("drive name should not include ':'. (in %s)", name.cstr());
-#endif
-        mDriveName.copy(name);
+        setDriveName(name);
     }
 
     ~FileDevice() override;
 
     const SafeString& getDriveName() const { return mDriveName; }
-    void setDriveName(const SafeString& name) { mDriveName = name; }
+    void setDriveName(const SafeString& name)
+    {
+#ifdef SEAD_DEBUG
+        if (name.include(':'))
+            SEAD_WARN("drive name should not include ':'. (in %s)", name.cstr());
+#endif
+        mDriveName = name;
+    }
 
     bool hasPermission() const { return mPermission; }
     void setHasPermission(bool perm) { mPermission = perm; }
@@ -235,7 +238,7 @@ public:
     {
         bool exists = false;
         if (!tryIsExistDirectory(&exists, path))
-            SEAD_ASSERT_MSG(false, "tryIsExistingDirectory error");
+            SEAD_ASSERT_MSG(false, "isExistDirectory failed");
         return exists;
     }
     bool tryIsExistDirectory(bool* exists, const SafeString& path);

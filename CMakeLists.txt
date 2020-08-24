@@ -35,6 +35,7 @@ add_library(sead OBJECT
   modules/src/container/seadTreeNode.cpp
 
   include/devenv/seadAssertConfig.h
+  include/devenv/seadEnvUtil.h
   include/devenv/seadGameConfig.h
   modules/src/devenv/seadAssertConfig.cpp
   modules/src/devenv/seadGameConfig.cpp
@@ -44,7 +45,7 @@ add_library(sead OBJECT
   include/filedevice/seadMainFileDevice.h
   include/filedevice/seadPath.h
   modules/src/filedevice/seadFileDevice.cpp
-  # modules/src/filedevice/seadFileDeviceMgr.cpp
+  modules/src/filedevice/seadFileDeviceMgr.cpp
   modules/src/filedevice/seadMainFileDevice.cpp
   modules/src/filedevice/seadPath.cpp
 
