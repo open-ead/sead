@@ -116,8 +116,11 @@ __attribute__((aligned(0x20))) s32 decodeSZSCafeAsm_(void* dst, const void* src)
     return error;
 }
 #endif  // cafe
-
 }  // namespace
+
+#ifdef SWITCH
+s32 decodeSZSNxAsm64_(void* dst, const void* src);
+#endif
 
 namespace sead
 {
@@ -148,7 +151,7 @@ SZSDecompressor::SZSDecompressor(u32 workSize, u8* workBuffer) : Decompressor("s
 {
     if (workBuffer == NULL)
     {
-        mWorkSize = MathCalcCommonU32::roundUpPow2(workSize, FileDevice::cBufferMinAlignment);
+        mWorkSize = MathCalcU32::roundUpPow2(workSize, FileDevice::cBufferMinAlignment);
         mWorkBuffer = NULL;
     }
 
@@ -194,7 +197,7 @@ u8* SZSDecompressor::tryDecompFromDevice(const ResourceMgr::LoadArg& loadArg, Re
                 decompSize = allocSize;
 
             bool allocated = false;
-            allocSize = MathCalcCommonS32::roundUpPow2(decompSize, 0x20);
+            allocSize = MathCalcS32::roundUpPow2(decompSize, 0x20);
 
             if (dst == NULL)
             {
@@ -367,7 +370,7 @@ s32 SZSDecompressor::streamDecomp(DecompContext* context, const void* src, u32 s
 
         else if (context->step == cStepShort)
         {
-            context->lzOffset = ((context->packHigh << 8) & 0xf00 | *_src) + 1;
+            context->lzOffset = (((context->packHigh << 8) & 0xf00) | *_src) + 1;
 
             n = context->packHigh >> 4;
             if (n != 0)
@@ -419,7 +422,7 @@ s32 SZSDecompressor::streamDecomp(DecompContext* context, const void* src, u32 s
         return context->destCount;
 }
 
-s32 SZSDecompressor::decomp(void* dst, u32 dstSize, const void* src, u32 srcSize)
+s32 SZSDecompressor::decomp(void* dst, u32 dstSize, const void* src, u32)
 {
     u32 magic = Endian::toHostU32(Endian::cBig, BitUtil::bitCastPtr<u32>(src));
     if (magic != 0x59617A30)
@@ -430,6 +433,8 @@ s32 SZSDecompressor::decomp(void* dst, u32 dstSize, const void* src, u32 srcSize
     if (dstSize >= decompSize)
 #ifdef cafe
         error = decodeSZSCafeAsm_(dst, src);
+#elif defined(SWITCH)
+        error = decodeSZSNxAsm64_(dst, src);
 #else
 #error "Unknown platform"
 #endif  // cafe
