@@ -16,9 +16,6 @@ template <>
 const char SafeStringBase<char>::cLineBreakChar = '\n';
 
 template <>
-const char SafeStringBase<char>::cNullString[1] = {SafeStringBase<char>::cNullChar};
-
-template <>
 const SafeStringBase<char> SafeStringBase<char>::cEmptyString("");
 
 template <>
@@ -26,9 +23,6 @@ const char16 SafeStringBase<char16>::cNullChar = 0;
 
 template <>
 const char16 SafeStringBase<char16>::cLineBreakChar = static_cast<char16>('\n');
-
-template <>
-const char16 SafeStringBase<char16>::cNullString[1] = {SafeStringBase<char16>::cNullChar};
 
 template <>
 const SafeStringBase<char16> SafeStringBase<char16>::cEmptyString(cEmptyStringChar16);

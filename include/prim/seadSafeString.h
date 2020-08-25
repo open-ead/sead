@@ -73,7 +73,7 @@ public:
         const SafeStringBase mDelimiter;
     };
 
-    SafeStringBase() : mStringTop(cNullString) {}
+    SafeStringBase() : mStringTop(&cNullChar) {}
     SafeStringBase(const T* str) : mStringTop(str)
     {
         SEAD_ASSERT_MSG(str != nullptr, "str must not be nullptr.");
