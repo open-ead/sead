@@ -159,8 +159,7 @@ protected:
     void removeThread_(Thread* thread)
     {
         ScopedLock<CriticalSection> lock(getListCS());
-        if (thread->getThreadListNode()->mList)
-            mList.erase(thread->getThreadListNode());
+        mList.erase(thread->getThreadListNode());
     }
 
     void initMainThread_(Heap* heap);

@@ -210,9 +210,7 @@ void FileDeviceMgr::mount(FileDevice* device, const SafeString& name)
 
 void FileDeviceMgr::unmount(FileDevice* device)
 {
-    auto* node = static_cast<TListNode<FileDevice*>*>(device);
-    if (node->mList)
-        mDeviceList.erase(node);
+    mDeviceList.erase(device);
 
     if (device == mDefaultFileDevice)
         mDefaultFileDevice = NULL;

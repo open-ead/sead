@@ -38,6 +38,8 @@ public:
 
     void erase(TListNode<T>* item)
     {
+        if (!item->mList)
+            return;
         item->mList = nullptr;
         ListImpl::erase(item);
     }
