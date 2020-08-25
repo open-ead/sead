@@ -202,10 +202,12 @@ if(SEAD_PLATFORM STREQUAL "nin")
     include/filedevice/nin/seadNinContentFileDeviceNin.h
     include/filedevice/nin/seadNinFileDeviceBaseNin.h
     include/filedevice/nin/seadNinSaveFileDeviceNin.h
+    include/filedevice/nin/seadNinSDFileDeviceNin.h
     modules/src/filedevice/nin/seadNinAocFileDeviceNin.cpp
     modules/src/filedevice/nin/seadNinContentFileDeviceNin.cpp
     modules/src/filedevice/nin/seadNinFileDeviceBaseNin.cpp
     modules/src/filedevice/nin/seadNinSaveFileDeviceNin.cpp
+    modules/src/filedevice/nin/seadNinSDFileDeviceNin.cpp
 
     include/thread/nin/seadThreadLocalStorageNin.hpp
     modules/src/thread/nin/seadCriticalSectionNin.cpp
