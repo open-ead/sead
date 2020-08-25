@@ -63,19 +63,23 @@ public:
     ResourceMgr();
     ~ResourceMgr();
 
-    void postCreate();
+    Resource* create(const CreateArg& arg);
 
     void registerFactory(ResourceFactory* factory, const SafeString& name);
     void unregisterFactory(ResourceFactory* factory);
     ResourceFactory* getDefaultFactory() const { return mDefaultResourceFactory; }
-    void setDefaultFactory(ResourceFactory* factory);
+    /// Set the specified factory as the default factory. Its name is set to "".
+    /// @param factory  If null, a dummy resource factory is set as the default factory.
+    /// @returns the previous default factory
+    ResourceFactory* setDefaultFactory(ResourceFactory* factory);
     ResourceFactory* findFactory(const SafeString& name);
 
     void registerDecompressor(Decompressor* decompressor, const SafeString& name);
     void unregisterDecompressor(Decompressor* decompressor);
     Decompressor* findDecompressor(const SafeString& name);
 
-    Resource* tryLoad(const LoadArg& arg, const SafeString&, Decompressor* decompressor);
+    Resource* tryLoad(const LoadArg& arg, const SafeString& factory_name,
+                      Decompressor* decompressor);
     Resource* tryLoadWithoutDecomp(const LoadArg& arg);
     void unload(Resource* res);
 

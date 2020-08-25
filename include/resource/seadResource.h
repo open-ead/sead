@@ -48,10 +48,10 @@ public:
 
     virtual ~ResourceFactory();
 
-    virtual Resource* create(const ResourceMgr::CreateArg& createArg) = 0;
     virtual Resource* tryCreate(const ResourceMgr::LoadArg& loadArg) = 0;
     virtual Resource* tryCreateWithDecomp(const ResourceMgr::LoadArg& loadArg,
                                           Decompressor* decompressor) = 0;
+    virtual Resource* create(const ResourceMgr::CreateArg& createArg) = 0;
 
     const SafeString& getExt() const { return mExt; }
     void setExt(const SafeString& ext) { mExt = ext; }
