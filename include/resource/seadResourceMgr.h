@@ -52,7 +52,7 @@ public:
         FileDevice* device = nullptr;
         // Read chunk size.
         u32 div_size = 0;
-        bool _4C = true;
+        bool assert_on_alloc_fail = true;
         bool* has_tried_create_with_decomp = nullptr;
     };
 #ifdef NNSDK
@@ -67,6 +67,7 @@ public:
 
     void registerFactory(ResourceFactory* factory, const SafeString& name);
     void unregisterFactory(ResourceFactory* factory);
+    ResourceFactory* getDefaultFactory() const { return mDefaultResourceFactory; }
     void setDefaultFactory(ResourceFactory* factory);
     ResourceFactory* findFactory(const SafeString& name);
 
@@ -78,6 +79,7 @@ public:
     Resource* tryLoadWithoutDecomp(const LoadArg& arg);
     void unload(Resource* res);
 
+private:
     typedef TList<ResourceFactory*> FactoryList;
     typedef TList<Decompressor*> DecompressorList;
 

@@ -61,7 +61,7 @@ public:
 
     struct LoadArg
     {
-        SafeString path = "";
+        SafeString path;
         u8* buffer = nullptr;
         u32 buffer_size = 0;
         Heap* heap = nullptr;
@@ -69,8 +69,8 @@ public:
         s32 buffer_size_alignment = 0;
         /// Read chunk size
         u32 div_size = 0;
-        bool assert_on_alloc_fail = false;
-        bool check_read_entire_file = false;
+        bool assert_on_alloc_fail = true;
+        bool check_read_entire_file = true;
         u32 read_size = 0;
         u32 roundup_size = 0;
         bool need_unload = false;

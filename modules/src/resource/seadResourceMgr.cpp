@@ -32,7 +32,7 @@ ResourceMgr::~ResourceMgr()
 
 void ResourceMgr::registerFactory(ResourceFactory* factory, const SafeString& name)
 {
-    factory->mExt.copy(name);
+    factory->setExt(name);
 
     mFactoryList.pushBack(factory);
 }

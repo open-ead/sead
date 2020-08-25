@@ -139,7 +139,7 @@ add_library(sead OBJECT
   include/resource/seadSharcArchiveRes.h
   include/resource/seadSZSDecompressor.h
   modules/src/resource/seadArchiveRes.cpp
-  # modules/src/resource/seadResource.cpp
+  modules/src/resource/seadResource.cpp
   modules/src/resource/seadResourceMgr.cpp
   # modules/src/resource/seadSharcArchiveRes.cpp
   # modules/src/resource/seadSZSDecompressor.cpp

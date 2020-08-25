@@ -1,6 +1,7 @@
 #pragma once
 
 #include <basis/seadTypes.h>
+#include <basis/seadRawPrint.h>
 
 namespace sead
 {
@@ -48,7 +49,11 @@ public:
         return uintptr_t(begin) <= uintptr_t(ptr) && uintptr_t(ptr) <= uintptr_t(end);
     }
 
-    static bool isAligned(const void* ptr, s32 n) { return uintptr_t(ptr) % n == 0; }
+    static bool isAligned(const void* ptr, s32 alignment)
+    {
+        SEAD_ASSERT(alignment != 0);
+        return uintptr_t(ptr) % alignment == 0;
+    }
     static bool isAlignedPow2(const void* ptr, u32 n) { return (uintptr_t(ptr) & (n - 1)) == 0; }
     static bool isAlignedN(const void* ptr, s32 n) { return uintptr_t(ptr) % n == 0; }
 };

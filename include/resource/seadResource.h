@@ -27,7 +27,7 @@ class DirectResource : public Resource
 
 public:
     DirectResource();
-    virtual ~DirectResource();
+    ~DirectResource() override;
 
     virtual s32 getLoadDataAlignment() const;
     virtual void doCreate_(u8* buffer, u32 bufferSize, Heap* heap);
@@ -42,6 +42,7 @@ public:
 
 class ResourceFactory : public TListNode<ResourceFactory*>, public IDisposer
 {
+    SEAD_RTTI_BASE(ResourceFactory)
 public:
     ResourceFactory() : TListNode<ResourceFactory*>(this), IDisposer(), mExt() {}
 
@@ -52,32 +53,38 @@ public:
     virtual Resource* tryCreateWithDecomp(const ResourceMgr::LoadArg& loadArg,
                                           Decompressor* decompressor) = 0;
 
+    const SafeString& getExt() const { return mExt; }
+    void setExt(const SafeString& ext) { mExt = ext; }
+
+protected:
     FixedSafeString<32> mExt;
 };
 
 class DirectResourceFactoryBase : public ResourceFactory
 {
+    SEAD_RTTI_OVERRIDE(DirectResourceFactoryBase, ResourceFactory)
 public:
     DirectResourceFactoryBase() : ResourceFactory() {}
 
-    virtual ~DirectResourceFactoryBase() {}
+    ~DirectResourceFactoryBase() override {}
 
-    virtual Resource* create(const ResourceMgr::CreateArg& createArg);
-    virtual Resource* tryCreate(const ResourceMgr::LoadArg& loadArg);
-    virtual Resource* tryCreateWithDecomp(const ResourceMgr::LoadArg& loadArg,
-                                          Decompressor* decompressor);
+    Resource* create(const ResourceMgr::CreateArg& createArg) override;
+    Resource* tryCreate(const ResourceMgr::LoadArg& loadArg) override;
+    Resource* tryCreateWithDecomp(const ResourceMgr::LoadArg& loadArg,
+                                  Decompressor* decompressor) override;
     virtual DirectResource* newResource_(Heap* heap, s32 alignment) = 0;
 };
 
 template <typename T>
 class DirectResourceFactory : public DirectResourceFactoryBase
 {
+    SEAD_RTTI_OVERRIDE(DirectResourceFactory<T>, DirectResourceFactoryBase)
 public:
     DirectResourceFactory() : DirectResourceFactoryBase() {}
 
-    virtual ~DirectResourceFactory() {}
+    ~DirectResourceFactory() override {}
 
-    virtual DirectResource* newResource_(Heap* heap, s32 alignment)
+    DirectResource* newResource_(Heap* heap, s32 alignment) override
     {
         return new (heap, alignment) T;
     }

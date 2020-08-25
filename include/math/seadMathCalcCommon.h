@@ -16,6 +16,9 @@ public:
     static s32 roundDownPow2(T x, s32 y);
     static T gcd(T x, T y);
     static T lcm(T x, T y);
+
+    /// Returns -1 for strictly negative values and 1 otherwise.
+    static s32 sign(T value);
 };
 
 typedef MathCalcCommon<s32> MathCalcS32;

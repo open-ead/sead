@@ -29,6 +29,12 @@ inline s32 MathCalcCommon<T>::roundUpPow2Positive(T val, s32 base)
     return val + base - 1 & (u32)-base;
 }
 
+template <typename T>
+s32 MathCalcCommon<T>::sign(T value)
+{
+    return value < 0 ? -1 : 1;
+}
+
 template <typename T, typename T2>
 inline T lerp(T a, T b, T2 t)
 {
