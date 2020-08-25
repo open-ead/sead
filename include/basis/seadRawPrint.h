@@ -29,11 +29,18 @@
 #define SEAD_ASSERT_MSG(condition, message, ...)                                                   \
     do                                                                                             \
     {                                                                                              \
-        static_cast<void>(condition);                                                              \
         if (false)                                                                                 \
+        {                                                                                          \
+            static_cast<void>(condition);                                                          \
             sead::system::detail::CheckFormat(message, ##__VA_ARGS__);                             \
+        }                                                                                          \
     } while (0)
-#define SEAD_ASSERT(condition) static_cast<void>(condition)
+#define SEAD_ASSERT(condition)                                                                     \
+    do                                                                                             \
+    {                                                                                              \
+        if (false)                                                                                 \
+            static_cast<void>(condition);                                                          \
+    } while (0)
 #define SEAD_WARN(message, ...)                                                                    \
     do                                                                                             \
     {                                                                                              \
