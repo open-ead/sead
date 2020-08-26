@@ -359,7 +359,7 @@ inline s32 SafeStringBase<T>::rfindIndex(const SafeStringBase<T>& str) const
 template <typename T>
 inline bool SafeStringBase<T>::isEmpty() const
 {
-    return unsafeAt_(0) == '\0';
+    return unsafeAt_(0) == cNullChar;
 }
 
 template <typename T>
