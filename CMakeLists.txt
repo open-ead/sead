@@ -141,7 +141,7 @@ add_library(sead OBJECT
   modules/src/resource/seadArchiveRes.cpp
   modules/src/resource/seadResource.cpp
   modules/src/resource/seadResourceMgr.cpp
-  # modules/src/resource/seadSharcArchiveRes.cpp
+  modules/src/resource/seadSharcArchiveRes.cpp
   modules/src/resource/seadSZSDecompressor.cpp
 
   include/thread/seadAtomic.h

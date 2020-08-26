@@ -32,16 +32,14 @@ public:
     void doCreate_(u8* buf, u32, Heap*) override;
 
 protected:
-    using Handle = SafeArray<u8, 32>;
-
-    virtual void* getFileImpl_(const SafeString& file_path,
+    virtual const void* getFileImpl_(const SafeString& file_path,
                                FileInfo* file_info = nullptr) const = 0;
-    virtual void* getFileFastImpl_(s32 entry_id, FileInfo* file_info) const = 0;
+    virtual const void* getFileFastImpl_(s32 entry_id, FileInfo* file_info) const = 0;
     virtual s32 convertPathToEntryIDImpl_(const SafeString& file_path) const = 0;
     virtual bool setCurrentDirectoryImpl_(const SafeString&) = 0;
-    virtual bool openDirectoryImpl_(Handle* handle, const SafeString&) const = 0;
-    virtual bool closeDirectoryImpl_(Handle* handle) const = 0;
-    virtual u32 readDirectoryImpl_(Handle* handle, DirectoryEntry* entries, u32 num) const = 0;
+    virtual bool openDirectoryImpl_(HandleBuffer* handle, const SafeString& path) const = 0;
+    virtual bool closeDirectoryImpl_(HandleBuffer* handle) const = 0;
+    virtual u32 readDirectoryImpl_(HandleBuffer* handle, DirectoryEntry* entries, u32 num) const = 0;
     virtual bool isExistFileImpl_(const SafeString& path) const;
     virtual bool prepareArchive_(const void* archive) = 0;
 

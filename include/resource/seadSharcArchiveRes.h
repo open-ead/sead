@@ -50,20 +50,22 @@ public:
 
 public:
     SharcArchiveRes();
-    virtual ~SharcArchiveRes();
+    ~SharcArchiveRes() override;
 
-    virtual void* getFileImpl_(const SafeString& file_path, FileInfo* file_info = NULL);
-    virtual void* getFileFastImpl_(s32 entry_id, FileInfo* file_info);
-    virtual s32 convertPathToEntryIDImpl_(const SafeString& file_path);
-    virtual bool setCurrentDirectoryImpl_(const SafeString&);
-    virtual bool openDirectoryImpl_(
-        u32* handle,
-        const SafeString&);  // openDirectoryImpl_(SafeArray<u8, 32>*, const SafeString&)
-    virtual bool closeDirectoryImpl_(u32* handle);  // closeDirectoryImpl_(SafeArray<u8, 32>*)
-    virtual u32
-    readDirectoryImpl_(u32* handle, DirectoryEntry* entry,
-                       u32 num);  // readDirectoryImpl_(SafeArray<u8, 32>*, DirectoryEntry*, u32)
-    virtual bool prepareArchive_(const void* archive);
+    const void* getFileImpl_(const SafeString& file_path,
+                             FileInfo* file_info = NULL) const override;
+    const void* getFileFastImpl_(s32 entry_id, FileInfo* file_info) const override;
+    s32 convertPathToEntryIDImpl_(const SafeString& file_path) const override;
+    bool setCurrentDirectoryImpl_(const SafeString&) override;
+    bool openDirectoryImpl_(HandleBuffer* handle, const SafeString& path) const override;
+    bool closeDirectoryImpl_(HandleBuffer* handle) const override;
+    u32 readDirectoryImpl_(HandleBuffer* handle, DirectoryEntry* entry, u32 num) const override;
+    bool isExistFileImpl_(const SafeString& path) const override;
+    bool prepareArchive_(const void* archive) override;
+
+protected:
+    struct HandleInner;
+    HandleInner* getHandleInner_(HandleBuffer* handle, bool create = false) const;
 
     static const u32 cArchiveVersion = 0x100;
     static const u32 cArchiveEntryMax = 0x3fff;

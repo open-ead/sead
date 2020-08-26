@@ -233,8 +233,16 @@ public:
         return &mBuffer[idx];
     }
 
-    T* unsafeGet(s32 idx) { return &mBuffer[idx]; }
-    const T* unsafeGet(s32 idx) const { return &mBuffer[idx]; }
+    T* unsafeGet(s32 idx)
+    {
+        SEAD_ASSERT_MSG(u32(idx) < u32(mSize), "index exceeded [%d/%d]", idx, mSize);
+        return &mBuffer[idx];
+    }
+    const T* unsafeGet(s32 idx) const
+    {
+        SEAD_ASSERT_MSG(u32(idx) < u32(mSize), "index exceeded [%d/%d]", idx, mSize);
+        return &mBuffer[idx];
+    }
 
     T& front() { return mBuffer[0]; }
     const T& front() const { return mBuffer[0]; }

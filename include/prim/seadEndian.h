@@ -1,6 +1,7 @@
 #ifndef SEAD_ENDIAN_H_
 #define SEAD_ENDIAN_H_
 
+#include <basis/seadRawPrint.h>
 #include <basis/seadTypes.h>
 #include <prim/seadBitUtil.h>
 
@@ -36,11 +37,11 @@ public:
         if (*bom_ == 0xff && *(bom_ + 1) == 0xfe)
             return cLittle;
 
-        else if (*bom_ == 0xfe && *(bom_ + 1) == 0xff)
+        if (*bom_ == 0xfe && *(bom_ + 1) == 0xff)
             return cBig;
 
-        else
-            return cLittle;
+        SEAD_ASSERT_MSG(false, "Undefined endian mark(0x%02x 0x%02x)", bom_[0], bom_[1]);
+        return cLittle;
     }
 
     static u16 endianToMark(Types endian) { return endian == cBig ? 0xFEFF : 0xFFFE; }
