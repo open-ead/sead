@@ -40,10 +40,12 @@ add_library(sead OBJECT
   modules/src/devenv/seadAssertConfig.cpp
   modules/src/devenv/seadGameConfig.cpp
 
+  include/filedevice/seadArchiveFileDevice.h
   include/filedevice/seadFileDevice.h
   include/filedevice/seadFileDeviceMgr.h
   include/filedevice/seadMainFileDevice.h
   include/filedevice/seadPath.h
+  modules/src/filedevice/seadArchiveFileDevice.cpp
   modules/src/filedevice/seadFileDevice.cpp
   modules/src/filedevice/seadFileDeviceMgr.cpp
   modules/src/filedevice/seadMainFileDevice.cpp
