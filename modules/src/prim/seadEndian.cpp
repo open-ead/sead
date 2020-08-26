@@ -50,7 +50,7 @@ namespace sead
 {
 const Endian::Types Endian::cHostEndian = Endian::markToEndian(0xfeff);
 
-[[maybe_unused]] const Endian::ConvFuncTable cConvFuncTable = {
+const Endian::ConvFuncTable Endian::cConvFuncTable = {
     {&Null8, &Swap8},
     {&Null16, &Swap16},
     {&Null32, &Swap32},
