@@ -14,11 +14,8 @@ class Random;
 class PtrArrayImpl
 {
 public:
-    __attribute__((always_inline)) PtrArrayImpl(s32 ptrNumMax, void* buf)
-        : mPtrNum(0), mPtrNumMax(0), mPtrs(NULL)
-    {
-        setBuffer(ptrNumMax, buf);
-    }
+    PtrArrayImpl() = default;
+    PtrArrayImpl(s32 ptrNumMax, void* buf) { setBuffer(ptrNumMax, buf); }
 
     void setBuffer(s32 ptrNumMax, void* buf);
     void allocBuffer(s32 ptrNumMax, Heap* heap, s32 alignment = sizeof(void*));
@@ -164,15 +161,16 @@ protected:
     void uniq(CompareCallbackImpl cmp);
     s32 binarySearch(const void* ptr, CompareCallbackImpl cmp) const;
 
-    s32 mPtrNum;
-    s32 mPtrNumMax;
-    void** mPtrs;
+    s32 mPtrNum = 0;
+    s32 mPtrNumMax = 0;
+    void** mPtrs = nullptr;
 };
 
 template <typename T>
 class PtrArray : public PtrArrayImpl
 {
 public:
+    PtrArray() = default;
     PtrArray(s32 ptrNumMax, T** buf) : PtrArrayImpl(ptrNumMax, buf) {}
 
     T* at(s32 pos) const { return static_cast<T*>(PtrArrayImpl::at(pos)); }
