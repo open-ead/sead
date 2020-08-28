@@ -53,7 +53,6 @@ private:
     StreamSrc* mSrc;
     u8* mBuffer;
     u32 mBufferSize;
-    u32 mCurrentSize;
     u32 mCurrentPos;
 };
 
