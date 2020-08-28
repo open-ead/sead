@@ -146,6 +146,11 @@ add_library(sead OBJECT
   modules/src/resource/seadSharcArchiveRes.cpp
   modules/src/resource/seadSZSDecompressor.cpp
 
+  include/stream/seadBufferStream.h
+  include/stream/seadStream.h
+  include/stream/seadStreamFormat.h
+  include/stream/seadStreamSrc.h
+
   include/thread/seadAtomic.h
   include/thread/seadCriticalSection.h
   include/thread/seadDelegateThread.h
