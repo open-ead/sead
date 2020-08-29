@@ -82,6 +82,7 @@ add_library(sead OBJECT
   modules/src/heap/seadHeapMgr.cpp
 
   include/math/seadBoundBox.h
+  include/math/seadMathBase.h
   include/math/seadMathCalcCommon.h
   include/math/seadMathCalcCommon.hpp
   include/math/seadMathPolicies.h
