@@ -272,12 +272,11 @@ u8* FileDevice::doLoad_(LoadArg& arg)
         {
             if (arg.buffer_size_alignment)
             {
-                bytesToRead = MathCalcU32::roundUp(fileSize, arg.buffer_size_alignment);
+                bytesToRead = Mathu::roundUp(fileSize, arg.buffer_size_alignment);
             }
             else
             {
-                bytesToRead =
-                    MathCalcS32::roundUpPow2Positive(fileSize, FileDevice::cBufferMinAlignment);
+                bytesToRead = Mathi::roundUpPow2Positive(fileSize, FileDevice::cBufferMinAlignment);
             }
         }
     }

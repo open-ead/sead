@@ -171,9 +171,9 @@ u8* ArchiveFileDevice::doLoadWithEntryID_(s32 entry_id, LoadArg& arg)
             SEAD_ASSERT(file_size != 0);
 
             if (arg.buffer_size_alignment)
-                buffer_size = MathCalcU32::roundUp(file_size, arg.buffer_size_alignment);
+                buffer_size = Mathu::roundUp(file_size, arg.buffer_size_alignment);
             else
-                buffer_size = MathCalcS32::roundUpPow2Positive(file_size, cBufferMinAlignment);
+                buffer_size = Mathi::roundUpPow2Positive(file_size, cBufferMinAlignment);
         }
 
         // Allocate the buffer if need be.
@@ -181,7 +181,7 @@ u8* ArchiveFileDevice::doLoadWithEntryID_(s32 entry_id, LoadArg& arg)
         bool buffer_allocated = false;
         if (!buffer)
         {
-            const s32 aligment_sign = MathCalcS32::sign(arg.alignment);
+            const s32 aligment_sign = Mathi::sign(arg.alignment);
             const s32 alignment = std::max(sead::abs(arg.alignment), 32);
             buffer = new (arg.heap, alignment * aligment_sign) u8[buffer_size];
             buffer_allocated = true;

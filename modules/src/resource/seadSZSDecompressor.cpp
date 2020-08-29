@@ -151,7 +151,7 @@ SZSDecompressor::SZSDecompressor(u32 workSize, u8* workBuffer) : Decompressor("s
 {
     if (workBuffer == NULL)
     {
-        mWorkSize = MathCalcU32::roundUpPow2(workSize, FileDevice::cBufferMinAlignment);
+        mWorkSize = Mathu::roundUpPow2(workSize, FileDevice::cBufferMinAlignment);
         mWorkBuffer = NULL;
     }
 
@@ -197,7 +197,7 @@ u8* SZSDecompressor::tryDecompFromDevice(const ResourceMgr::LoadArg& loadArg, Re
                 decompSize = allocSize;
 
             bool allocated = false;
-            allocSize = MathCalcS32::roundUpPow2(decompSize, 0x20);
+            allocSize = Mathi::roundUpPow2(decompSize, 0x20);
 
             if (dst == NULL)
             {

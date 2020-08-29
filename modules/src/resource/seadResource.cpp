@@ -95,7 +95,7 @@ Resource* DirectResourceFactoryBase::tryCreate(const ResourceMgr::LoadArg& loadA
         fileLoadArg.alignment = loadArg.load_data_alignment;
     else
         fileLoadArg.alignment =
-            MathCalcS32::sign(loadArg.instance_alignment) * resource->getLoadDataAlignment();
+            Mathi::sign(loadArg.instance_alignment) * resource->getLoadDataAlignment();
 
     if (loadArg.device != NULL)
         data = loadArg.device->tryLoad(fileLoadArg);

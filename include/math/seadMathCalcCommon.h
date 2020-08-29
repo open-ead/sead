@@ -21,9 +21,10 @@ public:
     static s32 sign(T value);
 };
 
-typedef MathCalcCommon<s32> MathCalcS32;
-typedef MathCalcCommon<u32> MathCalcU32;
-typedef MathCalcCommon<f32> MathCalcF32;
+typedef MathCalcCommon<s32> Mathi;
+typedef MathCalcCommon<u32> Mathu;
+typedef MathCalcCommon<f32> Mathf;
+typedef MathCalcCommon<size_t> MathSizeT;
 
 template <typename T, typename T2 = float>
 T lerp(T a, T b, T2 t);
