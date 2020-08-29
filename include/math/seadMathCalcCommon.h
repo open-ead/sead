@@ -19,6 +19,10 @@ public:
 
     /// Returns -1 for strictly negative values and 1 otherwise.
     static s32 sign(T value);
+
+    static T acos(T t);
+    static T asin(T t);
+    static T atan(T t);
 };
 
 typedef MathCalcCommon<s32> Mathi;
