@@ -1,29 +1,52 @@
 #pragma once
 
+#include <array>
+
 namespace sead
 {
 template <typename T>
 struct BaseVec2
 {
-    T x;
-    T y;
+    union
+    {
+        struct
+        {
+            T x;
+            T y;
+        };
+        std::array<T, 2> e;
+    };
 };
 
 template <typename T>
 struct BaseVec3
 {
-    T x;
-    T y;
-    T z;
+    union
+    {
+        struct
+        {
+            T x;
+            T y;
+            T z;
+        };
+        std::array<T, 3> e;
+    };
 };
 
 template <typename T>
 struct BaseVec4
 {
-    T x;
-    T y;
-    T z;
-    T w;
+    union
+    {
+        struct
+        {
+            T x;
+            T y;
+            T z;
+            T w;
+        };
+        std::array<T, 4> e;
+    };
 };
 
 template <typename T>
