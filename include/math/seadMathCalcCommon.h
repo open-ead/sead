@@ -41,6 +41,11 @@ constexpr s32 abs(s32 x)
 {
     return (x ^ (x >> 31)) - (x >> 31);
 }
+
+constexpr f32 absf(f32 x)
+{
+    return x > 0 ? x : -x;
+}
 }  // namespace sead
 
 #define SEAD_MATH_MATH_CALC_COMMON_H_

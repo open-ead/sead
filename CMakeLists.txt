@@ -90,6 +90,8 @@ add_library(sead OBJECT
   include/math/seadMatrixCalcCommon.h
   include/math/seadMatrixCalcCommon.hpp
   include/math/seadQuat.h
+  include/math/seadQuatCalcCommon.h
+  include/math/seadQuatCalcCommon.hpp
   include/math/seadVector.h
   modules/src/math/seadBoundBox.cpp
   modules/src/math/seadMatrix.cpp
