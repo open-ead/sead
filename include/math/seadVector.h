@@ -16,26 +16,26 @@ struct Vector2 : public Policies<T>::Vec2Base
         this->y = y;
     }
 
-    Vector2& operator+=(const Vector2& other)
+    constexpr Vector2& operator+=(const Vector2& other)
     {
         this->x += other.x;
         this->y += other.y;
         return *this;
     }
 
-    friend Vector2 operator+(const Vector2& a, const Vector2& b)
+    constexpr friend Vector2 operator+(const Vector2& a, const Vector2& b)
     {
         return {a.x + b.x, a.y + b.y};
     }
 
-    Vector2& operator-=(const Vector2& other)
+    constexpr Vector2& operator-=(const Vector2& other)
     {
         this->x -= other.x;
         this->y -= other.y;
         return *this;
     }
 
-    friend Vector2 operator-(const Vector2& a, const Vector2& b)
+    constexpr friend Vector2 operator-(const Vector2& a, const Vector2& b)
     {
         return {a.x - b.x, a.y - b.y};
     }
@@ -47,18 +47,18 @@ struct Vector2 : public Policies<T>::Vec2Base
         return *this;
     }
 
-    friend Vector2 operator*(const Vector2& a, T t) { return {a.x * t, a.y * t}; }
-    friend Vector2 operator*(T t, const Vector2& a) { return operator*(a, t); }
+    constexpr friend Vector2 operator*(const Vector2& a, T t) { return {a.x * t, a.y * t}; }
+    constexpr friend Vector2 operator*(T t, const Vector2& a) { return operator*(a, t); }
 
-    Vector2& operator/=(T t)
+    constexpr Vector2& operator/=(T t)
     {
         this->x /= t;
         this->y /= t;
         return *this;
     }
 
-    friend Vector2 operator/(const Vector2& a, T t) { return {a.x / t, a.y / t}; }
-    friend Vector2 operator/(T t, const Vector2& a) { return operator/(a, t); }
+    constexpr friend Vector2 operator/(const Vector2& a, T t) { return {a.x / t, a.y / t}; }
+    constexpr friend Vector2 operator/(T t, const Vector2& a) { return operator/(a, t); }
 
     static const Vector2 zero;
     static const Vector2 ex;
@@ -77,7 +77,7 @@ struct Vector3 : public Policies<T>::Vec3Base
         this->z = z;
     }
 
-    Vector3& operator+=(const Vector3& other)
+    constexpr Vector3& operator+=(const Vector3& other)
     {
         this->x += other.x;
         this->y += other.y;
@@ -85,12 +85,12 @@ struct Vector3 : public Policies<T>::Vec3Base
         return *this;
     }
 
-    friend Vector3 operator+(const Vector3& a, const Vector3& b)
+    constexpr friend Vector3 operator+(const Vector3& a, const Vector3& b)
     {
         return {a.x + b.x, a.y + b.y, a.z + b.z};
     }
 
-    Vector3& operator-=(const Vector3& other)
+    constexpr Vector3& operator-=(const Vector3& other)
     {
         this->x -= other.x;
         this->y -= other.y;
@@ -98,12 +98,12 @@ struct Vector3 : public Policies<T>::Vec3Base
         return *this;
     }
 
-    friend Vector3 operator-(const Vector3& a, const Vector3& b)
+    constexpr friend Vector3 operator-(const Vector3& a, const Vector3& b)
     {
         return {a.x - b.x, a.y - b.y, a.z - b.z};
     }
 
-    Vector3& operator*=(T t)
+    constexpr Vector3& operator*=(T t)
     {
         this->x *= t;
         this->y *= t;
@@ -111,10 +111,13 @@ struct Vector3 : public Policies<T>::Vec3Base
         return *this;
     }
 
-    friend Vector3 operator*(const Vector3& a, T t) { return {a.x * t, a.y * t, a.z * t}; }
-    friend Vector3 operator*(T t, const Vector3& a) { return operator*(a, t); }
+    constexpr friend Vector3 operator*(const Vector3& a, T t)
+    {
+        return {a.x * t, a.y * t, a.z * t};
+    }
+    constexpr friend Vector3 operator*(T t, const Vector3& a) { return operator*(a, t); }
 
-    Vector3& operator/=(T t)
+    constexpr Vector3& operator/=(T t)
     {
         this->x /= t;
         this->y /= t;
@@ -122,8 +125,11 @@ struct Vector3 : public Policies<T>::Vec3Base
         return *this;
     }
 
-    friend Vector3 operator/(const Vector3& a, T t) { return {a.x / t, a.y / t, a.z / t}; }
-    friend Vector3 operator/(T t, const Vector3& a) { return operator/(a, t); }
+    constexpr friend Vector3 operator/(const Vector3& a, T t)
+    {
+        return {a.x / t, a.y / t, a.z / t};
+    }
+    constexpr friend Vector3 operator/(T t, const Vector3& a) { return operator/(a, t); }
 
     static const Vector3 zero;
     static const Vector3 ex;
@@ -144,7 +150,7 @@ struct Vector4 : public Policies<T>::Vec4Base
         this->w = w;
     }
 
-    Vector4& operator+=(const Vector4& other)
+    constexpr Vector4& operator+=(const Vector4& other)
     {
         this->x += other.x;
         this->y += other.y;
@@ -153,12 +159,12 @@ struct Vector4 : public Policies<T>::Vec4Base
         return *this;
     }
 
-    friend Vector4 operator+(const Vector4& a, const Vector4& b)
+    constexpr friend Vector4 operator+(const Vector4& a, const Vector4& b)
     {
         return {a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w};
     }
 
-    Vector4& operator-=(const Vector4& other)
+    constexpr Vector4& operator-=(const Vector4& other)
     {
         this->x -= other.x;
         this->y -= other.y;
@@ -167,12 +173,12 @@ struct Vector4 : public Policies<T>::Vec4Base
         return *this;
     }
 
-    friend Vector4 operator-(const Vector4& a, const Vector4& b)
+    constexpr friend Vector4 operator-(const Vector4& a, const Vector4& b)
     {
         return {a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w};
     }
 
-    Vector4& operator*=(T t)
+    constexpr Vector4& operator*=(T t)
     {
         this->x *= t;
         this->y *= t;
@@ -181,10 +187,13 @@ struct Vector4 : public Policies<T>::Vec4Base
         return *this;
     }
 
-    friend Vector4 operator*(const Vector4& a, T t) { return {a.x * t, a.y * t, a.z * t, a.w * t}; }
-    friend Vector4 operator*(T t, const Vector4& a) { return operator*(a, t); }
+    constexpr friend Vector4 operator*(const Vector4& a, T t)
+    {
+        return {a.x * t, a.y * t, a.z * t, a.w * t};
+    }
+    constexpr friend Vector4 operator*(T t, const Vector4& a) { return operator*(a, t); }
 
-    Vector4& operator/=(T t)
+    constexpr Vector4& operator/=(T t)
     {
         this->x /= t;
         this->y /= t;
@@ -193,8 +202,11 @@ struct Vector4 : public Policies<T>::Vec4Base
         return *this;
     }
 
-    friend Vector4 operator/(const Vector4& a, T t) { return {a.x / t, a.y / t, a.z / t, a.w / t}; }
-    friend Vector4 operator/(T t, const Vector4& a) { return operator/(a, t); }
+    constexpr friend Vector4 operator/(const Vector4& a, T t)
+    {
+        return {a.x / t, a.y / t, a.z / t, a.w / t};
+    }
+    constexpr friend Vector4 operator/(T t, const Vector4& a) { return operator/(a, t); }
 
     static const Vector4 zero;
     static const Vector4 ex;
