@@ -68,7 +68,7 @@ void FileDeviceMgr::mount_([[maybe_unused]] Heap* heap)
     {
         SEAD_WARN("nn::fs::MountHostRoot() failed. module = %d desc = %d innervalue = 0x%08x",
                   mount_host_result.GetModule(), mount_host_result.GetDescription(),
-                  mount_host_result.GetValue());
+                  mount_host_result.GetInnerValueForDebug());
         mMountedHost = false;
     }
     else
@@ -87,7 +87,7 @@ void FileDeviceMgr::mount_([[maybe_unused]] Heap* heap)
                         "nn::fs::QueryMountRomCacheSize() failed. module = %d desc = %d "
                         "innervalue = 0x%08x",
                         query_result.GetModule(), query_result.GetDescription(),
-                        query_result.GetValue());
+                        query_result.GetInnerValueForDebug());
 
         SEAD_DEBUG_PRINT("FileDeviceMgr: MountRom cache size => %zd\n", cache_size);
         mRomCache = new (heap) u8[cache_size];
@@ -95,7 +95,8 @@ void FileDeviceMgr::mount_([[maybe_unused]] Heap* heap)
         const auto result = nn::fs::MountRom("content", mRomCache, cache_size);
         SEAD_ASSERT_MSG(result.IsSuccess(),
                         "nn::fs::MountRom() failed. module = %d desc = %d innervalue = 0x%08x",
-                        result.GetModule(), result.GetDescription(), result.GetValue());
+                        result.GetModule(), result.GetDescription(),
+                        result.GetInnerValueForDebug());
     }
 #ifdef SEAD_DEBUG
     else
@@ -110,7 +111,8 @@ void FileDeviceMgr::mount_([[maybe_unused]] Heap* heap)
             const auto result = nn::fs::MountHost("content", content_dir.cstr());
             SEAD_ASSERT_MSG(result.IsSuccess(),
                             "nn::fs::MountHost() failed. module = %d desc = %d innervalue = 0x%08x",
-                            result.GetModule(), result.GetDescription(), result.GetValue());
+                            result.GetModule(), result.GetDescription(),
+                            result.GetInnerValueForDebug());
             system::Print("FileDeviceMgr: MountHost => %s\n", content_dir.cstr());
         }
     }
@@ -341,7 +343,7 @@ void FileDeviceMgr::mountSaveDataForDebug(Heap*)
     SEAD_ASSERT_MSG(
         result.IsSuccess(),
         "nn::fs::MountSaveDataForDebug() failed. module = %d desc = %d innervalue = 0x%08x",
-        result.GetModule(), result.GetDescription(), result.GetValue());
+        result.GetModule(), result.GetDescription(), result.GetInnerValueForDebug());
 }
 
 void FileDeviceMgr::unmountSaveDataForDebug()

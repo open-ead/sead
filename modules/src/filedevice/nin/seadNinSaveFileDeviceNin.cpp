@@ -14,7 +14,8 @@ bool NinSaveFileDevice::tryCommit()
 
     SEAD_WARN(
         "nn::fs::CommitSaveData failed. module = %d desc = %d inner_value = 0x%08x mount_name=%s",
-        result.GetModule(), result.GetDescription(), result.GetValue(), mMountPoint.cstr());
+        result.GetModule(), result.GetDescription(), result.GetInnerValueForDebug(),
+        mMountPoint.cstr());
     return false;
 }
 }  // namespace sead

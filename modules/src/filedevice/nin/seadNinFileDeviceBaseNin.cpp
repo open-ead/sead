@@ -60,7 +60,7 @@ FileDevice* NinFileDeviceBase::doOpen_(FileHandle* handle, const SafeString& pat
         {
             SEAD_WARN("nn::fs::GetEntryType failed. module = %d desc = %d inner_value = 0x%08x "
                       "path = %s",
-                      result.GetModule(), result.GetDescription(), result.GetValue(),
+                      result.GetModule(), result.GetDescription(), result.GetInnerValueForDebug(),
                       fs_path.cstr());
             mLastError = result;
             return nullptr;
@@ -80,7 +80,7 @@ FileDevice* NinFileDeviceBase::doOpen_(FileHandle* handle, const SafeString& pat
                 SEAD_WARN("nn::fs::CreateFile failed. module = %d desc = %d inner_value = 0x%08x "
                           "path = %s",
                           create_result.GetModule(), create_result.GetDescription(),
-                          create_result.GetValue(), fs_path.cstr());
+                          create_result.GetInnerValueForDebug(), fs_path.cstr());
                 mLastError = create_result;
                 return nullptr;
             }
@@ -99,8 +99,8 @@ FileDevice* NinFileDeviceBase::doOpen_(FileHandle* handle, const SafeString& pat
         if (!nn::fs::ResultPathNotFound().Includes(open_result))
             SEAD_WARN(
                 "nn::fs::OpenFile failed. module = %d desc = %d inner_value = 0x%08x path = %s",
-                open_result.GetModule(), open_result.GetDescription(), open_result.GetValue(),
-                fs_path.cstr());
+                open_result.GetModule(), open_result.GetDescription(),
+                open_result.GetInnerValueForDebug(), fs_path.cstr());
         return nullptr;
     }
 
@@ -111,8 +111,8 @@ FileDevice* NinFileDeviceBase::doOpen_(FileHandle* handle, const SafeString& pat
         {
             SEAD_WARN("nn::fs::SetFileSize failed. module = %d desc = %d inner_value = 0x%08x path "
                       "= %s",
-                      set_result.GetModule(), set_result.GetDescription(), set_result.GetValue(),
-                      fs_path.cstr());
+                      set_result.GetModule(), set_result.GetDescription(),
+                      set_result.GetInnerValueForDebug(), fs_path.cstr());
             nn::fs::CloseFile(handle_inner->mHandle);
             mLastError = set_result;
             return nullptr;
@@ -169,8 +169,8 @@ bool NinFileDeviceBase::doRemove_(const SafeString& path)
     if (mLastError.IsFailure())
     {
         SEAD_WARN("nn::fs::DeleteFile failed. module = %d desc = %d inner_value = 0x%08x path = %s",
-                  mLastError.GetModule(), mLastError.GetDescription(), mLastError.GetValue(),
-                  fs_path.cstr());
+                  mLastError.GetModule(), mLastError.GetDescription(),
+                  mLastError.GetInnerValueForDebug(), fs_path.cstr());
         return false;
     }
     return true;
@@ -186,7 +186,8 @@ bool NinFileDeviceBase::doRead_(u32* bytesRead, FileHandle* handle, u8* outBuffe
     if (mLastError.IsFailure())
     {
         SEAD_WARN("nn::fs::ReadFile failed. module = %d desc = %d inner_value = 0x%08x",
-                  mLastError.GetModule(), mLastError.GetDescription(), mLastError.GetValue());
+                  mLastError.GetModule(), mLastError.GetDescription(),
+                  mLastError.GetInnerValueForDebug());
         return false;
     }
 
@@ -213,7 +214,8 @@ bool NinFileDeviceBase::doWrite_(u32* bytesWritten, FileHandle* handle, const u8
     }
 
     SEAD_WARN("nn::fs::WriteFile failed. module = %d desc = %d inner_value = 0x%08x",
-              mLastError.GetModule(), mLastError.GetDescription(), mLastError.GetValue());
+              mLastError.GetModule(), mLastError.GetDescription(),
+              mLastError.GetInnerValueForDebug());
     inner->mDoNotFlushOnClose = true;
     return false;
 }
@@ -271,7 +273,8 @@ bool NinFileDeviceBase::doGetFileSize_(u32* fileSize, FileHandle* handle)
     }
 
     SEAD_WARN("nn::fs::GetFileSize failed. module = %d desc = %d inner_value = 0x%08x",
-              mLastError.GetModule(), mLastError.GetDescription(), mLastError.GetValue());
+              mLastError.GetModule(), mLastError.GetDescription(),
+              mLastError.GetInnerValueForDebug());
     return false;
 }
 
@@ -301,8 +304,8 @@ bool NinFileDeviceBase::doIsExistFile_(bool* exists, const SafeString& path)
     }
 
     SEAD_WARN("nn::fs::GetEntryType failed. module = %d desc = %d inner_value = 0x%08x path = %s",
-              mLastError.GetModule(), mLastError.GetDescription(), mLastError.GetValue(),
-              fs_path.cstr());
+              mLastError.GetModule(), mLastError.GetDescription(),
+              mLastError.GetInnerValueForDebug(), fs_path.cstr());
     return false;
 }
 
@@ -332,8 +335,8 @@ bool NinFileDeviceBase::doIsExistDirectory_(bool* exists, const SafeString& path
     }
 
     SEAD_WARN("nn::fs::GetEntryType failed. module = %d desc = %d inner_value = 0x%08x path = %s",
-              mLastError.GetModule(), mLastError.GetDescription(), mLastError.GetValue(),
-              fs_path.cstr());
+              mLastError.GetModule(), mLastError.GetDescription(),
+              mLastError.GetInnerValueForDebug(), fs_path.cstr());
     return false;
 }
 
@@ -358,8 +361,8 @@ FileDevice* NinFileDeviceBase::doOpenDirectory_(DirectoryHandle* handle, const S
         return nullptr;
 
     SEAD_WARN("nn::fs::OpenDirectory failed. module = %d desc = %d inner_value = 0x%08x path = %s",
-              mLastError.GetModule(), mLastError.GetDescription(), mLastError.GetValue(),
-              fs_path.cstr());
+              mLastError.GetModule(), mLastError.GetDescription(),
+              mLastError.GetInnerValueForDebug(), fs_path.cstr());
     return nullptr;
 }
 
@@ -382,7 +385,8 @@ bool NinFileDeviceBase::doReadDirectory_(u32* entries_read, DirectoryHandle* han
         if (mLastError.IsFailure())
         {
             SEAD_WARN("nn::fs::ReadDirectory failed. module = %d desc = %d inner_value = 0x%08x",
-                      mLastError.GetModule(), mLastError.GetDescription(), mLastError.GetValue());
+                      mLastError.GetModule(), mLastError.GetDescription(),
+                      mLastError.GetInnerValueForDebug());
             return false;
         }
 
@@ -419,13 +423,14 @@ bool NinFileDeviceBase::doMakeDirectory_(const SafeString& path, u32)
         return true;
 
     SEAD_WARN("nn::fs::CreateDirectory[%s] failed. module = %d desc = %d inner_value = 0x%08x",
-              fs_path.cstr(), result.GetModule(), result.GetDescription(), result.GetValue());
+              fs_path.cstr(), result.GetModule(), result.GetDescription(),
+              result.GetInnerValueForDebug());
     return false;
 }
 
 s32 NinFileDeviceBase::doGetLastRawError_() const
 {
-    return mLastError.GetValue();
+    return mLastError.GetInnerValueForDebug();
 }
 
 void NinFileDeviceBase::doResolvePath_(BufferedSafeString* out, const SafeString& path) const

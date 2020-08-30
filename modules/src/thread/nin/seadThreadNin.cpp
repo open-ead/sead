@@ -19,7 +19,8 @@ Thread::Thread(const SafeString& name, Heap* heap, s32 priority, MessageQueue::B
         nn::os::CreateThread(mThreadInner, ninThreadFunc_, this, mStackTop, stack_size, mPriority);
 
     SEAD_ASSERT_MSG(result.IsSuccess(), "CreateThread failed. 0x%08x (module = %d, desc = %d) %s",
-                    result.GetValue(), result.GetModule(), result.GetDescription(), name.cstr());
+                    result.GetInnerValueForDebug(), result.GetModule(), result.GetDescription(),
+                    name.cstr());
 
     nn::os::SetThreadName(mThreadInner, name.cstr());
 
