@@ -67,6 +67,8 @@ protected:
 // endregion
 
 // region Print formatters
+PrintFormatter& flush(PrintFormatter& formatter);
+
 class PrintFormatter
 {
 public:
@@ -93,6 +95,8 @@ public:
     PrintFormatter& operator<<(char*);
     PrintFormatter& operator<<(const char*);
 
+    PrintFormatter& operator<<(PrintFormatter& (&fn)(PrintFormatter&)) { return fn(*this); }
+
     template <typename T>
     PrintFormatter& operator,(const T&);
 
@@ -110,6 +114,12 @@ protected:
     s32 mFormatStrLength;
     bool mX;
 };
+
+inline PrintFormatter& flush(PrintFormatter& formatter)
+{
+    formatter.flush();
+    return formatter;
+}
 
 class StringPrintFormatter : public PrintFormatter
 {
