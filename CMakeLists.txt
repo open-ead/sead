@@ -85,6 +85,7 @@ add_library(sead OBJECT
   include/math/seadMathBase.h
   include/math/seadMathCalcCommon.h
   include/math/seadMathCalcCommon.hpp
+  include/math/seadMathNumbers.h
   include/math/seadMathPolicies.h
   include/math/seadMatrix.h
   include/math/seadMatrixCalcCommon.h
@@ -188,6 +189,10 @@ add_library(sead OBJECT
   modules/src/time/seadTickSpan.cpp
 )
 
+target_sources(sead PRIVATE
+  include/hostio/seadHostIOCurve.h
+  modules/src/hostio/seadHostIOCurve.cpp
+)
 if(SEAD_DEBUG)
   target_sources(sead PRIVATE
     include/hostio/seadHostIOEventListener.h
