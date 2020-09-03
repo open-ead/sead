@@ -55,6 +55,21 @@ public:
 
     CurveType getCurveType() const { return CurveType(mInfo.curveType); }
 
+    void setData(CurveData* data, CurveType type, u32 num_floats, u32 num_use)
+    {
+        data->curveType = u8(type);
+        data->numUse = num_use;
+        setCurveType(type);
+        setFloats(data, num_floats);
+        setNumUse(num_use);
+    }
+
+    void setFloats(CurveData* data, u32 num_floats)
+    {
+        mInfo.numFloats = num_floats;
+        mFloats = data->f;
+    }
+
     void setCurveType(CurveType type)
     {
         SEAD_ASSERT(mInfo.curveType < cNumCurveType);
