@@ -32,11 +32,10 @@ inline constexpr int cNumCurveType = 11;
 
 struct CurveDataInfo
 {
-    u8 curveType;
-    u8 _1;
-    u8 numFloats;
-    u8 numUse;
-    u32 _4;
+    u8 curveType = 0;
+    u8 _1 = 4;
+    u8 numFloats = 0;
+    u8 numUse = 0;
 };
 
 struct CurveData
@@ -68,9 +67,8 @@ public:
         mInfo.numUse = numUse;
     }
 
-    f32* mFloats;
+    f32* mFloats = nullptr;
     CurveDataInfo mInfo;
-    CurveData mData;
 };
 
 template <typename T>
