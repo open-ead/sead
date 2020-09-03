@@ -52,7 +52,6 @@ public:
     f32 interpolateToF32(f32 t) override;
     Vector2f interpolateToVec2f(f32 t) override;
 
-protected:
     f32* mFloats;
     CurveDataInfo mInfo;
     CurveData mData;
@@ -119,12 +118,12 @@ extern CurveFunctionTableVec2<f64> sCurveFunctionTbl_Vec2d;
 template <>
 inline f32 Curve<f32>::interpolateToF32(f32 t)
 {
-    return sCurveFunctionTbl_f32[mInfo.type.getDirect()](t, &mInfo, mFloats);
+    return sCurveFunctionTbl_f32[u8(mInfo.type)](t, &mInfo, mFloats);
 }
 
 template <>
 inline Vector2f Curve<f32>::interpolateToVec2f(f32 t)
 {
-    return sCurveFunctionTbl_Vec2f[mInfo.type.getDirect()](t, &mInfo, mFloats);
+    return sCurveFunctionTbl_Vec2f[u8(mInfo.type)](t, &mInfo, mFloats);
 }
 }  // namespace sead::hostio
