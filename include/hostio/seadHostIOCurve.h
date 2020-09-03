@@ -3,7 +3,6 @@
 #include <array>
 #include "basis/seadTypes.h"
 #include "math/seadVector.h"
-#include "prim/seadTypedBitFlag.h"
 
 namespace sead::hostio
 {
@@ -14,7 +13,7 @@ public:
     virtual Vector2f interpolateToVec2f(f32 t) = 0;
 };
 
-enum class CurveType
+enum class CurveType : u8
 {
     Linear = 0,
     Hermit = 1,
@@ -31,7 +30,7 @@ enum class CurveType
 
 struct CurveDataInfo
 {
-    TypedBitFlag<CurveType, u8> type;
+    CurveType type;
     u8 _1;
     u8 _2;
     u8 numUse;
