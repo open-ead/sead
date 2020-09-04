@@ -32,10 +32,10 @@ inline constexpr int cNumCurveType = 11;
 
 struct CurveDataInfo
 {
-    u8 curveType = 0;
-    u8 _1 = 4;
-    u8 numFloats = 0;
-    u8 numUse = 0;
+    u8 curveType;
+    u8 _1;
+    u8 numFloats;
+    u8 numUse;
 };
 
 struct CurveData
@@ -50,6 +50,15 @@ template <typename T>
 class Curve : public ICurve
 {
 public:
+    Curve()
+    {
+        mInfo.curveType = 0;
+        mInfo.numUse = 0;
+        mInfo._1 = 4;
+        mInfo.numFloats = 0;
+        mFloats = nullptr;
+    }
+
     f32 interpolateToF32(f32 t) override;
     Vector2f interpolateToVec2f(f32 t) override;
 
@@ -82,7 +91,7 @@ public:
         mInfo.numUse = numUse;
     }
 
-    f32* mFloats = nullptr;
+    f32* mFloats;
     CurveDataInfo mInfo;
 };
 
