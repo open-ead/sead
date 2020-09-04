@@ -28,6 +28,12 @@ public:
     using RootHeaps = FixedPtrArray<Heap, 4>;
     using IndependentHeaps = FixedPtrArray<Heap, 4>;
 
+private:
+    friend class ScopedCurrentHeapSetter;
+
+    /// Set the current heap to the specified heap and returns the previous "current heap".
+    sead::Heap* setCurrentHeap_(sead::Heap* heap);
+
     static Arena sDefaultArena;
     static RootHeaps sRootHeaps;
     static IndependentHeaps sIndependentHeaps;
@@ -35,6 +41,35 @@ public:
 
     void*
         mAllocFailedCallback;  // IAllocFailedCallback* = IDelegate1<const AllocFailedCallbackArg*>*
+};
+
+/// Sets the "current heap" to the specified heap and restores the previous "current heap"
+/// when this goes out of scope.
+class ScopedCurrentHeapSetter
+{
+public:
+    explicit ScopedCurrentHeapSetter(sead::Heap* heap)
+    {
+        if (heap)
+            setPreviousHeap_(HeapMgr::instance()->setCurrentHeap_(heap));
+        else
+            setPreviousHeapToNone_();
+    }
+
+    ~ScopedCurrentHeapSetter()
+    {
+        if (hasPreviousHeap_())
+            HeapMgr::instance()->setCurrentHeap_(getPreviousHeap_());
+    }
+
+protected:
+    /// @warning Only call this if hasPreviousHeap returns true.
+    Heap* getPreviousHeap_() const { return reinterpret_cast<Heap*>(mPreviousHeap); }
+    void setPreviousHeap_(Heap* heap) { mPreviousHeap = reinterpret_cast<uintptr_t>(heap); }
+    void setPreviousHeapToNone_() { mPreviousHeap = 1; }
+    bool hasPreviousHeap_() const { return mPreviousHeap != 1; }
+
+    uintptr_t mPreviousHeap;
 };
 
 class FindContainHeapCache
