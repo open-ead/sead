@@ -27,7 +27,7 @@ inline void* MemUtil::copyOverlap(void* dest, const void* src, size_t size)
 
 inline void* MemUtil::copy(void* dest, const void* src, size_t size)
 {
-    SEAD_ASSERT_MSG(!((src >= dest && PtrUtil::addOffset(dest, size) > src) ||
+    SEAD_ASSERT_MSG(!((PtrUtil::addOffset(dest, size) > src && src >= dest) ||
                       (PtrUtil::addOffset(src, size) > dest && dest >= src)),
                     "cross copy area");
 
