@@ -220,6 +220,50 @@ typedef Vector2<f32> Vector2f;
 typedef Vector3<f32> Vector3f;
 typedef Vector4<f32> Vector4f;
 
+template <>
+const Vector2<f32> Vector2<f32>::zero;
+
+template <>
+const Vector2<f32> Vector2<f32>::ex;
+
+template <>
+const Vector2<f32> Vector2<f32>::ey;
+
+template <>
+const Vector2<f32> Vector2<f32>::ones;
+
+template <>
+const Vector3<f32> Vector3<f32>::zero;
+
+template <>
+const Vector3<f32> Vector3<f32>::ex;
+
+template <>
+const Vector3<f32> Vector3<f32>::ey;
+
+template <>
+const Vector3<f32> Vector3<f32>::ez;
+
+template <>
+const Vector3<f32> Vector3<f32>::ones;
+
+template <>
+const Vector4<f32> Vector4<f32>::zero;
+
+template <>
+const Vector4<f32> Vector4<f32>::ex;
+
+template <>
+const Vector4<f32> Vector4<f32>::ey;
+
+template <>
+const Vector4<f32> Vector4<f32>::ez;
+
+template <>
+const Vector4<f32> Vector4<f32>::ew;
+
+template <>
+const Vector4<f32> Vector4<f32>::ones;
 }  // namespace sead
 
 #endif  // #define SEAD_VECTOR_H_
