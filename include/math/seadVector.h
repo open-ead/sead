@@ -16,6 +16,13 @@ struct Vector2 : public Policies<T>::Vec2Base
         this->y = y;
     }
 
+    constexpr Vector2& operator=(const Vector2& other)
+    {
+        this->x = other.x;
+        this->y = other.y;
+        return *this;
+    }
+
     constexpr Vector2& operator+=(const Vector2& other)
     {
         this->x += other.x;
@@ -75,6 +82,14 @@ struct Vector3 : public Policies<T>::Vec3Base
         this->x = x;
         this->y = y;
         this->z = z;
+    }
+
+    constexpr Vector3& operator=(const Vector3& other)
+    {
+        this->x = other.x;
+        this->y = other.y;
+        this->z = other.z;
+        return *this;
     }
 
     constexpr Vector3& operator+=(const Vector3& other)
@@ -148,6 +163,15 @@ struct Vector4 : public Policies<T>::Vec4Base
         this->y = y;
         this->z = z;
         this->w = w;
+    }
+
+    constexpr Vector4& operator=(const Vector4& other)
+    {
+        this->x = other.x;
+        this->y = other.y;
+        this->z = other.z;
+        this->w = other.w;
+        return *this;
     }
 
     constexpr Vector4& operator+=(const Vector4& other)
