@@ -308,6 +308,18 @@ public:
 
     ~FixedSafeStringBase() override = default;
 
+    FixedSafeStringBase& operator=(const FixedSafeStringBase& other)
+    {
+        this->copy(other);
+        return *this;
+    }
+
+    FixedSafeStringBase& operator=(const SafeStringBase<T>& other) override
+    {
+        this->copy(other);
+        return *this;
+    }
+
     T mBuffer[L];
 };
 
@@ -340,6 +352,12 @@ public:
     FixedSafeString() : FixedSafeStringBase<char, L>() {}
 
     FixedSafeString(const SafeString& str) : FixedSafeStringBase<char, L>(str) {}
+
+    FixedSafeString& operator=(const FixedSafeString& other)
+    {
+        this->copy(other);
+        return *this;
+    }
 
     FixedSafeString<L>& operator=(const SafeStringBase<char>& other) override
     {
