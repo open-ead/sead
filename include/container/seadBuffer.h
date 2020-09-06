@@ -284,7 +284,7 @@ public:
                 b = m;
         }
 
-        if (cmp(&mBuffer[a], &item) == 0)
+        if (cmp(&item, &mBuffer[a]) == 0)
             return a;
 
         return -1;
