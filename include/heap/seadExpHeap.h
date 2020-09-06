@@ -2,10 +2,10 @@
 
 #include "heap/seadHeap.h"
 #include "heap/seadMemBlock.h"
+#include "prim/seadSizedEnum.h"
 
 namespace sead
 {
-// FIXME: incomplete
 class ExpHeap : public Heap
 {
     SEAD_RTTI_OVERRIDE(ExpHeap, Heap)
@@ -16,7 +16,7 @@ public:
         BestFit = 1,
     };
 
-    enum class FindFreeBlockMode : u8
+    enum class FindFreeBlockMode
     {
         Auto = 0,
         FromFreeList = 1,
@@ -102,8 +102,8 @@ protected:
 
     static s32 compareMemBlockAddr_(const MemBlock*, const MemBlock*);
 
-    AllocMode mAllocMode;
-    FindFreeBlockMode mFindFreeBlockMode;
+    SizedEnum<AllocMode, u8> mAllocMode;
+    SizedEnum<FindFreeBlockMode, u8> mFindFreeBlockMode;
     MemBlockList mFreeList;
     MemBlockList mUseList;
 };
