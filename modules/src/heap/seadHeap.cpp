@@ -4,17 +4,19 @@
 
 namespace sead
 {
+SEAD_ENUM_IMPL(Heap::Flag)
+
 Heap::~Heap() = default;
 
 void Heap::appendDisposer_(IDisposer* disposer)
 {
-    ConditionalScopedLock<CriticalSection> lock(&mCS, mFlag.isOnBit(0));
+    ConditionalScopedLock<CriticalSection> lock(&mCS, isLockEnabled());
     mDisposerList.pushBack(disposer);
 }
 
 void Heap::removeDisposer_(IDisposer* disposer)
 {
-    ConditionalScopedLock<CriticalSection> lock(&mCS, mFlag.isOnBit(0));
+    ConditionalScopedLock<CriticalSection> lock(&mCS, isLockEnabled());
     mDisposerList.erase(disposer);
 }
 

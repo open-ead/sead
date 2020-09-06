@@ -9,6 +9,7 @@
 #include <heap/seadDisposer.h>
 #include <hostio/seadHostIOReflexible.h>
 #include <prim/seadBitFlag.h>
+#include <prim/seadEnum.h>
 #include <prim/seadNamable.h>
 #include <prim/seadRuntimeTypeInfo.h>
 #include <prim/seadSafeString.h>
@@ -27,6 +28,9 @@ class PropertyEvent;
 class Heap : public IDisposer, public INamable, public hostio::Reflexible
 {
 public:
+    SEAD_ENUM(Flag, cEnableLock, cDisposing, cEnableWarning, cEnableDebugFillSystem,
+              cEnableDebugFillUser)
+
     enum HeapDirection
     {
         cHeapDirection_Forward = 1,
@@ -82,6 +86,16 @@ public:
                         size, getMaxAllocatableSize(alignment), alignment, getName().cstr());
         return ptr;
     }
+
+    void enableLock(bool on) { mFlag.changeBit(Flag::cEnableLock, on); }
+    void enableWarning(bool on) { mFlag.changeBit(Flag::cEnableWarning, on); }
+    void enableDebugFillSystem(bool on) { mFlag.changeBit(Flag::cEnableDebugFillSystem, on); }
+    void enableDebugFillUser(bool on) { mFlag.changeBit(Flag::cEnableDebugFillUser, on); }
+
+    bool isLockEnabled() const { return mFlag.isOnBit(Flag::cEnableLock); }
+    bool isWarningEnabled() const { return mFlag.isOnBit(Flag::cEnableWarning); }
+    bool isDebugFillSystemEnabled() const { return mFlag.isOnBit(Flag::cEnableDebugFillSystem); }
+    bool isDebugFillUserEnabled() const { return mFlag.isOnBit(Flag::cEnableDebugFillUser); }
 
     using HeapList = OffsetList<Heap>;
     using DisposerList = OffsetList<IDisposer>;
