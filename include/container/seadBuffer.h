@@ -272,20 +272,21 @@ public:
     {
         s32 a = 0;
         s32 b = mSize - 1;
-        while (a <= b)
+        while (a < b)
         {
-            s32 sum = a + b;
-            if (sum < 0)
-                ++sum;
-            const s32 m = sum >> 1;
+            const s32 m = (a + b) / 2;
             const s32 c = cmp(&mBuffer[m], &item);
             if (c == 0)
                 return m;
             if (c < 0)
                 a = m + 1;
             else
-                b = m - 1;
+                b = m;
         }
+
+        if (cmp(&mBuffer[a], &item) == 0)
+            return a;
+
         return -1;
     }
 

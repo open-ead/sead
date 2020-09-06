@@ -16,9 +16,6 @@ struct Char16Pair
 {
     char16 before;
     char16 after;
-
-    // TODO: implement this inline function
-    s32 compare(char16 c) const;
 };
 
 enum class CardinalNumber
