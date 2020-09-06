@@ -17,6 +17,7 @@
 
 namespace sead
 {
+class Thread;
 class WriteStream;
 
 namespace hostio
@@ -111,7 +112,7 @@ public:
     BitFlag16 mFlag;
     u16 mHeapCheckTag;
 #ifdef SEAD_DEBUG
-    void* _140;
+    sead::Thread* mAccessThread;
 #endif
 };
 
