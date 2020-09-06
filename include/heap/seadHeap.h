@@ -110,7 +110,9 @@ public:
     CriticalSection mCS;
     BitFlag16 mFlag;
     u16 mHeapCheckTag;
+#ifdef SEAD_DEBUG
     void* _140;
+#endif
 };
 
 inline void* Heap::tryRealloc(void*, size_t, s32)
