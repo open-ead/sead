@@ -75,8 +75,10 @@ add_library(sead OBJECT
 
   include/heap/seadArena.h
   include/heap/seadDisposer.h
+  include/heap/seadExpHeap.h
   include/heap/seadHeap.h
   include/heap/seadHeapMgr.h
+  include/heap/seadMemBlock.h
   modules/src/heap/seadDisposer.cpp
   modules/src/heap/seadHeap.cpp
   modules/src/heap/seadHeapMgr.cpp
