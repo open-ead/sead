@@ -270,6 +270,9 @@ public:
 
     s32 binarySearch(const T& item, CompareCallback cmp) const
     {
+        if (mSize == 0)
+            return -1;
+
         s32 a = 0;
         s32 b = mSize - 1;
         while (a < b)
