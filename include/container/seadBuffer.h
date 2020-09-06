@@ -289,6 +289,27 @@ public:
         return -1;
     }
 
+    /// Sort elements with indices in [start_idx .. end_idx] using heapsort.
+    void heapSort(s32 start_idx, s32 end_idx)
+    {
+        if (start_idx >= mSize || end_idx >= mSize || end_idx - start_idx < 1)
+            return;
+        // FIXME: Nintendo implemented heap sort manually without using <algorithm>
+        std::make_heap(mBuffer + start_idx, mBuffer + end_idx);
+        std::sort_heap(mBuffer + start_idx, mBuffer + end_idx);
+    }
+
+    /// Sort elements with indices in [start_idx .. end_idx] using heapsort.
+    void heapSort(s32 start_idx, s32 end_idx, CompareCallback cmp)
+    {
+        if (start_idx >= mSize || end_idx >= mSize || end_idx - start_idx < 1)
+            return;
+        // FIXME: Nintendo implemented heap sort manually without using <algorithm>
+        std::make_heap(mBuffer + start_idx, mBuffer + end_idx,
+                       [cmp](const T& a, const T& b) { return cmp(&a, &b) < 0; });
+        std::sort_heap(mBuffer + start_idx, mBuffer + end_idx);
+    }
+
 protected:
     static s32 compareT(const T* lhs, const T* rhs)
     {
