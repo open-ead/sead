@@ -379,6 +379,7 @@ template <s32 L>
 class FormatFixedSafeString : public FixedSafeString<L>
 {
 public:
+    FormatFixedSafeString() : FormatFixedSafeString("") {}
     explicit FormatFixedSafeString(const char* format, ...) : FixedSafeString<L>()
     {
         std::va_list args;
