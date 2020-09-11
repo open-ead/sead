@@ -35,11 +35,13 @@ public:
 
     void insertBefore(const T* obj, T* obj_to_insert)
     {
-        ListImpl::insertBefore(objToListNode(obj), objToListNode(obj_to_insert));
+        ListImpl::insertBefore(const_cast<ListNode*>(objToListNode(obj)),
+                               objToListNode(obj_to_insert));
     }
     void insertAfter(const T* obj, T* obj_to_insert)
     {
-        ListImpl::insertAfter(objToListNode(obj), objToListNode(obj_to_insert));
+        ListImpl::insertAfter(const_cast<ListNode*>(objToListNode(obj)),
+                              objToListNode(obj_to_insert));
     }
 
     void erase(T* item) { ListImpl::erase(objToListNode(item)); }
@@ -110,8 +112,7 @@ public:
     {
     public:
         robustIterator(T* ptr, s32 offset)
-            : mPtr{ptr},
-              mNextNode(static_cast<ListNode*>(PtrUtil::addOffset(ptr, offset))->next()),
+            : mPtr{ptr}, mNextNode(static_cast<ListNode*>(PtrUtil::addOffset(ptr, offset))->next()),
               mOffset{offset}
         {
         }
