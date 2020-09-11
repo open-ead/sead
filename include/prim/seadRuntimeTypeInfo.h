@@ -8,7 +8,7 @@ namespace RuntimeTypeInfo
 class Interface
 {
 public:
-    Interface() {}
+    Interface() = default;
 
     virtual bool isDerived(const Interface* typeInfo) const = 0;
 };
@@ -16,18 +16,18 @@ public:
 class Root : public Interface
 {
 public:
-    Root() {}
+    Root() = default;
 
-    virtual bool isDerived(const Interface* typeInfo) const { return typeInfo == this; }
+    bool isDerived(const Interface* typeInfo) const override { return typeInfo == this; }
 };
 
 template <typename BaseType>
 class Derive : public Interface
 {
 public:
-    Derive() {}
+    Derive() = default;
 
-    virtual bool isDerived(const Interface* typeInfo) const
+    bool isDerived(const Interface* typeInfo) const override
     {
         if (this == typeInfo)
             return true;
@@ -43,7 +43,7 @@ template <typename DerivedType, typename Type>
 inline bool IsDerivedFrom(const Type* obj)
 {
     const RuntimeTypeInfo::Interface* typeInfo = DerivedType::getRuntimeTypeInfoStatic();
-    return obj != NULL && obj->checkDerivedRuntimeTypeInfo(typeInfo);
+    return obj != nullptr && obj->checkDerivedRuntimeTypeInfo(typeInfo);
 }
 
 template <typename DerivedType, typename Type>
@@ -52,7 +52,7 @@ inline DerivedType* DynamicCast(Type* obj)
     if (IsDerivedFrom<DerivedType, Type>(obj))
         return static_cast<DerivedType*>(obj);
 
-    return NULL;
+    return nullptr;
 }
 
 }  // namespace sead
