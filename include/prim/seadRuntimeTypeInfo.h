@@ -8,7 +8,7 @@ namespace RuntimeTypeInfo
 class Interface
 {
 public:
-    Interface() = default;
+    Interface() {}
 
     virtual bool isDerived(const Interface* typeInfo) const = 0;
 };
@@ -16,7 +16,7 @@ public:
 class Root : public Interface
 {
 public:
-    Root() = default;
+    Root() {}
 
     bool isDerived(const Interface* typeInfo) const override { return typeInfo == this; }
 };
@@ -25,7 +25,7 @@ template <typename BaseType>
 class Derive : public Interface
 {
 public:
-    Derive() = default;
+    Derive() {}
 
     bool isDerived(const Interface* typeInfo) const override
     {
