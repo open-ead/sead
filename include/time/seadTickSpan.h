@@ -65,28 +65,22 @@ public:
         return span;
     }
 
-    static TickSpan fromMicroSeconds(s64 us)
+    static TickSpan fromMicroSeconds(s64 usec)
     {
-        SEAD_ASSERT(LLONG_MIN / cFrequency <= us && us < LLONG_MAX / cFrequency);
-        TickSpan span;
-        span.setMicroSeconds(us);
-        return span;
+        SEAD_ASSERT(LLONG_MIN / cFrequency <= usec && usec < LLONG_MAX / cFrequency);
+        return {cFrequency * usec / 1'000'000};
     }
 
-    static TickSpan fromMilliSeconds(s64 ms)
+    static TickSpan fromMilliSeconds(s64 msec)
     {
-        SEAD_ASSERT(LLONG_MIN / cFrequency <= ms && ms < LLONG_MAX / cFrequency);
-        TickSpan span;
-        span.setMilliSeconds(ms);
-        return span;
+        SEAD_ASSERT(LLONG_MIN / cFrequency <= msec && msec < LLONG_MAX / cFrequency);
+        return {cFrequency * msec / 1000};
     }
 
-    static TickSpan fromSeconds(s64 s)
+    static TickSpan fromSeconds(s64 sec)
     {
-        SEAD_ASSERT(LLONG_MIN / cFrequency <= s && s < LLONG_MAX / cFrequency);
-        TickSpan span;
-        span.setSeconds(s);
-        return span;
+        SEAD_ASSERT(LLONG_MIN / cFrequency <= sec && sec < LLONG_MAX / cFrequency);
+        return {cFrequency * sec};
     }
 
 private:
