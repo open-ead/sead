@@ -24,7 +24,7 @@ public:
     bool isBufferReady() const { return mPtrs != nullptr; }
 
     bool isEmpty() const { return mPtrNum == 0; }
-    bool isFull() const { return mPtrNum == mPtrNumMax; }
+    bool isFull() const { return mPtrNum >= mPtrNumMax; }
 
     s32 size() const { return mPtrNum; }
     s32 capacity() const { return mPtrNumMax; }
