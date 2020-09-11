@@ -79,7 +79,8 @@ protected:
             return;
         }
         // Simplest insert case, so this is implemented directly without using insert().
-        mPtrs[mPtrNum++] = ptr;
+        mPtrs[mPtrNum] = ptr;
+        ++mPtrNum;
     }
 
     void pushFront(void* ptr) { insert(0, ptr); }
