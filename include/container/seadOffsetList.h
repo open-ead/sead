@@ -104,6 +104,7 @@ public:
     {
         return iterator(listNodeToObj(const_cast<ListNode*>(&mStartEnd)), mOffset);
     }
+    iterator begin(T* ptr) const { return iterator(ptr, mOffset); }
 
     class robustIterator
     {
