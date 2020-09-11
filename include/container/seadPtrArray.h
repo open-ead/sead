@@ -103,7 +103,7 @@ protected:
     {
         for (s32 i = 0; i < mPtrNum; ++i)
         {
-            if (cmp(ptr, mPtrs[i]) == 0)
+            if (cmp(mPtrs[i], ptr) == 0)
                 return mPtrs[i];
         }
         return nullptr;
@@ -113,7 +113,7 @@ protected:
     {
         for (s32 i = 0; i < mPtrNum; ++i)
         {
-            if (cmp(ptr, mPtrs[i]) == 0)
+            if (cmp(mPtrs[i], ptr) == 0)
                 return i;
         }
         return -1;
@@ -215,9 +215,17 @@ public:
         return PtrArrayImpl::compare(other, cmp);
     }
 
-    T* find(const T* ptr) const { return PtrArrayImpl::find(ptr, compareT); }
+    T* find(const T* ptr) const
+    {
+        return PtrArrayImpl::find(ptr,
+                                  [](const void* a, const void* b) { return a == b ? 0 : -1; });
+    }
     T* find(const T* ptr, CompareCallback cmp) const { return PtrArrayImpl::find(ptr, cmp); }
-    s32 search(const T* ptr) const { return PtrArrayImpl::search(ptr, compareT); }
+    s32 search(const T* ptr) const
+    {
+        return PtrArrayImpl::search(ptr,
+                                    [](const void* a, const void* b) { return a == b ? 0 : -1; });
+    }
     s32 search(const T* ptr, CompareCallback cmp) const { return PtrArrayImpl::search(ptr, cmp); }
     s32 binarySearch(const T* ptr) const { return PtrArrayImpl::binarySearch(ptr, compareT); }
     s32 binarySearch(const T* ptr, CompareCallback cmp) const
@@ -280,11 +288,13 @@ public:
     T** data() const { return reinterpret_cast<T**>(mPtrs); }
 
 protected:
-    static int compareT(const T* a, const T* b)
+    static int compareT(const void* a_, const void* b_)
     {
+        const T* a = static_cast<const T*>(a_);
+        const T* b = static_cast<const T*>(b_);
         if (*a < *b)
             return -1;
-        if (*a > *b)
+        if (*b < *a)
             return 1;
         return 0;
     }
