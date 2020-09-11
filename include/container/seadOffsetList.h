@@ -109,9 +109,11 @@ public:
     class robustIterator
     {
     public:
-        robustIterator(T* ptr, s32 offset) : mPtr{ptr}, mOffset{offset}
+        robustIterator(T* ptr, s32 offset)
+            : mPtr{ptr},
+              mNextNode(static_cast<ListNode*>(PtrUtil::addOffset(ptr, offset))->next()),
+              mOffset{offset}
         {
-            mNextNode = static_cast<ListNode*>(PtrUtil::addOffset(mPtr, mOffset))->next();
         }
         bool operator==(const robustIterator& other) const { return mPtr == other.mPtr; }
         bool operator!=(const robustIterator& other) const { return !operator==(other); }
