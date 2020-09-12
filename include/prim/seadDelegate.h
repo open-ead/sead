@@ -117,6 +117,21 @@ protected:
     PTMF mFunctionPtr = nullptr;
 };
 
+/// Partial specialization of DelegateBase for regular function pointers
+/// (*not* pointers-to-member-function).
+template <typename FunctionPointer, typename Base>
+class DelegateBase<void, FunctionPointer, Base> : public Base
+{
+public:
+    DelegateBase() = default;
+    explicit DelegateBase(FunctionPointer fn) : mFunctionPtr(fn) {}
+
+    void setFunction(FunctionPointer fn) { mFunctionPtr = fn; }
+
+protected:
+    FunctionPointer mFunctionPtr = nullptr;
+};
+
 /// Delegate for a member function with no argument.
 /// @tparam T  Class type
 template <typename T>
@@ -226,6 +241,98 @@ public:
         return {};
     }
     Delegate2R* clone(Heap* heap) const override { return new (heap) Delegate2R(*this); }
+};
+
+class DelegateFunc : public DelegateBase<void, void (*)(), IDelegate>
+{
+public:
+    using Base = DelegateBase<void, void (*)(), IDelegate>;
+    using Base::Base;
+    void invoke() override { operator()(); }
+    void operator()() const
+    {
+        if (this->mFunctionPtr)
+            return (*this->mFunctionPtr)();
+    }
+    DelegateFunc* clone(Heap* heap) const override { return new (heap) DelegateFunc(*this); }
+};
+
+template <typename R>
+class DelegateRFunc : public DelegateBase<void, R (*)(), IDelegateR<R>>
+{
+public:
+    using Base = DelegateBase<void, R (*)(), IDelegateR<R>>;
+    using Base::Base;
+    R invoke() override { return operator()(); }
+    R operator()() const
+    {
+        if (this->mFunctionPtr)
+            return (*this->mFunctionPtr)();
+        return {};
+    }
+    DelegateRFunc* clone(Heap* heap) const override { return new (heap) DelegateRFunc(*this); }
+};
+
+template <typename A1>
+class Delegate1Func : public DelegateBase<void, void (*)(A1), IDelegate1<A1>>
+{
+public:
+    using Base = DelegateBase<void, void (*)(A1), IDelegate1<A1>>;
+    using Base::Base;
+    void invoke(A1 a1) override { operator()(a1); }
+    void operator()(A1 a1) const
+    {
+        if (this->mFunctionPtr)
+            return (*this->mFunctionPtr)(a1);
+    }
+    Delegate1Func* clone(Heap* heap) const override { return new (heap) Delegate1Func(*this); }
+};
+
+template <typename A1, typename R>
+class Delegate1RFunc : public DelegateBase<void, R (*)(A1), IDelegate1R<A1, R>>
+{
+public:
+    using Base = DelegateBase<void, R (*)(A1), IDelegate1R<A1, R>>;
+    using Base::Base;
+    R invoke(A1 a1) override { return operator()(a1); }
+    R operator()(A1 a1) const
+    {
+        if (this->mFunctionPtr)
+            return (*this->mFunctionPtr)(a1);
+        return {};
+    }
+    Delegate1RFunc* clone(Heap* heap) const override { return new (heap) Delegate1RFunc(*this); }
+};
+
+template <typename A1, typename A2>
+class Delegate2Func : public DelegateBase<void, void (*)(A1, A2), IDelegate2<A1, A2>>
+{
+public:
+    using Base = DelegateBase<void, void (*)(A1, A2), IDelegate2<A1, A2>>;
+    using Base::Base;
+    void invoke(A1 a1, A2 a2) override { return operator()(a1, a2); }
+    void operator()(A1 a1, A2 a2) const
+    {
+        if (this->mFunctionPtr)
+            return (*this->mFunctionPtr)(a1, a2);
+    }
+    Delegate2Func* clone(Heap* heap) const override { return new (heap) Delegate2Func(*this); }
+};
+
+template <typename A1, typename A2, typename R>
+class Delegate2RFunc : public DelegateBase<void, R (*)(A1, A2), IDelegate2R<A1, A2, R>>
+{
+public:
+    using Base = DelegateBase<void, R (*)(A1, A2), IDelegate2R<A1, A2, R>>;
+    using Base::Base;
+    R invoke(A1 a1, A2 a2) override { return operator()(a1, a2); }
+    R operator()(A1 a1, A2 a2) const
+    {
+        if (this->mFunctionPtr)
+            return (*this->mFunctionPtr)(a1, a2);
+        return {};
+    }
+    Delegate2RFunc* clone(Heap* heap) const override { return new (heap) Delegate2RFunc(*this); }
 };
 
 template <typename Lambda>
