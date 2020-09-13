@@ -48,8 +48,23 @@ public:
 
     T* front() const { return listNodeToObj(ListImpl::front()); }
     T* back() const { return listNodeToObj(ListImpl::back()); }
-    T* prev(const T* obj) const { return listNodeToObj(objToListNode(obj)->prev()); }
-    T* next(const T* obj) const { return listNodeToObj(objToListNode(obj)->next()); }
+
+    T* prev(const T* obj) const
+    {
+        ListNode* prev_node = objToListNode(obj)->prev();
+        if (prev_node == &mStartEnd)
+            return nullptr;
+        return listNodeToObj(prev_node);
+    }
+
+    T* next(const T* obj) const
+    {
+        ListNode* next_node = objToListNode(obj)->next();
+        if (next_node == &mStartEnd)
+            return nullptr;
+        return listNodeToObj(next_node);
+    }
+
     T* nth(s32 n) const { return listNodeToObj(ListImpl::nth(n)); }
     s32 indexOf(const T* obj) const { return ListImpl::indexOf(objToListNode(obj)); }
 
