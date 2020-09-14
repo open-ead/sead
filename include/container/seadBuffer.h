@@ -76,6 +76,30 @@ public:
     iterator end() { return iterator(mBuffer, mSize); }
     constIterator end() const { return constIterator(mBuffer, mSize); }
 
+    class reverseIterator
+    {
+    public:
+        explicit reverseIterator(T* buffer, s32 index = 0) : mIndex(index), mBuffer(buffer) {}
+        bool operator==(const reverseIterator& rhs) const { return mIndex == rhs.mIndex; }
+        bool operator!=(const reverseIterator& rhs) const { return !operator==(rhs); }
+        reverseIterator& operator++()
+        {
+            --mIndex;
+            return *this;
+        }
+        T& operator*() const { return mBuffer[mIndex]; }
+        T* operator->() const { return &mBuffer[mIndex]; }
+        s32 getIndex() const { return mIndex; }
+
+    private:
+        s32 mIndex;
+        T* mBuffer;
+    };
+
+    reverseIterator rbegin() { return reverseIterator(mBuffer, mSize - 1); }
+    reverseIterator rbegin(s32 index) { return reverseIterator(mBuffer, index); }
+    reverseIterator rend() { return reverseIterator(mBuffer, -1); }
+
     void allocBuffer(s32 size, s32 alignment)
     {
         SEAD_ASSERT(mBuffer == nullptr);
