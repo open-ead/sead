@@ -158,6 +158,8 @@ public:
         return robustIterator(listNodeToObj(const_cast<ListNode*>(&mStartEnd)), mOffset);
     }
 
+    robustIterator robustBegin(T* ptr) const { return robustIterator(ptr, mOffset); }
+
     struct RobustRange
     {
         auto begin() const { return mList.robustBegin(); }
