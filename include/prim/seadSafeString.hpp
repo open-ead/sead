@@ -365,7 +365,16 @@ inline bool SafeStringBase<T>::isEmpty() const
 template <typename T>
 inline bool SafeStringBase<T>::startsWith(const SafeStringBase<T>& prefix) const
 {
-    return findIndex(prefix) == 0;
+    const T* strc = mStringTop;
+    const T* prefixc = prefix.mStringTop;
+    s32 i = 0;
+    while (prefixc[i] != cNullChar)
+    {
+        if (strc[i] != prefixc[i])
+            return false;
+        ++i;
+    }
+    return true;
 }
 
 template <typename T>
