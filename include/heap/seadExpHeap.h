@@ -28,11 +28,11 @@ public:
     {
     };
 
-    static ExpHeap* create(size_t size, const SafeString& name, Heap* parent,
+    static ExpHeap* create(size_t size, const SafeString& name, Heap* parent, s32 alignment,
                            HeapDirection direction, bool);
     static ExpHeap* create(void* address, size_t size, const SafeString& name, bool);
 
-    static ExpHeap* tryCreate(size_t size, const SafeString& name, Heap* parent,
+    static ExpHeap* tryCreate(size_t size, const SafeString& name, Heap* parent, s32 alignment,
                               HeapDirection direction, bool);
     static ExpHeap* tryCreate(void* address, size_t size, const SafeString& name, bool);
 
