@@ -49,9 +49,9 @@ public:
     UnderlyingType change(Enum val, bool on)
     {
         if (on)
-            mBits |= UnderlyingType(val);
+            set(val);
         else
-            mBits &= ~UnderlyingType(val);
+            reset(val);
         return mBits;
     }
     bool isZero() const { return mBits == 0; }
