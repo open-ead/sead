@@ -278,12 +278,8 @@ inline bool SafeStringBase<T>::isEqual(const SafeStringBase<T>& str) const
 template <typename T>
 inline s32 SafeStringBase<T>::comparen(const SafeStringBase<T>& str, s32 n) const
 {
-#ifdef SEAD_DEBUG
     assureTerminationImpl_();
     const char* top = cstr();
-#else
-    const char* top = mStringTop;
-#endif
     if (top == str.cstr())
         return 0;
 
