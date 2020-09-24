@@ -71,15 +71,15 @@ protected:                                                                      
                                                                                                    \
     friend class SingletonDisposer_;                                                               \
                                                                                                    \
-    alignas(alignof(SingletonDisposer_))                                                           \
-        u32 mSingletonDisposerBuf_[sizeof(SingletonDisposer_) / sizeof(u32)];
+    /* FIXME: this should just use std::aligned_storage_t with a proper alignment value. */        \
+    u32 mSingletonDisposerBuf_[sizeof(SingletonDisposer_) / sizeof(u32)];
 
 #define SEAD_CREATE_SINGLETON_INSTANCE(CLASS)                                                      \
     CLASS* CLASS::createInstance(sead::Heap* heap)                                                 \
     {                                                                                              \
         if (!sInstance)                                                                            \
         {                                                                                          \
-            auto* buffer = new (heap) u8[sizeof(CLASS)];                                           \
+            auto* buffer = new (heap, alignof(CLASS)) u8[sizeof(CLASS)];                           \
             SEAD_ASSERT_MSG(!SingletonDisposer_::sStaticDisposer, "Create Singleton Twice (%s).",  \
                             #CLASS);                                                               \
             auto* disposer_buffer = buffer + offsetof(CLASS, mSingletonDisposerBuf_);              \
