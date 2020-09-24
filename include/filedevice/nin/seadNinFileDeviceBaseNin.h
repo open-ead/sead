@@ -45,7 +45,7 @@ protected:
     DirectoryHandleInner* getDirectoryHandleInner_(HandleBase* handle,
                                                    bool construct = false) const;
 
-    nn::Result mLastError{};
+    nn::Result mLastError = nn::ResultSuccess{};
     SafeString mMountPoint;
 };
 }  // namespace sead
