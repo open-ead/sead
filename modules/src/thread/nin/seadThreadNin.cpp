@@ -114,8 +114,8 @@ void Thread::setAffinity(const CoreIdMask& affinity)
 {
     mAffinity = affinity;
     u64 mask = mAffinity;
-    SEAD_ASSERT_MSG((~u32(nn::os::GetThreadAvailableCoreMask()) & mask) == 0,
-                    "invalid core mask. ( mask = %ld )", mask);
+    const auto available_mask = nn::os::GetThreadAvailableCoreMask();
+    SEAD_ASSERT_MSG((~u32(available_mask) & mask) == 0, "invalid core mask. ( mask = %ld )", mask);
     nn::os::SetThreadCoreMask(mThreadInner, -1, mask);
 }
 
