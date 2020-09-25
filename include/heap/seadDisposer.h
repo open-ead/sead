@@ -23,8 +23,8 @@ public:
     };
 
     IDisposer();
-    IDisposer(Heap* disposer_heap,
-              HeapNullOption option = HeapNullOption::UseSpecifiedOrCurrentHeap);
+    explicit IDisposer(Heap* disposer_heap,
+                       HeapNullOption option = HeapNullOption::UseSpecifiedOrCurrentHeap);
     virtual ~IDisposer();
 
     static u32 getListNodeOffset() { return offsetof(IDisposer, mListNode); }
