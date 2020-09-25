@@ -2,7 +2,6 @@
 
 #ifdef NNSDK
 #include <atomic>
-#include <type_traits>
 #endif
 
 namespace sead
@@ -47,8 +46,22 @@ public:
 
 protected:
 #ifdef NNSDK
+    // Nintendo appears to have manually implemented atomics with volatile and platform specific
+    // intrinsics (e.g. __builtin_arm_ldrex).
+    // For ease of implementation and portability, we will use std::atomic and cast to volatile
+    // when necessary. That is formally undefined behavior, but it should be safe because
+    // sead is built with -fno-strict-aliasing and because of the following static assertions.
     std::atomic<T> mValue;
-    static_assert(sizeof(mValue) == sizeof(T), "std::atomic<T> is larger than T; unsupported case");
+    static_assert(sizeof(mValue) == sizeof(T),
+                  "std::atomic<T> and T do not have the same size; unsupported case");
+    static_assert(alignof(decltype(mValue)) == alignof(volatile T),
+                  "std::atomic<T> and T do not have the same alignment; unsupported case");
+    static_assert(std::atomic<T>::is_always_lock_free,
+                  "std::atomic<T>::is_always_lock_free is not true; unsupported case");
+
+    const volatile T* getValuePtr() const { return reinterpret_cast<const volatile T*>(&mValue); }
+    volatile T* getValuePtr() { return reinterpret_cast<volatile T*>(&mValue); }
+
 #endif
 };
 
@@ -102,9 +115,7 @@ inline T AtomicBase<T>::load() const
 {
 #ifdef MATCHING_HACK_NX_CLANG
     // Using std::atomic<T>::load prevents LLVM from folding ldr+sext into ldrsw.
-    // Considering the compareExchange implementation also does not match LLVM's,
-    // it is likely that Nintendo manually implemented atomics with volatile and intrinsics.
-    return *reinterpret_cast<const volatile T*>(&mValue);
+    return *getValuePtr();
 #else
     return mValue.load(std::memory_order_relaxed);
 #endif
@@ -126,19 +137,17 @@ template <class T>
 inline bool AtomicBase<T>::compareExchange(T expected, T desired, T* original)
 {
 #ifdef MATCHING_HACK_NX_CLANG
-    // Nintendo appears to have reimplemented compare_exchange_strong manually
-    // without using Clang's atomic intrinsics.
-    // Unlike Clang (https://reviews.llvm.org/D13033), their version does not use clrex.
+    // Unlike Clang (https://reviews.llvm.org/D13033), Nintendo's implementation does not use clrex.
     do
     {
-        T value = __builtin_arm_ldrex(reinterpret_cast<volatile T*>(&mValue));
+        T value = __builtin_arm_ldrex(getValuePtr());
         if (value != expected)
         {
             if (original)
                 *original = value;
             return false;
         }
-    } while (__builtin_arm_strex(desired, reinterpret_cast<volatile T*>(&mValue)));
+    } while (__builtin_arm_strex(desired, getValuePtr()));
     return true;
 #else
     T value = expected;
@@ -166,15 +175,13 @@ namespace detail
 {
 // To match Nintendo's implementation of atomics.
 template <typename T, typename F>
-inline T atomicReadModifyWrite(std::atomic<T>& atomic, F op)
+inline T atomicReadModifyWrite(volatile T* value_ptr, F op)
 {
-    static_assert(sizeof(atomic) == sizeof(volatile T));
-    static_assert(alignof(decltype(atomic)) == alignof(volatile T));
     T value;
     do
     {
-        value = __builtin_arm_ldrex(reinterpret_cast<volatile T*>(&atomic));
-    } while (__builtin_arm_strex(op(value), reinterpret_cast<volatile T*>(&atomic)));
+        value = __builtin_arm_ldrex(value_ptr);
+    } while (__builtin_arm_strex(op(value), value_ptr));
     return value;
 }
 }  // namespace detail
@@ -183,7 +190,7 @@ template <class T>
 inline T Atomic<T>::fetchAnd(T x)
 {
 #ifdef MATCHING_HACK_NX_CLANG
-    return detail::atomicReadModifyWrite(this->mValue, [x](T val) { return val & x; });
+    return detail::atomicReadModifyWrite(this->getValuePtr(), [x](T val) { return val & x; });
 #else
     return this->mValue.fetch_and(x, std::memory_order_relaxed);
 #endif
@@ -193,7 +200,7 @@ template <class T>
 inline T Atomic<T>::fetchOr(T x)
 {
 #ifdef MATCHING_HACK_NX_CLANG
-    return detail::atomicReadModifyWrite(this->mValue, [x](T val) { return val | x; });
+    return detail::atomicReadModifyWrite(this->getValuePtr(), [x](T val) { return val | x; });
 #else
     return this->mValue.fetch_or(x, std::memory_order_relaxed);
 #endif
@@ -203,7 +210,7 @@ template <class T>
 inline T Atomic<T>::fetchXor(T x)
 {
 #ifdef MATCHING_HACK_NX_CLANG
-    return detail::atomicReadModifyWrite(this->mValue, [x](T val) { return val ^ x; });
+    return detail::atomicReadModifyWrite(this->getValuePtr(), [x](T val) { return val ^ x; });
 #else
     return this->mValue.fetch_xor(x, std::memory_order_relaxed);
 #endif
