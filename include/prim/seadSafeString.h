@@ -262,20 +262,21 @@ public:
     inline s32 trim(s32 trim_length);
     /// Trim a string to only keep trimLength characters.
     /// @return the new length
-    s32 trimMatchedString(const T* str);
+    inline s32 trimMatchedString(const T* str);
 
     /// @return the number of characters that were replaced
-    s32 replaceChar(T old_char, T new_char);
+    inline s32 replaceChar(T old_char, T new_char);
     /// @return the number of characters that were replaced
-    s32 replaceCharList(const SafeStringBase<T>& old_chars, const SafeStringBase<T>& new_chars);
+    inline s32 replaceCharList(const SafeStringBase<T>& old_chars,
+                               const SafeStringBase<T>& new_chars);
     /// Set the contents of this string to target_str, after replacing occurrences of old_str in
     /// target_str with new_str.
     /// @return the number of replaced occurrences
-    s32 setReplaceString(const SafeStringBase<T>& target_str, const SafeStringBase<T>& old_str,
-                         const SafeStringBase<T>& new_str);
+    inline s32 setReplaceString(const SafeStringBase<T>& target_str,
+                                const SafeStringBase<T>& old_str, const SafeStringBase<T>& new_str);
     /// Replace occurrences of old_str in this string with new_str.
     /// @return the number of replaced occurrences
-    s32 replaceString(const SafeStringBase<T>& old_str, const SafeStringBase<T>& new_str);
+    inline s32 replaceString(const SafeStringBase<T>& old_str, const SafeStringBase<T>& new_str);
 
     s32 convertFromMultiByteString(const SafeStringBase<char>& str, s32 str_length);
     s32 convertFromWideCharString(const SafeStringBase<char16>& str, s32 str_length);
