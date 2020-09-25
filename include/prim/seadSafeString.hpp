@@ -793,13 +793,12 @@ inline s32 BufferedSafeStringBase<T>::replaceChar(T old_char, T new_char)
     return replaced_count;
 }
 
-// UNCHECKED
 template <typename T>
 inline s32 BufferedSafeStringBase<T>::replaceCharList(const SafeStringBase<T>& old_chars,
                                                       const SafeStringBase<T>& new_chars)
 {
-    T* buffer = getMutableStringTop_();
     const s32 length = this->calcLength();
+    T* buffer = getMutableStringTop_();
 
     s32 old_chars_len = old_chars.calcLength();
     const s32 new_chars_len = new_chars.calcLength();
@@ -815,9 +814,6 @@ inline s32 BufferedSafeStringBase<T>::replaceCharList(const SafeStringBase<T>& o
 
     const T* old_chars_c = old_chars.cstr();
     const T* new_chars_c = new_chars.cstr();
-
-    if (length < 1)
-        return 0;
 
     s32 replaced_count = 0;
     for (s32 i = 0; i < length; ++i)
