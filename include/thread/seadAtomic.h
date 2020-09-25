@@ -31,6 +31,8 @@ public:
     T load() const;
     /// Store a new value, as if with memory_order_relaxed.
     void store(T value);
+    /// Non-atomically store a new value.
+    void storeNonAtomic(T value);
     /// Exchange/swap the current value, as if with memory_order_relaxed.
     /// @return the previous value
     T exchange(T value);
@@ -125,6 +127,12 @@ template <class T>
 inline void AtomicBase<T>::store(T value)
 {
     mValue.store(value, std::memory_order_relaxed);
+}
+
+template <class T>
+inline void AtomicBase<T>::storeNonAtomic(T value)
+{
+    new (&mValue) std::atomic<T>(value);
 }
 
 template <class T>
