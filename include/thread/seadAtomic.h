@@ -167,18 +167,7 @@ inline bool AtomicBase<T>::compareExchange(T expected, T desired, T* original)
 #endif
 }
 
-template <class T>
-inline T Atomic<T>::fetchAdd(T x)
-{
-    return this->mValue.fetch_add(x, std::memory_order_relaxed);
-}
-
-template <class T>
-inline T Atomic<T>::fetchSub(T x)
-{
-    return this->mValue.fetch_sub(x, std::memory_order_relaxed);
-}
-
+#ifdef MATCHING_HACK_NX_CLANG
 namespace detail
 {
 // To match Nintendo's implementation of atomics.
@@ -193,6 +182,27 @@ inline T atomicReadModifyWrite(volatile T* value_ptr, F op)
     return value;
 }
 }  // namespace detail
+#endif
+
+template <class T>
+inline T Atomic<T>::fetchAdd(T x)
+{
+#ifdef MATCHING_HACK_NX_CLANG
+    return detail::atomicReadModifyWrite(this->getValuePtr(), [x](T val) { return val + x; });
+#else
+    return this->mValue.fetch_add(x, std::memory_order_relaxed);
+#endif
+}
+
+template <class T>
+inline T Atomic<T>::fetchSub(T x)
+{
+#ifdef MATCHING_HACK_NX_CLANG
+    return detail::atomicReadModifyWrite(this->getValuePtr(), [x](T val) { return val - x; });
+#else
+    return this->mValue.fetch_sub(x, std::memory_order_relaxed);
+#endif
+}
 
 template <class T>
 inline T Atomic<T>::fetchAnd(T x)
