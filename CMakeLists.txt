@@ -60,6 +60,7 @@ add_library(sead OBJECT
   include/framework/seadTaskBase.h
   include/framework/seadTaskID.h
   include/framework/seadTaskMgr.h
+  include/framework/seadTaskParameter.h
   modules/src/framework/seadProcessMeterBar.cpp
 
   include/gfx/seadCamera.h
