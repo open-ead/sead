@@ -46,8 +46,17 @@ public:
 
     void erase(T* item) { ListImpl::erase(objToListNode(item)); }
 
-    T* front() const { return listNodeToObj(ListImpl::front()); }
-    T* back() const { return listNodeToObj(ListImpl::back()); }
+    T* front() const
+    {
+        auto* node = ListImpl::front();
+        return node ? listNodeToObj(node) : nullptr;
+    }
+
+    T* back() const
+    {
+        auto* node = ListImpl::back();
+        return node ? listNodeToObj(node) : nullptr;
+    }
 
     T* prev(const T* obj) const
     {
