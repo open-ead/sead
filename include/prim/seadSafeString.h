@@ -130,7 +130,6 @@ public:
     bool endsWith(const SafeStringBase<T>& suffix) const;
 
     static const T cNullChar;
-    static const T cNullString[1];
     static const T cLineBreakChar;
     static const SafeStringBase cEmptyString;
     static const s32 cMaximumLength = 0x80000;
@@ -141,9 +140,6 @@ protected:
 
     const T* mStringTop;
 };
-
-template <>
-const char SafeStringBase<char>::cNullString[1];
 
 template <>
 const SafeStringBase<char> SafeStringBase<char>::cEmptyString;
