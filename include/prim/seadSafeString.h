@@ -125,6 +125,9 @@ public:
     s32 findIndex(const SafeStringBase<T>& str, s32 start_pos) const;
     s32 rfindIndex(const SafeStringBase<T>& str) const;
 
+    iterator findIterator(const SafeStringBase& str) const { return {this, findIndex(str)}; }
+    iterator rfindIterator(const SafeStringBase& str) const { return {this, rfindIndex(str)}; }
+
     bool isEmpty() const;
     bool startsWith(const SafeStringBase<T>& prefix) const;
     bool endsWith(const SafeStringBase<T>& suffix) const;
