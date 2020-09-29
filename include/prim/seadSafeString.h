@@ -381,7 +381,12 @@ class FormatFixedSafeString : public FixedSafeString<L>
 {
 public:
     FormatFixedSafeString() : FormatFixedSafeString("") {}
-    explicit FormatFixedSafeString(const char* format, ...) : FixedSafeString<L>()
+
+#ifdef __GNUC__
+    [[gnu::format(printf, 2, 3)]]
+#endif
+    explicit FormatFixedSafeString(const char* format, ...)
+        : FixedSafeString<L>()
     {
         std::va_list args;
         va_start(args, format);
