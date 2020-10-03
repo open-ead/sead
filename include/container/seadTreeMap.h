@@ -177,7 +177,7 @@ public:
     template <typename Callable>
     void forEach(const Callable& delegate) const
     {
-        MapImpl::forEach([&delegate](auto* base_node) {
+        MapImpl::forEach([delegate](auto* base_node) {
             auto* node = static_cast<Node*>(base_node);
             delegate(node);
         });
