@@ -8,14 +8,14 @@ namespace sead
 class INamable
 {
 public:
-    INamable() : mINamableName() {}
-    INamable(const SafeString& name) : mINamableName(name) {}
+    INamable() = default;
+    explicit INamable(const SafeString& name) : mINamableName(name) {}
 
     const SafeString& getName() const { return mINamableName; }
     void setName(const SafeString& name) { mINamableName = name; }
 
 private:
-    SafeString mINamableName;
+    SafeString mINamableName = "";
 };
 
 }  // namespace sead
