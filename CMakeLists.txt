@@ -52,6 +52,7 @@ add_library(sead OBJECT
   modules/src/filedevice/seadMainFileDevice.cpp
   modules/src/filedevice/seadPath.cpp
 
+  include/framework/seadCalculateTask.h
   include/framework/seadFramework.h
   include/framework/seadHeapPolicies.h
   include/framework/seadMethodTree.h
