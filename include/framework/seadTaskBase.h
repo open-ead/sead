@@ -64,14 +64,16 @@ public:
     };
 
 public:
+    explicit TaskBase(const TaskConstructArg& arg);
+    TaskBase(const TaskConstructArg& arg, const char* name);
+    virtual ~TaskBase();
+
     virtual void pauseCalc(bool b) = 0;
     virtual void pauseDraw(bool b) = 0;
     virtual void pauseCalcRec(bool b) = 0;
     virtual void pauseDrawRec(bool b) = 0;
     virtual void pauseCalcChild(bool b);
     virtual void pauseDrawChild(bool b);
-
-    virtual ~TaskBase();
 
     virtual void prepare();
     virtual void enterCommon();
