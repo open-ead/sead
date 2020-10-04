@@ -525,6 +525,7 @@ public:
         bool isNoDummy() const override { return false; }
     };
     using Base::Base;
+    using Base::operator=;
 };
 
 template <typename R>
@@ -543,6 +544,7 @@ public:
         bool isNoDummy() const override { return false; }
     };
     using Base::Base;
+    using Base::operator=;
 };
 
 template <typename A1>
@@ -561,6 +563,7 @@ public:
         bool isNoDummy() const override { return false; }
     };
     using Base::Base;
+    using Base::operator=;
 };
 
 template <typename A1, typename R>
@@ -579,6 +582,7 @@ public:
         bool isNoDummy() const override { return false; }
     };
     using Base::Base;
+    using Base::operator=;
 };
 
 template <typename A1, typename A2>
@@ -597,6 +601,7 @@ public:
         bool isNoDummy() const override { return false; }
     };
     using Base::Base;
+    using Base::operator=;
 };
 
 template <typename A1, typename A2, typename R>
@@ -616,5 +621,6 @@ public:
         bool isNoDummy() const override { return false; }
     };
     using Base::Base;
+    using Base::operator=;
 };
 }  // namespace sead
