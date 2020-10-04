@@ -27,6 +27,6 @@ public:
     virtual void calc() {}
 
 protected:
-    MethodTreeNode mCalcNode;
+    MethodTreeNode mCalcNode{nullptr};
 };
 }  // namespace sead
