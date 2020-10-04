@@ -4,6 +4,7 @@
 
 #include "basis/seadTypes.h"
 #include "heap/seadDisposer.h"
+#include "prim/seadStorageFor.h"
 
 namespace sead
 {
@@ -21,13 +22,13 @@ class LifeCheckable
 public:
     LifeCheckable()
     {
-        mDisposer = new (&mDisposerBuf) DisposeHostIOCaller(this);
+        mDisposer = mDisposerBuf.construct(this);
         initialize_();
     }
 
     LifeCheckable(Heap* disposer_heap, IDisposer::HeapNullOption option)
     {
-        mDisposer = new (&mDisposerBuf) DisposeHostIOCaller(this, disposer_heap, option);
+        mDisposer = mDisposerBuf.construct(this, disposer_heap, option);
         initialize_();
     }
 
@@ -78,7 +79,7 @@ private:
     LifeCheckable* mPrev = nullptr;
     LifeCheckable* mNext = nullptr;
     DisposeHostIOCaller* mDisposer = nullptr;
-    std::aligned_storage_t<sizeof(DisposeHostIOCaller), alignof(DisposeHostIOCaller)> mDisposerBuf;
+    StorageFor<DisposeHostIOCaller> mDisposerBuf;
 
     static u32 sCurrentCreateID;
     static LifeCheckable* sTopInstance;
