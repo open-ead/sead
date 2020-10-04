@@ -131,9 +131,6 @@ u64 DateTime::setNow()
 #ifdef NNSDK
     initializeSystemTimeModule();
 
-    std::aligned_storage_t<sizeof(CalendarTime::Date)> date;
-    std::aligned_storage_t<sizeof(CalendarTime::Time)> time;
-
     nn::time::PosixTime now;
     nn::time::CalendarTime ctime;
     nn::time::StandardUserSystemClock::GetCurrentTime(&now);
@@ -145,9 +142,7 @@ u64 DateTime::setNow()
     const auto hour = CalendarTime::Hour(ctime.hour);
     const auto minute = CalendarTime::Minute(ctime.minute);
     const auto second = CalendarTime::Second(ctime.second);
-    auto* date_ = new (&date) CalendarTime::Date(year, month, day);
-    auto* time_ = new (&time) CalendarTime::Time(hour, minute, second);
-    mUnixTime = convertCalendarDateTimeToSeconds(*date_, *time_);
+    setUnixTime(year, month, day, hour, minute, second);
 #endif
     return mUnixTime;
 }
