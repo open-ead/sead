@@ -16,7 +16,6 @@ void ReadWriteLock::readLock()
         mWriteLock.lock();
 }
 
-// NON_MATCHING: see SemaphoreLock::unlock
 void ReadWriteLock::readUnlock()
 {
     if (mNumReaders.decrement() == 1)
@@ -74,7 +73,6 @@ void ReadWriteLock::SemaphoreLock::lock()
         mSemaphore.lock();
 }
 
-// NON_MATCHING: Clang optimizes sub+cmp into subs
 void ReadWriteLock::SemaphoreLock::unlock()
 {
     if (mLockCount.decrement() != 1)
