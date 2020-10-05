@@ -11,4 +11,6 @@ CalculateTask::CalculateTask(const TaskConstructArg& arg, const char* name) : Ta
 {
     mCalcNode.bind(sead::Delegate<CalculateTask>{this, &CalculateTask::calc}, name);
 }
+
+CalculateTask::~CalculateTask() = default;
 }  // namespace sead
