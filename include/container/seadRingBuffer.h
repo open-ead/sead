@@ -18,7 +18,7 @@ class RingBuffer
 {
 public:
     RingBuffer() = default;
-    RingBuffer(s32 capacity, T* buffer) : mBuffer(buffer), mCapacity(capacity) {}
+    RingBuffer(s32 capacity, T* buffer) { setBuffer(capacity, buffer); }
     template <s32 N>
     explicit RingBuffer(T (&array)[N]) : RingBuffer(N, array)
     {
