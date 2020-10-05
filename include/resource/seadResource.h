@@ -34,6 +34,11 @@ public:
 
     void create(u8* buffer, u32 bufferSize, u32 allocSize, bool allocated, Heap* heap);
 
+    u8* getRawData() const { return mRawData; }
+    u32 getRawSize() const { return mRawSize; }
+    u32 getBufferSize() const { return mBufferSize; }
+
+protected:
     u8* mRawData = 0;
     u32 mRawSize = 0;
     u32 mBufferSize = 0;
