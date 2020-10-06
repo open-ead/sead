@@ -311,7 +311,33 @@ public:
                 b = m;
         }
 
-        if (cmp(&item, &mBuffer[a]) == 0)
+        if (cmp(&mBuffer[a], &item) == 0)
+            return a;
+
+        return -1;
+    }
+
+    template <typename CustomCompareCallback>
+    s32 binarySearchC(CustomCompareCallback cmp) const
+    {
+        if (mSize == 0)
+            return -1;
+
+        s32 a = 0;
+        s32 b = mSize - 1;
+        while (a < b)
+        {
+            const s32 m = (a + b) / 2;
+            const s32 c = cmp(mBuffer[m]);
+            if (c == 0)
+                return m;
+            if (c < 0)
+                a = m + 1;
+            else
+                b = m;
+        }
+
+        if (cmp(mBuffer[a]) == 0)
             return a;
 
         return -1;
