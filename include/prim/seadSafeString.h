@@ -437,6 +437,21 @@ inline bool operator<(const SafeString& lhs, const SafeString& rhs)
     return lhs.compare(rhs) < 0;
 }
 
+inline bool operator>(const SafeString& lhs, const SafeString& rhs)
+{
+    return lhs.compare(rhs) > 0;
+}
+
+inline bool operator<=(const SafeString& lhs, const SafeString& rhs)
+{
+    return lhs.compare(rhs) <= 0;
+}
+
+inline bool operator>=(const SafeString& lhs, const SafeString& rhs)
+{
+    return lhs.compare(rhs) >= 0;
+}
+
 }  // namespace sead
 
 #define SEAD_PRIM_SAFE_STRING_H_
