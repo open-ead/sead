@@ -16,6 +16,38 @@ public:
     ObjArray() = default;
     ObjArray(s32 max_num, void* buf) { setBuffer(max_num, buf); }
 
+    void allocBuffer(s32 capacity, Heap* heap, s32 alignment = sizeof(void*))
+    {
+        SEAD_ASSERT(mPtrs == nullptr);
+
+        if (capacity < 1)
+        {
+            SEAD_ASSERT_MSG(false, "capacity[%d] must be larger than zero", capacity);
+            return;
+        }
+
+        setBuffer(capacity,
+                  new (heap, alignment, std::nothrow) u8[calculateWorkBufferSize(capacity)]);
+    }
+
+    bool tryAllocBuffer(s32 capacity, Heap* heap, s32 alignment = sizeof(void*))
+    {
+        SEAD_ASSERT(mPtrs == nullptr);
+
+        if (capacity < 1)
+        {
+            SEAD_ASSERT_MSG(false, "capacity[%d] must be larger than zero", capacity);
+            return false;
+        }
+
+        auto* buf = new (heap, alignment, std::nothrow) u8[calculateWorkBufferSize(capacity)];
+        if (!buf)
+            return false;
+
+        setBuffer(capacity, buf);
+        return true;
+    }
+
     void setBuffer(s32 max_num, void* buf)
     {
         if (!buf)
@@ -151,6 +183,11 @@ public:
 
     static constexpr size_t ElementSize = std::max(sizeof(T), FreeList::cPtrSize);
 
+    static constexpr size_t calculateWorkBufferSize(size_t n)
+    {
+        return n * (ElementSize + sizeof(T*));
+    }
+
 protected:
     T* alloc(const T& item)
     {
@@ -187,7 +224,7 @@ public:
     void freeBuffer() = delete;
 
 private:
-    std::aligned_storage_t<N * ObjArray<T>::ElementSize + N * sizeof(T*),
+    std::aligned_storage_t<ObjArray<T>::calculateWorkBufferSize(N),
                            std::max(alignof(T), alignof(T*))>
         mWork;
 };
