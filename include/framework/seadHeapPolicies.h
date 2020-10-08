@@ -20,7 +20,8 @@ public:
         mPrimaryIndex = other.mPrimaryIndex;
     }
 
-    const Heap* getHeap(s32) const;
+    Heap* getHeap(s32 index) const { return mHeaps[index]; }
+    Heap* getPrimaryHeap() const { return mHeaps[mPrimaryIndex]; }
 
     Heap* mHeaps[4];
     bool mAdjusted[4];

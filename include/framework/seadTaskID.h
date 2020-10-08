@@ -5,8 +5,19 @@
 
 namespace sead
 {
+class HeapArray;
 class TaskBase;
-class TaskConstructArg;
+class TaskMgr;
+class TaskParameter;
+
+struct TaskConstructArg
+{
+    TaskConstructArg() = default;
+
+    HeapArray* heap_array;
+    TaskMgr* mgr;
+    TaskParameter* param;
+};
 
 typedef TaskBase* (*TaskFactory)(const TaskConstructArg&);
 
