@@ -112,6 +112,12 @@ public:
     void setInstance(T* instance) { mInstance = instance; }
     void setFunction(PTMF fn) { mFunctionPtr = fn; }
 
+    void bind(T* instance, PTMF fn)
+    {
+        setInstance(instance);
+        setFunction(fn);
+    }
+
 protected:
     T* mInstance = nullptr;
     PTMF mFunctionPtr = nullptr;
