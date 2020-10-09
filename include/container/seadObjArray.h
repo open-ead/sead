@@ -60,6 +60,21 @@ public:
         PtrArrayImpl::setBuffer(max_num, reinterpret_cast<u8*>(buf) + ElementSize * max_num);
     }
 
+    void freeBuffer()
+    {
+        if (!isBufferReady())
+            return;
+
+        clear();
+
+        if (mFreeList.work())
+            delete[] static_cast<u8*>(mFreeList.work());
+
+        mFreeList.reset();
+        mPtrs = nullptr;
+        mPtrNumMax = 0;
+    }
+
     T* at(s32 pos) const { return static_cast<T*>(PtrArrayImpl::at(pos)); }
     T* unsafeAt(s32 pos) const { return static_cast<T*>(PtrArrayImpl::unsafeAt(pos)); }
     T* operator[](s32 pos) const { return at(pos); }
@@ -76,21 +91,17 @@ public:
             PtrArrayImpl::pushBack(alloc(item));
     }
 
-    T* popBack()
-    {
-        auto* ptr = static_cast<T*>(PtrArrayImpl::popBack());
-        mFreeList.free(ptr);
-        return ptr;
-    }
-
-    T* popFront()
-    {
-        auto* ptr = static_cast<T*>(PtrArrayImpl::popFront());
-        mFreeList.free(ptr);
-        return ptr;
-    }
-
     void insert(s32 pos, const T& item) { PtrArrayImpl::insert(pos, alloc(item)); }
+
+    void clear()
+    {
+        for (s32 i = 0; i < mPtrNum; ++i)
+        {
+            mPtrs[i]->~T();
+            mFreeList.free(mPtrs[i]);
+        }
+        mPtrNum = 0;
+    }
 
     using CompareCallback = s32 (*)(const T*, const T*);
 
