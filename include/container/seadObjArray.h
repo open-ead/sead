@@ -97,8 +97,9 @@ public:
     {
         for (s32 i = 0; i < mPtrNum; ++i)
         {
-            unsafeAt(i)->~T();
-            mFreeList.free(mPtrs[i]);
+            auto* ptr = unsafeAt(i);
+            ptr->~T();
+            mFreeList.free(ptr);
         }
         mPtrNum = 0;
     }
