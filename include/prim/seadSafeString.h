@@ -118,8 +118,8 @@ public:
     inline bool include(const SafeStringBase<T>& str) const;
 
     bool isEqual(const SafeStringBase<T>& str) const;
-    s32 compare(const SafeStringBase<T>& str) const { return comparen(str, cMaximumLength); }
-    s32 comparen(const SafeStringBase<T>& str, s32 n) const;
+    inline s32 compare(const SafeStringBase<T>& str) const { return comparen(str, cMaximumLength); }
+    inline s32 comparen(const SafeStringBase<T>& str, s32 n) const;
 
     s32 findIndex(const SafeStringBase<T>& str) const;
     s32 findIndex(const SafeStringBase<T>& str, s32 start_pos) const;
