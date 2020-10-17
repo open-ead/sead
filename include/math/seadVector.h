@@ -67,6 +67,12 @@ struct Vector2 : public Policies<T>::Vec2Base
     constexpr friend Vector2 operator/(const Vector2& a, T t) { return {a.x / t, a.y / t}; }
     constexpr friend Vector2 operator/(T t, const Vector2& a) { return operator/(a, t); }
 
+    constexpr bool operator==(const Vector2& rhs) const
+    {
+        return this->x == rhs.x && this->y == rhs.y;
+    }
+    constexpr bool operator!=(const Vector2& rhs) const { return !operator==(rhs); }
+
     static const Vector2 zero;
     static const Vector2 ex;
     static const Vector2 ey;
@@ -145,6 +151,12 @@ struct Vector3 : public Policies<T>::Vec3Base
         return {a.x / t, a.y / t, a.z / t};
     }
     constexpr friend Vector3 operator/(T t, const Vector3& a) { return operator/(a, t); }
+
+    constexpr bool operator==(const Vector3& rhs) const
+    {
+        return this->x == rhs.x && this->y == rhs.y && this->z == rhs.z;
+    }
+    constexpr bool operator!=(const Vector3& rhs) const { return !operator==(rhs); }
 
     static const Vector3 zero;
     static const Vector3 ex;
@@ -231,6 +243,12 @@ struct Vector4 : public Policies<T>::Vec4Base
         return {a.x / t, a.y / t, a.z / t, a.w / t};
     }
     constexpr friend Vector4 operator/(T t, const Vector4& a) { return operator/(a, t); }
+
+    constexpr bool operator==(const Vector4& rhs) const
+    {
+        return this->x == rhs.x && this->y == rhs.y && this->z == rhs.z && this->w == rhs.w;
+    }
+    constexpr bool operator!=(const Vector4& rhs) const { return !operator==(rhs); }
 
     static const Vector4 zero;
     static const Vector4 ex;
