@@ -306,6 +306,11 @@ public:
         this->copy(str);
     }
 
+    FixedSafeStringBase(const FixedSafeStringBase& str) : BufferedSafeStringBase<T>(mBuffer, L)
+    {
+        this->copy(str);
+    }
+
     ~FixedSafeStringBase() override = default;
 
     FixedSafeStringBase& operator=(const FixedSafeStringBase& other)
