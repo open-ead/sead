@@ -9,7 +9,8 @@ namespace sead
 template <typename T>
 struct Vector2 : public Policies<T>::Vec2Base
 {
-    constexpr Vector2() = default;
+    /// @warning This constructor leaves member variables uninitialized.
+    Vector2() {}
     constexpr Vector2(T x, T y)
     {
         this->x = x;
@@ -82,7 +83,8 @@ struct Vector2 : public Policies<T>::Vec2Base
 template <typename T>
 struct Vector3 : public Policies<T>::Vec3Base
 {
-    constexpr Vector3() = default;
+    /// @warning This constructor leaves member variables uninitialized.
+    Vector3() {}
     constexpr Vector3(T x, T y, T z)
     {
         this->x = x;
@@ -168,7 +170,9 @@ struct Vector3 : public Policies<T>::Vec3Base
 template <typename T>
 struct Vector4 : public Policies<T>::Vec4Base
 {
-    constexpr Vector4() = default;
+    /// @warning This constructor leaves member variables uninitialized.
+    Vector4() {}
+
     constexpr Vector4(T x, T y, T z, T w)
     {
         this->x = x;
