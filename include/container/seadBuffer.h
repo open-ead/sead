@@ -160,7 +160,7 @@ public:
         return false;
     }
 
-    bool tryAllocBuffer(s32 size, Heap* heap, s32 alignment = sizeof(void*))
+    inline bool tryAllocBuffer(s32 size, Heap* heap, s32 alignment = sizeof(void*))
     {
         SEAD_ASSERT(mBuffer == nullptr);
         if (size > 0)
@@ -180,7 +180,8 @@ public:
         return false;
     }
 
-    void allocBufferAssert(s32 size, Heap* heap, s32 alignment = sizeof(void*))
+    __attribute__((always_inline)) void allocBufferAssert(s32 size, Heap* heap,
+                                                          s32 alignment = sizeof(void*))
     {
         if (!tryAllocBuffer(size, heap, alignment))
             AllocFailAssert(heap, sizeof(T) * size, alignment);
