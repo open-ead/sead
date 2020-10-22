@@ -310,6 +310,8 @@ public:
     constIterator constEnd() const { return constIterator(data() + mPtrNum); }
 
     T** data() const { return reinterpret_cast<T**>(mPtrs); }
+    T** dataBegin() const { return data(); }
+    T** dataEnd() const { return data() + mPtrNum; }
 
 protected:
     static int compareT(const void* a_, const void* b_)
