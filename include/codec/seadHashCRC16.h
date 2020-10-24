@@ -1,6 +1,7 @@
 #pragma once
 
 #include <basis/seadTypes.h>
+#include <prim/seadSafeString.h>
 
 namespace sead
 {
@@ -16,7 +17,12 @@ public:
     static u32 calcHashWithContext(Context* context, const void* ptr, u32 size);
 
     static u32 calcStringHash(const char* str);
+    static u32 calcStringHash(const SafeString& str) { return calcStringHash(str.cstr()); }
     static u32 calcStringHashWithContext(Context* context, const char* str);
+    static u32 calcStringHashWithContext(Context* context, const SafeString& str)
+    {
+        return calcStringHashWithContext(context, str.cstr());
+    }
 
     static void initialize();
 
