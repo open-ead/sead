@@ -26,6 +26,12 @@ public:
     void destruct() { data()->~T(); }
 
     /// @warning It is undefined behavior to call this if no object has been constructed.
+    T& ref() { return reinterpret_cast<T&>(mStorage); }
+
+    /// @warning It is undefined behavior to call this if no object has been constructed.
+    const T& ref() const { return reinterpret_cast<const T&>(mStorage); }
+
+    /// @warning It is undefined behavior to call this if no object has been constructed.
     T* data() { return reinterpret_cast<T*>(mStorage); }
 
     /// @warning It is undefined behavior to call this if no object has been constructed.
