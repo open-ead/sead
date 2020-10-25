@@ -38,8 +38,10 @@ add_library(sead OBJECT
   include/devenv/seadAssertConfig.h
   include/devenv/seadEnvUtil.h
   include/devenv/seadGameConfig.h
+  include/devenv/seadStackTrace.h
   modules/src/devenv/seadAssertConfig.cpp
   modules/src/devenv/seadGameConfig.cpp
+  modules/src/devenv/seadStackTrace.cpp
 
   include/filedevice/seadArchiveFileDevice.h
   include/filedevice/seadFileDevice.h
