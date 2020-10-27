@@ -32,6 +32,7 @@ public:
     {
         if (index >= mSize)
             return 0;
+        return mBuffer[index];
     }
 
     s32 size() const override { return mSize; }
