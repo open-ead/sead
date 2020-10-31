@@ -91,6 +91,19 @@ public:
             PtrArrayImpl::pushBack(alloc(item));
     }
 
+    template <class... Args>
+    T* emplaceBack(Args&&... args)
+    {
+        if (isFull())
+        {
+            SEAD_ASSERT_MSG(false, "buffer full.");
+            return nullptr;
+        }
+        T* item = new (mFreeList.alloc()) T(std::forward<Args>(args)...);
+        PtrArrayImpl::pushBack(item);
+        return item;
+    }
+
     void insert(s32 pos, const T& item) { PtrArrayImpl::insert(pos, alloc(item)); }
 
     void clear()
