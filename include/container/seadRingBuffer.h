@@ -79,6 +79,8 @@ public:
 
     iterator begin() { return iterator(this); }
     constIterator begin() const { return constIterator(this); }
+    iterator begin(s32 start_idx) { return iterator(this, wrapIndex(start_idx)); }
+    constIterator begin(s32 start_idx) const { return constIterator(this, wrapIndex(start_idx)); }
     iterator end() { return iterator(this, mSize); }
     constIterator end() const { return constIterator(this, mSize); }
 
@@ -306,6 +308,8 @@ protected:
             real_idx -= mCapacity;
         return real_idx;
     }
+
+    s32 wrapIndex(s32 idx) const { return u32(idx) > u32(mSize) ? 0 : idx; }
 
     T* mBuffer = nullptr;
     s32 mCapacity = 0;
