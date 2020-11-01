@@ -119,6 +119,7 @@ add_library(sead OBJECT
 
   include/prim/seadBitFlag.h
   include/prim/seadBitUtil.h
+  include/prim/seadContainerIterator.h
   include/prim/seadDelegate.h
   include/prim/seadDelegateEventSlot.h
   include/prim/seadEndian.h
