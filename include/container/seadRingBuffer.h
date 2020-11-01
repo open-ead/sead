@@ -27,7 +27,7 @@ public:
     class iterator
     {
     public:
-        explicit iterator(T* buffer, s32 index = 0) : mIndex(index), mBuffer(buffer) {}
+        explicit iterator(RingBuffer* buffer, s32 index = 0) : mIndex(index), mBuffer(buffer) {}
         bool operator==(const iterator& rhs) const
         {
             return mIndex == rhs.mIndex && mBuffer == rhs.mBuffer;
@@ -38,19 +38,24 @@ public:
             ++mIndex;
             return *this;
         }
-        T& operator*() const { return mBuffer[mIndex]; }
-        T* operator->() const { return &mBuffer[mIndex]; }
+        T& operator*() const { return buffer()(mIndex); }
+        T* operator->() const { return &buffer()(mIndex); }
         s32 getIndex() const { return mIndex; }
 
     private:
+        const RingBuffer* buffer() const { return *mBuffer; }
+
         s32 mIndex;
-        T* mBuffer;
+        RingBuffer* mBuffer;
     };
 
     class constIterator
     {
     public:
-        explicit constIterator(const T* buffer, s32 index = 0) : mIndex(index), mBuffer(buffer) {}
+        explicit constIterator(const RingBuffer* buffer, s32 index = 0)
+            : mIndex(index), mBuffer(buffer)
+        {
+        }
         bool operator==(const constIterator& rhs) const
         {
             return mIndex == rhs.mIndex && mBuffer == rhs.mBuffer;
@@ -61,19 +66,21 @@ public:
             ++mIndex;
             return *this;
         }
-        const T& operator*() const { return mBuffer[mIndex]; }
-        const T* operator->() const { return &mBuffer[mIndex]; }
+        const T& operator*() const { return buffer()(mIndex); }
+        const T* operator->() const { return &buffer()(mIndex); }
         s32 getIndex() const { return mIndex; }
 
     private:
+        const RingBuffer& buffer() const { return *mBuffer; }
+
         s32 mIndex;
-        const T* mBuffer;
+        const RingBuffer* mBuffer;
     };
 
-    iterator begin() { return iterator(mBuffer); }
-    constIterator begin() const { return constIterator(mBuffer); }
-    iterator end() { return iterator(mBuffer, mCapacity); }
-    constIterator end() const { return constIterator(mBuffer, mCapacity); }
+    iterator begin() { return iterator(this); }
+    constIterator begin() const { return constIterator(this); }
+    iterator end() { return iterator(this, mSize); }
+    constIterator end() const { return constIterator(this, mSize); }
 
     void allocBuffer(s32 capacity, s32 alignment) { void(tryAllocBuffer(capacity, alignment)); }
 
