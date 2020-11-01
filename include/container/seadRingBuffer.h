@@ -175,7 +175,7 @@ public:
         if (u32(mSize) <= u32(idx))
         {
             SEAD_ASSERT_MSG(false, "index exceeded [%d/%d/%d]", idx, mSize, mCapacity);
-            return *unsafeGet(0);
+            return mBuffer[0];
         }
         return *unsafeGet(idx);
     }
@@ -185,7 +185,7 @@ public:
         if (u32(mSize) <= u32(idx))
         {
             SEAD_ASSERT_MSG(false, "index exceeded [%d/%d/%d]", idx, mSize, mCapacity);
-            return *unsafeGet(0);
+            return mBuffer[0];
         }
         return *unsafeGet(idx);
     }
