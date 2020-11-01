@@ -43,7 +43,7 @@ public:
         s32 getIndex() const { return mIndex; }
 
     private:
-        const RingBuffer* buffer() const { return *mBuffer; }
+        RingBuffer& buffer() const { return *mBuffer; }
 
         s32 mIndex;
         RingBuffer* mBuffer;
