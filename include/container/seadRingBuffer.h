@@ -321,7 +321,7 @@ template <typename T, s32 N>
 class FixedRingBuffer : public RingBuffer<T>
 {
 public:
-    FixedRingBuffer() : RingBuffer<T>(mData) {}
+    FixedRingBuffer() { RingBuffer<T>::setBuffer(N, mData); }
 
     void allocBuffer(s32 capacity, s32 alignment) = delete;
     void allocBuffer(s32 capacity, Heap* heap, s32 alignment) = delete;
