@@ -59,10 +59,6 @@ public:
     void pushBackChild(MethodTreeNode* node);
     void pushFrontChild(MethodTreeNode* node);
 
-private:
-    void attachMutexRec_(CriticalSection* m) const;
-    void callRec_();
-
     void setPauseFlag(PauseFlag flag)
     {
         lock_();
@@ -71,6 +67,10 @@ private:
         mPauseFlag = flag;
         unlock_();
     }
+
+private:
+    void attachMutexRec_(CriticalSection* m) const;
+    void callRec_();
 
     void lock_();
     void unlock_();
