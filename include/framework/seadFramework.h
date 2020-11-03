@@ -74,6 +74,8 @@ public:
     virtual MethodTreeMgr* createMethodTreeMgr_(Heap*) = 0;
     virtual void procReset_();
 
+    MethodTreeMgr* getMethodTreeMgr() const { return mMethodTreeMgr; }
+
     typedef DelegateEvent<void*> ResetEvent;
 
     bool mReserveReset;
