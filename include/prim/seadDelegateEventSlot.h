@@ -21,7 +21,8 @@ public:
     class Slot : public IDisposer
     {
     public:
-        Slot(AnyDelegate1<T> delegate)
+        template <typename TDelegate>
+        Slot(TDelegate delegate)
         {
             mDelegate = std::move(delegate);
             mDelegatePtr = &mDelegate;
