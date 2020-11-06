@@ -474,7 +474,7 @@ public:
 
     /// Stores a function.
     template <typename DelegateType>
-    explicit AnyDelegateImpl(DelegateType other)
+    AnyDelegateImpl(DelegateType other)
     {
         *this = std::move(other);
     }
