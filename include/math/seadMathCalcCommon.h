@@ -17,6 +17,9 @@ public:
     static T gcd(T x, T y);
     static T lcm(T x, T y);
 
+    static T max(T a, T b);
+    static T min(T a, T b);
+
     /// Returns -1 for strictly negative values and 1 otherwise.
     static s32 sign(T value);
 

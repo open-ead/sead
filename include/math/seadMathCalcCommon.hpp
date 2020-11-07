@@ -53,6 +53,18 @@ inline T MathCalcCommon<T>::atan(T t)
 }
 
 template <typename T>
+inline T MathCalcCommon<T>::max(T a, T b)
+{
+    return a < b ? b : a;
+}
+
+template <typename T>
+inline T MathCalcCommon<T>::min(T a, T b)
+{
+    return a < b ? a : b;
+}
+
+template <typename T>
 inline s32 MathCalcCommon<T>::sign(T value)
 {
     return value < 0 ? -1 : 1;
