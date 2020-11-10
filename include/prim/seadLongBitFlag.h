@@ -35,7 +35,11 @@ public:
     static Word makeMask(int bit) { return 1u << (bit % BitsPerWord); }
 
 protected:
-    static constexpr size_t BitsPerWord = 8 * sizeof(Word);
+    static constexpr s32 log2(s32 n) { return n <= 1 ? 0 : 1 + log2(n >> 1); }
+
+    static constexpr s32 BitsPerWord = 8 * sizeof(Word);
+    static constexpr s32 Shift = log2(BitsPerWord);
+
     static_assert(N % BitsPerWord == 0, "N must be a multiple of the number of bits per word");
     std::array<Word, N / BitsPerWord> mStorage{};
 };
@@ -44,14 +48,14 @@ template <s32 N>
 inline typename LongBitFlag<N>::Word& LongBitFlag<N>::getWord(int bit)
 {
     SEAD_ASSERT_MSG(u32(bit) < u32(N), "range over [0,%d) : %d", N, bit);
-    return mStorage[bit / BitsPerWord];
+    return mStorage[bit >> Shift];
 }
 
 template <s32 N>
 inline const typename LongBitFlag<N>::Word& LongBitFlag<N>::getWord(int bit) const
 {
     SEAD_ASSERT_MSG(u32(bit) < u32(N), "range over [0,%d) : %d", N, bit);
-    return mStorage[bit / BitsPerWord];
+    return mStorage[bit >> Shift];
 }
 
 template <s32 N>

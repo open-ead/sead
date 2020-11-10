@@ -34,10 +34,24 @@ public:
     /// Popcount.
     int countOnBit() const;
 
-    static RawWord makeMask(Enum bit) { return 1u << (RawWord(bit) % BitsPerWord); }
-
 protected:
-    static constexpr size_t BitsPerWord = 8 * sizeof(Word);
+    template <typename T>
+    auto getWord(Enum bit, const T& fn)
+    {
+        return fn(getWord(bit), RawWord(bit) % BitsPerWord);
+    }
+
+    template <typename T>
+    auto getWord(Enum bit, const T& fn) const
+    {
+        return fn(getWord(bit), RawWord(bit) % BitsPerWord);
+    }
+
+    static constexpr s32 log2(s32 n) { return n <= 1 ? 0 : 1 + log2(n >> 1); }
+
+    static constexpr s32 BitsPerWord = 8 * sizeof(Word);
+    static constexpr s32 Shift = log2(BitsPerWord);
+
     static_assert(N % BitsPerWord == 0, "N must be a multiple of the number of bits per word");
     std::array<Word, N / BitsPerWord> mStorage{};
 };
@@ -47,7 +61,7 @@ inline typename TypedLongBitFlag<N, Enum, Storage>::Word&
 TypedLongBitFlag<N, Enum, Storage>::getWord(Enum bit)
 {
     SEAD_ASSERT_MSG(u32(bit) < u32(N), "range over [0,%d) : %d", N, s32(bit));
-    return mStorage[s32(bit) / BitsPerWord];
+    return mStorage[s32(bit) >> Shift];
 }
 
 template <s32 N, typename Enum, typename Storage>
@@ -55,19 +69,19 @@ inline const typename TypedLongBitFlag<N, Enum, Storage>::Word&
 TypedLongBitFlag<N, Enum, Storage>::getWord(Enum bit) const
 {
     SEAD_ASSERT_MSG(u32(bit) < u32(N), "range over [0,%d) : %d", N, s32(bit));
-    return mStorage[s32(bit) / BitsPerWord];
+    return mStorage[s32(bit) >> Shift];
 }
 
 template <s32 N, typename Enum, typename Storage>
 inline void TypedLongBitFlag<N, Enum, Storage>::setBit(Enum bit)
 {
-    getWord(bit) |= makeMask(bit);
+    getWord(bit, [](auto& word, auto b) { word |= 1 << b; });
 }
 
 template <s32 N, typename Enum, typename Storage>
 inline void TypedLongBitFlag<N, Enum, Storage>::resetBit(Enum bit)
 {
-    getWord(bit) &= ~makeMask(bit);
+    getWord(bit, [](auto& word, auto b) { word &= ~(1 << b); });
 }
 
 template <s32 N, typename Enum, typename Storage>
@@ -82,13 +96,13 @@ inline void TypedLongBitFlag<N, Enum, Storage>::changeBit(Enum bit, bool on)
 template <s32 N, typename Enum, typename Storage>
 inline void TypedLongBitFlag<N, Enum, Storage>::toggleBit(Enum bit)
 {
-    getWord(bit) ^= makeMask(bit);
+    getWord(bit, [](auto& word, auto b) { word ^= 1 << b; });
 }
 
 template <s32 N, typename Enum, typename Storage>
 inline bool TypedLongBitFlag<N, Enum, Storage>::isOnBit(Enum bit) const
 {
-    return (getWord(bit) & makeMask(bit)) != 0;
+    return getWord(bit, [](const auto& word, auto b) { return word & (1 << b); });
 }
 
 template <s32 N, typename Enum, typename Storage>
