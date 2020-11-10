@@ -43,14 +43,14 @@ protected:
 template <s32 N>
 inline typename LongBitFlag<N>::Word& LongBitFlag<N>::getWord(int bit)
 {
-    SEAD_ASSERT_MSG("range over [0,%d) : %d", N, bit);
+    SEAD_ASSERT_MSG(u32(bit) < u32(N), "range over [0,%d) : %d", N, bit);
     return mStorage[bit / BitsPerWord];
 }
 
 template <s32 N>
 inline const typename LongBitFlag<N>::Word& LongBitFlag<N>::getWord(int bit) const
 {
-    SEAD_ASSERT_MSG("range over [0,%d) : %d", N, bit);
+    SEAD_ASSERT_MSG(u32(bit) < u32(N), "range over [0,%d) : %d", N, bit);
     return mStorage[bit / BitsPerWord];
 }
 

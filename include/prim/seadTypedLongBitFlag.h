@@ -46,7 +46,7 @@ template <s32 N, typename Enum, typename Storage>
 inline typename TypedLongBitFlag<N, Enum, Storage>::Word&
 TypedLongBitFlag<N, Enum, Storage>::getWord(Enum bit)
 {
-    SEAD_ASSERT_MSG("range over [0,%d) : %d", N, s32(bit));
+    SEAD_ASSERT_MSG(u32(bit) < u32(N), "range over [0,%d) : %d", N, s32(bit));
     return mStorage[s32(bit) / BitsPerWord];
 }
 
@@ -54,7 +54,7 @@ template <s32 N, typename Enum, typename Storage>
 inline const typename TypedLongBitFlag<N, Enum, Storage>::Word&
 TypedLongBitFlag<N, Enum, Storage>::getWord(Enum bit) const
 {
-    SEAD_ASSERT_MSG("range over [0,%d) : %d", N, s32(bit));
+    SEAD_ASSERT_MSG(u32(bit) < u32(N), "range over [0,%d) : %d", N, s32(bit));
     return mStorage[s32(bit) / BitsPerWord];
 }
 
