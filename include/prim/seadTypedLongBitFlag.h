@@ -2,6 +2,7 @@
 
 #include <array>
 #include <limits>
+#include <type_traits>
 
 #include <basis/seadRawPrint.h>
 #include <basis/seadTypes.h>
@@ -13,6 +14,7 @@ class TypedLongBitFlag
 {
 public:
     using Word = Storage;
+    using RawWord = std::conditional_t<(sizeof(Storage) > 4), u64, u32>;
 
     void makeAllZero() { mStorage.fill(0); }
     void makeAllOne() { mStorage.fill(std::numeric_limits<Word>::max()); }
@@ -32,7 +34,7 @@ public:
     /// Popcount.
     int countOnBit() const;
 
-    static Word makeMask(Enum bit) { return 1u << (u32(bit) % BitsPerWord); }
+    static RawWord makeMask(Enum bit) { return 1u << (RawWord(bit) % BitsPerWord); }
 
 protected:
     static constexpr size_t BitsPerWord = 8 * sizeof(Word);
