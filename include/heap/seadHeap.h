@@ -98,6 +98,8 @@ public:
     bool isDebugFillSystemEnabled() const { return mFlag.isOnBit(Flag::cEnableDebugFillSystem); }
     bool isDebugFillUserEnabled() const { return mFlag.isOnBit(Flag::cEnableDebugFillUser); }
 
+    sead::CriticalSection& getCriticalSection() { return mCS; }
+
     using HeapList = OffsetList<Heap>;
     using DisposerList = OffsetList<IDisposer>;
 
