@@ -5,6 +5,14 @@
 
 namespace sead
 {
+struct InitializeTag
+{
+};
+
+struct ZeroInitializeTag
+{
+};
+
 /// Provides suitably aligned uninitialized storage for a type T.
 /// Use this as a std::aligned_storage replacement that is easier to use and less error prone for
 /// common cases (std::aligned_storage_t<sizeof(T), alignof(T)>).
@@ -13,6 +21,22 @@ class StorageFor
 {
 public:
     constexpr StorageFor() = default;
+
+    explicit StorageFor(InitializeTag) { constructDefault(); }
+
+    template <typename... Args>
+    explicit StorageFor(InitializeTag, Args&&... args)
+    {
+        construct(std::forward<Args>(args)...);
+    }
+
+    explicit StorageFor(ZeroInitializeTag) : mStorage{} { constructDefault(); }
+
+    template <typename... Args>
+    explicit StorageFor(ZeroInitializeTag, Args&&... args) : mStorage{}
+    {
+        construct(std::forward<Args>(args)...);
+    }
 
     T* constructDefault() { return new (storage()) T; }
 
