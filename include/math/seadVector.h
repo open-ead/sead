@@ -2,6 +2,7 @@
 #define SEAD_VECTOR_H_
 
 #include <basis/seadTypes.h>
+#include <cmath>
 #include <math/seadMathPolicies.h>
 
 namespace sead
@@ -310,6 +311,19 @@ const Vector4<f32> Vector4<f32>::ew;
 
 template <>
 const Vector4<f32> Vector4<f32>::ones;
+
+template <typename T>
+constexpr T dot(const Vector3<T>& u, const Vector3<T>& v)
+{
+    return (u.x * v.x) + (u.y * v.y) + (u.z * v.z);
+}
+
+template <typename T>
+inline T norm2(const Vector3<T>& v)
+{
+    return std::sqrt(dot(v, v));
+}
+
 }  // namespace sead
 
 #endif  // #define SEAD_VECTOR_H_
