@@ -88,6 +88,7 @@ add_library(sead OBJECT
   include/heap/seadHeapMgr.h
   include/heap/seadMemBlock.h
   modules/src/heap/seadDisposer.cpp
+  modules/src/heap/seadExpHeap.cpp
   modules/src/heap/seadHeap.cpp
   modules/src/heap/seadHeapMgr.cpp
 
