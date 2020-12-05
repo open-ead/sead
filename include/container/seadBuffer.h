@@ -360,9 +360,9 @@ public:
         if (start_idx >= mSize || end_idx >= mSize || end_idx - start_idx < 1)
             return;
         // FIXME: Nintendo implemented heap sort manually without using <algorithm>
-        std::make_heap(mBuffer + start_idx, mBuffer + end_idx,
-                       [cmp](const T& a, const T& b) { return cmp(&a, &b) < 0; });
-        std::sort_heap(mBuffer + start_idx, mBuffer + end_idx);
+        const auto cmp_ = [cmp](const T& a, const T& b) { return cmp(&a, &b) < 0; };
+        std::make_heap(mBuffer + start_idx, mBuffer + end_idx, cmp_);
+        std::sort_heap(mBuffer + start_idx, mBuffer + end_idx, cmp_);
     }
 
 protected:
