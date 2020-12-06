@@ -55,6 +55,7 @@ private:
         NAME() : mIdx(0) {}                                                                        \
         NAME(ValueType value) { setRelativeIndex(value); }                                         \
         NAME(int idx) { setRelativeIndex(idx); }                                                   \
+        NAME(const NAME& other) = default;                                                         \
                                                                                                    \
         NAME& operator=(const NAME& other) = default;                                              \
         bool operator==(const NAME& rhs) const { return mIdx == rhs.mIdx; }                        \

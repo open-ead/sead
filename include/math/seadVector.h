@@ -12,6 +12,7 @@ struct Vector2 : public Policies<T>::Vec2Base
 {
     /// @warning This constructor leaves member variables uninitialized.
     Vector2() {}
+    Vector2(const Vector2& other) = default;
     constexpr Vector2(T x, T y)
     {
         this->x = x;
@@ -86,6 +87,7 @@ struct Vector3 : public Policies<T>::Vec3Base
 {
     /// @warning This constructor leaves member variables uninitialized.
     Vector3() {}
+    Vector3(const Vector3& other) = default;
     constexpr Vector3(T x, T y, T z)
     {
         this->x = x;
@@ -173,7 +175,7 @@ struct Vector4 : public Policies<T>::Vec4Base
 {
     /// @warning This constructor leaves member variables uninitialized.
     Vector4() {}
-
+    Vector4(const Vector4& other) = default;
     constexpr Vector4(T x, T y, T z, T w)
     {
         this->x = x;

@@ -78,6 +78,7 @@ public:
     {
         SEAD_ASSERT_MSG(str != nullptr, "str must not be nullptr.");
     }
+    SafeStringBase(const SafeStringBase& other) = default;
 
     virtual ~SafeStringBase() = default;
 
