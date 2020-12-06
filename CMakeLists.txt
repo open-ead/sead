@@ -254,7 +254,7 @@ endif()
 
 target_compile_options(sead PRIVATE -fno-exceptions)
 target_compile_options(sead PRIVATE -fno-strict-aliasing)
-target_compile_options(sead PRIVATE -Wall -Wextra)
+target_compile_options(sead PRIVATE -Wall -Wextra -Wdeprecated)
 target_compile_options(sead PRIVATE -Wno-invalid-offsetof)
 target_include_directories(sead PUBLIC include/)
 
