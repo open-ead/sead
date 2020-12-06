@@ -173,6 +173,7 @@ public:
         }
     }
 
+    BufferedSafeStringBase(const BufferedSafeStringBase&) = default;
     ~BufferedSafeStringBase() override = default;
 
     BufferedSafeStringBase<T>& operator=(const SafeStringBase<T>& other) override;
@@ -356,8 +357,11 @@ class FixedSafeString : public FixedSafeStringBase<char, L>
 {
 public:
     FixedSafeString() : FixedSafeStringBase<char, L>() {}
-
     FixedSafeString(const SafeString& str) : FixedSafeStringBase<char, L>(str) {}
+    FixedSafeString(const FixedSafeString& other)
+        : FixedSafeString(static_cast<const SafeString&>(other))
+    {
+    }
 
     FixedSafeString& operator=(const FixedSafeString& other)
     {
@@ -424,6 +428,21 @@ public:
                                     string.calcLength() + 1)
     {
         this->copy(string);
+    }
+
+    HeapSafeStringBase(const HeapSafeStringBase&) = delete;
+    HeapSafeStringBase& operator=(const HeapSafeStringBase&) = delete;
+
+    HeapSafeStringBase(HeapSafeStringBase&& other) noexcept
+    {
+        this->mStringTop = other.mStringTop;
+        other.mStringTop = nullptr;
+    }
+    HeapSafeStringBase& operator=(HeapSafeStringBase&& other) noexcept
+    {
+        this->mStringTop = other.mStringTop;
+        other.mStringTop = nullptr;
+        return *this;
     }
 
     ~HeapSafeStringBase() override
