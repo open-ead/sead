@@ -49,6 +49,13 @@ constexpr f32 absf(f32 x)
 {
     return x > 0 ? x : -x;
 }
+
+template <typename T>
+constexpr T log2(T n)
+{
+    static_assert(std::is_integral<T>(), "T must be an integral type");
+    return n <= 1 ? 0 : 1 + log2(n >> 1);
+}
 }  // namespace sead
 
 #define SEAD_MATH_MATH_CALC_COMMON_H_
