@@ -25,6 +25,15 @@ public:
     {
     }
 
+    Buffer(const Buffer& other) { *this = other; }
+
+    Buffer& operator=(const Buffer& other)
+    {
+        mSize = other.mSize;
+        mBuffer = other.mBuffer;
+        return *this;
+    }
+
     class iterator
     {
     public:
