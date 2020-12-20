@@ -327,6 +327,32 @@ public:
         return -1;
     }
 
+    template <typename Key>
+    s32 binarySearch(const Key& key, s32 (*cmp)(const T& item, const Key& key)) const
+    {
+        if (mSize == 0)
+            return -1;
+
+        s32 a = 0;
+        s32 b = mSize - 1;
+        while (a < b)
+        {
+            const s32 m = (a + b) / 2;
+            const s32 c = cmp(mBuffer[m], key);
+            if (c == 0)
+                return m;
+            if (c < 0)
+                a = m + 1;
+            else
+                b = m;
+        }
+
+        if (cmp(mBuffer[a], key) == 0)
+            return a;
+
+        return -1;
+    }
+
     template <typename CustomCompareCallback>
     s32 binarySearchC(CustomCompareCallback cmp) const
     {
