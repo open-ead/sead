@@ -28,7 +28,7 @@ public:
     u32 getU32();
     /// Generate a random u64.
     u64 getU64();
-    /// Generate a random u32 in [0 .. a].
+    /// Generate a random u32 in [0 .. max).
     u32 getU32(u32 max);
     /// Generate a random s32 in [a .. b).
     /// Note that this does not provide a uniform distribution.
