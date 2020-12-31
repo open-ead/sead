@@ -30,8 +30,17 @@ public:
         ListImpl::pushFront(objToListNode(item));
     }
 
-    T* popBack() { return listNodeToObj(ListImpl::popBack()); }
-    T* popFront() { return listNodeToObj(ListImpl::popFront()); }
+    T* popBack()
+    {
+        auto* node = ListImpl::popBack();
+        return node ? listNodeToObj(node) : nullptr;
+    }
+
+    T* popFront()
+    {
+        auto* node = ListImpl::popFront();
+        return node ? listNodeToObj(node) : nullptr;
+    }
 
     void insertBefore(const T* obj, T* obj_to_insert)
     {
