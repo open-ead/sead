@@ -66,6 +66,11 @@ public:                                                                         
     static CLASS* createInstance(sead::Heap* heap);                                                \
     static void deleteInstance();                                                                  \
                                                                                                    \
+    CLASS(const CLASS&) = delete;                                                                  \
+    CLASS& operator=(const CLASS&) = delete;                                                       \
+    CLASS(CLASS&&) = delete;                                                                       \
+    CLASS& operator=(CLASS&&) = delete;                                                            \
+                                                                                                   \
 protected:                                                                                         \
     static CLASS* sInstance;                                                                       \
                                                                                                    \

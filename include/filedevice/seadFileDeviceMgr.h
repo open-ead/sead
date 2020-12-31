@@ -17,14 +17,10 @@ namespace sead
 class FileDeviceMgr
 {
     SEAD_SINGLETON_DISPOSER(FileDeviceMgr)
-
-public:
     FileDeviceMgr();
     ~FileDeviceMgr();
 
-    FileDeviceMgr(const FileDeviceMgr&) = delete;
-    FileDeviceMgr& operator=(const FileDeviceMgr&) = delete;
-
+public:
     void traceFilePath(const SafeString& path) const;
     void traceDirectoryPath(const SafeString& path) const;
     void resolveFilePath(BufferedSafeString* out, const SafeString& path) const;
