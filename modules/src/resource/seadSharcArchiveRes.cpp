@@ -20,8 +20,12 @@ u32 calcHash32(const sead::SafeString& str, u32 key)
     return result;
 }
 
+#ifdef NNSDK
 s32 binarySearch_(u32 hash, const sead::SharcArchiveRes::FATEntry* buffer, s32 start, s32 end,
                   sead::Endian::Types endian)
+#else
+s32 binarySearch_(u32 hash, const sead::SharcArchiveRes::FATEntry* buffer, s32 start, s32 end)
+#endif
 {
     s32 middle;
 
@@ -29,7 +33,11 @@ s32 binarySearch_(u32 hash, const sead::SharcArchiveRes::FATEntry* buffer, s32 s
     {
         middle = (start + end) / 2;
 
+#ifdef NNSDK
         u32 entryHash = sead::Endian::toHostU32(endian, buffer[middle].hash);
+#else
+        u32 entryHash = buffer[middle].hash;
+#endif
         if (entryHash == hash)
             return middle;
 
@@ -113,7 +121,11 @@ s32 SharcArchiveRes::convertPathToEntryIDImpl_(const SafeString& file_path) cons
     s32 start = 0;
     s32 end = mFATEntrys.size();
 
+#ifdef NNSDK
     s32 id = binarySearch_(hash, mFATEntrys.getBufferPtr(), start, end, mEndianType);
+#else
+    s32 id = binarySearch_(hash, mFATEntrys.getBufferPtr(), start, end);
+#endif
     if (id == -1)
         return -1;
 
@@ -306,7 +318,11 @@ bool SharcArchiveRes::isExistFileImpl_(const SafeString& path) const
 {
     const u32 hash = calcHash32(path, Endian::toHostU32(mEndianType, mFATBlockHeader->hash_key));
     const u32 size = mFATEntrys.size();
+#ifdef NNSDK
     const s32 id = binarySearch_(hash, mFATEntrys.getBufferPtr(), 0, size, mEndianType);
+#else
+    const s32 id = binarySearch_(hash, mFATEntrys.getBufferPtr(), 0, size);
+#endif
     return id != -1;
 }
 }  // namespace sead
