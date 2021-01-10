@@ -99,7 +99,7 @@ void PtrArrayImpl::reverse()
         swap(mPtrNum - i - 1, i);
 }
 
-// NON_MATCHING: semantically equivalent (Fisher–Yates)
+// Fisher–Yates shuffle.
 void PtrArrayImpl::shuffle(Random* random)
 {
     SEAD_ASSERT(random);

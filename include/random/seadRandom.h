@@ -61,11 +61,10 @@ inline u32 Random::getU32(u32 max)
     return getU32() * u64(max) >> 32u;
 }
 
-// UNCHECKED
 inline s32 Random::getS32Range(s32 a, s32 b)
 {
     SEAD_ASSERT_MSG(a <= b, "b[%d] >= a[%d]", a, b);
-    return (getU32() * u64(b - a) >> 32u) + a;
+    return getU32(b - a) + static_cast<u32>(a);
 }
 
 // UNCHECKED
