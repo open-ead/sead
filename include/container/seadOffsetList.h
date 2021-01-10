@@ -83,7 +83,14 @@ public:
         return listNodeToObj(next_node);
     }
 
-    T* nth(s32 n) const { return listNodeToObj(ListImpl::nth(n)); }
+    T* nth(s32 n) const
+    {
+        ListNode* node = ListImpl::nth(n);
+        if (!node)
+            return nullptr;
+        return listNodeToObj(node);
+    }
+
     s32 indexOf(const T* obj) const { return ListImpl::indexOf(objToListNode(obj)); }
 
     bool isNodeLinked(const T* obj) const { return objToListNode(obj)->isLinked(); }
