@@ -46,8 +46,17 @@ public:
 protected:
     using CompareCallbackImpl = int (*)(const void*, const void*);
 
-    void sort(s32 offset, CompareCallbackImpl cmp);
-    void mergeSort(s32 offset, CompareCallbackImpl comp);
+    template <class T, class ComparePredicate>
+    void sort(s32 offset, const ComparePredicate& cmp)
+    {
+        this->mergeSort<T, ComparePredicate>(offset, cmp);
+    }
+
+    template <class T, class ComparePredicate>
+    void mergeSort(s32 offset, const ComparePredicate& cmp)
+    {
+        this->mergeSortImpl_<T, ComparePredicate>(front(), back(), size(), offset, cmp);
+    }
 
     void pushBack(ListNode* item)
     {
@@ -96,8 +105,10 @@ protected:
 
     void clear();
 
-    static void mergeSortImpl(ListNode* front, ListNode* back, s32 num, s32 offset,
-                              CompareCallbackImpl cmp);
+    // FIXME: this should take an rvalue reference for predicate.
+    template <class T, class ComparePredicate>
+    static void mergeSortImpl_(ListNode* front, ListNode* back, s32 num, s32 offset,
+                               const ComparePredicate& predicate);
 
 protected:
     ListNode mStartEnd;

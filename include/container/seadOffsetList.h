@@ -108,9 +108,9 @@ public:
     using CompareCallback = int (*)(const T*, const T*);
 
     void sort() { sort(compareT); }
-    void sort(CompareCallback cmp) { ListImpl::sort(mOffset, cmp); }
+    void sort(CompareCallback cmp) { ListImpl::sort<T>(mOffset, cmp); }
     void mergeSort() { mergeSort(compareT); }
-    void mergeSort(CompareCallback cmp) { ListImpl::mergeSort(mOffset, cmp); }
+    void mergeSort(CompareCallback cmp) { ListImpl::mergeSort<T>(mOffset, cmp); }
 
     T* find(const T* obj) const { return find(obj, compareT); }
     T* find(const T* obj, CompareCallback cmp) const

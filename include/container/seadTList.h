@@ -53,8 +53,8 @@ public:
     void moveAfter(TListNode<T>* basis, TListNode<T>* n) { ListImpl::moveAfter(basis, n); }
     void moveBefore(TListNode<T>* basis, TListNode<T>* n) { ListImpl::moveBefore(basis, n); }
 
-    void sort(s32 offset, CompareCallback cmp) { ListImpl::sort(offset, cmp); }
-    void mergeSort(s32 offset, CompareCallback cmp) { ListImpl::mergeSort(offset, cmp); }
+    void sort(s32 offset, CompareCallback cmp) { ListImpl::sort<T>(offset, cmp); }
+    void mergeSort(s32 offset, CompareCallback cmp) { ListImpl::mergeSort<T>(offset, cmp); }
 
     TListNode<T>* find(const void* ptr, s32 offset, CompareCallback cmp) const
     {
