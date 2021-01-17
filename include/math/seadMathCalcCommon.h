@@ -1,6 +1,8 @@
 #pragma once
 
 #include <basis/seadTypes.h>
+#include <cmath>
+#include <limits>
 #include <type_traits>
 
 namespace sead
@@ -23,6 +25,15 @@ public:
 
     /// Returns -1 for strictly negative values and 1 otherwise.
     static s32 sign(T value);
+
+    static T fitSign(T value) { return value * sign(value); }
+
+    static T epsilon() { return std::numeric_limits<T>::epsilon(); }
+
+    static bool equalsEpsilon(T lhs, T rhs, T eps = epsilon())
+    {
+        return std::abs(lhs - rhs) <= eps;
+    }
 
     static T acos(T t);
     static T asin(T t);
