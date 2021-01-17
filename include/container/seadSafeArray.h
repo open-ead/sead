@@ -119,6 +119,9 @@ public:
 
     constIterator constBegin() const { return constIterator(mBuffer, 0); }
     constIterator constEnd() const { return constIterator(mBuffer, N); }
+
+    constIterator begin() const { return constIterator(mBuffer, 0); }
+    constIterator end() const { return constIterator(mBuffer, N); }
 };
 
 }  // namespace sead
