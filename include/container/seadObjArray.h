@@ -121,10 +121,10 @@ public:
 
     using CompareCallback = s32 (*)(const T*, const T*);
 
-    void sort() { PtrArrayImpl::sort(compareT); }
-    void sort(CompareCallback cmp) { PtrArrayImpl::sort(cmp); }
-    void heapSort() { PtrArrayImpl::heapSort(compareT); }
-    void heapSort(CompareCallback cmp) { PtrArrayImpl::heapSort(cmp); }
+    void sort() { sort(compareT); }
+    void sort(CompareCallback cmp) { PtrArrayImpl::sort_<T>(cmp); }
+    void heapSort() { heapSort(compareT); }
+    void heapSort(CompareCallback cmp) { PtrArrayImpl::heapSort_<T>(cmp); }
 
     bool equal(const ObjArray& other, CompareCallback cmp) const
     {
