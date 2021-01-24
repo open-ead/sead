@@ -38,6 +38,10 @@ public:
     static T acos(T t);
     static T asin(T t);
     static T atan(T t);
+
+    /// Adds or subtracts `step` from `value` towards `target`.
+    /// Returns whether the new value is equal to the target.
+    static bool chase(T* value, T target, T step);
 };
 
 typedef MathCalcCommon<s32> Mathi;

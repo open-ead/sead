@@ -70,6 +70,38 @@ inline s32 MathCalcCommon<T>::sign(T value)
     return value < 0 ? -1 : 1;
 }
 
+template <typename T>
+inline bool MathCalcCommon<T>::chase(T* value, T target, T step)
+{
+    const T current = *value;
+
+    if (current < target)
+    {
+        const T new_value = current + step;
+        if (target <= new_value || new_value < current)
+        {
+            *value = target;
+            return true;
+        }
+        *value = new_value;
+        return false;
+    }
+
+    if (current > target)
+    {
+        const T new_value = current - step;
+        if (target >= new_value || new_value > current)
+        {
+            *value = target;
+            return true;
+        }
+        *value = new_value;
+        return false;
+    }
+
+    return true;
+}
+
 template <typename T, typename T2>
 inline T lerp(T a, T b, T2 t)
 {
