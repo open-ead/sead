@@ -26,7 +26,7 @@ public:
     /// Returns -1 for strictly negative values and 1 otherwise.
     static s32 sign(T value);
 
-    static T fitSign(T value) { return value * sign(value); }
+    static T fitSign(T value, T sign_value) { return value * sign(sign_value); }
 
     static T epsilon() { return std::numeric_limits<T>::epsilon(); }
 
