@@ -90,7 +90,7 @@ inline bool MathCalcCommon<T>::chase(T* value, T target, T step)
     if (current > target)
     {
         const T new_value = current - step;
-        if (target >= new_value || new_value > current)
+        if (target >= new_value || current < new_value)
         {
             *value = target;
             return true;
