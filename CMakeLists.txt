@@ -23,6 +23,7 @@ add_library(sead OBJECT
   include/container/seadFreeList.h
   include/container/seadListImpl.h
   include/container/seadObjArray.h
+  include/container/seadObjList.h
   include/container/seadOffsetList.h
   include/container/seadPtrArray.h
   include/container/seadRingBuffer.h
