@@ -30,17 +30,9 @@ public:
         ListImpl::pushFront(objToListNode(item));
     }
 
-    T* popBack()
-    {
-        auto* node = ListImpl::popBack();
-        return node ? listNodeToObj(node) : nullptr;
-    }
+    T* popBack() { return listNodeToObjWithNullCheck(ListImpl::popBack()); }
 
-    T* popFront()
-    {
-        auto* node = ListImpl::popFront();
-        return node ? listNodeToObj(node) : nullptr;
-    }
+    T* popFront() { return listNodeToObjWithNullCheck(ListImpl::popFront()); }
 
     void insertBefore(const T* obj, T* obj_to_insert)
     {
@@ -55,17 +47,9 @@ public:
 
     void erase(T* item) { ListImpl::erase(objToListNode(item)); }
 
-    T* front() const
-    {
-        auto* node = ListImpl::front();
-        return node ? listNodeToObj(node) : nullptr;
-    }
+    T* front() const { return listNodeToObjWithNullCheck(ListImpl::front()); }
 
-    T* back() const
-    {
-        auto* node = ListImpl::back();
-        return node ? listNodeToObj(node) : nullptr;
-    }
+    T* back() const { return listNodeToObjWithNullCheck(ListImpl::back()); }
 
     T* prev(const T* obj) const
     {
@@ -83,13 +67,7 @@ public:
         return listNodeToObj(next_node);
     }
 
-    T* nth(s32 n) const
-    {
-        ListNode* node = ListImpl::nth(n);
-        if (!node)
-            return nullptr;
-        return listNodeToObj(node);
-    }
+    T* nth(s32 n) const { return listNodeToObjWithNullCheck(ListImpl::nth(n)); }
 
     s32 indexOf(const T* obj) const { return ListImpl::indexOf(objToListNode(obj)); }
 
@@ -221,6 +199,16 @@ protected:
     const T* listNodeToObj(const ListNode* node) const
     {
         return static_cast<const T*>(PtrUtil::addOffset(node, -mOffset));
+    }
+
+    T* listNodeToObjWithNullCheck(ListNode* node) const
+    {
+        return node ? listNodeToObj(node) : nullptr;
+    }
+
+    const T* listNodeToObjWithNullCheck(const ListNode* node) const
+    {
+        return node ? listNodeToObj(node) : nullptr;
     }
 
     s32 mOffset = -1;
