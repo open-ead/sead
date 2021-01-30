@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include "basis/seadNew.h"
 #include "basis/seadRawPrint.h"
 #include "basis/seadTypes.h"
