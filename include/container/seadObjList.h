@@ -93,8 +93,19 @@ public:
 
     void clear()
     {
-        for (auto& item : *this)
-            erase(&item);
+        ListNode* node = mStartEnd.next();
+        while (node != &mStartEnd)
+        {
+            // Fetch the next pointer before erasing the item from the linked list.
+            ListNode* next = node->next();
+            ListImpl::erase(node);
+
+            auto* item = listNodeToObj(node);
+            item->~T();
+            mFreeList.free(item);
+
+            node = next;
+        }
     }
 
     T* prev(const T* obj) const
