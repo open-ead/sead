@@ -154,10 +154,7 @@ public:
     iterator end() const { return iterator(listNodeToObj(const_cast<ListNode*>(&mStartEnd))); }
     iterator begin(T* ptr) const { return iterator(ptr); }
 
-    static constexpr size_t calculateWorkBufferSize(size_t n)
-    {
-        return n * (ElementSize + sizeof(T*));
-    }
+    static constexpr size_t calculateWorkBufferSize(size_t n) { return n * ElementSize; }
 
 private:
     struct Node
