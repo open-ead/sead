@@ -64,6 +64,10 @@ public:
         mFreeList.reset();
     }
 
+    bool isBufferReady() const { return mFreeList.work() != nullptr; }
+
+    bool isFull() const { return size() >= mMaxNum; }
+
     T* front() const { return listNodeToObjWithNullCheck(ListImpl::front()); }
     T* back() const { return listNodeToObjWithNullCheck(ListImpl::back()); }
 
