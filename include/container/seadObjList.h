@@ -71,6 +71,34 @@ public:
     T* front() const { return listNodeToObjWithNullCheck(ListImpl::front()); }
     T* back() const { return listNodeToObjWithNullCheck(ListImpl::back()); }
 
+    T popBack()
+    {
+        if (mCount < 1)
+            return {};
+
+        auto* item = back();
+        if (!item)
+            return {};
+
+        T copy = *item;
+        erase(item);
+        return copy;
+    }
+
+    T popFront()
+    {
+        if (mCount < 1)
+            return {};
+
+        auto* item = front();
+        if (!item)
+            return {};
+
+        T copy = *item;
+        erase(item);
+        return copy;
+    }
+
     template <class... Args>
     T* emplaceBack(Args&&... args)
     {
