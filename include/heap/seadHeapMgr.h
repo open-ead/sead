@@ -67,7 +67,13 @@ protected:
     Heap* getPreviousHeap_() const { return reinterpret_cast<Heap*>(mPreviousHeap); }
     void setPreviousHeap_(Heap* heap) { mPreviousHeap = reinterpret_cast<uintptr_t>(heap); }
     void setPreviousHeapToNone_() { mPreviousHeap = 1; }
-    bool hasPreviousHeap_() const { return mPreviousHeap != 1; }
+    bool hasPreviousHeap_() const
+    {
+        // XXX: We cannot just do `mPreviousHeap != 1` because that results in different codegen.
+        // The cast smells like implementation defined behavior, but 1 should not be a valid
+        // pointer on any platform that we support. In practice, this will work correctly.
+        return reinterpret_cast<Heap*>(mPreviousHeap) != reinterpret_cast<Heap*>(1);
+    }
 
     uintptr_t mPreviousHeap;
 };
