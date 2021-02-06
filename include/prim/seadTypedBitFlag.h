@@ -42,11 +42,22 @@ public:
     void setDirect(UnderlyingType bits) { mBits = bits; }
     void setDirect(Enum bits) { mBits = UnderlyingType(bits); }
     UnderlyingType getDirect() const { return mBits; }
+    Storage& getStorage() { return mBits; }
 
-    UnderlyingType set(Enum val) { return mBits |= UnderlyingType(val); }
-    UnderlyingType reset(Enum val) { return mBits &= ~UnderlyingType(val); }
+    bool set(Enum val)
+    {
+        const auto mask = UnderlyingType(val);
+        return ((mBits |= mask) & mask) == 0;
+    }
+
+    bool reset(Enum val)
+    {
+        const auto mask = UnderlyingType(val);
+        return ((mBits &= ~mask) & mask) != 0;
+    }
+
     UnderlyingType toggle(Enum val) { mBits ^= UnderlyingType(val); }
-    UnderlyingType change(Enum val, bool on) { return on ? set(val) : reset(val); }
+    bool change(Enum val, bool on) { return on ? set(val) : reset(val); }
     bool isZero() const { return mBits == 0; }
     /// Checks if (at least) one of the bits are set.
     bool isOn(Enum val) const { return (mBits & UnderlyingType(val)) != 0; }
