@@ -81,6 +81,12 @@ struct Atomic : AtomicBase<T>
     T increment() { return fetchAdd(1); }
     T decrement() { return fetchSub(1); }
 
+    bool isBitOn(unsigned int bit) const;
+    /// @return whether the bit was cleared and is now set.
+    bool setBitOn(unsigned int bit);
+    /// @return whether the bit was set and is now cleared.
+    bool setBitOff(unsigned int bit);
+
     T operator+=(T x) { return fetchAdd(x); }
     T operator-=(T x) { return fetchSub(x); }
     T operator&=(T x) { return fetchAnd(x); }
@@ -232,6 +238,36 @@ inline T Atomic<T>::fetchXor(T x)
 #else
     return this->mValue.fetch_xor(x, std::memory_order_relaxed);
 #endif
+}
+
+template <class T>
+bool Atomic<T>::isBitOn(unsigned int bit) const
+{
+    return (this->load() & (1 << bit)) != 0;
+}
+
+template <class T>
+bool Atomic<T>::setBitOn(unsigned int bit)
+{
+#ifdef MATCHING_HACK_NX_CLANG
+    const auto old = detail::atomicReadModifyWrite(this->getValuePtr(),
+                                                   [bit](T val) { return val | (1 << bit); });
+#else
+    const auto old = this->mValue.fetch_or(1 << bit, std::memory_order_relaxed);
+#endif
+    return (old & (1 << bit)) == 0;
+}
+
+template <class T>
+bool Atomic<T>::setBitOff(unsigned int bit)
+{
+#ifdef MATCHING_HACK_NX_CLANG
+    const auto old = detail::atomicReadModifyWrite(this->getValuePtr(),
+                                                   [bit](T val) { return val & ~(1 << bit); });
+#else
+    const auto old = this->mValue.fetch_and(~(1 << bit), std::memory_order_relaxed);
+#endif
+    return (old & (1 << bit)) != 0;
 }
 #else  // NNSDK
 #error "Unknown platform"
