@@ -23,6 +23,13 @@ public:
         ListImpl::pushBack(item);
     }
 
+    void pushFront(TListNode<T>* item)
+    {
+        item->erase();
+        item->mList = this;
+        ListImpl::pushFront(item);
+    }
+
     TListNode<T>* popBack() { return static_cast<TListNode<T>*>(ListImpl::popBack()); }
     TListNode<T>* popFront() { return static_cast<TListNode<T>*>(ListImpl::popFront()); }
 
