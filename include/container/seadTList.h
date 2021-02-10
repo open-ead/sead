@@ -70,9 +70,20 @@ public:
     void uniq(s32 offset, CompareCallback cmp) { ListImpl::uniq(offset, cmp); }
     void clear() { ListImpl::clear(); }
 
-    static TListNode<T>* next(TListNode<T>* node)
+    TListNode<T>* prev(const TListNode<T>* node) const
     {
-        return static_cast<TListNode<T>*>(node->next());
+        auto prev_node = static_cast<TListNode<T>*>(node->prev());
+        if (prev_node == &mStartEnd)
+            return nullptr;
+        return prev_node;
+    }
+
+    TListNode<T>* next(const TListNode<T>* node) const
+    {
+        auto next_node = static_cast<TListNode<T>*>(node->next());
+        if (next_node == &mStartEnd)
+            return nullptr;
+        return next_node;
     }
 
     class iterator
