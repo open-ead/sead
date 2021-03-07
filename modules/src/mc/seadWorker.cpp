@@ -18,7 +18,7 @@ bool Worker::pushJobQueue(const char* description, JobQueue* queue, JobQueuePush
     ScopedLock<JobQueueLock> lock(&mLock);
 
     bool ret;
-    if (type == JobQueuePushType::Forward)
+    if (type == JobQueuePushType::cForward)
         ret = mJobQueues.pushBack(queue);
     else
         ret = mJobQueues.pushBackwards(queue);
@@ -35,7 +35,7 @@ void Worker::clearJobQQ()
 
 void Worker::calc_(MessageQueue::Element msg)
 {
-    if (msg == 1)
+    if (msg == cMsg_Process)
         proc_();
 }
 

@@ -116,10 +116,12 @@ add_library(sead OBJECT
   include/mc/seadJob.h
   include/mc/seadJobQueue.h
   include/mc/seadWorker.h
+  include/mc/seadWorkerMgr.h
   modules/src/mc/seadCoreInfo.cpp
   modules/src/mc/seadJob.cpp
   modules/src/mc/seadJobQueue.cpp
   modules/src/mc/seadWorker.cpp
+  modules/src/mc/seadWorkerMgr.cpp
 
   include/prim/seadBitFlag.h
   include/prim/seadBitUtil.h

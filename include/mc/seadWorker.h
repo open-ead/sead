@@ -12,15 +12,13 @@ namespace sead
 {
 class WorkerMgr;
 
-enum class JobQueuePushType
-{
-    Forward = 0,
-    Backward = 1,
-};
+SEAD_ENUM(JobQueuePushType, cForward, cBackward)
 
 class Worker : public Thread
 {
 public:
+    static constexpr MessageQueue::Element cMsg_Process = 1;
+
     SEAD_ENUM(State, cSleep, cWakeup, cRunning, cRunning_WaitLock, cRunning_GetLock, cRunning_Run,
               cRunning_AfterRun, cRunning_BeforeReturn, cRunning_AllJobDoneReturn, cFinished,
               cWaitingAtWorker)
@@ -33,6 +31,8 @@ public:
     void setState(Worker::State state) { mWorkerState = state; }
 
 protected:
+    friend class WorkerMgr;
+
     void calc_(MessageQueue::Element msg) override;
     virtual void proc_();
 
