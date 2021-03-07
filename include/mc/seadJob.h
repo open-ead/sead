@@ -8,7 +8,7 @@ namespace sead
 class Job : public INamable
 {
 public:
-    virtual ~Job() = default;
+    virtual ~Job();
     virtual void invoke() = 0;
 };
 

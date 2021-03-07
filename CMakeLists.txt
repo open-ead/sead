@@ -116,6 +116,7 @@ add_library(sead OBJECT
   include/mc/seadJobQueue.h
   include/mc/seadWorker.h
   modules/src/mc/seadCoreInfo.cpp
+  modules/src/mc/seadJob.cpp
   modules/src/mc/seadJobQueue.cpp
   modules/src/mc/seadWorker.cpp
 
