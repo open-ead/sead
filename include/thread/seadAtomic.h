@@ -194,7 +194,7 @@ template <class T>
 inline T Atomic<T>::fetchAdd(T x)
 {
 #ifdef MATCHING_HACK_NX_CLANG
-    return detail::atomicReadModifyWrite(this->getValuePtr(), [x](T val) { return val + x; });
+    return detail::atomicReadModifyWrite(this->getValuePtr(), [&](T val) { return val + x; });
 #else
     return this->mValue.fetch_add(x, std::memory_order_relaxed);
 #endif
@@ -204,7 +204,7 @@ template <class T>
 inline T Atomic<T>::fetchSub(T x)
 {
 #ifdef MATCHING_HACK_NX_CLANG
-    return detail::atomicReadModifyWrite(this->getValuePtr(), [x](T val) { return val - x; });
+    return detail::atomicReadModifyWrite(this->getValuePtr(), [&](T val) { return val - x; });
 #else
     return this->mValue.fetch_sub(x, std::memory_order_relaxed);
 #endif
@@ -214,7 +214,7 @@ template <class T>
 inline T Atomic<T>::fetchAnd(T x)
 {
 #ifdef MATCHING_HACK_NX_CLANG
-    return detail::atomicReadModifyWrite(this->getValuePtr(), [x](T val) { return val & x; });
+    return detail::atomicReadModifyWrite(this->getValuePtr(), [&](T val) { return val & x; });
 #else
     return this->mValue.fetch_and(x, std::memory_order_relaxed);
 #endif
@@ -224,7 +224,7 @@ template <class T>
 inline T Atomic<T>::fetchOr(T x)
 {
 #ifdef MATCHING_HACK_NX_CLANG
-    return detail::atomicReadModifyWrite(this->getValuePtr(), [x](T val) { return val | x; });
+    return detail::atomicReadModifyWrite(this->getValuePtr(), [&](T val) { return val | x; });
 #else
     return this->mValue.fetch_or(x, std::memory_order_relaxed);
 #endif
@@ -234,7 +234,7 @@ template <class T>
 inline T Atomic<T>::fetchXor(T x)
 {
 #ifdef MATCHING_HACK_NX_CLANG
-    return detail::atomicReadModifyWrite(this->getValuePtr(), [x](T val) { return val ^ x; });
+    return detail::atomicReadModifyWrite(this->getValuePtr(), [&](T val) { return val ^ x; });
 #else
     return this->mValue.fetch_xor(x, std::memory_order_relaxed);
 #endif
