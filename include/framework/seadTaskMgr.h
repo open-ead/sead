@@ -68,4 +68,58 @@ public:
 
 }  // namespace sead
 
+#define SEAD_TASK_SINGLETON(CLASS)                                                                 \
+public:                                                                                            \
+    class SingletonDisposer_                                                                       \
+    {                                                                                              \
+    public:                                                                                        \
+        ~SingletonDisposer_()                                                                      \
+        {                                                                                          \
+            if (mActive)                                                                           \
+                CLASS::sInstance = nullptr;                                                        \
+        }                                                                                          \
+                                                                                                   \
+        bool mActive = false;                                                                      \
+    };                                                                                             \
+                                                                                                   \
+    static CLASS* instance() { return sInstance; }                                                 \
+    static void setInstance_(sead::TaskBase* task);                                                \
+    static void deleteInstance();                                                                  \
+                                                                                                   \
+    CLASS(const CLASS&) = delete;                                                                  \
+    CLASS& operator=(const CLASS&) = delete;                                                       \
+    CLASS(CLASS&&) = delete;                                                                       \
+    CLASS& operator=(CLASS&&) = delete;                                                            \
+                                                                                                   \
+protected:                                                                                         \
+    static CLASS* sInstance;                                                                       \
+                                                                                                   \
+    friend class SingletonDisposer_;                                                               \
+    SingletonDisposer_ mSingletonDisposer;
+
+#define SEAD_TASK_SINGLETON_IMPL(CLASS)                                                            \
+    void CLASS::setInstance_(sead::TaskBase* task)                                                 \
+    {                                                                                              \
+        if (!sInstance)                                                                            \
+        {                                                                                          \
+            sInstance = static_cast<CLASS*>(task);                                                 \
+            sInstance.mSingletonDisposer.mActive = true;                                           \
+        }                                                                                          \
+        else                                                                                       \
+        {                                                                                          \
+            SEAD_ASSERT_MSG(false, "Create Singleton Twice (%s) : addr %p", #CLASS, sInstance);    \
+        }                                                                                          \
+    }                                                                                              \
+                                                                                                   \
+    void CLASS::deleteInstance()                                                                   \
+    {                                                                                              \
+        if (sInstance)                                                                             \
+        {                                                                                          \
+            sInstance->mTaskMgr->destroyTaskSync(sInstance);                                       \
+            sInstance = nullptr;                                                                   \
+        }                                                                                          \
+    }                                                                                              \
+                                                                                                   \
+    CLASS* CLASS::sInstance = nullptr;
+
 #endif  // SEAD_TASKMGR_H_
