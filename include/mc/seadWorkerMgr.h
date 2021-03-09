@@ -52,6 +52,6 @@ private:
     bool mProcessJobQueues = false;
     u32 mNumWakeups = 0;
     TickTime mLastWakeup;
-    TickSpan mTickSpan = TickSpan::fromMilliSeconds(1);
+    TickSpan mWaitDuration = TickSpan::fromMilliSeconds(1);
 };
 }  // namespace sead

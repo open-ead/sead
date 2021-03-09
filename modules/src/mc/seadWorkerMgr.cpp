@@ -64,6 +64,22 @@ void WorkerMgr::initialize(const InitializeArg& arg)
     mNumJobQueues = 0;
 }
 
+void WorkerMgr::finalize()
+{
+    if (mWorkers.size() > 1)
+    {
+        ThreadMgr::quitAndWaitDoneMultipleThread(
+            reinterpret_cast<Thread**>(mWorkers.getBufferPtr() + 1), mWorkers.size() - 1, true);
+    }
+
+    for (u32 i = 0, n = CoreInfo::getNumCores(); i != n; ++i)
+    {
+        if (mWorkers[i])
+            delete mWorkers[i];
+        mWorkers[i] = nullptr;
+    }
+}
+
 void WorkerMgr::pushJobQueue(JobQueue* queue, CoreIdMask core_id_mask, SyncType sync_type,
                              JobQueuePushType push_type)
 {
@@ -116,11 +132,41 @@ void WorkerMgr::run()
     }
 }
 
+void WorkerMgr::sync()
+{
+    if (!mProcessJobQueues)
+        mWorkers[0]->proc_();
+
+    for (auto it = mWorkers.begin(1), end = mWorkers.end(); it != end; ++it)
+    {
+        while (!(*it)->mEvent.wait(mWaitDuration))
+            continue;
+    }
+
+    if (!isAllWorkerSleep())
+    {
+        std::array<Worker::State, 256> states{};
+        u32 idx = 0;
+        for (int i = 0; i < mWorkers.size(); ++i)
+        {
+            states[idx] = mWorkers[i]->mWorkerState.load();
+            ++idx;
+        }
+
+        for (int i = 0; i < mWorkers.size(); ++i)
+            SEAD_DEBUG_PRINT(" [%d] [%s] = %s\n", i, mWorkers[i]->mCore.text(), states[i].text());
+
+        SEAD_ASSERT_MSG(false, "all sleep failed\n");
+    }
+
+    mNumJobQueues = 0;
+}
+
 bool WorkerMgr::isAllWorkerSleep() const
 {
     for (int i = 0; i < mWorkers.size(); ++i)
     {
-        if (mWorkers[i]->mCore)
+        if (mWorkers[i]->mWorkerState.load() != Worker::State::cSleep)
             return false;
     }
     return true;
