@@ -19,6 +19,17 @@ class CoreIdMask
 public:
     CoreIdMask() = default;
     explicit CoreIdMask(CoreId id) { mMask = makeCoreMask_(id); }
+    explicit CoreIdMask(CoreId id1, CoreId id2)
+    {
+        mMask |= makeCoreMask_(id1);
+        mMask |= makeCoreMask_(id2);
+    }
+    explicit CoreIdMask(CoreId id1, CoreId id2, CoreId id3)
+    {
+        mMask |= makeCoreMask_(id1);
+        mMask |= makeCoreMask_(id2);
+        mMask |= makeCoreMask_(id3);
+    }
 
     void set(u32 mask) volatile { mMask = mask; }
     operator u32() const volatile { return mMask; }
