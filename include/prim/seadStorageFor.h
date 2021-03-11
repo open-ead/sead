@@ -16,7 +16,7 @@ struct ZeroInitializeTag
 /// Provides suitably aligned uninitialized storage for a type T.
 /// Use this as a std::aligned_storage replacement that is easier to use and less error prone for
 /// common cases (std::aligned_storage_t<sizeof(T), alignof(T)>).
-template <typename T>
+template <typename T, bool AutoDestruct = false>
 class StorageFor
 {
 public:
@@ -44,6 +44,12 @@ public:
     T* construct(Args&&... args)
     {
         return new (storage()) T(std::forward<Args>(args)...);
+    }
+
+    ~StorageFor()
+    {
+        if constexpr (AutoDestruct)
+            destruct();
     }
 
     /// @warning It is undefined behavior to call this if no object has been constructed.
