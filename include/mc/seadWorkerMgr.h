@@ -27,7 +27,7 @@ public:
     };
 
     WorkerMgr();
-    virtual ~WorkerMgr();
+    virtual ~WorkerMgr() = default;
     WorkerMgr(const WorkerMgr&) = delete;
     auto operator=(const WorkerMgr&) = delete;
 

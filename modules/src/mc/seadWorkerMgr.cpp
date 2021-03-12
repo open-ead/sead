@@ -172,5 +172,4 @@ bool WorkerMgr::isAllWorkerSleep() const
     return true;
 }
 
-WorkerMgr::~WorkerMgr() = default;
 }  // namespace sead
