@@ -32,7 +32,49 @@ public:
             forEach(mRoot, callable);
     }
 
+    Node* startIterating() const
+    {
+        if (!mRoot)
+            return nullptr;
+        return startIterating(mRoot);
+    }
+
+    Node* nextNode(Node* node) const
+    {
+        if (!node)
+            return nullptr;
+
+        // If there is a right child node, explore that branch first.
+        if (node->mRight)
+        {
+            node->mRight->setParent(node);
+            return startIterating(node->mRight);
+        }
+
+        // Otherwise, walk back up to the node P from which we reached this node
+        // by following P's left child pointer.
+        while (auto* const parent = node->getParent())
+        {
+            if (parent->mLeft == node)
+                return parent;
+            node = parent;
+        }
+        return nullptr;
+    }
+
 protected:
+    /// Returns the left most child of a given node, marking each node with its parent
+    /// along the way.
+    static Node* startIterating(Node* node)
+    {
+        while (node->mLeft)
+        {
+            node->mLeft->setParent(node);
+            node = node->mLeft;
+        }
+        return node;
+    }
+
     Node* insert(Node* root, Node* node);
     Node* erase(Node* root, const Key& key);
     Node* find(Node* root, const Key& key) const;
@@ -81,6 +123,11 @@ protected:
 
     void flipColor() { BitUtil::bitCastWrite(mColorAndPtr ^ 1u, &mColorAndPtr); }
     void setColor(Color color) { mColorAndPtr = uintptr_t(color); }
+
+    void setParent(TreeMapNode* parent) { mColorAndPtr = (mColorAndPtr & 1) | uintptr_t(parent); }
+    /// @warning Only valid if setParent has been called!
+    TreeMapNode* getParent() const { return reinterpret_cast<TreeMapNode*>(mColorAndPtr & ~1); }
+
     bool isRed() const { return (mColorAndPtr & 1u) == bool(Color::Red); }
 
     TreeMapNode* mLeft;
@@ -157,6 +204,9 @@ public:
     template <typename Callable>
     void forEach(const Callable& delegate) const;
 
+    Node* startIterating() const { return static_cast<Node*>(MapImpl::startIterating()); }
+    Node* nextNode(Node* node) const { return static_cast<Node*>(MapImpl::nextNode(node)); }
+
 private:
     void eraseNodeForClear_(typename MapImpl::Node* node);
 
@@ -182,6 +232,9 @@ public:
             delegate(node);
         });
     }
+
+    Node* startIterating() const { return static_cast<Node*>(MapImpl::startIterating()); }
+    Node* nextNode(Node* node) const { return static_cast<Node*>(MapImpl::nextNode(node)); }
 };
 
 template <typename Key>
