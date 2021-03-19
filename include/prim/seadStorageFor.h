@@ -67,6 +67,15 @@ public:
     /// @warning It is undefined behavior to call this if no object has been constructed.
     const T* data() const { return reinterpret_cast<const T*>(mStorage); }
 
+    /// @warning It is undefined behavior to call this if no object has been constructed.
+    T* operator->() { return data(); }
+    /// @warning It is undefined behavior to call this if no object has been constructed.
+    const T* operator->() const { return data(); }
+    /// @warning It is undefined behavior to call this if no object has been constructed.
+    T& operator*() { return ref(); }
+    /// @warning It is undefined behavior to call this if no object has been constructed.
+    const T& operator*() const { return ref(); }
+
     void* storage() { return mStorage; }
     const void* storage() const { return mStorage; }
 
