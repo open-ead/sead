@@ -507,10 +507,10 @@ public:
     /// Checks if a non-dummy function is stored.
     explicit operator bool() const { return getDelegate()->isNoDummy(); }
 
-protected:
     Interface* getDelegate() { return reinterpret_cast<Interface*>(&mStorage); }
     const Interface* getDelegate() const { return reinterpret_cast<const Interface*>(&mStorage); }
 
+protected:
     using Interface_ = Interface;
     std::aligned_storage_t<StorageSize, alignof(Interface)> mStorage;
 };
