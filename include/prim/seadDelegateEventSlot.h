@@ -30,6 +30,11 @@ public:
             mDelegatePtr = mDelegate->getDelegate();
         }
 
+        template <typename C>
+        Slot(C* instance, void (C::*func)(T)) : Slot(Delegate1<C, T>(instance, func))
+        {
+        }
+
         ~Slot() override { release(); }
 
         void release()
