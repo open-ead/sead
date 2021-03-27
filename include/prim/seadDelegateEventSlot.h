@@ -5,6 +5,7 @@
 #include <container/seadTList.h>
 #include <heap/seadDisposer.h>
 #include <prim/seadDelegate.h>
+#include <prim/seadStorageFor.h>
 
 namespace sead
 {
@@ -22,10 +23,11 @@ public:
     {
     public:
         template <typename TDelegate>
-        Slot(TDelegate delegate)
+        Slot(TDelegate delegate)  // NOLINT(google-explicit-constructor)
         {
-            mDelegate = std::move(delegate);
-            mDelegatePtr = &mDelegate;
+            mDelegate.construct(std::move(delegate));
+            // NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
+            mDelegatePtr = mDelegate->getDelegate();
         }
 
         ~Slot() override { release(); }
@@ -49,8 +51,8 @@ public:
         }
 
         SlotListNode mNode{this};
-        AnyDelegate1<T>* mDelegatePtr;
-        AnyDelegate1<T> mDelegate;
+        IDelegate1<T>* mDelegatePtr = nullptr;
+        StorageFor<AnyDelegate1<T>, true> mDelegate;
         bool mConnectedToDelegateEvent = false;
     };
 
