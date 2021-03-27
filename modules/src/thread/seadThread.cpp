@@ -7,8 +7,6 @@
 
 namespace sead
 {
-SEAD_ENUM_IMPL(Thread::State)
-
 const s32 Thread::cDefaultPriority = 0x10;
 
 bool Thread::sendMessage(MessageQueue::Element msg, MessageQueue::BlockType block_type)

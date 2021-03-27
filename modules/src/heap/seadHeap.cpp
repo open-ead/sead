@@ -4,8 +4,6 @@
 
 namespace sead
 {
-SEAD_ENUM_IMPL(Heap::Flag)
-
 Heap::~Heap() = default;
 
 void Heap::appendDisposer_(IDisposer* disposer)

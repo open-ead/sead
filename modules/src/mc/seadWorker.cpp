@@ -3,8 +3,6 @@
 
 namespace sead
 {
-SEAD_ENUM_IMPL(Worker::State)
-
 Worker::Worker(WorkerMgr* mgr, u32 num_jobs, s32 stack_size, s32 priority, const SafeString& name)
     : Thread(name, nullptr, priority, MessageQueue::BlockType::Blocking, 0x7FFFFFFF, stack_size, 1),
       mMgr(mgr)

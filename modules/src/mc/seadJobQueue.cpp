@@ -8,8 +8,6 @@
 
 namespace sead
 {
-SEAD_ENUM_IMPL(SyncType)
-
 // NON_MATCHING
 JobQueue::JobQueue()
 {

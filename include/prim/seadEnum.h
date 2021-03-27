@@ -130,7 +130,27 @@ private:
                                                                                                    \
     private:                                                                                       \
         /* Returns nullptr when not found. */                                                      \
-        static const char* text_(int idx);                                                         \
+        static const char* text_(int idx)                                                          \
+        {                                                                                          \
+            if (u32(idx) >= cCount)                                                                \
+                return nullptr;                                                                    \
+                                                                                                   \
+            static char** spTextPtr = nullptr;                                                     \
+            if (spTextPtr)                                                                         \
+                return spTextPtr[idx];                                                             \
+            {                                                                                      \
+                sead::ScopedLock<sead::CriticalSection> lock(sead::EnumUtil::getParseTextCS_());   \
+                if (!spTextPtr)                                                                    \
+                {                                                                                  \
+                    static char* sTextPtr[cCount];                                                 \
+                    static sead::FixedSafeString<cTextAllLen> sTextAll =                           \
+                        sead::SafeString(cTextAll);                                                \
+                    sead::EnumUtil::parseText_(sTextPtr, sTextAll.getBuffer(), cCount);            \
+                    spTextPtr = sTextPtr;                                                          \
+                }                                                                                  \
+            }                                                                                      \
+            return spTextPtr[idx];                                                                 \
+        }                                                                                          \
                                                                                                    \
         static constexpr const char* cTextAll = #__VA_ARGS__;                                      \
         static constexpr size_t cTextAllLen = sizeof(#__VA_ARGS__);                                \
@@ -138,29 +158,6 @@ private:
                                                                                                    \
         int mIdx;                                                                                  \
     };
-
-/// For use with SEAD_ENUM. Use this in the .cpp file.
-#define SEAD_ENUM_IMPL(NAME)                                                                       \
-    inline const char* NAME::text_(int idx)                                                        \
-    {                                                                                              \
-        if (u32(idx) >= cCount)                                                                    \
-            return nullptr;                                                                        \
-                                                                                                   \
-        static char** spTextPtr = nullptr;                                                         \
-        if (spTextPtr)                                                                             \
-            return spTextPtr[idx];                                                                 \
-        {                                                                                          \
-            sead::ScopedLock<sead::CriticalSection> lock(sead::EnumUtil::getParseTextCS_());       \
-            if (!spTextPtr)                                                                        \
-            {                                                                                      \
-                static char* sTextPtr[cCount];                                                     \
-                static sead::FixedSafeString<cTextAllLen> sTextAll = sead::SafeString(cTextAll);   \
-                sead::EnumUtil::parseText_(sTextPtr, sTextAll.getBuffer(), cCount);                \
-                spTextPtr = sTextPtr;                                                              \
-            }                                                                                      \
-        }                                                                                          \
-        return spTextPtr[idx];                                                                     \
-    }
 
 /// Define a complex enum class with custom enumerator values with this macro.
 /// You must then use SEAD_ENUM_EX_VALUES and define the enum values **in the same order**.
@@ -312,7 +309,28 @@ private:
         static ValueArray& getArray_();                                                            \
                                                                                                    \
         /* Returns nullptr when not found. */                                                      \
-        static const char* text_(int idx);                                                         \
+        static const char* text_(int idx)                                                          \
+        {                                                                                          \
+            if (u32(idx) >= cCount)                                                                \
+                return nullptr;                                                                    \
+                                                                                                   \
+            static char** spTextPtr = nullptr;                                                     \
+            if (spTextPtr)                                                                         \
+                return spTextPtr[idx];                                                             \
+            {                                                                                      \
+                sead::ScopedLock<sead::CriticalSection> lock(sead::EnumUtil::getParseTextCS_());   \
+                if (!spTextPtr)                                                                    \
+                {                                                                                  \
+                    static char* sTextPtr[cCount];                                                 \
+                    static sead::FixedSafeString<cTextAllLen> sTextAll =                           \
+                        sead::SafeString(cTextAll);                                                \
+                    sead::EnumUtil::parseText_(sTextPtr, sTextAll.getBuffer(), cCount);            \
+                    spTextPtr = sTextPtr;                                                          \
+                }                                                                                  \
+            }                                                                                      \
+            return spTextPtr[idx];                                                                 \
+        }                                                                                          \
+                                                                                                   \
         /* Returns -1 when not found. */                                                           \
         static int findRelativeIndex_(ValueType value);                                            \
                                                                                                    \
@@ -341,8 +359,6 @@ private:
 
 /// For use with SEAD_ENUM_EX. Use this in the .cpp file.
 #define SEAD_ENUM_EX_IMPL(NAME)                                                                    \
-    SEAD_ENUM_IMPL(NAME)                                                                           \
-                                                                                                   \
     NAME::ValueArray& NAME::getArray_()                                                            \
     {                                                                                              \
         static ValueArray sBuffer;                                                                 \

@@ -3,8 +3,6 @@
 
 namespace sead
 {
-SEAD_ENUM_IMPL(CoreId)
-
 u32 CoreInfo::sNumCores = 1;
 u32 CoreInfo::sPlatformCoreId[32]{};
 CoreId CoreInfo::sCoreIdFromPlatformCoreIdTable[32]{};
