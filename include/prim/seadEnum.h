@@ -141,7 +141,7 @@ private:
 
 /// For use with SEAD_ENUM. Use this in the .cpp file.
 #define SEAD_ENUM_IMPL(NAME)                                                                       \
-    const char* NAME::text_(int idx)                                                               \
+    inline const char* NAME::text_(int idx)                                                        \
     {                                                                                              \
         if (u32(idx) >= cCount)                                                                    \
             return nullptr;                                                                        \
