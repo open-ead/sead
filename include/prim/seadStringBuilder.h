@@ -190,6 +190,16 @@ protected:
 using StringBuilder = StringBuilderBase<char>;
 using WStringBuilder = StringBuilderBase<char16>;
 
+template <s32 N>
+class FixedStringBuilder : public StringBuilder
+{
+public:
+    FixedStringBuilder() : StringBuilder(mStorage, N) {}
+
+private:
+    char mStorage[N];
+};
+
 // UNCHECKED
 template <typename T>
 inline const T* StringBuilderBase<T>::cstr() const
