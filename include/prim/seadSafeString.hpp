@@ -586,6 +586,31 @@ inline s32 BufferedSafeStringBase<T>::append(T c, s32 num)
     return num;
 }
 
+template <typename T>
+s32 BufferedSafeStringBase<T>::prepend(const SafeStringBase<T>& str, s32 prepend_length)
+{
+    if (prepend_length == -1)
+        prepend_length = str.calcLength();
+
+    s32 length = this->calcLength();
+    T* buffer = getMutableStringTop_();
+    const s32 buffer_size = mBufferSize;
+
+    if (prepend_length >= buffer_size - length)
+    {
+        SEAD_ASSERT_MSG(false, "Buffer overflow. (Buffer Size: %d, Length: %d, Prepend Length: %d)",
+                        buffer_size, length, prepend_length);
+        if (prepend_length >= buffer_size)
+            prepend_length = buffer_size - 1;
+        length = buffer_size + (-prepend_length - 1);
+    }
+
+    MemUtil::copyOverlap(&buffer[prepend_length], buffer, length * sizeof(T));
+    MemUtil::copy(buffer, str.cstr(), prepend_length * sizeof(T));
+    buffer[length + prepend_length] = SafeStringBase<T>::cNullChar;
+    return length + prepend_length;
+}
+
 // UNCHECKED
 template <typename T>
 inline s32 BufferedSafeStringBase<T>::chop(s32 chop_num)

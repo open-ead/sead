@@ -232,6 +232,10 @@ public:
     // SafeStringBase<T> and BufferedSafeString<T>: some assertion messages are even identical,
     // and the good news is that most StringBuilderBase<T> functions are not inlined!
 
+    /// Append prepend_length characters from str.
+    /// @return the new length
+    s32 prepend(const SafeStringBase<T>& str, s32 prepend_length = -1);
+
     /// Remove num characters from the end of the string.
     /// @return the number of characters that were removed
     s32 chop(s32 num);
