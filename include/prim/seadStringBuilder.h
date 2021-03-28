@@ -200,11 +200,9 @@ private:
     char mStorage[N];
 };
 
-// UNCHECKED
 template <typename T>
 inline const T* StringBuilderBase<T>::cstr() const
 {
-    mBuffer[mBufferSize - 1] = SafeStringBase<T>::cNullChar;
     return mBuffer;
 }
 
