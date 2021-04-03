@@ -110,22 +110,19 @@ void CalendarTime::Day::setValue(u32 day)
 
 void CalendarTime::Hour::setValue(u32 hour)
 {
-    SEAD_ASSERT_MSG(0 <= hour && hour <= 23, "wrong hour. correct range is [0, 23]. your param %d",
-                    hour);
+    SEAD_ASSERT_MSG(hour <= 23, "wrong hour. correct range is [0, 23]. your param %d", hour);
     mValue = hour;
 }
 
 void CalendarTime::Minute::setValue(u32 minute)
 {
-    SEAD_ASSERT_MSG(0 <= minute && minute <= 59,
-                    "wrong minute. correct range is [0, 59]. your param %d", minute);
+    SEAD_ASSERT_MSG(minute <= 59, "wrong minute. correct range is [0, 59]. your param %d", minute);
     mValue = minute;
 }
 
 void CalendarTime::Second::setValue(u32 second)
 {
-    SEAD_ASSERT_MSG(0 <= second && second <= 59,
-                    "wrong day. correct range is [0, 59]. your param %d", second);
+    SEAD_ASSERT_MSG(second <= 59, "wrong day. correct range is [0, 59]. your param %d", second);
     mValue = second;
 }
 

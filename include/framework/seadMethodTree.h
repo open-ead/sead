@@ -77,7 +77,7 @@ private:
 
     StorageFor<sead::AnyDelegate> mDelegateHolder;
     mutable CriticalSection* mCriticalSection;
-    u32 mPriority;
+    [[maybe_unused]] u32 mPriority;
     BitFlag32 mPauseFlag;
     PauseEventDelegate* mPauseEventDelegate;
     void* mUserID;
