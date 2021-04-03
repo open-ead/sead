@@ -65,7 +65,7 @@ public:
         token_iterator& operator--();
 
         s32 get(BufferedSafeStringBase<T>* out) const;
-        s32 getAndForward(BufferedSafeStringBase<T>* out);
+        inline s32 getAndForward(BufferedSafeStringBase<T>* out);
         s32 cutOffGet(BufferedSafeStringBase<T>* out) const;
         s32 cutOffGetAndForward(BufferedSafeStringBase<T>* out);
 
