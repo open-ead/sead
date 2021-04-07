@@ -83,7 +83,7 @@ public:
     iterator begin() { return iterator(mBuffer); }
     iterator begin(s32 idx)
     {
-        if (u32(size()) <= u32(idx))
+        if (u32(size()) < u32(idx))
         {
             SEAD_ASSERT_MSG(false, "range over [0,%d] : %d", size(), idx);
             return end();
@@ -94,7 +94,7 @@ public:
     constIterator begin() const { return constIterator(mBuffer); }
     constIterator begin(s32 idx) const
     {
-        if (u32(size()) <= u32(idx))
+        if (u32(size()) < u32(idx))
         {
             SEAD_ASSERT_MSG(false, "range over [0,%d] : %d", size(), idx);
             return end();
