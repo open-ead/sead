@@ -189,7 +189,7 @@ public:
         return false;
     }
 
-    inline bool tryAllocBuffer(s32 size, Heap* heap, s32 alignment = sizeof(void*))
+    bool tryAllocBuffer(s32 size, Heap* heap, s32 alignment = sizeof(void*))
     {
         SEAD_ASSERT(mBuffer == nullptr);
         if (size > 0)
