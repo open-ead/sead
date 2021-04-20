@@ -265,9 +265,9 @@ public:
     /// Trim a string to only keep trimLength characters.
     /// @return the new length
     inline s32 trim(s32 trim_length);
-    /// Trim a string to only keep trimLength characters.
+    /// Remove the specified suffix from the string if it ends with the suffix.
     /// @return the new length
-    inline s32 trimMatchedString(const T* str);
+    inline s32 trimMatchedString(const SafeStringBase<T>& suffix);
 
     /// @return the number of characters that were replaced
     inline s32 replaceChar(T old_char, T new_char);

@@ -744,7 +744,6 @@ inline s32 BufferedSafeStringBase<T>::rstripUnprintableAsciiChars()
     return length - new_length;
 }
 
-// UNCHECKED
 template <typename T>
 inline s32 BufferedSafeStringBase<T>::trim(s32 trim_length)
 {
@@ -775,25 +774,20 @@ inline s32 calcStrLength_(const T* str)
     return len;
 }
 
-// UNCHECKED
 template <typename T>
-inline s32 BufferedSafeStringBase<T>::trimMatchedString(const T* str)
+inline s32 BufferedSafeStringBase<T>::trimMatchedString(const SafeStringBase<T>& suffix)
 {
-    T* buffer = getMutableStringTop_();
     const s32 length = this->calcLength();
+    T* buffer = getMutableStringTop_();
 
-    const s32 trim_str_length = calcStrLength_(str);
-    const s32 new_length = length - trim_str_length;
+    const s32 suffix_length = suffix.calcLength();
+    const s32 new_length = length - suffix_length;
 
-    if (length < trim_str_length)
+    if (length < suffix_length)
         return length;
 
-    T* substring = &buffer[new_length];
-    for (s32 i = 0; i < trim_str_length; ++i)
-    {
-        if (substring[i] != str[i])
-            return length;
-    }
+    if (SafeStringBase<T>(&buffer[new_length]).comparen(suffix, suffix_length) != 0)
+        return length;
 
     buffer[new_length] = SafeStringBase<T>::cNullChar;
     return new_length;
