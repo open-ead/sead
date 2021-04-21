@@ -103,6 +103,7 @@ private:
         const char* getTypeText() const volatile { return #NAME; }                                 \
         static int size() { return cCount; }                                                       \
         static int getSize() { return size(); }                                                    \
+        static int getLastIndex() { return size() - 1; }                                           \
                                                                                                    \
         static void initialize() { text(0); }                                                      \
                                                                                                    \
@@ -114,7 +115,7 @@ private:
             bool operator!=(const iterator& rhs) const { return mIdx != rhs.mIdx; }                \
             iterator& operator++()                                                                 \
             {                                                                                      \
-                ++mIdx;                                                                            \
+                mIdx = mIdx < getLastIndex() ? mIdx + 1 : size();                                  \
                 return *this;                                                                      \
             }                                                                                      \
             iterator& operator--()                                                                 \
