@@ -268,6 +268,10 @@ public:
     /// Remove the specified suffix from the string if it ends with the suffix.
     /// @return the new length
     inline s32 trimMatchedString(const SafeStringBase<T>& suffix);
+    /// Remove the specified suffix from the string if it ends with the suffix.
+    /// Alias of trimMatchedString.
+    /// @return the new length
+    inline s32 removeSuffix(const SafeStringBase<T>& suffix) { return trimMatchedString(suffix); }
 
     /// @return the number of characters that were replaced
     inline s32 replaceChar(T old_char, T new_char);
