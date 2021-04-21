@@ -53,8 +53,11 @@ private:
                                                                                                    \
         /* This must be user-defined for correct codegen of static constructors. */                \
         NAME() : mIdx(0) {}                                                                        \
-        NAME(ValueType value) { setRelativeIndex(value); }                                         \
-        NAME(int idx) { setRelativeIndex(idx); }                                                   \
+        NAME(ValueType value) /* NOLINT(google-explicit-constructor) */                            \
+        {                                                                                          \
+            setRelativeIndex(value);                                                               \
+        }                                                                                          \
+        NAME(int idx) /* NOLINT(google-explicit-constructor) */ { setRelativeIndex(idx); }         \
         NAME(const NAME& other) = default;                                                         \
                                                                                                    \
         NAME& operator=(const NAME& other) = default;                                              \
@@ -106,7 +109,7 @@ private:
         class iterator                                                                             \
         {                                                                                          \
         public:                                                                                    \
-            iterator(int idx) : mIdx(idx) {}                                                       \
+            iterator(int idx) /* NOLINT(google-explicit-constructor) */ : mIdx(idx) {}             \
             bool operator==(const iterator& rhs) const { return mIdx == rhs.mIdx; }                \
             bool operator!=(const iterator& rhs) const { return mIdx != rhs.mIdx; }                \
             iterator& operator++()                                                                 \
