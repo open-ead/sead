@@ -115,7 +115,7 @@ private:
             bool operator!=(const iterator& rhs) const { return mIdx != rhs.mIdx; }                \
             iterator& operator++()                                                                 \
             {                                                                                      \
-                mIdx = mIdx < getLastIndex() ? mIdx + 1 : size();                                  \
+                mIdx = mIdx <= getLastIndex() ? mIdx + 1 : size();                                 \
                 return *this;                                                                      \
             }                                                                                      \
             iterator& operator--()                                                                 \
