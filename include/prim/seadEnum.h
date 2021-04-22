@@ -53,11 +53,10 @@ private:
                                                                                                    \
         /* This must be user-defined for correct codegen of static constructors. */                \
         NAME() : mIdx(0) {}                                                                        \
-        NAME(ValueType value) /* NOLINT(google-explicit-constructor) */                            \
-        {                                                                                          \
-            setRelativeIndex(value);                                                               \
-        }                                                                                          \
-        NAME(int idx) /* NOLINT(google-explicit-constructor) */ { setRelativeIndex(idx); }         \
+        /* NOLINTNEXTLINE(google-explicit-constructor,cppcoreguidelines-pro-type-member-init) */   \
+        NAME(ValueType value) { setRelativeIndex(value); }                                         \
+        /* NOLINTNEXTLINE(google-explicit-constructor,cppcoreguidelines-pro-type-member-init) */   \
+        NAME(int idx) { setRelativeIndex(idx); }                                                   \
         NAME(const NAME& other) = default;                                                         \
                                                                                                    \
         NAME& operator=(const NAME& other) = default;                                              \
