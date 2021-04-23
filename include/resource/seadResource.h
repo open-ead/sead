@@ -38,6 +38,8 @@ public:
     u32 getRawSize() const { return mRawSize; }
     u32 getBufferSize() const { return mBufferSize; }
 
+    static constexpr size_t cLoadDataAlignment = 4;
+
 protected:
     u8* mRawData = 0;
     u32 mRawSize = 0;
