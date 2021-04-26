@@ -49,15 +49,7 @@ public:                                                                         
     {                                                                                              \
     public:                                                                                        \
         using sead::IDisposer::IDisposer;                                                          \
-        virtual ~SingletonDisposer_()                                                              \
-        {                                                                                          \
-            if (this == sStaticDisposer)                                                           \
-            {                                                                                      \
-                sStaticDisposer = nullptr;                                                         \
-                CLASS::sInstance->~CLASS();                                                        \
-                CLASS::sInstance = nullptr;                                                        \
-            }                                                                                      \
-        }                                                                                          \
+        virtual ~SingletonDisposer_();                                                             \
                                                                                                    \
         static SingletonDisposer_* sStaticDisposer;                                                \
     };                                                                                             \
@@ -124,6 +116,15 @@ protected:                                                                      
     }
 
 #define SEAD_SINGLETON_DISPOSER_IMPL(CLASS)                                                        \
+    CLASS::SingletonDisposer_::~SingletonDisposer_()                                               \
+    {                                                                                              \
+        if (this == sStaticDisposer)                                                               \
+        {                                                                                          \
+            sStaticDisposer = nullptr;                                                             \
+            CLASS::sInstance->~CLASS();                                                            \
+            CLASS::sInstance = nullptr;                                                            \
+        }                                                                                          \
+    }                                                                                              \
     SEAD_CREATE_SINGLETON_INSTANCE(CLASS)                                                          \
     SEAD_DELETE_SINGLETON_INSTANCE(CLASS)                                                          \
     CLASS* CLASS::sInstance = NULL;                                                                \
