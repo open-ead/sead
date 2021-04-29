@@ -2,6 +2,8 @@
 
 #include <basis/seadRawPrint.h>
 #include <basis/seadTypes.h>
+#include <type_traits>
+#include <utility>
 
 namespace sead
 {
@@ -124,4 +126,33 @@ public:
     constIterator end() const { return constIterator(mBuffer, N); }
 };
 
+namespace detail
+{
+// From https://en.cppreference.com/w/cpp/container/array/to_array
+template <class T, std::size_t N, std::size_t... I>
+constexpr SafeArray<std::remove_cv_t<T>, N> to_array_impl(T (&a)[N], std::index_sequence<I...>)
+{
+    return {{a[I]...}};
+}
+
+template <class T, std::size_t N, std::size_t... I>
+constexpr SafeArray<std::remove_cv_t<T>, N> to_array_impl(T(&&a)[N], std::index_sequence<I...>)
+{
+    return {{std::move(a[I])...}};
+}
+}  // namespace detail
+
+// Implementation of C++20 std::to_array for sead::SafeArray.
+template <class T, std::size_t N>
+constexpr sead::SafeArray<std::remove_cv_t<T>, N> toArray(T (&a)[N])
+{
+    return detail::to_array_impl(a, std::make_index_sequence<N>{});
+}
+
+// Implementation of C++20 std::to_array for sead::SafeArray.
+template <class T, std::size_t N>
+constexpr sead::SafeArray<std::remove_cv_t<T>, N> toArray(T(&&a)[N])
+{
+    return detail::to_array_impl(std::move(a), std::make_index_sequence<N>{});
+}
 }  // namespace sead
