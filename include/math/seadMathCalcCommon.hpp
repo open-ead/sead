@@ -5,6 +5,7 @@
 #ifndef SEAD_MATH_MATH_CALC_COMMON_H_
 #include <math/seadMathCalcCommon.h>
 #endif
+#include <math/seadMathNumbers.h>
 
 namespace sead
 {
@@ -50,6 +51,18 @@ template <typename T>
 inline T MathCalcCommon<T>::atan(T t)
 {
     return std::atan(t);
+}
+
+template <typename T>
+inline T MathCalcCommon<T>::deg2rad(T deg)
+{
+    return deg * numbers::pi_v<T> / static_cast<T>(180);
+}
+
+template <typename T>
+inline T MathCalcCommon<T>::rad2deg(T rad)
+{
+    return rad * static_cast<T>(180) / numbers::pi_v<T>;
 }
 
 template <typename T>

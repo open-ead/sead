@@ -39,6 +39,9 @@ public:
     static T asin(T t);
     static T atan(T t);
 
+    static T deg2rad(T deg);
+    static T rad2deg(T rad);
+
     /// Adds or subtracts `step` from `value` towards `target`.
     /// Returns whether the new value is equal to the target.
     static bool chase(T* value, T target, T step);
