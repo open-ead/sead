@@ -56,13 +56,13 @@ inline T MathCalcCommon<T>::atan(T t)
 template <typename T>
 inline T MathCalcCommon<T>::deg2rad(T deg)
 {
-    return deg * numbers::pi_v<T> / static_cast<T>(180);
+    return deg * (numbers::pi_v<T> / static_cast<T>(180));
 }
 
 template <typename T>
 inline T MathCalcCommon<T>::rad2deg(T rad)
 {
-    return rad * static_cast<T>(180) / numbers::pi_v<T>;
+    return rad * (static_cast<T>(180) / numbers::pi_v<T>);
 }
 
 template <typename T>
