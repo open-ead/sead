@@ -87,6 +87,8 @@ public:
             slot->invoke_(arg);
     }
 
+    int getNumSlots() const { return mList.size(); }
+
 protected:
     SlotList mList;
 };
