@@ -24,7 +24,7 @@ public:
 #endif
 
     TickSpan diff(const TickTime& other) const { return s64(mTick - other.mTick); }
-    TickSpan diffToNow() const { return diff(TickTime()); }
+    TickSpan diffToNow() const { return TickTime().diff(*this); }
 
     TickTime& operator+=(const TickSpan& span)
     {
