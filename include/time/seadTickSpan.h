@@ -18,8 +18,16 @@ public:
     s64 toTicks() const { return mSpan; }
 
     s64 toNanoSeconds() const;
+
     s64 toMicroSeconds() const { return toNanoSeconds() / 1000; }
-    s64 toMilliSeconds() const { return toMicroSeconds() / 1000; }
+
+    s64 toMilliSeconds() const
+    {
+        if (u64(mSpan) + (LLONG_MAX / 1000) < u64(ULLONG_MAX / 1000) - 1)
+            return 1000 * mSpan / cFrequency;
+        return 1000 * (mSpan / cFrequency);
+    }
+
     s64 toSeconds() const { return toMilliSeconds() / 1000; }
 
     void setNanoSeconds(s64 ns);
