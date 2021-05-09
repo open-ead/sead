@@ -55,7 +55,8 @@ protected:
     template <class T, class ComparePredicate>
     void mergeSort(s32 offset, const ComparePredicate& cmp)
     {
-        this->mergeSortImpl_<T, ComparePredicate>(front(), back(), size(), offset, cmp);
+        this->mergeSortImpl_<T, ComparePredicate>(mStartEnd.mNext, mStartEnd.mPrev, size(), offset,
+                                                  cmp);
     }
 
     void pushBack(ListNode* item)
@@ -91,8 +92,8 @@ protected:
         --mCount;
     }
 
-    ListNode* front() const { return mStartEnd.mNext; }
-    ListNode* back() const { return mStartEnd.mPrev; }
+    ListNode* front() const { return mCount >= 1 ? mStartEnd.mNext : nullptr; }
+    ListNode* back() const { return mCount >= 1 ? mStartEnd.mPrev : nullptr; }
     ListNode* nth(int n) const;
     s32 indexOf(const ListNode*) const;
 

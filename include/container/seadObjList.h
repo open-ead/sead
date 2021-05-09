@@ -74,9 +74,6 @@ public:
 
     T popBack()
     {
-        if (mCount < 1)
-            return {};
-
         auto* item = back();
         if (!item)
             return {};
@@ -88,9 +85,6 @@ public:
 
     T popFront()
     {
-        if (mCount < 1)
-            return {};
-
         auto* item = front();
         if (!item)
             return {};
