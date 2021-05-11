@@ -36,13 +36,13 @@ public:
     /// Generate a random s64 in [a .. b).
     /// Note that this does not provide a uniform distribution.
     s64 getS64Range(s64 a, s64 b);
-    /// Generate a random f32 in [0, 1].
+    /// Generate a random f32 in [0, 1).
     f32 getF32();
-    /// Generate a random f32 in [a, b].
+    /// Generate a random f32 in [a, b).
     f32 getF32Range(f32 a, f32 b);
-    /// Generate a random f64 in [0, 1].
+    /// Generate a random f64 in [0, 1).
     f64 getF64();
-    /// Generate a random f64 in [a, b].
+    /// Generate a random f64 in [a, b).
     f64 getF64Range(f64 a, f64 b);
     /// Generate a random boolean.
     bool getBool();
@@ -74,13 +74,11 @@ inline s64 Random::getS64Range(s64 a, s64 b)
     return (getU32() * u64(b - a) >> 32u) + a;
 }
 
-// UNCHECKED
 inline f32 Random::getF32()
 {
     return BitUtil::bitCast<f32>((getU32() >> 9u) | 0x3F800000u) - 1.0f;
 }
 
-// UNCHECKED
 inline f32 Random::getF32Range(f32 a, f32 b)
 {
     SEAD_ASSERT_MSG(a <= b, "b[%f] >= a[%f]", a, b);
