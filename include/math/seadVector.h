@@ -163,6 +163,8 @@ struct Vector3 : public Policies<T>::Vec3Base
     }
     constexpr bool operator!=(const Vector3& rhs) const { return !operator==(rhs); }
 
+    void normalize();
+
     static const Vector3 zero;
     static const Vector3 ex;
     static const Vector3 ey;
@@ -326,6 +328,13 @@ inline T norm2(const Vector3<T>& v)
     return std::sqrt(dot(v, v));
 }
 
+template <typename T>
+inline void Vector3<T>::normalize()
+{
+    const auto norm = norm2(*this);
+    if (norm > 0.0)
+        *this *= 1.0 / norm;
+}
 }  // namespace sead
 
 #endif  // #define SEAD_VECTOR_H_
