@@ -77,6 +77,7 @@ add_library(sead OBJECT
   include/gfx/seadPrimitiveRendererUtil.h
   include/gfx/seadProjection.h
   include/gfx/seadTexture.h
+  modules/src/gfx/seadCamera.cpp
   modules/src/gfx/seadColor.cpp
   # modules/src/gfx/seadPrimitiveRenderer.cpp
   # modules/src/gfx/seadPrimitiveRendererUtil.cpp

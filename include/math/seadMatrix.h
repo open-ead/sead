@@ -69,6 +69,14 @@ struct Matrix44 : public Policies<T>::Mtx44Base
 typedef Matrix34<f32> Matrix34f;
 typedef Matrix44<f32> Matrix44f;
 
+template <>
+const Matrix34f Matrix34f::zero;
+template <>
+const Matrix34f Matrix34f::ident;
+template <>
+const Matrix44f Matrix44f::zero;
+template <>
+const Matrix44f Matrix44f::ident;
 }  // namespace sead
 
 #endif  // SEAD_MATRIX34_H_
