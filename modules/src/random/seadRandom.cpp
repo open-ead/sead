@@ -36,13 +36,12 @@ void Random::init(u32 seed_x, u32 seed_y, u32 seed_z, u32 seed_w)
 
 u32 Random::getU32()
 {
-    u32 x = mX;
-    x ^= x << 11u;
-    x ^= x >> 8u;
+    u32 x = mX ^ (mX << 11u);
     mX = mY;
     mY = mZ;
     mZ = mW;
-    return mW = x ^ mW ^ (mW >> 19u);
+    mW = mW ^ (mW >> 19u) ^ x ^ (x >> 8u);
+    return mW;
 }
 
 u64 Random::getU64()
