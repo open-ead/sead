@@ -17,6 +17,15 @@ struct Quat : public Policies<T>::QuatBase
         this->w = w;
     }
 
+    constexpr Quat& operator=(const Quat& other)
+    {
+        this->x = other.x;
+        this->y = other.y;
+        this->z = other.z;
+        this->w = other.w;
+        return *this;
+    }
+
     static const Quat unit;
 };
 
