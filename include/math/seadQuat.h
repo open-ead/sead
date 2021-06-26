@@ -31,4 +31,7 @@ struct Quat : public Policies<T>::QuatBase
 
 typedef Quat<f32> Quatf;
 
+template <>
+const Quatf Quatf::unit;
+
 }  // namespace sead
