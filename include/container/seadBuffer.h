@@ -209,11 +209,12 @@ public:
         return false;
     }
 
-    __attribute__((always_inline)) void allocBufferAssert(s32 size, Heap* heap,
-                                                          s32 alignment = sizeof(void*))
+    inline bool allocBufferAssert(s32 size, Heap* heap, s32 alignment = sizeof(void*))
     {
-        if (!tryAllocBuffer(size, heap, alignment))
-            AllocFailAssert(heap, sizeof(T) * size, alignment);
+        if (tryAllocBuffer(size, heap, alignment))
+            return true;
+        AllocFailAssert(heap, sizeof(T) * size, alignment);
+        return false;
     }
 
     void freeBuffer()
