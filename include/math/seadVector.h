@@ -323,6 +323,12 @@ constexpr T dot(const Vector3<T>& u, const Vector3<T>& v)
 }
 
 template <typename T>
+constexpr Vector3<T> cross(const Vector3<T>& u, const Vector3<T>& v)
+{
+    return {(u.y * v.z) - (u.z * v.y), (u.z * v.x) - (u.x * v.z), (u.x * v.y) - (u.y * v.x)};
+}
+
+template <typename T>
 inline T norm2(const Vector3<T>& v)
 {
     return std::sqrt(dot(v, v));
