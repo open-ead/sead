@@ -160,17 +160,18 @@ protected:
     void sort_(Compare cmp)
     {
         // Note: Nintendo did not use <algorithm>
-        std::sort(mPtrs, mPtrs + size(),
-                  [&](const void* a, const void* b)
-                  { return cmp(static_cast<const T*>(a), static_cast<const T*>(b)) < 0; });
+        std::sort(mPtrs, mPtrs + size(), [&](const void* a, const void* b) {
+            return cmp(static_cast<const T*>(a), static_cast<const T*>(b)) < 0;
+        });
     }
 
     template <typename T, typename Compare>
     void heapSort_(Compare cmp)
     {
         // Note: Nintendo did not use <algorithm>
-        const auto less_cmp = [&](const void* a, const void* b)
-        { return cmp(static_cast<const T*>(a), static_cast<const T*>(b)) < 0; };
+        const auto less_cmp = [&](const void* a, const void* b) {
+            return cmp(static_cast<const T*>(a), static_cast<const T*>(b)) < 0;
+        };
         std::make_heap(mPtrs, mPtrs + size(), less_cmp);
         std::sort_heap(mPtrs, mPtrs + size(), less_cmp);
     }

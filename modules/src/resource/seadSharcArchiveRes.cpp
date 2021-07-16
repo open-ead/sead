@@ -226,7 +226,7 @@ bool SharcArchiveRes::prepareArchive_(const void* archive)
     const u8* archive_ = reinterpret_cast<const u8*>(archive);
 
     mArchiveBlockHeader = reinterpret_cast<const ArchiveBlockHeader*>(archive_);
-    if(std::memcmp(mArchiveBlockHeader->signature, "SARC", 4) != 0)
+    if (std::memcmp(mArchiveBlockHeader->signature, "SARC", 4) != 0)
     {
         SEAD_ASSERT_MSG(false, "Invalid ArchiveBlockHeader");
         return false;
@@ -250,7 +250,7 @@ bool SharcArchiveRes::prepareArchive_(const void* archive)
 
     mFATBlockHeader = reinterpret_cast<const FATBlockHeader*>(
         archive_ + Endian::toHostU16(mEndianType, mArchiveBlockHeader->header_size));
-    if(std::memcmp(mFATBlockHeader->signature, "SFAT", 4) != 0)
+    if (std::memcmp(mFATBlockHeader->signature, "SFAT", 4) != 0)
     {
         SEAD_ASSERT_MSG(false, "Invalid FATBlockHeader");
         return false;
@@ -278,7 +278,7 @@ bool SharcArchiveRes::prepareArchive_(const void* archive)
         archive_ + Endian::toHostU16(mEndianType, mArchiveBlockHeader->header_size) +
         Endian::toHostU16(mEndianType, mFATBlockHeader->header_size) +
         Endian::toHostU16(mEndianType, mFATBlockHeader->file_num) * sizeof(FATEntry));
-    if(std::memcmp(fnt_header->signature, "SFNT", 4) != 0)
+    if (std::memcmp(fnt_header->signature, "SFNT", 4) != 0)
     {
         SEAD_ASSERT_MSG(false, "Invalid FNTBlockHeader");
         return false;

@@ -13,7 +13,9 @@ namespace sead
 class Decompressor : public TListNode<Decompressor*>, public IDisposer
 {
 public:
-    Decompressor(const SafeString& name) : TListNode<Decompressor*>(this), IDisposer(), mExt(name) {}
+    Decompressor(const SafeString& name) : TListNode<Decompressor*>(this), IDisposer(), mExt(name)
+    {
+    }
 
     virtual ~Decompressor()
     {
