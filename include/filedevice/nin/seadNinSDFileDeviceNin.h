@@ -13,4 +13,4 @@ public:
 
     bool doIsAvailable_() const override;
 };
-}
+}  // namespace sead
