@@ -40,8 +40,6 @@ private:
 ///
 /// SEAD_ENUM(CoreId, cMain, cSub1, cSub2)
 ///
-/// Finally, in the .cpp file, add SEAD_ENUM_IMPL(CoreId)
-///
 #define SEAD_ENUM(NAME, ...)                                                                       \
     class NAME                                                                                     \
     {                                                                                              \
