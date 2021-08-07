@@ -6,9 +6,14 @@
 #include <math/seadMathCalcCommon.h>
 #endif
 #include <math/seadMathNumbers.h>
+#include <prim/seadBitUtil.h>
+#include <type_traits>
 
 namespace sead
 {
+template <>
+const MathCalcCommon<float>::SinCosSample MathCalcCommon<float>::cSinCosTbl[257];
+
 template <typename T>
 inline T MathCalcCommon<T>::roundUp(T x, s32 multNumber)
 {
@@ -29,6 +34,36 @@ inline s32 MathCalcCommon<T>::roundUpPow2Positive(T val, s32 base)
     SEAD_ASSERT_MSG(val >= 0 && (u32(base - 1) & u32(base)) == 0, "illegal param[val:%d, base:%d]",
                     val, base);
     return val + base - 1 & (u32)-base;
+}
+
+template <typename T>
+inline T MathCalcCommon<T>::cos(T t)
+{
+    if constexpr (std::is_same_v<T, float>)
+    {
+        const auto as_int = BitUtil::bitCast<u32>(t);
+        const SinCosSample& sample = cSinCosTbl[as_int >> 18];
+        return sample.cos_val + sample.cos_delta * (as_int & 0xFFFFFFu) * 0x1p-24f;
+    }
+    else
+    {
+        static_assert(!std::is_same<T, T>(), "Unsupported type");
+    }
+}
+
+template <typename T>
+inline T MathCalcCommon<T>::sin(T t)
+{
+    if constexpr (std::is_same_v<T, float>)
+    {
+        const auto as_int = BitUtil::bitCast<u32>(t);
+        const SinCosSample& sample = cSinCosTbl[as_int >> 18];
+        return sample.sin_val + sample.sin_delta * (as_int & 0xFFFFFFu) * 0x1p-24f;
+    }
+    else
+    {
+        static_assert(!std::is_same<T, T>(), "Unsupported type");
+    }
 }
 
 template <typename T>

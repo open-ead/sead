@@ -110,6 +110,7 @@ add_library(sead OBJECT
   include/math/seadQuatCalcCommon.hpp
   include/math/seadVector.h
   modules/src/math/seadBoundBox.cpp
+  modules/src/math/seadMathCalcCommon.cpp
   modules/src/math/seadMatrix.cpp
   modules/src/math/seadQuat.cpp
   modules/src/math/seadVector.cpp

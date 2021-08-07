@@ -11,6 +11,14 @@ template <typename T>
 class MathCalcCommon
 {
 public:
+    struct SinCosSample
+    {
+        T sin_val;
+        T sin_delta;
+        T cos_val;
+        T cos_delta;
+    };
+
     static T roundUp(T x, s32 multNumber);
 
     static s32 roundUpPow2(T x, s32 y);
@@ -35,6 +43,9 @@ public:
         return std::abs(lhs - rhs) <= eps;
     }
 
+    static T cos(T t);
+    static T sin(T t);
+
     static T acos(T t);
     static T asin(T t);
     static T atan(T t);
@@ -45,6 +56,9 @@ public:
     /// Adds or subtracts `step` from `value` towards `target`.
     /// Returns whether the new value is equal to the target.
     static bool chase(T* value, T target, T step);
+
+    /// Note: this is only defined for T = float at the moment.
+    static const SinCosSample cSinCosTbl[257];
 };
 
 typedef MathCalcCommon<s32> Mathi;
