@@ -37,7 +37,7 @@ public:
     }
 
     void makeAllZero() { mBits = 0; }
-    void makeAllOne() { mBits = std::numeric_limits<UnderlyingType>::max(); }
+    void makeAllOne() { mBits = ~UnderlyingType(0); }
 
     void setDirect(UnderlyingType bits) { mBits = bits; }
     void setDirect(Enum bits) { mBits = UnderlyingType(bits); }

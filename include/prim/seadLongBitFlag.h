@@ -1,7 +1,6 @@
 #pragma once
 
 #include <array>
-#include <limits>
 
 #include <basis/seadRawPrint.h>
 #include <basis/seadTypes.h>
@@ -15,7 +14,7 @@ public:
     using Word = u32;
 
     void makeAllZero() { mStorage.fill(0); }
-    void makeAllOne() { mStorage.fill(std::numeric_limits<Word>::max()); }
+    void makeAllOne() { mStorage.fill(~Word(0)); }
 
     Word& getWord(int bit);
     const Word& getWord(int bit) const;

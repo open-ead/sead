@@ -1,7 +1,5 @@
 #pragma once
 
-#include <limits>
-
 #include <basis/seadRawPrint.h>
 #include <basis/seadTypes.h>
 
@@ -38,7 +36,7 @@ public:
     operator T() const { return mBits; }
 
     void makeAllZero() { mBits = 0; }
-    void makeAllOne() { mBits = std::numeric_limits<T>::max(); }
+    void makeAllOne() { mBits = ~T(0); }
 
     void setDirect(T bits) { mBits = bits; }
     T getDirect() const { return mBits; }

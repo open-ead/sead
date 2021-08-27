@@ -1,7 +1,6 @@
 #pragma once
 
 #include <array>
-#include <limits>
 #include <type_traits>
 
 #include <basis/seadRawPrint.h>
@@ -17,7 +16,7 @@ public:
     using RawWord = std::conditional_t<(sizeof(Storage) > 4), u64, u32>;
 
     void makeAllZero() { mStorage.fill(0); }
-    void makeAllOne() { mStorage.fill(std::numeric_limits<Word>::max()); }
+    void makeAllOne() { mStorage.fill(~Word(0)); }
 
     Word& getWord(Enum bit);
     const Word& getWord(Enum bit) const;
