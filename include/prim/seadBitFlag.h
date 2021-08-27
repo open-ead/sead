@@ -72,17 +72,19 @@ public:
         return true;
     }
 
-    // TODO
+    // TODO: what is this even supposed to do? (This function is known to exist
+    //       because it is present in debug info for pead in Super Mario Run.)
     T getMask(T v) const;
-    static T makeMask(int bit);
 
-    void setBit(int bit) { set(1u << bit); }
-    void resetBit(int bit) { reset(1u << bit); }
-    void changeBit(int bit, bool on) { change(1u << bit, on); }
-    void toggleBit(int bit) { toggle(1u << bit); }
-    bool isOnBit(int bit) const { return isOn(1u << bit); }
-    bool isOffBit(int bit) const { return isOff(1u << bit); }
-    bool testAndClearBit(int bit) { return testAndClear(1u << bit); }
+    static T makeMask(int bit) { return T(1) << bit; }
+
+    void setBit(int bit) { set(makeMask(bit)); }
+    void resetBit(int bit) { reset(makeMask(bit)); }
+    void changeBit(int bit, bool on) { change(makeMask(bit), on); }
+    void toggleBit(int bit) { toggle(makeMask(bit)); }
+    bool isOnBit(int bit) const { return isOn(makeMask(bit)); }
+    bool isOffBit(int bit) const { return isOff(makeMask(bit)); }
+    bool testAndClearBit(int bit) { return testAndClear(makeMask(bit)); }
 
     /// Popcount.
     int countOnBit() const
