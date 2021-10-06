@@ -4,6 +4,7 @@
 
 #include <basis/seadRawPrint.h>
 #include <basis/seadTypes.h>
+#include <math/seadMathCalcCommon.h>
 
 namespace sead
 {
@@ -34,8 +35,6 @@ public:
     static Word makeMask(int bit) { return 1u << (bit % BitsPerWord); }
 
 protected:
-    static constexpr s32 log2(s32 n) { return n <= 1 ? 0 : 1 + log2(n >> 1); }
-
     static constexpr s32 BitsPerWord = 8 * sizeof(Word);
     static constexpr s32 Shift = log2(BitsPerWord);
 
