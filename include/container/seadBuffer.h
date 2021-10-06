@@ -139,7 +139,7 @@ public:
             {
                 mSize = size;
                 mBuffer = buffer;
-                SEAD_ASSERT_MSG(PtrUtil::isAlignedPow2(mBuffer, sead::abs(alignment)),
+                SEAD_ASSERT_MSG(PtrUtil::isAlignedPow2(mBuffer, sead::Mathi::abs(alignment)),
                                 "don't set alignment for a class with destructor");
             }
         }
@@ -159,7 +159,7 @@ public:
             {
                 mSize = size;
                 mBuffer = buffer;
-                SEAD_ASSERT_MSG(PtrUtil::isAlignedPow2(mBuffer, sead::abs(alignment)),
+                SEAD_ASSERT_MSG(PtrUtil::isAlignedPow2(mBuffer, sead::Mathi::abs(alignment)),
                                 "don't set alignment for a class with destructor");
             }
         }
@@ -179,7 +179,7 @@ public:
             {
                 mSize = size;
                 mBuffer = buffer;
-                SEAD_ASSERT_MSG(PtrUtil::isAlignedPow2(mBuffer, sead::abs(alignment)),
+                SEAD_ASSERT_MSG(PtrUtil::isAlignedPow2(mBuffer, sead::Mathi::abs(alignment)),
                                 "don't set alignment for a class with destructor");
                 return true;
             }
@@ -199,7 +199,7 @@ public:
             {
                 mSize = size;
                 mBuffer = buffer;
-                SEAD_ASSERT_MSG(PtrUtil::isAlignedPow2(mBuffer, sead::abs(alignment)),
+                SEAD_ASSERT_MSG(PtrUtil::isAlignedPow2(mBuffer, sead::Mathi::abs(alignment)),
                                 "don't set alignment for a class with destructor");
                 return true;
             }

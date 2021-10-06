@@ -1,7 +1,6 @@
-#ifndef SEAD_POLICIES_H_
-#define SEAD_POLICIES_H_
+#pragma once
 
-#include "math/seadMathBase.h"
+#include <math/seadMathBase.h>
 
 namespace sead
 {
@@ -13,10 +12,10 @@ public:
     using Vec3Base = BaseVec3<T>;
     using Vec4Base = BaseVec4<T>;
     using QuatBase = BaseQuat<T>;
+    using Mtx22Base = BaseMtx22<T>;
+    using Mtx33Base = BaseMtx33<T>;
     using Mtx34Base = BaseMtx34<T>;
     using Mtx44Base = BaseMtx44<T>;
 };
 
 }  // namespace sead
-
-#endif  // SEAD_POLICIES_H_
