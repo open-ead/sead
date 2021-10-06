@@ -4,25 +4,23 @@
 #include <cmath>
 #include <limits>
 #include <math/seadMathPolicies.h>
+#include <math/seadVector.h>
 
 namespace sead
 {
 template <typename T>
 struct Quat : public Policies<T>::QuatBase
 {
+private:
+    typedef Quat<T> Self;
+    typedef Vector3<T> Vec3;
+
+public:
     Quat() {}
     Quat(const Quat& other) { *this = other; }
-    Quat(T x, T y, T z, T w) { set(x, y, z, w); }
+    Quat(T x, T y, T z, T w);
 
-    void set(T x, T y, T z, T w)
-    {
-        this->w = w;
-        this->x = x;
-        this->y = y;
-        this->z = z;
-    }
-
-    constexpr Quat& operator=(const Quat& other)
+    Quat& operator=(const Quat& other)
     {
         this->w = other.w;
         this->x = other.x;
@@ -31,23 +29,24 @@ struct Quat : public Policies<T>::QuatBase
         return *this;
     }
 
-    constexpr friend Quat operator*(const Quat& a, T t)
+    friend Quat operator*(const Quat& a, T t)
     {
         auto result = a;
         result *= t;
         return result;
     }
 
-    constexpr friend Quat operator*(const Quat& a, const Quat& b)
+    friend Quat operator*(const Quat& a, const Quat& b)
     {
         auto result = a;
         result *= b;
         return result;
     }
 
-    constexpr friend Quat operator*(T t, const Quat& a) { return operator*(a, t); }
+    friend Quat operator*(T t, const Quat& a) { return operator*(a, t); }
 
-    constexpr Quat& operator*=(const Quat& t)
+    // I don't think this is right?
+    Quat& operator*=(const Quat& t)
     {
         this->w *= t.w;
         this->x *= t.x;
@@ -56,7 +55,7 @@ struct Quat : public Policies<T>::QuatBase
         return *this;
     }
 
-    constexpr Quat& operator*=(T t)
+    Quat& operator*=(T t)
     {
         this->w *= t;
         this->x *= t;
@@ -65,8 +64,14 @@ struct Quat : public Policies<T>::QuatBase
         return *this;
     }
 
-    void normalize();
-    void invert(Quat* inverse);
+    T length() const;
+    T normalize();
+    T dot(const Self& q);
+    void inverse(Self* q);
+
+    void makeUnit();
+    bool makeVectorRotation(const Vec3& from, const Vec3& to);
+    void set(T x, T y, T z, T w);
 
     static const Quat unit;
 };
@@ -76,45 +81,8 @@ using Quatf = Quat<f32>;
 template <>
 const Quatf Quatf::unit;
 
-template <typename T>
-constexpr T dot(const Quat<T>& u, const Quat<T>& v)
-{
-    return (u.w * v.w) + (u.x * v.x) + (u.y * v.y) + (u.z * v.z);
-}
-
-template <typename T>
-inline T norm2(const Quat<T>& v)
-{
-    return std::sqrt(dot(v, v));
-}
-
-template <typename T>
-inline void Quat<T>::normalize()
-{
-    const auto norm = norm2(*this);
-    if (norm > 0.0)
-        *this *= T(1) / norm;
-}
-
-template <typename T>
-inline void Quat<T>::invert(Quat* inverse)
-{
-    T prod = dot(*this, *this);
-    if (prod > std::numeric_limits<T>::epsilon())
-    {
-        T inv = T(1) / prod;
-        inverse->w = inv * this->w;
-        inverse->x = inv * -this->x;
-        inverse->y = inv * -this->y;
-        inverse->z = inv * -this->z;
-    }
-    else
-    {
-        inverse->w = this->w;
-        inverse->x = -this->x;
-        inverse->y = -this->y;
-        inverse->z = -this->z;
-    }
-}
-
 }  // namespace sead
+
+#define SEAD_MATH_QUAT_H_
+#include <math/seadQuat.hpp>
+#undef SEAD_MATH_QUAT_H_
