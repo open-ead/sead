@@ -197,7 +197,7 @@ u8* SZSDecompressor::tryDecompFromDevice(const ResourceMgr::LoadArg& loadArg, Re
                 decompSize = allocSize;
 
             bool allocated = false;
-            allocSize = Mathi::roundUpPow2(decompSize, 0x20);
+            allocSize = Mathu::roundUpPow2(decompSize, 0x20);
 
             if (dst == NULL)
             {

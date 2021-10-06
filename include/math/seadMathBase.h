@@ -59,6 +59,26 @@ struct BaseQuat
 };
 
 template <typename T>
+struct BaseMtx22
+{
+    union
+    {
+        T m[2][2];
+        T a[4];
+    };
+};
+
+template <typename T>
+struct BaseMtx33
+{
+    union
+    {
+        T m[3][3];
+        T a[9];
+    };
+};
+
+template <typename T>
 struct BaseMtx34
 {
     union
@@ -77,4 +97,5 @@ struct BaseMtx44
         T a[16];
     };
 };
+
 }  // namespace sead

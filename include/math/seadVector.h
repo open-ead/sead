@@ -1,9 +1,9 @@
-#ifndef SEAD_VECTOR_H_
-#define SEAD_VECTOR_H_
+#pragma once
 
 #include <basis/seadTypes.h>
 #include <cmath>
 #include <math/seadMathPolicies.h>
+#include <math/seadVectorCalcCommon.h>
 
 namespace sead
 {
@@ -13,68 +13,36 @@ struct Vector2 : public Policies<T>::Vec2Base
     /// @warning This constructor leaves member variables uninitialized.
     Vector2() {}
     Vector2(const Vector2& other) = default;
-    constexpr Vector2(T x, T y)
+    Vector2(T x, T y);
+
+    Vector2& operator=(const Vector2& other);
+
+    Vector2& operator+=(const Vector2& other);
+    friend Vector2 operator+(const Vector2& a, const Vector2& b);
+
+    Vector2& operator-=(const Vector2& other);
+    friend Vector2 operator-(const Vector2& a, const Vector2& b);
+
+    Vector2& operator*=(T t);
+
+    friend Vector2 operator*(const Vector2& a, T t)
     {
-        this->x = x;
-        this->y = y;
+        Vector2<T> o;
+        o.x = a.x * t;
+        o.y = a.y * t;
+        return o;
     }
 
-    constexpr Vector2& operator=(const Vector2& other)
-    {
-        this->x = other.x;
-        this->y = other.y;
-        return *this;
-    }
+    friend Vector2 operator*(T t, const Vector2& a);
 
-    constexpr Vector2& operator+=(const Vector2& other)
-    {
-        this->x += other.x;
-        this->y += other.y;
-        return *this;
-    }
+    Vector2& operator/=(T t);
+    friend Vector2 operator/(const Vector2& a, T t);
 
-    constexpr friend Vector2 operator+(const Vector2& a, const Vector2& b)
-    {
-        return {a.x + b.x, a.y + b.y};
-    }
+    bool operator==(const Vector2& rhs) const { return this->x == rhs.x && this->y == rhs.y; }
+    bool operator!=(const Vector2& rhs) const { return !operator==(rhs); }
 
-    constexpr Vector2& operator-=(const Vector2& other)
-    {
-        this->x -= other.x;
-        this->y -= other.y;
-        return *this;
-    }
-
-    constexpr friend Vector2 operator-(const Vector2& a, const Vector2& b)
-    {
-        return {a.x - b.x, a.y - b.y};
-    }
-
-    Vector2& operator*=(T t)
-    {
-        this->x *= t;
-        this->y *= t;
-        return *this;
-    }
-
-    constexpr friend Vector2 operator*(const Vector2& a, T t) { return {a.x * t, a.y * t}; }
-    constexpr friend Vector2 operator*(T t, const Vector2& a) { return operator*(a, t); }
-
-    constexpr Vector2& operator/=(T t)
-    {
-        this->x /= t;
-        this->y /= t;
-        return *this;
-    }
-
-    constexpr friend Vector2 operator/(const Vector2& a, T t) { return {a.x / t, a.y / t}; }
-    constexpr friend Vector2 operator/(T t, const Vector2& a) { return operator/(a, t); }
-
-    constexpr bool operator==(const Vector2& rhs) const
-    {
-        return this->x == rhs.x && this->y == rhs.y;
-    }
-    constexpr bool operator!=(const Vector2& rhs) const { return !operator==(rhs); }
+    void set(const Vector2& other);
+    void set(T x_, T y_);
 
     static const Vector2 zero;
     static const Vector2 ex;
@@ -88,82 +56,52 @@ struct Vector3 : public Policies<T>::Vec3Base
     /// @warning This constructor leaves member variables uninitialized.
     Vector3() {}
     Vector3(const Vector3& other) = default;
-    constexpr Vector3(T x, T y, T z)
+    Vector3(T x, T y, T z);
+
+    Vector3& operator=(const Vector3& other);
+
+    Vector3& operator+=(const Vector3& other);
+    friend Vector3 operator+(const Vector3& a, const Vector3& b);
+
+    Vector3& operator-=(const Vector3& other);
+    friend Vector3 operator-(const Vector3& a, const Vector3& b)
     {
-        this->x = x;
-        this->y = y;
-        this->z = z;
+        Vector3<T> o;
+        Vector3CalcCommon<T>::sub(o, a, b);
+        return o;
     }
 
-    constexpr Vector3& operator=(const Vector3& other)
+    Vector3& operator*=(T t);
+
+    friend Vector3 operator*(const Vector3& a, T t)
     {
-        this->x = other.x;
-        this->y = other.y;
-        this->z = other.z;
-        return *this;
+        Vector3<T> o;
+        Vector3CalcCommon<T>::multScalar(o, a, t);
+        return o;
     }
 
-    constexpr Vector3& operator+=(const Vector3& other)
-    {
-        this->x += other.x;
-        this->y += other.y;
-        this->z += other.z;
-        return *this;
-    }
+    friend Vector3 operator*(T t, const Vector3& a) { return operator*(a, t); }
 
-    constexpr friend Vector3 operator+(const Vector3& a, const Vector3& b)
-    {
-        return {a.x + b.x, a.y + b.y, a.z + b.z};
-    }
+    Vector3& operator/=(T t);
+    friend Vector3 operator/(const Vector3& a, T t);
 
-    constexpr Vector3& operator-=(const Vector3& other)
-    {
-        this->x -= other.x;
-        this->y -= other.y;
-        this->z -= other.z;
-        return *this;
-    }
-
-    constexpr friend Vector3 operator-(const Vector3& a, const Vector3& b)
-    {
-        return {a.x - b.x, a.y - b.y, a.z - b.z};
-    }
-
-    constexpr Vector3& operator*=(T t)
-    {
-        this->x *= t;
-        this->y *= t;
-        this->z *= t;
-        return *this;
-    }
-
-    constexpr friend Vector3 operator*(const Vector3& a, T t)
-    {
-        return {a.x * t, a.y * t, a.z * t};
-    }
-    constexpr friend Vector3 operator*(T t, const Vector3& a) { return operator*(a, t); }
-
-    constexpr Vector3& operator/=(T t)
-    {
-        this->x /= t;
-        this->y /= t;
-        this->z /= t;
-        return *this;
-    }
-
-    constexpr friend Vector3 operator/(const Vector3& a, T t)
-    {
-        return {a.x / t, a.y / t, a.z / t};
-    }
-    constexpr friend Vector3 operator/(T t, const Vector3& a) { return operator/(a, t); }
-
-    constexpr bool operator==(const Vector3& rhs) const
+    bool operator==(const Vector3& rhs) const
     {
         return this->x == rhs.x && this->y == rhs.y && this->z == rhs.z;
     }
-    constexpr bool operator!=(const Vector3& rhs) const { return !operator==(rhs); }
+    bool operator!=(const Vector3& rhs) const { return !operator==(rhs); }
 
-    void normalize();
+    T dot(const Vector3& t) const;
+    T length() const;
+
+    void add(const Vector3& a);
+    void multScalar(T t);
+    T normalize();
+    void set(const Vector3& other);
+    void set(T x, T y, T z);
+
+    void setCross(const Vector3<T>& a, const Vector3<T>& b);
+    void setScaleAdd(T t, const Vector3<T>& a, const Vector3<T>& b);
 
     static const Vector3 zero;
     static const Vector3 ex;
@@ -178,86 +116,33 @@ struct Vector4 : public Policies<T>::Vec4Base
     /// @warning This constructor leaves member variables uninitialized.
     Vector4() {}
     Vector4(const Vector4& other) = default;
-    constexpr Vector4(T x, T y, T z, T w)
-    {
-        this->x = x;
-        this->y = y;
-        this->z = z;
-        this->w = w;
-    }
+    Vector4(T x, T y, T z, T w);
 
-    constexpr Vector4& operator=(const Vector4& other)
-    {
-        this->x = other.x;
-        this->y = other.y;
-        this->z = other.z;
-        this->w = other.w;
-        return *this;
-    }
+    Vector4& operator=(const Vector4& other);
 
-    constexpr Vector4& operator+=(const Vector4& other)
-    {
-        this->x += other.x;
-        this->y += other.y;
-        this->z += other.z;
-        this->w += other.w;
-        return *this;
-    }
+    Vector4& operator+=(const Vector4& other);
+    friend Vector4 operator+(const Vector4& a, const Vector4& b);
 
-    constexpr friend Vector4 operator+(const Vector4& a, const Vector4& b)
-    {
-        return {a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w};
-    }
+    Vector4& operator-=(const Vector4& other);
+    friend Vector4 operator-(const Vector4& a, const Vector4& b);
 
-    constexpr Vector4& operator-=(const Vector4& other)
-    {
-        this->x -= other.x;
-        this->y -= other.y;
-        this->z -= other.z;
-        this->w -= other.w;
-        return *this;
-    }
+    Vector4& operator*=(T t);
 
-    constexpr friend Vector4 operator-(const Vector4& a, const Vector4& b)
-    {
-        return {a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w};
-    }
+    friend Vector4 operator*(const Vector4& a, T t) { return {a.x * t, a.y * t, a.z * t, a.w * t}; }
 
-    constexpr Vector4& operator*=(T t)
-    {
-        this->x *= t;
-        this->y *= t;
-        this->z *= t;
-        this->w *= t;
-        return *this;
-    }
+    friend Vector4 operator*(T t, const Vector4& a);
 
-    constexpr friend Vector4 operator*(const Vector4& a, T t)
-    {
-        return {a.x * t, a.y * t, a.z * t, a.w * t};
-    }
-    constexpr friend Vector4 operator*(T t, const Vector4& a) { return operator*(a, t); }
+    Vector4& operator/=(T t);
+    friend Vector4 operator/(const Vector4& a, T t);
 
-    constexpr Vector4& operator/=(T t)
-    {
-        this->x /= t;
-        this->y /= t;
-        this->z /= t;
-        this->w /= t;
-        return *this;
-    }
-
-    constexpr friend Vector4 operator/(const Vector4& a, T t)
-    {
-        return {a.x / t, a.y / t, a.z / t, a.w / t};
-    }
-    constexpr friend Vector4 operator/(T t, const Vector4& a) { return operator/(a, t); }
-
-    constexpr bool operator==(const Vector4& rhs) const
+    bool operator==(const Vector4& rhs) const
     {
         return this->x == rhs.x && this->y == rhs.y && this->z == rhs.z && this->w == rhs.w;
     }
-    constexpr bool operator!=(const Vector4& rhs) const { return !operator==(rhs); }
+    bool operator!=(const Vector4& rhs) const { return !operator==(rhs); }
+
+    void set(const Vector4& v);
+    void set(T x_, T y_, T z_, T w_);
 
     static const Vector4 zero;
     static const Vector4 ex;
@@ -316,31 +201,8 @@ const Vector4<f32> Vector4<f32>::ew;
 template <>
 const Vector4<f32> Vector4<f32>::ones;
 
-template <typename T>
-constexpr T dot(const Vector3<T>& u, const Vector3<T>& v)
-{
-    return (u.x * v.x) + (u.y * v.y) + (u.z * v.z);
-}
-
-template <typename T>
-constexpr Vector3<T> cross(const Vector3<T>& u, const Vector3<T>& v)
-{
-    return {(u.y * v.z) - (u.z * v.y), (u.z * v.x) - (u.x * v.z), (u.x * v.y) - (u.y * v.x)};
-}
-
-template <typename T>
-inline T norm2(const Vector3<T>& v)
-{
-    return std::sqrt(dot(v, v));
-}
-
-template <typename T>
-inline void Vector3<T>::normalize()
-{
-    const auto norm = norm2(*this);
-    if (norm > 0.0)
-        *this *= 1.0 / norm;
-}
 }  // namespace sead
 
-#endif  // #define SEAD_VECTOR_H_
+#define SEAD_MATH_VECTOR_H_
+#include <math/seadVector.hpp>
+#undef SEAD_MATH_VECTOR_H_

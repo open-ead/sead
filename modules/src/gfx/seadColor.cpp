@@ -20,7 +20,7 @@ const f32 Color4f::cElementMin = 0.0f;
 
 Color4f Color4f::lerp(const Color4f& color1, const Color4f& color2, f32 t)
 {
-    t = sead::clamp(t, cElementMin, cElementMax);
+    t = sead::Mathf::clamp(t, cElementMin, cElementMax);
     const f32 a = sead::lerp(color1.a, color2.a, t);
     const f32 r = sead::lerp(color1.r, color2.r, t);
     const f32 g = sead::lerp(color1.g, color2.g, t);
@@ -30,7 +30,7 @@ Color4f Color4f::lerp(const Color4f& color1, const Color4f& color2, f32 t)
 
 void Color4f::setLerp(const Color4f& color1, const Color4f& color2, f32 t)
 {
-    t = sead::clamp(t, cElementMin, cElementMax);
+    t = sead::Mathf::clamp(t, cElementMin, cElementMax);
     a = sead::lerp(color1.a, color2.a, t);
     r = sead::lerp(color1.r, color2.r, t);
     g = sead::lerp(color1.g, color2.g, t);
@@ -47,10 +47,10 @@ void Color4f::setGammaCollection(const Color4f& value, f32 gamma)
 
 void Color4f::adjustOverflow()
 {
-    r = sead::clamp(r, cElementMin, cElementMax);
-    g = sead::clamp(g, cElementMin, cElementMax);
-    b = sead::clamp(b, cElementMin, cElementMax);
-    a = sead::clamp(a, cElementMin, cElementMax);
+    r = sead::Mathf::clamp(r, cElementMin, cElementMax);
+    g = sead::Mathf::clamp(g, cElementMin, cElementMax);
+    b = sead::Mathf::clamp(b, cElementMin, cElementMax);
+    a = sead::Mathf::clamp(a, cElementMin, cElementMax);
 }
 
 #define SEAD_COLOR4F_OPERATORS(OP, OP2)                                                            \
@@ -115,15 +115,15 @@ Color4u8 Color4u8::lerp(const Color4u8& color1, const Color4u8& color2, f32 t)
 
 void Color4u8::setf(f32 fr, f32 fg, f32 fb, f32 fa)
 {
-    r = sead::clamp(fr, 0.0f, 1.0f) * 255.0f;
-    g = sead::clamp(fg, 0.0f, 1.0f) * 255.0f;
-    b = sead::clamp(fb, 0.0f, 1.0f) * 255.0f;
-    a = sead::clamp(fa, 0.0f, 1.0f) * 255.0f;
+    r = sead::Mathf::clamp(fr, 0.0f, 1.0f) * 255.0f;
+    g = sead::Mathf::clamp(fg, 0.0f, 1.0f) * 255.0f;
+    b = sead::Mathf::clamp(fb, 0.0f, 1.0f) * 255.0f;
+    a = sead::Mathf::clamp(fa, 0.0f, 1.0f) * 255.0f;
 }
 
 void Color4u8::setLerp(const Color4u8& color1, const Color4u8& color2, f32 t)
 {
-    t = sead::clamp(t, 0.0f, 1.0f);
+    t = sead::Mathf::clamp(t, 0.0f, 1.0f);
     a = sead::lerp(color1.a, color2.a, t);
     r = sead::lerp(color1.r, color2.r, t);
     g = sead::lerp(color1.g, color2.g, t);
@@ -133,9 +133,9 @@ void Color4u8::setLerp(const Color4u8& color1, const Color4u8& color2, f32 t)
 void Color4u8::setGammaCollection(const Color4u8& value, f32 gamma)
 {
     a = value.a;
-    r = sead::clamp(std::pow(f32(value.r) / 255.0f, gamma), 0.0f, 1.0f) * 255.0f;
-    g = sead::clamp(std::pow(f32(value.g) / 255.0f, gamma), 0.0f, 1.0f) * 255.0f;
-    b = sead::clamp(std::pow(f32(value.b) / 255.0f, gamma), 0.0f, 1.0f) * 255.0f;
+    r = sead::Mathf::clamp(std::pow(f32(value.r) / 255.0f, gamma), 0.0f, 1.0f) * 255.0f;
+    g = sead::Mathf::clamp(std::pow(f32(value.g) / 255.0f, gamma), 0.0f, 1.0f) * 255.0f;
+    b = sead::Mathf::clamp(std::pow(f32(value.b) / 255.0f, gamma), 0.0f, 1.0f) * 255.0f;
 }
 
 #define SEAD_Color4u8_OPERATORS(OP, OP2)                                                           \
