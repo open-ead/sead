@@ -110,11 +110,260 @@ inline T MathCalcCommon<T>::atan2(T y, T x)
     return std::atan2(y, x);
 }
 
+template <>
+inline f32 MathCalcCommon<f32>::sinIdx(u32 idx)
+{
+    u32 index = (idx >> 24) & 0xff;
+    u32 rest = idx & 0xffffff;
+
+    return cSinCosTbl[index].sin_val + cSinCosTbl[index].sin_delta * rest / 0x1000000;
+}
+
+template <>
+inline f32 MathCalcCommon<f32>::cosIdx(u32 idx)
+{
+    u32 index = (idx >> 24) & 0xff;
+    u32 rest = idx & 0xffffff;
+
+    return cSinCosTbl[index].cos_val + cSinCosTbl[index].cos_delta * rest / 0x1000000;
+}
+
+template <>
+inline f32 MathCalcCommon<f32>::tanIdx(u32 idx)
+{
+    u32 index = (idx >> 24) & 0xff;
+    f32 rest = static_cast<f32>(idx & 0xffffff) / 0x1000000;
+    const SinCosSample& sample = cSinCosTbl[index];
+
+    return (sample.sin_val + sample.sin_delta * rest) / (sample.cos_val + sample.cos_delta * rest);
+}
+
+template <>
+inline u32 MathCalcCommon<f32>::asinIdx(f32 s)
+{
+    // SEAD_ASSERT_MSG(s <= 1 && s >= -1, "s(%f) is not in [-1, 1].", s);
+
+    const f32 rsqrt_2 = 0.7071067690849304f;  // rsqrt(2)
+
+    if (s >= 0)
+    {
+        if (s > rsqrt_2)
+            return 0x40000000 - atanIdx_(sqrt(1 - s * s) / s);
+
+        else
+            return atanIdx_(s / sqrt(1 - s * s));
+    }
+    else
+    {
+        if (s < -rsqrt_2)
+            return 0xC0000000 + atanIdx_(-sqrt(1 - s * s) / s);
+
+        else
+            return -atanIdx_(-s / sqrt(1 - s * s));
+    }
+}
+
+template <>
+inline u32 MathCalcCommon<f32>::acosIdx(f32 c)
+{
+    // SEAD_ASSERT_MSG(c <= 1 && c >= -1, "c(%f) is not in [-1, 1].", c);
+
+    const f32 rsqrt_2 = 0.7071067690849304f;  // rsqrt(2)
+
+    if (c >= 0)
+    {
+        if (c > rsqrt_2)
+            return atanIdx_(sqrt(1 - c * c) / c);
+
+        else
+            return 0x40000000 - atanIdx_(c / sqrt(1 - c * c));
+    }
+    else
+    {
+        if (c < -rsqrt_2)
+            return 0x80000000 - atanIdx_(-sqrt(1 - c * c) / c);
+
+        else
+            return 0x40000000 + atanIdx_(-c / sqrt(1 - c * c));
+    }
+}
+
+template <>
+inline u32 MathCalcCommon<f32>::atanIdx(f32 t)
+{
+    if (t >= 0)
+    {
+        if (t > 1)
+            return 0x40000000 - atanIdx_(1 / t);
+
+        else
+            return atanIdx_(t);
+    }
+    else
+    {
+        if (t < -1)
+            return 0xC0000000 + atanIdx_(-1 / t);
+
+        else
+            return -atanIdx_(-t);
+    }
+}
+
+template <>
+inline u32 MathCalcCommon<f32>::atan2Idx(f32 y, f32 x)
+{
+    if (x == 0 && y == 0)
+        return 0;
+
+    if (x >= 0)
+    {
+        if (y >= 0)
+        {
+            if (x >= y)
+                return atanIdx_(y / x);
+
+            else
+                return 0x40000000 - atanIdx_(x / y);
+        }
+        else
+        {
+            if (x >= -y)
+                return -atanIdx_(-y / x);
+
+            else
+                return 0xC0000000 + atanIdx_(x / -y);
+        }
+    }
+    else
+    {
+        if (y >= 0)
+        {
+            if (-x >= y)
+                return 0x80000000 - atanIdx_(y / -x);
+
+            else
+                return 0x40000000 + atanIdx_(-x / y);
+        }
+        else
+        {
+            if (x <= y)
+                return 0x80000000 + atanIdx_(y / x);
+
+            else
+                return 0xC0000000 - atanIdx_(x / y);
+        }
+    }
+}
+
+template <>
+inline void MathCalcCommon<f32>::sinCosIdx(f32* pSin, f32* pCos, u32 idx)
+{
+    u32 index = (idx >> 24) & 0xff;
+    f32 rest = static_cast<f32>(idx & 0xffffff) / 0x1000000;
+    const SinCosSample& sample = cSinCosTbl[index];
+
+    /*if (pSin != NULL)*/ *pSin = sample.sin_val + sample.sin_delta * rest;
+    /*if (pCos != NULL)*/ *pCos = sample.cos_val + sample.cos_delta * rest;
+}
+
+template <typename T>
+inline T MathCalcCommon<T>::exp(T t)
+{
+    return std::exp(t);
+}
+
+template <typename T>
+inline T MathCalcCommon<T>::log(T t)
+{
+    return std::log(t);
+}
+
 template <typename T>
 inline T MathCalcCommon<T>::log2(T n)
 {
     static_assert(std::is_integral<T>(), "T must be an integral type");
     return n <= 1 ? 0 : 1 + log2(n >> 1);
+}
+
+template <typename T>
+inline T MathCalcCommon<T>::log10(T t)
+{
+    return std::log10(t);
+}
+
+template <typename T>
+inline T MathCalcCommon<T>::minNumber()
+{
+    return std::numeric_limits<T>::min();
+}
+
+template <typename T>
+inline T MathCalcCommon<T>::maxNumber()
+{
+    return std::numeric_limits<T>::max();
+}
+
+template <>
+inline float MathCalcCommon<float>::minNumber()
+{
+    return -std::numeric_limits<float>::max();
+}
+
+template <>
+inline float MathCalcCommon<float>::maxNumber()
+{
+    return std::numeric_limits<float>::max();
+}
+
+template <>
+inline double MathCalcCommon<double>::minNumber()
+{
+    return -std::numeric_limits<double>::max();
+}
+
+template <>
+inline double MathCalcCommon<double>::maxNumber()
+{
+    return std::numeric_limits<double>::max();
+}
+
+template <>
+inline long double MathCalcCommon<long double>::minNumber()
+{
+    return -std::numeric_limits<long double>::max();
+}
+
+template <>
+inline long double MathCalcCommon<long double>::maxNumber()
+{
+    return std::numeric_limits<long double>::max();
+}
+
+template <typename T>
+inline T
+MathCalcCommon<T>::infinity()
+{
+    return std::numeric_limits<T>::infinity();
+}
+
+template <>
+inline f32
+MathCalcCommon<f32>::nan()
+{
+    static const u32 float_nan_binary = 0x7FFFFFFF;
+
+    union { const u32* ui; f32* f; } bit_cast = { .ui = &float_nan_binary };
+    return *bit_cast.f;
+}
+
+template <>
+inline f64
+MathCalcCommon<f64>::nan()
+{
+    static const u64 double_nan_binary = 0x7FFFFFFFFFFFFFFF;
+
+    union { const u64* ui; f64* f; } bit_cast = { .ui = &double_nan_binary };
+    return *bit_cast.f;
 }
 
 template <>
@@ -196,6 +445,48 @@ inline T MathCalcCommon<T>::idx2rad(u32 a)
 }
 
 template <typename T>
+inline s32
+MathCalcCommon<T>::roundOff(T val)
+{
+    return std::floor(val + 0.5f);
+}
+
+template <>
+inline s32
+MathCalcCommon<s32>::roundOff(s32 val)
+{
+    return val;
+}
+
+template <typename T>
+inline s32
+MathCalcCommon<T>::floor(T val)
+{
+    return std::floor(val);
+}
+
+template <>
+inline s32
+MathCalcCommon<s32>::floor(s32 val)
+{
+    return val;
+}
+
+template <typename T>
+inline s32
+MathCalcCommon<T>::ceil(T val)
+{
+    return std::ceil(val);
+}
+
+template <>
+inline s32
+MathCalcCommon<s32>::ceil(s32 val)
+{
+    return val;
+}
+
+template <typename T>
 inline T MathCalcCommon<T>::roundUp(T x, s32 multNumber)
 {
     SEAD_ASSERT(multNumber > 0);
@@ -227,6 +518,16 @@ template <typename T>
 inline T MathCalcCommon<T>::clampMin(T val, T min_)
 {
     return max(val, min_);
+}
+
+template <typename T>
+inline T clamp(T value, T low, T high)
+{
+    if (value < low)
+        value = low;
+    else if (value > high)
+        value = high;
+    return value;
 }
 
 template <typename T>
@@ -267,13 +568,4 @@ inline T lerp(T a, T b, T2 t)
     return a + (b - a) * t;
 }
 
-template <typename T>
-inline T clamp(T value, T low, T high)
-{
-    if (value < low)
-        value = low;
-    else if (value > high)
-        value = high;
-    return value;
-}
 }  // namespace sead

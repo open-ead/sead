@@ -11,7 +11,7 @@ namespace sead
 template <typename T>
 inline Vector2<T> BoundBox2<T>::getCenter() const
 {
-    return Vector2((mMin.x + mMax.x) / 2.0f, (mMin.y + mMax.y) / 2.0f);
+    return Vector2<T>((mMin.x + mMax.x) / 2.0f, (mMin.y + mMax.y) / 2.0f);
 }
 
 template <typename T>
@@ -35,36 +35,9 @@ inline bool BoundBox2<T>::isInside(const Vector2& p) const
 template <typename T>
 inline void BoundBox2<T>::setUndef()
 {
-    const T max = std::numeric_limits<T>::max();
+    const T max = MathCalcCommon<T>::maxNumber();
     mMin.set(max, max);
-    const T min = std::numeric_limits<T>::min();
-    mMax.set(min, min);
-}
-
-template <>
-inline void BoundBox2<float>::setUndef()
-{
-    const float max = std::numeric_limits<float>::max();
-    mMin.set(max, max);
-    const float min = -std::numeric_limits<float>::max();
-    mMax.set(min, min);
-}
-
-template <>
-inline void BoundBox2<double>::setUndef()
-{
-    const double max = std::numeric_limits<double>::max();
-    mMin.set(max, max);
-    const double min = -std::numeric_limits<double>::max();
-    mMax.set(min, min);
-}
-
-template <>
-inline void BoundBox2<long double>::setUndef()
-{
-    const long double max = std::numeric_limits<long double>::max();
-    mMin.set(max, max);
-    const long double min = -std::numeric_limits<long double>::max();
+    const T min = MathCalcCommon<T>::minNumber();
     mMax.set(min, min);
 }
 
@@ -172,7 +145,7 @@ inline void BoundBox2<T>::scaleY(T sy)
 template <typename T>
 inline Vector3<T> BoundBox3<T>::getCenter() const
 {
-    Vector3((mMin.x + mMax.x) / 2.0f, (mMin.y + mMax.y) / 2.0f, (mMin.z + mMax.z) / 2.0f);
+    Vector3<T>((mMin.x + mMax.x) / 2.0f, (mMin.y + mMax.y) / 2.0f, (mMin.z + mMax.z) / 2.0f);
 }
 
 template <typename T>
@@ -197,36 +170,9 @@ inline bool BoundBox3<T>::isInside(const Vector3& p) const
 template <typename T>
 inline void BoundBox3<T>::setUndef()
 {
-    const T max = std::numeric_limits<T>::max();
+    const T max = MathCalcCommon<T>::maxNumber();
     mMin.set(max, max, max);
-    const T min = std::numeric_limits<T>::min();
-    mMax.set(min, min, min);
-}
-
-template <>
-inline void BoundBox3<float>::setUndef()
-{
-    const float max = std::numeric_limits<float>::max();
-    mMin.set(max, max, max);
-    const float min = -std::numeric_limits<float>::max();
-    mMax.set(min, min, min);
-}
-
-template <>
-inline void BoundBox3<double>::setUndef()
-{
-    const double max = std::numeric_limits<double>::max();
-    mMin.set(max, max, max);
-    const double min = -std::numeric_limits<double>::max();
-    mMax.set(min, min, min);
-}
-
-template <>
-inline void BoundBox3<long double>::setUndef()
-{
-    const long double max = std::numeric_limits<long double>::max();
-    mMin.set(max, max, max);
-    const long double min = -std::numeric_limits<long double>::max();
+    const T min = MathCalcCommon<T>::minNumber();
     mMax.set(min, min, min);
 }
 
