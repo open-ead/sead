@@ -94,7 +94,7 @@ T curveHermit_(f32 t, const CurveDataInfo* info, const T* f)
 template <typename T>
 T curveStep_(f32 t, const CurveDataInfo* info, const T* f)
 {
-    const f32 x = clamp<f32>(t, 0.0, 1.0);
+    const f32 x = Mathf::clamp(t, 0.0, 1.0);
     return f[int(x * (info->numUse - 1))];
 }
 

@@ -7,7 +7,7 @@ namespace sead
 template <typename T>
 struct BoundBox2
 {
-    typedef sead::Vector2<T> Vector2;
+    using Vector2 = sead::Vector2<T>;
 
     BoundBox2() { setUndef(); }
     BoundBox2(T x0, T y0, T x1, T y1) { set(x0, y0, x1, y1); }
@@ -59,7 +59,7 @@ private:
 template <typename T>
 struct BoundBox3
 {
-    typedef sead::Vector3<T> Vector3;
+    using Vector3 = sead::Vector3<T>;
 
     BoundBox3() { setUndef(); }
     BoundBox3(T x0, T y0, T z0, T x1, T y1, T z1) { set(x0, y0, z0, x1, y1, z1); }
