@@ -23,7 +23,7 @@ template <typename T>
 class Matrix22 : public Policies<T>::Mtx22Base
 {
 private:
-    typedef Matrix22<T> Self;
+    using Self = Matrix22<T>;
 
 public:
     Matrix22() {}
@@ -53,11 +53,11 @@ template <typename T>
 class Matrix33 : public Policies<T>::Mtx33Base
 {
 private:
-    typedef Matrix33<T> Self;
-    typedef Matrix34<T> Mtx34;
+    using Self = Matrix33<T>;
+    using Mtx34 = Matrix34<T>;
 
-    typedef Quat<T> Quat;
-    typedef Vector4<T> Vec3;
+    using Quat = Quat<T>;
+    using Vec3 = Vector4<T>;
 
 public:
     Matrix33() {}
@@ -102,18 +102,17 @@ template <typename T>
 class Matrix34 : public Policies<T>::Mtx34Base
 {
 private:
-    typedef Matrix34<T> Self;
-    typedef Matrix33<T> Mtx33;
-    typedef Matrix44<T> Mtx44;
+    using Self = Matrix34<T>;
+    using Mtx33 = Matrix33<T>;
+    using Mtx44 = Matrix44<T>;
 
-    typedef Quat<T> Quat;
-    typedef Vector3<T> Vec3;
-    typedef Vector4<T> Vec4;
+    using Quat = Quat<T>;
+    using Vec3 = Vector3<T>;
+    using Vec4 = Vector4<T>;
 
 public:
     Matrix34() {}
 
-    // invoking operator= causes stuff to not match, todo: add a move operator?
     Matrix34(const Self& n) = default;
 
     Matrix34(T _00, T _01, T _02, T _03, T _10, T _11, T _12, T _13, T _20, T _21, T _22, T _23);
@@ -175,13 +174,13 @@ template <typename T>
 class Matrix44 : public Policies<T>::Mtx44Base
 {
 private:
-    typedef Matrix44<T> Self;
-    typedef Matrix33<T> Mtx33;
-    typedef Matrix34<T> Mtx34;
+    using Self = Matrix44<T>;
+    using Mtx33 = Matrix33<T>;
+    using Mtx34 = Matrix34<T>;
 
-    typedef Quat<T> Quat;
-    typedef Vector4<T> Vec3;
-    typedef Vector4<T> Vec4;
+    using Quat = Quat<T>;
+    using Vec3 = Vector4<T>;
+    using Vec4 = Vector4<T>;
 
 public:
     Matrix44() {}

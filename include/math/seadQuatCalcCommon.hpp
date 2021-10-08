@@ -54,7 +54,7 @@ inline void QuatCalcCommon<T>::slerpTo(Base& out, const Base& q1, const Base& q2
     T a, b;
     const T theta_0 = MathCalcCommon<T>::acos(dot);
     const T sin_theta_0 = std::sin(theta_0);
-    if (sead::Mathf::abs(sin_theta_0) < std::numeric_limits<T>::epsilon())
+    if (MathCalcCommon<T>::abs(sin_theta_0) < std::numeric_limits<T>::epsilon())
     {
         a = 1.0f - t;
         b = t;
@@ -86,9 +86,9 @@ template <typename T>
 inline bool QuatCalcCommon<T>::makeVectorRotation(Base& q, const Vec3& from, const Vec3& to)
 {
     Vector3<T> cross;
-    cross.setCross(*static_cast<const Vector3<T>*>(&from), *static_cast<const Vector3<T>*>(&to));
+    cross.setCross(static_cast<const Vector3<T>&>(from), static_cast<const Vector3<T>&>(to));
     const T dot =
-        static_cast<const Vector3<T>*>(&from)->dot(*static_cast<const Vector3<T>*>(&to)) + 1;
+        static_cast<const Vector3<T>&>(from).dot(static_cast<const Vector3<T>&>(to)) + 1;
 
     if (dot <= MathCalcCommon<T>::epsilon())
     {

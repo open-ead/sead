@@ -87,7 +87,7 @@ public:
 
     static T exp(T t);
     static T log(T t);
-    static T log2(T t);
+    static T log2(T n);
     static T log10(T t);
 
     static T expTable(T x);
@@ -168,6 +168,16 @@ typedef MathCalcCommon<s32> Mathi;
 typedef MathCalcCommon<u32> Mathu;
 typedef MathCalcCommon<f32> Mathf;
 typedef MathCalcCommon<size_t> MathSizeT;
+
+template <>
+extern u32 MathCalcCommon<f32>::atanIdx_(f32 t);
+
+template<typename T>
+constexpr T log2(T n)
+{
+    static_assert(std::is_integral<T>(), "T must be an integral type");
+    return n <= 1 ? 0 : 1 + log2(n >> 1);
+}
 
 }  // namespace sead
 

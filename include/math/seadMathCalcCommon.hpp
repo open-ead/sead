@@ -141,7 +141,7 @@ inline f32 MathCalcCommon<f32>::tanIdx(u32 idx)
 template <>
 inline u32 MathCalcCommon<f32>::asinIdx(f32 s)
 {
-    // SEAD_ASSERT_MSG(s <= 1 && s >= -1, "s(%f) is not in [-1, 1].", s);
+    SEAD_ASSERT_MSG(s <= 1 && s >= -1, "s(%f) is not in [-1, 1].", s);
 
     const f32 rsqrt_2 = 0.7071067690849304f;  // rsqrt(2)
 
@@ -166,7 +166,7 @@ inline u32 MathCalcCommon<f32>::asinIdx(f32 s)
 template <>
 inline u32 MathCalcCommon<f32>::acosIdx(f32 c)
 {
-    // SEAD_ASSERT_MSG(c <= 1 && c >= -1, "c(%f) is not in [-1, 1].", c);
+    SEAD_ASSERT_MSG(c <= 1 && c >= -1, "c(%f) is not in [-1, 1].", c);
 
     const f32 rsqrt_2 = 0.7071067690849304f;  // rsqrt(2)
 
@@ -281,8 +281,7 @@ inline T MathCalcCommon<T>::log(T t)
 template <typename T>
 inline T MathCalcCommon<T>::log2(T n)
 {
-    static_assert(std::is_integral<T>(), "T must be an integral type");
-    return n <= 1 ? 0 : 1 + log2(n >> 1);
+    return std::log2(n);
 }
 
 template <typename T>
@@ -340,30 +339,21 @@ inline long double MathCalcCommon<long double>::maxNumber()
 }
 
 template <typename T>
-inline T
-MathCalcCommon<T>::infinity()
+inline T MathCalcCommon<T>::infinity()
 {
     return std::numeric_limits<T>::infinity();
 }
 
 template <>
-inline f32
-MathCalcCommon<f32>::nan()
+inline f32 MathCalcCommon<f32>::nan()
 {
-    static const u32 float_nan_binary = 0x7FFFFFFF;
-
-    union { const u32* ui; f32* f; } bit_cast = { .ui = &float_nan_binary };
-    return *bit_cast.f;
+    return BitUtil::bitCast<f32>(0x7FFFFFFF);
 }
 
 template <>
-inline f64
-MathCalcCommon<f64>::nan()
+inline f64 MathCalcCommon<f64>::nan()
 {
-    static const u64 double_nan_binary = 0x7FFFFFFFFFFFFFFF;
-
-    union { const u64* ui; f64* f; } bit_cast = { .ui = &double_nan_binary };
-    return *bit_cast.f;
+    return BitUtil::bitCast<f64>(0x7FFFFFFFFFFFFFFF);
 }
 
 template <>
@@ -445,43 +435,37 @@ inline T MathCalcCommon<T>::idx2rad(u32 a)
 }
 
 template <typename T>
-inline s32
-MathCalcCommon<T>::roundOff(T val)
+inline s32 MathCalcCommon<T>::roundOff(T val)
 {
     return std::floor(val + 0.5f);
 }
 
 template <>
-inline s32
-MathCalcCommon<s32>::roundOff(s32 val)
+inline s32 MathCalcCommon<s32>::roundOff(s32 val)
 {
     return val;
 }
 
 template <typename T>
-inline s32
-MathCalcCommon<T>::floor(T val)
+inline s32 MathCalcCommon<T>::floor(T val)
 {
     return std::floor(val);
 }
 
 template <>
-inline s32
-MathCalcCommon<s32>::floor(s32 val)
+inline s32 MathCalcCommon<s32>::floor(s32 val)
 {
     return val;
 }
 
 template <typename T>
-inline s32
-MathCalcCommon<T>::ceil(T val)
+inline s32 MathCalcCommon<T>::ceil(T val)
 {
     return std::ceil(val);
 }
 
 template <>
-inline s32
-MathCalcCommon<s32>::ceil(s32 val)
+inline s32 MathCalcCommon<s32>::ceil(s32 val)
 {
     return val;
 }
@@ -521,7 +505,7 @@ inline T MathCalcCommon<T>::clampMin(T val, T min_)
 }
 
 template <typename T>
-inline T clamp(T value, T low, T high)
+inline T MathCalcCommon<T>::clamp(T value, T low, T high)
 {
     if (value < low)
         value = low;

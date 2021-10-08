@@ -8,8 +8,8 @@ template <typename T>
 class QuatCalcCommon
 {
 public:
-    typedef typename Policies<T>::QuatBase Base;
-    typedef typename Policies<T>::Vec3Base Vec3;
+    using Base = typename Policies<T>::QuatBase;
+    using Vec3 = typename Policies<T>::Vec3Base;
 
     static T length(const Base& v);
     static T normalize(Base& v);

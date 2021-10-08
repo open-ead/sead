@@ -8,7 +8,7 @@ template <typename T>
 class Vector2CalcCommon
 {
 public:
-    typedef typename Policies<T>::Vec2Base Base;
+    using Base = typename Policies<T>::Vec2Base;
 
 public:
     static void add(Base& o, const Base& a, const Base& b);
@@ -22,7 +22,7 @@ template <typename T>
 class Vector3CalcCommon
 {
 public:
-    typedef typename Policies<T>::Vec3Base Base;
+    using Base = typename Policies<T>::Vec3Base;
 
 public:
     static void add(Base& o, const Base& a, const Base& b);
@@ -43,7 +43,7 @@ template <typename T>
 class Vector4CalcCommon
 {
 public:
-    typedef typename Policies<T>::Vec4Base Base;
+    using Base = typename Policies<T>::Vec4Base;
 
 public:
     static void set(Base& o, const Base& v);

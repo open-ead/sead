@@ -9,7 +9,7 @@ template <typename T>
 class Matrix22CalcCommon
 {
 public:
-    typedef typename Policies<T>::Mtx22Base Base;
+    using Base = typename Policies<T>::Mtx22Base;
 
 public:
     static void makeIdentity(Base& o);
@@ -27,11 +27,11 @@ template <typename T>
 class Matrix33CalcCommon
 {
 public:
-    typedef typename Policies<T>::Mtx33Base Base;
-    typedef typename Policies<T>::Mtx34Base Mtx34;
-
-    typedef typename Policies<T>::QuatBase Quat;
-    typedef typename Policies<T>::Vec3Base Vec3;
+    using Base = typename Policies<T>::Mtx33Base;
+    using Mtx34 = typename Policies<T>::Mtx34Base;
+    
+    using Quat = typename Policies<T>::QuatBase;
+    using Vec3 = typename Policies<T>::Vec3Base;
 
 public:
     static void makeIdentity(Base& o);
@@ -62,13 +62,13 @@ template <typename T>
 class Matrix34CalcCommon
 {
 public:
-    typedef typename Policies<T>::Mtx34Base Base;
-    typedef typename Policies<T>::Mtx33Base Mtx33;
-    typedef typename Policies<T>::Mtx44Base Mtx44;
+    using Base = typename Policies<T>::Mtx34Base;
+    using Mtx33 = typename Policies<T>::Mtx33Base;
+    using Mtx44 = typename Policies<T>::Mtx44Base;
 
-    typedef typename Policies<T>::QuatBase Quat;
-    typedef typename Policies<T>::Vec3Base Vec3;
-    typedef typename Policies<T>::Vec4Base Vec4;
+    using Quat = typename Policies<T>::QuatBase;
+    using Vec3 = typename Policies<T>::Vec3Base;
+    using Vec4 = typename Policies<T>::Vec4Base;
 
 public:
     static void makeIdentity(Base& o);
@@ -119,13 +119,13 @@ template <typename T>
 class Matrix44CalcCommon
 {
 public:
-    typedef typename Policies<T>::Mtx44Base Base;
-    typedef typename Policies<T>::Mtx33Base Mtx33;
-    typedef typename Policies<T>::Mtx34Base Mtx34;
+    using Base = typename Policies<T>::Mtx44Base;
+    using Mtx33 = typename Policies<T>::Mtx33Base;
+    using Mtx34 = typename Policies<T>::Mtx34Base;
 
-    typedef typename Policies<T>::QuatBase Quat;
-    typedef typename Policies<T>::Vec3Base Vec3;
-    typedef typename Policies<T>::Vec4Base Vec4;
+    using Quat = typename Policies<T>::QuatBase;
+    using Vec3 = typename Policies<T>::Vec3Base;
+    using Vec4 = typename Policies<T>::Vec4Base;
 
 public:
     static void makeIdentity(Base& o);
