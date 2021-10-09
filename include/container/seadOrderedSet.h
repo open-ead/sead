@@ -164,12 +164,10 @@ template <typename Value>
 template <typename Callable>
 inline void OrderedSet<Value>::forEach(const Callable& delegate) const
 {
-    MapImpl::forEach(
-        [&delegate](auto* base_node)
-        {
-            auto* node = static_cast<Node*>(base_node);
-            delegate(node->value());
-        });
+    MapImpl::forEach([&delegate](auto* base_node) {
+        auto* node = static_cast<Node*>(base_node);
+        delegate(node->value());
+    });
 }
 
 template <typename Value>

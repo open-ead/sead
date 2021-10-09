@@ -29,7 +29,7 @@ class Matrix33CalcCommon
 public:
     using Base = typename Policies<T>::Mtx33Base;
     using Mtx34 = typename Policies<T>::Mtx34Base;
-    
+
     using Quat = typename Policies<T>::QuatBase;
     using Vec3 = typename Policies<T>::Vec3Base;
 

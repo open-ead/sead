@@ -373,13 +373,13 @@ inline u32 MathCalcCommon<u32>::abs(u32 x)
 template <>
 inline f32 MathCalcCommon<f32>::abs(f32 x)
 {
-    return std::abs(x); 
+    return std::abs(x);
 }
 
 template <>
 inline f64 MathCalcCommon<f64>::abs(f64 x)
 {
-    return std::abs(x); 
+    return std::abs(x);
 }
 
 #endif  // cafe
