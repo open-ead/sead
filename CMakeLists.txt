@@ -97,18 +97,24 @@ add_library(sead OBJECT
   modules/src/heap/seadHeapMgr.cpp
 
   include/math/seadBoundBox.h
+  include/math/seadBoundBox.hpp
   include/math/seadMathBase.h
   include/math/seadMathCalcCommon.h
   include/math/seadMathCalcCommon.hpp
   include/math/seadMathNumbers.h
   include/math/seadMathPolicies.h
   include/math/seadMatrix.h
+  include/math/seadMatrix.hpp
   include/math/seadMatrixCalcCommon.h
   include/math/seadMatrixCalcCommon.hpp
   include/math/seadQuat.h
+  include/math/seadQuat.hpp
   include/math/seadQuatCalcCommon.h
   include/math/seadQuatCalcCommon.hpp
   include/math/seadVector.h
+  include/math/seadVector.hpp
+  include/math/seadVectorCalcCommon.h
+  include/math/seadVectorCalcCommon.hpp
   modules/src/math/seadBoundBox.cpp
   modules/src/math/seadMathCalcCommon.cpp
   modules/src/math/seadMatrix.cpp

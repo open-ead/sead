@@ -276,7 +276,7 @@ u8* FileDevice::doLoad_(LoadArg& arg)
             }
             else
             {
-                bytesToRead = Mathi::roundUpPow2Positive(fileSize, FileDevice::cBufferMinAlignment);
+                bytesToRead = Mathi::roundUpPow2(fileSize, FileDevice::cBufferMinAlignment);
             }
         }
     }
@@ -287,7 +287,7 @@ u8* FileDevice::doLoad_(LoadArg& arg)
     if (buf == nullptr)
     {
         const s32 sign = (arg.alignment < 0) ? -1 : 1;
-        s32 alignment = abs(arg.alignment);
+        s32 alignment = Mathi::abs(arg.alignment);
         alignment = sign * ((alignment < cBufferMinAlignment) ? cBufferMinAlignment : alignment);
 
         Heap* heap = arg.heap;
