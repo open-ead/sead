@@ -172,7 +172,7 @@ typedef MathCalcCommon<size_t> MathSizeT;
 template <>
 extern u32 MathCalcCommon<f32>::atanIdx_(f32 t);
 
-template<typename T>
+template <typename T>
 constexpr T log2(T n)
 {
     static_assert(std::is_integral<T>(), "T must be an integral type");
