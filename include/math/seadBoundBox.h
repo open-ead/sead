@@ -63,7 +63,7 @@ struct BoundBox3
 
     BoundBox3() { setUndef(); }
     BoundBox3(T x0, T y0, T z0, T x1, T y1, T z1) { set(x0, y0, z0, x1, y1, z1); }
-    BoundBox3(const Vector3& min, const Vector3& max) : mMin(min), mMax(max) {}
+    BoundBox3(const Vector3& min, const Vector3& max) { set(min, max); }
 
     T getSizeX() const { return mMax.x - mMin.x; }
     T getSizeY() const { return mMax.y - mMin.y; }
