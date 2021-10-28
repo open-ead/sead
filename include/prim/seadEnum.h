@@ -98,9 +98,9 @@ private:
                                                                                                    \
         const char* getTypeText() const { return #NAME; }                                          \
         const char* getTypeText() const volatile { return #NAME; }                                 \
-        static int size() { return cCount; }                                                       \
-        static int getSize() { return size(); }                                                    \
-        static int getLastIndex() { return size() - 1; }                                           \
+        constexpr static int size() { return cCount; }                                             \
+        constexpr static int getSize() { return size(); }                                          \
+        constexpr static int getLastIndex() { return size() - 1; }                                 \
                                                                                                    \
         static void initialize() { text(0); }                                                      \
                                                                                                    \
@@ -241,8 +241,8 @@ private:
                                                                                                    \
         const char* getTypeText() const { return #NAME; }                                          \
         const char* getTypeText() const volatile { return #NAME; }                                 \
-        static int size() { return cCount; }                                                       \
-        static int getSize() { return size(); }                                                    \
+        constexpr static int size() { return cCount; }                                             \
+        constexpr static int getSize() { return size(); }                                          \
                                                                                                    \
         static void initialize() { text(0); }                                                      \
                                                                                                    \
