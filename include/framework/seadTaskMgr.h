@@ -103,7 +103,7 @@ protected:                                                                      
         if (!sInstance)                                                                            \
         {                                                                                          \
             sInstance = static_cast<CLASS*>(task);                                                 \
-            sInstance.mSingletonDisposer.mActive = true;                                           \
+            sInstance->mSingletonDisposer.mActive = true;                                          \
         }                                                                                          \
         else                                                                                       \
         {                                                                                          \
