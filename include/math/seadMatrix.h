@@ -28,7 +28,7 @@ private:
 public:
     Matrix22() {}
 
-    Matrix22(const Self& n) { operator=(n); }
+    Matrix22(const Self& n) = default;
 
     Matrix22(T a00, T a01, T a10, T a11);
 
@@ -62,7 +62,7 @@ private:
 public:
     Matrix33() {}
 
-    Matrix33(const Self& n) { operator=(n); }
+    Matrix33(const Self& n) = default;
 
     Matrix33(T a00, T a01, T a02, T a10, T a11, T a12, T a20, T a21, T a22);
 
@@ -185,7 +185,7 @@ private:
 public:
     Matrix44() {}
 
-    Matrix44(const Self& n) { operator=(n); }
+    Matrix44(const Self& n) = default;
 
     Matrix44(T _00, T _01, T _02, T _03, T _10, T _11, T _12, T _13, T _20, T _21, T _22, T _23,
              T _30, T _31, T _32, T _33);
