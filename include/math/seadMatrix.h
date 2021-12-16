@@ -57,7 +57,7 @@ private:
     using Mtx34 = Matrix34<T>;
 
     using Quat = Quat<T>;
-    using Vec3 = Vector4<T>;
+    using Vec3 = Vector3<T>;
 
 public:
     Matrix33() {}
@@ -179,7 +179,7 @@ private:
     using Mtx34 = Matrix34<T>;
 
     using Quat = Quat<T>;
-    using Vec3 = Vector4<T>;
+    using Vec3 = Vector3<T>;
     using Vec4 = Vector4<T>;
 
 public:
