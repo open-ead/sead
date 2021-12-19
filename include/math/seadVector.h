@@ -18,25 +18,38 @@ struct Vector2 : public Policies<T>::Vec2Base
     Vector2& operator=(const Vector2& other);
 
     Vector2& operator+=(const Vector2& other);
-    friend Vector2 operator+(const Vector2& a, const Vector2& b);
+
+    friend Vector2 operator+(const Vector2& a, const Vector2& b)
+    {
+        Vector2 o;
+        Vector2CalcCommon<T>::add(o, a, b);
+        return o;
+    }
 
     Vector2& operator-=(const Vector2& other);
-    friend Vector2 operator-(const Vector2& a, const Vector2& b);
+
+    friend Vector2 operator-(const Vector2& a, const Vector2& b)
+    {
+        Vector2 o;
+        Vector2CalcCommon<T>::sub(o, a, b);
+        return o;
+    }
 
     Vector2& operator*=(T t);
 
     friend Vector2 operator*(const Vector2& a, T t)
     {
-        Vector2<T> o;
+        Vector2 o;
         o.x = a.x * t;
         o.y = a.y * t;
         return o;
     }
 
-    friend Vector2 operator*(T t, const Vector2& a);
+    friend Vector2 operator*(T t, const Vector2& a) { return operator*(a, t); }
 
     Vector2& operator/=(T t);
-    friend Vector2 operator/(const Vector2& a, T t);
+
+    friend Vector2 operator/(const Vector2& a, T t) { return {a.x / t, a.y / t}; }
 
     bool operator==(const Vector2& rhs) const { return this->x == rhs.x && this->y == rhs.y; }
     bool operator!=(const Vector2& rhs) const { return !operator==(rhs); }
@@ -61,12 +74,19 @@ struct Vector3 : public Policies<T>::Vec3Base
     Vector3& operator=(const Vector3& other);
 
     Vector3& operator+=(const Vector3& other);
-    friend Vector3 operator+(const Vector3& a, const Vector3& b);
+
+    friend Vector3 operator+(const Vector3& a, const Vector3& b)
+    {
+        Vector3 o;
+        Vector3CalcCommon<T>::add(o, a, b);
+        return o;
+    }
 
     Vector3& operator-=(const Vector3& other);
+
     friend Vector3 operator-(const Vector3& a, const Vector3& b)
     {
-        Vector3<T> o;
+        Vector3 o;
         Vector3CalcCommon<T>::sub(o, a, b);
         return o;
     }
@@ -75,7 +95,7 @@ struct Vector3 : public Policies<T>::Vec3Base
 
     friend Vector3 operator*(const Vector3& a, T t)
     {
-        Vector3<T> o;
+        Vector3 o;
         Vector3CalcCommon<T>::multScalar(o, a, t);
         return o;
     }
@@ -83,13 +103,16 @@ struct Vector3 : public Policies<T>::Vec3Base
     friend Vector3 operator*(T t, const Vector3& a) { return operator*(a, t); }
 
     Vector3& operator/=(T t);
-    friend Vector3 operator/(const Vector3& a, T t);
+
+    friend Vector3 operator/(const Vector3& a, T t) { return {a.x / t, a.y / t, a.z / t}; }
 
     bool operator==(const Vector3& rhs) const
     {
         return this->x == rhs.x && this->y == rhs.y && this->z == rhs.z;
     }
     bool operator!=(const Vector3& rhs) const { return !operator==(rhs); }
+
+    Vector3 operator-() const { return {-this->x, -this->y, -this->z}; }
 
     T dot(const Vector3& t) const;
     T length() const;
@@ -121,19 +144,28 @@ struct Vector4 : public Policies<T>::Vec4Base
     Vector4& operator=(const Vector4& other);
 
     Vector4& operator+=(const Vector4& other);
-    friend Vector4 operator+(const Vector4& a, const Vector4& b);
+
+    friend Vector4 operator+(const Vector4& a, const Vector4& b)
+    {
+        return {a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w};
+    }
 
     Vector4& operator-=(const Vector4& other);
-    friend Vector4 operator-(const Vector4& a, const Vector4& b);
+
+    friend Vector4 operator-(const Vector4& a, const Vector4& b)
+    {
+        return {a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w};
+    }
 
     Vector4& operator*=(T t);
 
     friend Vector4 operator*(const Vector4& a, T t) { return {a.x * t, a.y * t, a.z * t, a.w * t}; }
 
-    friend Vector4 operator*(T t, const Vector4& a);
+    friend Vector4 operator*(T t, const Vector4& a) { return operator*(a, t); }
 
     Vector4& operator/=(T t);
-    friend Vector4 operator/(const Vector4& a, T t);
+
+    friend Vector4 operator/(const Vector4& a, T t) { return {a.x / t, a.y / t, a.z / t, a.w / t}; }
 
     bool operator==(const Vector4& rhs) const
     {
