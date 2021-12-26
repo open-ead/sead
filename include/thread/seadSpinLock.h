@@ -24,6 +24,6 @@ public:
 
 private:
     Atomic<Thread*> mOwnerThread;
-    u32 mCount;
+    u32 mCount = 0;
 };
 }  // namespace sead

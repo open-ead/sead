@@ -115,7 +115,7 @@ struct Atomic<T*> : AtomicBase<T*>
 template <class T>
 inline AtomicBase<T>::AtomicBase(T value)
 {
-    store(value);
+    storeNonAtomic(value);
 }
 
 template <class T>
@@ -138,7 +138,7 @@ inline void AtomicBase<T>::store(T value)
 template <class T>
 inline void AtomicBase<T>::storeNonAtomic(T value)
 {
-    new (&mValue) std::atomic<T>(value);
+    *getValuePtr() = value;
 }
 
 template <class T>

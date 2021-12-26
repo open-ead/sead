@@ -3,7 +3,7 @@
 
 namespace sead
 {
-SpinLock::SpinLock() : mOwnerThread(), mCount(0) {}
+SpinLock::SpinLock() = default;
 
 SpinLock::~SpinLock() = default;
 
