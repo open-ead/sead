@@ -6,11 +6,18 @@
 
 namespace sead
 {
+struct AtomicDirectInitTag
+{
+};
+
 template <class T>
 struct AtomicBase
 {
 public:
-    AtomicBase(T value = {});
+    AtomicBase(T value = {});  // NOLINT(google-explicit-constructor)
+    /// Directly initialises the underlying atomic with the specified value.
+    /// Note that initialisation is not atomic.
+    AtomicBase(AtomicDirectInitTag, T value);
     AtomicBase(const AtomicBase& rhs) { *this = rhs; }
 
     operator T() const { return load(); }
@@ -116,6 +123,11 @@ template <class T>
 inline AtomicBase<T>::AtomicBase(T value)
 {
     storeNonAtomic(value);
+}
+
+template <class T>
+inline AtomicBase<T>::AtomicBase(AtomicDirectInitTag, T value) : mValue(value)
+{
 }
 
 template <class T>

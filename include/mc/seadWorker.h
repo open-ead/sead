@@ -40,7 +40,7 @@ protected:
     void wakeup_(MessageQueue::Element msg);
 
     CoreId mCore = 0;
-    Atomic<Worker::State> mWorkerState = Worker::State(Worker::State::cSleep);
+    Atomic<Worker::State> mWorkerState{sead::AtomicDirectInitTag{}, Worker::State::cSleep};
     WorkerMgr* mMgr = nullptr;
     RingBuffer<JobQueue*> mJobQueues;
     JobQueueLock mLock;
