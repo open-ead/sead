@@ -65,6 +65,8 @@ private:
                                                                                                    \
         ValueType value() const { return static_cast<ValueType>(mIdx); }                           \
         ValueType value() const volatile { return static_cast<ValueType>(mIdx); }                  \
+        /* XXX: Bafflingly, there is no purely const-qualified version of operator int().  */      \
+        /* This leads to suboptimal codegen in many places. */                                     \
         operator int() const volatile { return value(); }                                          \
                                                                                                    \
         bool fromText(const sead::SafeString& name)                                                \
