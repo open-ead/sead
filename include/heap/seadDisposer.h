@@ -108,8 +108,7 @@ protected:                                                                      
             SingletonDisposer_::sStaticDisposer = NULL;                                            \
             staticDisposer->~SingletonDisposer_();                                                 \
                                                                                                    \
-            if (sInstance != NULL)                                                                 \
-                delete sInstance;                                                                  \
+            delete sInstance;                                                                      \
                                                                                                    \
             sInstance = NULL;                                                                      \
         }                                                                                          \
