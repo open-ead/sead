@@ -208,7 +208,15 @@ public:
 
     T** data() const { return reinterpret_cast<T**>(mPtrs); }
 
-    static constexpr size_t ElementSize = std::max(sizeof(T), FreeList::cPtrSize);
+private:
+    union Node
+    {
+        void* next_node;
+        T elem;
+    };
+
+public:
+    static constexpr size_t ElementSize = sizeof(Node);
 
     static constexpr size_t calculateWorkBufferSize(size_t n)
     {
