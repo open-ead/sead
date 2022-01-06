@@ -245,6 +245,8 @@ public:
 
     bool isBufferReady() const { return mBuffer != nullptr; }
 
+    bool isIndexValid(s32 idx) const { return u32(idx) < u32(mSize); }
+
     T& operator()(s32 idx) { return *unsafeGet(idx); }
     const T& operator()(s32 idx) const { return *unsafeGet(idx); }
 
