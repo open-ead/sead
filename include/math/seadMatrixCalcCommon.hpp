@@ -4,6 +4,11 @@
 #include <cafe.h>
 #endif  // cafe
 
+#ifdef __aarch64__
+// For Matrix34CalcCommon<f32>::copy (access FP/SIMD registers: Q0, ...)
+#include <arm_neon.h>
+#endif
+
 #include <math/seadMathCalcCommon.h>
 #ifndef SEAD_MATH_MATRIX_CALC_COMMON_H_
 #include <math/seadMatrixCalcCommon.h>
@@ -748,6 +753,19 @@ void Matrix34CalcCommon<T>::copy(Base& o, const Base& n)
     o.m[2][2] = n.m[2][2];
     o.m[2][3] = n.m[2][3];
 }
+
+#ifdef __aarch64__
+
+template <>
+inline void Matrix34CalcCommon<f32>::copy(Base& o, const Base& n)
+{
+    for (int i = 0; i < 3; ++i)
+    {
+        vst1q_f32(o.m[i], vld1q_f32(n.m[i]));
+    }
+}
+
+#endif
 
 #ifdef cafe
 
