@@ -71,7 +71,7 @@ public:
 
     void makeUnit();
     bool makeVectorRotation(const Vec3& from, const Vec3& to);
-    void set(T x, T y, T z, T w);
+    void set(T w, T x, T y, T z);
 
     static const Quat unit;
 };
