@@ -17,7 +17,7 @@ private:
 
 public:
     Quat() {}
-    Quat(const Quat& other) { *this = other; }
+    Quat(const Quat& other) = default;
     Quat(T w, T x, T y, T z);
 
     Quat& operator=(const Quat& other)
