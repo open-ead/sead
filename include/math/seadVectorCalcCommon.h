@@ -32,6 +32,7 @@ public:
     static T dot(const Base& a, const Base& b);
     static T squaredLength(const Base& v);
     static T length(const Base& v);
+    static bool equals(const Base& lhs, const Base& rhs, T epsilon);
     static void multScalar(Base& o, const Base& v, T t);
     static void multScalarAdd(Base& o, T t, const Base& a, const Base& b);
     static T normalize(Base& v);

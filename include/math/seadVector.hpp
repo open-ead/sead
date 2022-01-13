@@ -118,6 +118,12 @@ inline T Vector3<T>::length() const
 }
 
 template <typename T>
+inline bool Vector3<T>::equals(const Vector3<T>& rhs, T epsilon) const
+{
+    return Vector3CalcCommon<T>::equals(*this, rhs, epsilon);
+}
+
+template <typename T>
 inline void Vector3<T>::add(const Vector3<T>& a)
 {
     Vector3CalcCommon<T>::add(*this, *this, a);

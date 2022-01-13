@@ -117,6 +117,10 @@ struct Vector3 : public Policies<T>::Vec3Base
     T dot(const Vector3& t) const;
     T length() const;
 
+    /// Checks if the differences of all components of lhs and rhs are within `epsilon`.
+    /// (i.e. -epsilon <= lhs.x - rhs.x <= epsilon, and so on).
+    bool equals(const Vector3& rhs, T epsilon = 0) const;
+
     void add(const Vector3& a);
     void multScalar(T t);
     T normalize();

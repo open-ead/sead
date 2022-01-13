@@ -134,6 +134,14 @@ inline f32 Vector3CalcCommon<f32>::length(const Base& v)
 #endif  // cafe
 
 template <typename T>
+inline bool Vector3CalcCommon<T>::equals(const Base& lhs, const Base& rhs, T epsilon)
+{
+    return MathCalcCommon<T>::equalsEpsilon(lhs.x, rhs.x, epsilon) &&
+           MathCalcCommon<T>::equalsEpsilon(lhs.y, rhs.y, epsilon) &&
+           MathCalcCommon<T>::equalsEpsilon(lhs.z, rhs.z, epsilon);
+}
+
+template <typename T>
 inline void Vector3CalcCommon<T>::multScalar(Base& o, const Base& v, T t)
 {
     o.x = v.x * t;
