@@ -99,7 +99,11 @@ public:
     static T nan();
     static T epsilon() { return std::numeric_limits<T>::epsilon(); }
 
-    static bool equalsEpsilon(T lhs, T rhs, T eps = epsilon()) { return abs(lhs - rhs) <= eps; }
+    static bool equalsEpsilon(T lhs, T rhs, T eps = epsilon())
+    {
+        const T diff = lhs - rhs;
+        return -eps <= diff && diff <= eps;
+    }
 
     static T abs(T x) { return x > 0 ? x : -x; }
 
