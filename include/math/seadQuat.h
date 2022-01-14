@@ -45,15 +45,7 @@ public:
 
     friend Quat operator*(T t, const Quat& a) { return operator*(a, t); }
 
-    // I don't think this is right?
-    Quat& operator*=(const Quat& t)
-    {
-        this->w *= t.w;
-        this->x *= t.x;
-        this->y *= t.y;
-        this->z *= t.z;
-        return *this;
-    }
+    Quat& operator*=(const Quat& t);
 
     Quat& operator*=(T t)
     {

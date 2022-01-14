@@ -39,6 +39,19 @@ inline T QuatCalcCommon<T>::dot(const Base& u, const Base& v)
 }
 
 template <typename T>
+inline void QuatCalcCommon<T>::setMul(Base& out, const Base& u, const Base& v)
+{
+    T w = (u.w * v.w) - (u.x * v.x) - (u.y * v.y) - (u.z * v.z);
+    T x = (u.w * v.x) + (u.x * v.w) + (u.y * v.z) - (u.z * v.y);
+    T y = (u.w * v.y) - (u.x * v.z) + (u.y * v.w) + (u.z * v.x);
+    T z = (u.w * v.z) + (u.x * v.y) - (u.y * v.x) + (u.z * v.w);
+    out.w = w;
+    out.x = x;
+    out.y = y;
+    out.z = z;
+}
+
+template <typename T>
 inline void QuatCalcCommon<T>::slerpTo(Base& out, const Base& q1, const Base& q2, f32 t)
 {
     T dot = (q1.x * q2.x) + (q1.y * q2.y) + (q1.z * q2.z) + (q1.w * q2.w);

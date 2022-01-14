@@ -13,7 +13,8 @@ public:
 
     static T length(const Base& v);
     static T normalize(Base& v);
-    static T dot(const Base& a, const Base& b);
+    static T dot(const Base& u, const Base& v);
+    static void setMul(Base& out, const Base& u, const Base& v);
     static void slerpTo(Base& out, const Base& q1, const Base& q2, f32 t);
     static void makeUnit(Base& q);
     static bool makeVectorRotation(Base& q, const Vec3& from, const Vec3& to);

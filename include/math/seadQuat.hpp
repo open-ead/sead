@@ -14,6 +14,13 @@ inline Quat<T>::Quat(T w_, T x_, T y_, T z_)
 }
 
 template <typename T>
+inline Quat<T>& Quat<T>::operator*=(const Quat<T>& t)
+{
+    QuatCalcCommon<T>::setMul(*this, *this, t);
+    return *this;
+}
+
+template <typename T>
 inline T Quat<T>::length() const
 {
     return QuatCalcCommon<T>::length(*this);
