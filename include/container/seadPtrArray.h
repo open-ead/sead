@@ -241,7 +241,7 @@ public:
     }
     void replace(s32 pos, T* ptr) { PtrArrayImpl::replace(pos, constCast(ptr)); }
 
-    s32 indexOf(const T* ptr) const { return PtrArrayImpl::indexOf(constCast(ptr)); }
+    s32 indexOf(const T* ptr) const { return PtrArrayImpl::indexOf(ptr); }
 
     using CompareCallback = s32 (*)(const T*, const T*);
 
@@ -335,7 +335,7 @@ public:
     T** dataEnd() const { return data() + mPtrNum; }
 
 protected:
-    static void* constCast(T* ptr)
+    static void* constCast(const T* ptr)
     {
         // Unfortunately, we need to cast away const because several PtrArrayImpl functions
         // only take void* even though the pointed-to object isn't actually modified.
