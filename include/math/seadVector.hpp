@@ -69,6 +69,25 @@ inline Vector3<T>::Vector3(T x_, T y_, T z_)
 }
 
 template <typename T>
+inline Vector3<T>& Vector3<T>::operator=(const Vector3<T>& other)
+{
+    Vector3CalcCommon<T>::set(*this, other);
+    return *this;
+}
+
+template <typename T>
+inline bool Vector3<T>::operator==(const Vector3& rhs) const
+{
+    return this->x == rhs.x && this->y == rhs.y && this->z == rhs.z;
+}
+
+template <typename T>
+inline bool Vector3<T>::operator!=(const Vector3& rhs) const
+{
+    return !operator==(rhs);
+}
+
+template <typename T>
 inline Vector3<T>& Vector3<T>::operator+=(const Vector3<T>& other)
 {
     Vector3CalcCommon<T>::add(*this, *this, other);
@@ -109,13 +128,6 @@ inline Vector3<T>& Vector3<T>::operator/=(T t)
     this->x /= t;
     this->y /= t;
     this->z /= t;
-    return *this;
-}
-
-template <typename T>
-inline Vector3<T>& Vector3<T>::operator=(const Vector3<T>& other)
-{
-    Vector3CalcCommon<T>::set(*this, other);
     return *this;
 }
 

@@ -75,6 +75,8 @@ struct Vector3 : public Policies<T>::Vec3Base
     Vector3(T x, T y, T z);
 
     Vector3& operator=(const Vector3& other);
+    bool operator==(const Vector3& rhs) const;
+    bool operator!=(const Vector3& rhs) const;
 
     Vector3& operator+=(const Vector3& other);
     friend Vector3 operator+(const Vector3& a, const Vector3& b)
@@ -117,12 +119,6 @@ struct Vector3 : public Policies<T>::Vec3Base
 
     Vector3& operator/=(T t);
     friend Vector3 operator/(const Vector3& a, T t) { return {a.x / t, a.y / t, a.z / t}; }
-
-    bool operator==(const Vector3& rhs) const
-    {
-        return this->x == rhs.x && this->y == rhs.y && this->z == rhs.z;
-    }
-    bool operator!=(const Vector3& rhs) const { return !operator==(rhs); }
 
     Vector3 operator-() const { return {-this->x, -this->y, -this->z}; }
 
