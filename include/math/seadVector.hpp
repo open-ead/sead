@@ -90,6 +90,20 @@ inline Vector3<T>& Vector3<T>::operator*=(T t)
 }
 
 template <typename T>
+inline Vector3<T>& Vector3<T>::operator*=(const Mtx33& m)
+{
+    mul(m);
+    return *this;
+}
+
+template <typename T>
+inline Vector3<T>& Vector3<T>::operator*=(const Mtx34& m)
+{
+    mul(m);
+    return *this;
+}
+
+template <typename T>
 inline Vector3<T>& Vector3<T>::operator/=(T t)
 {
     this->x /= t;
@@ -130,6 +144,18 @@ inline void Vector3<T>::add(const Vector3<T>& a)
 }
 
 template <typename T>
+inline void Vector3<T>::mul(const Mtx33& m)
+{
+    setMul(m, *this);
+}
+
+template <typename T>
+inline void Vector3<T>::mul(const Mtx34& m)
+{
+    setMul(m, *this);
+}
+
+template <typename T>
 inline void Vector3<T>::multScalar(T t)
 {
     Vector3CalcCommon<T>::multScalar(*this, *this, t);
@@ -163,6 +189,18 @@ template <typename T>
 inline void Vector3<T>::setScaleAdd(T t, const Vector3<T>& a, const Vector3<T>& b)
 {
     Vector3CalcCommon<T>::multScalarAdd(*this, t, a, b);
+}
+
+template <typename T>
+inline void Vector3<T>::setMul(const Mtx33& m, const Vector3<T>& a)
+{
+    Vector3CalcCommon<T>::mul(*this, m, a);
+}
+
+template <typename T>
+inline void Vector3<T>::setMul(const Mtx34& m, const Vector3<T>& a)
+{
+    Vector3CalcCommon<T>::mul(*this, m, a);
 }
 
 template <typename T>

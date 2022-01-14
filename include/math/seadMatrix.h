@@ -72,15 +72,6 @@ public:
     T& operator()(s32 i, s32 j);
     Self& operator=(const Self& n);
 
-    friend Vec3 operator*(const Self& m, const Vec3& v)
-    {
-        Vec3 o;
-        o.x = (m.m[0][0] * v.x) + (m.m[0][1] * v.y) + (m.m[0][2] * v.z);
-        o.y = (m.m[1][0] * v.x) + (m.m[1][1] * v.y) + (m.m[1][2] * v.z);
-        o.z = (m.m[2][0] * v.x) + (m.m[2][1] * v.y) + (m.m[2][2] * v.z);
-        return o;
-    }
-
     void makeIdentity();
     void makeZero();
 
@@ -132,16 +123,6 @@ public:
     T operator()(s32 i, s32 j) const;
     T& operator()(s32 i, s32 j);
     Self& operator=(const Self& n);
-
-    /// Apply a transformation `m` (rotation + translation) to the vector `v`.
-    friend Vec3 operator*(const Self& m, const Vec3& v)
-    {
-        Vec3 o;
-        o.x = m.m[0][3] + (m.m[0][0] * v.x) + (m.m[0][1] * v.y) + (m.m[0][2] * v.z);
-        o.y = m.m[1][3] + (m.m[1][0] * v.x) + (m.m[1][1] * v.y) + (m.m[1][2] * v.z);
-        o.z = m.m[2][3] + (m.m[2][0] * v.x) + (m.m[2][1] * v.y) + (m.m[2][2] * v.z);
-        return o;
-    }
 
     void makeIdentity();
     void makeZero();

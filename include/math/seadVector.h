@@ -66,6 +66,9 @@ struct Vector2 : public Policies<T>::Vec2Base
 template <typename T>
 struct Vector3 : public Policies<T>::Vec3Base
 {
+    using Mtx33 = typename Policies<T>::Mtx33Base;
+    using Mtx34 = typename Policies<T>::Mtx34Base;
+
     /// @warning This constructor leaves member variables uninitialized.
     Vector3() {}
     Vector3(const Vector3& other) = default;
@@ -74,7 +77,6 @@ struct Vector3 : public Policies<T>::Vec3Base
     Vector3& operator=(const Vector3& other);
 
     Vector3& operator+=(const Vector3& other);
-
     friend Vector3 operator+(const Vector3& a, const Vector3& b)
     {
         Vector3 o;
@@ -83,7 +85,6 @@ struct Vector3 : public Policies<T>::Vec3Base
     }
 
     Vector3& operator-=(const Vector3& other);
-
     friend Vector3 operator-(const Vector3& a, const Vector3& b)
     {
         Vector3 o;
@@ -92,18 +93,29 @@ struct Vector3 : public Policies<T>::Vec3Base
     }
 
     Vector3& operator*=(T t);
-
+    Vector3& operator*=(const Mtx33& m);
+    Vector3& operator*=(const Mtx34& m);
     friend Vector3 operator*(const Vector3& a, T t)
     {
         Vector3 o;
         Vector3CalcCommon<T>::multScalar(o, a, t);
         return o;
     }
-
     friend Vector3 operator*(T t, const Vector3& a) { return operator*(a, t); }
+    friend Vector3 operator*(const Mtx33& m, const Vector3& a)
+    {
+        Vector3 o;
+        o.setMul(m, a);
+        return o;
+    }
+    friend Vector3 operator*(const Mtx34& m, const Vector3& a)
+    {
+        Vector3 o;
+        o.setMul(m, a);
+        return o;
+    }
 
     Vector3& operator/=(T t);
-
     friend Vector3 operator/(const Vector3& a, T t) { return {a.x / t, a.y / t, a.z / t}; }
 
     bool operator==(const Vector3& rhs) const
@@ -122,13 +134,19 @@ struct Vector3 : public Policies<T>::Vec3Base
     bool equals(const Vector3& rhs, T epsilon = 0) const;
 
     void add(const Vector3& a);
+    /// Multiply m by this vector (self = m * self).
+    void mul(const Mtx33& m);
+    /// Apply a transformation `m` (rotation + translation) to this vector.
+    void mul(const Mtx34& m);
     void multScalar(T t);
+
     T normalize();
     void set(const Vector3& other);
     void set(T x, T y, T z);
-
     void setCross(const Vector3<T>& a, const Vector3<T>& b);
     void setScaleAdd(T t, const Vector3<T>& a, const Vector3<T>& b);
+    void setMul(const Mtx33& m, const Vector3& a);
+    void setMul(const Mtx34& m, const Vector3& a);
 
     static const Vector3 zero;
     static const Vector3 ex;

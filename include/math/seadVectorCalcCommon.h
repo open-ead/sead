@@ -23,10 +23,14 @@ class Vector3CalcCommon
 {
 public:
     using Base = typename Policies<T>::Vec3Base;
+    using Mtx33 = typename Policies<T>::Mtx33Base;
+    using Mtx34 = typename Policies<T>::Mtx34Base;
 
-public:
     static void add(Base& o, const Base& a, const Base& b);
     static void sub(Base& o, const Base& a, const Base& b);
+    static void mul(Base& o, const Mtx33& m, const Base& a);
+    /// Apply a transformation `m` (rotation + translation) to the vector `a`.
+    static void mul(Base& o, const Mtx34& m, const Base& a);
 
     static void cross(Base& o, const Base& a, const Base& b);
     static T dot(const Base& a, const Base& b);
