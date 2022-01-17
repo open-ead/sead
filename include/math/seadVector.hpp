@@ -144,6 +144,12 @@ inline T Vector3<T>::length() const
 }
 
 template <typename T>
+inline T Vector3<T>::squaredLength() const
+{
+    return Vector3CalcCommon<T>::squaredLength(*this);
+}
+
+template <typename T>
 inline bool Vector3<T>::equals(const Vector3<T>& rhs, T epsilon) const
 {
     return Vector3CalcCommon<T>::equals(*this, rhs, epsilon);
