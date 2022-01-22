@@ -174,7 +174,7 @@ typedef MathCalcCommon<f32> Mathf;
 typedef MathCalcCommon<size_t> MathSizeT;
 
 template <>
-extern u32 MathCalcCommon<f32>::atanIdx_(f32 t);
+u32 MathCalcCommon<f32>::atanIdx_(f32 t);
 
 template <typename T>
 constexpr T log2(T n)
