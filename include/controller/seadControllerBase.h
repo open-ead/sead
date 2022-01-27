@@ -2,8 +2,8 @@
 
 #include "math/seadBoundBox.h"
 #include "math/seadVector.h"
+#include "prim/seadBitFlag.h"
 #include "prim/seadRuntimeTypeInfo.h"
-#include "prim/seadTypedBitFlag.h"
 
 namespace sead
 {
@@ -20,10 +20,10 @@ public:
     // unknown return type
     u32 getPadHoldCount(int) const;
 
-    int getButtonsTrigger() const { return mButtonsTrigger; }
-    int getButtonsRelease() const { return mButtonsRelease; }
-    int getButtonsRepeat() const { return mButtonsRepeat; }
-    int getButtonsHold() const { return mButtonsHold; }
+    BitFlag32 getButtonsTrigger() const { return mButtonsTrigger; }
+    BitFlag32 getButtonsRelease() const { return mButtonsRelease; }
+    BitFlag32 getButtonsRepeat() const { return mButtonsRepeat; }
+    BitFlag32 getButtonsHold() const { return mButtonsHold; }
     const Vector2f& getTouchScreenPos() const { return mTouchScreenPos; }
     const Vector2f& getLeftJoy() const { return mLeftJoy; }
     const Vector2f& getRightJoy() const { return mRightJoy; }
@@ -39,9 +39,9 @@ protected:
     u32 createStickCrossMask_();
 
 private:
-    int mButtonsTrigger;
-    int mButtonsRelease;
-    unsigned int mButtonsRepeat;
+    BitFlag32 mButtonsTrigger;
+    BitFlag32 mButtonsRelease;
+    BitFlag32 mButtonsRepeat;
     unsigned int mFlags;
     int _18;
     int _1c;
@@ -58,7 +58,7 @@ private:
     int _108;
     int _10c;
     unsigned int mIdleCounter;
-    unsigned int mButtonsHold;
+    sead::BitFlag32 mButtonsHold;
     Vector2f mTouchScreenPos;
     Vector2f mLeftJoy;
     Vector2f mRightJoy;
