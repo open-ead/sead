@@ -136,6 +136,7 @@ public:
     void transpose();
 
     void fromQuat(const Quat& q);
+    void makeQT(const Quat& q, const Vec3& t);
     void makeR(const Vec3& r);
     void makeRIdx(u32 xr, u32 yr, u32 zr);
     void makeRT(const Vec3& r, const Vec3& t);

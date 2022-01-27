@@ -1208,6 +1208,38 @@ void Matrix34CalcCommon<T>::makeQ(Base& o, const Quat& q)
 }
 
 template <typename T>
+void Matrix34CalcCommon<T>::makeQT(Base& o, const Quat& q, const Vec3& t)
+{
+    // Assuming the quaternion "q" is normalized
+
+    const T yy = 2 * q.y * q.y;
+    const T zz = 2 * q.z * q.z;
+    const T xx = 2 * q.x * q.x;
+    const T xy = 2 * q.x * q.y;
+    const T xz = 2 * q.x * q.z;
+    const T yz = 2 * q.y * q.z;
+    const T wz = 2 * q.w * q.z;
+    const T wx = 2 * q.w * q.x;
+    const T wy = 2 * q.w * q.y;
+
+    o.m[0][0] = 1 - yy - zz;
+    o.m[0][1] = xy - wz;
+    o.m[0][2] = xz + wy;
+
+    o.m[1][0] = xy + wz;
+    o.m[1][1] = 1 - xx - zz;
+    o.m[1][2] = yz - wx;
+
+    o.m[2][0] = xz - wy;
+    o.m[2][1] = yz + wx;
+    o.m[2][2] = 1 - xx - yy;
+
+    o.m[0][3] = t.x;
+    o.m[1][3] = t.y;
+    o.m[2][3] = t.z;
+}
+
+template <typename T>
 void Matrix34CalcCommon<T>::makeR(Base& o, const Vec3& r)
 {
     const T sinV[3] = {MathCalcCommon<T>::sin(r.x), MathCalcCommon<T>::sin(r.y),
