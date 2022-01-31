@@ -1731,6 +1731,37 @@ void Matrix34CalcCommon<T>::getTranslation(Vec3& v, const Base& n)
 }
 
 template <typename T>
+void Matrix34CalcCommon<T>::getRotation(Vec3& v, const Base& n)
+{
+    const T a11 = n.m[0][0];
+    const T a12 = n.m[0][1];
+    const T a13 = n.m[0][2];
+
+    const T a21 = n.m[1][0];
+    const T a22 = n.m[1][1];
+    const T a23 = n.m[1][2];
+
+    const T a31 = n.m[2][0];
+    const T a32 = n.m[2][1];
+    const T a33 = n.m[2][2];
+
+    T abs = MathCalcCommon<T>::abs(a31);
+    // making sure pitch stays within bounds, setting roll to 0 otherwise
+    if ((1.0f - abs) < MathCalcCommon<T>::epsilon() * 10)
+    {
+        v.x = 0.0f;
+        v.y = (a31 / abs) * (-numbers::pi_v<T> / 2);
+        v.z = std::atan2f(-a12, -(a31 * a13));
+    }
+    else
+    {
+        v.x = std::atan2f(a32, a33);
+        v.y = std::asinf(-a31);
+        v.z = std::atan2f(a21, a11);
+    }
+}
+
+template <typename T>
 void Matrix34CalcCommon<T>::scaleAllElements(Base& n, T s)
 {
     n.m[0][0] *= s;

@@ -159,6 +159,7 @@ public:
     void getBase(Vec3& o, s32 axis) const;
     void getRow(Vec4& o, s32 row) const;
     void getTranslation(Vec3& o) const;
+    void getRotation(Vec3& o) const;
 
     void scaleAllElements(T s);
     void scaleBases(T sx, T sy, T sz);

@@ -480,6 +480,12 @@ inline void Matrix34<T>::getTranslation(Vec3& o) const
 }
 
 template <typename T>
+inline void Matrix34<T>::getRotation(Vec3& o) const
+{
+    Matrix34CalcCommon<T>::getRotation(o, *this);
+}
+
+template <typename T>
 inline void Matrix34<T>::scaleAllElements(T s)
 {
     Matrix34CalcCommon<T>::scaleAllElements(*this, s);

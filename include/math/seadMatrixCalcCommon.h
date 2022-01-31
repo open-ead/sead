@@ -108,6 +108,7 @@ public:
     static void getBase(Vec3& v, const Base& n, s32 axis);
     static void getRow(Vec4& v, const Base& n, s32 row);
     static void getTranslation(Vec3& v, const Base& n);
+    static void getRotation(Vec3& v, const Base& n);
 
     static void scaleAllElements(Base& n, T s);
     static void scaleBases(Base& n, T sx, T sy, T sz);
