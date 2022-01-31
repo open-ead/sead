@@ -126,4 +126,27 @@ inline void QuatCalcCommon<T>::set(Base& q, T w, T x, T y, T z)
     q.z = z;
 }
 
+template <typename T>
+inline void QuatCalcCommon<T>::setRPY(Base& q, T roll, T pitch, T yaw)
+{
+    const T cy = std::cos(yaw / 2);
+    const T cp = std::cos(pitch / 2);
+    const T cr = std::cos(roll / 2);
+    const T sy = std::sin(yaw / 2);
+    const T sp = std::sin(pitch / 2);
+    const T sr = std::sin(roll / 2);
+
+    const T cy_cp = cy * cp;
+    const T sy_sp = sy * sp;
+    const T cy_sp = cy * sp;
+    const T sy_cp = sy * cp;
+
+    const T w = (cy_cp * cr) + (sy_sp * sr);
+    const T x = (cy_cp * sr) - (sy_sp * cr);
+    const T y = (cy_sp * cr) + (sy_cp * sr);
+    const T z = (sy_cp * cr) - (cy_sp * sr);
+
+    set(q, w, x, y, z);
+}
+
 }  // namespace sead

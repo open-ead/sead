@@ -64,6 +64,7 @@ public:
     void makeUnit();
     bool makeVectorRotation(const Vec3& from, const Vec3& to);
     void set(T w, T x, T y, T z);
+    void setRPY(T roll, T pitch, T yaw);
 
     static const Quat unit;
 };

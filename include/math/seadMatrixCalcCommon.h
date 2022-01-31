@@ -87,6 +87,7 @@ public:
     static void transposeTo(Base& o, const Base& n);
 
     static void makeQ(Base& o, const Quat& q);
+    static void makeQT(Base& o, const Quat& q, const Vec3& t);
     static void makeR(Base& o, const Vec3& r);
     static void makeRIdx(Base& o, u32 xr, u32 yr, u32 zr);
     static void makeRT(Base& o, const Vec3& r, const Vec3& t);
