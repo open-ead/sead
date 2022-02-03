@@ -19,6 +19,7 @@ public:
     void printf(const char* format, ...);
     void printf(const char16_t* format, ...);
     void setScaleFromFontHeight(float scale);
+    void setCursorFromTopLeft(const Vector2f& pos);
     void beginDraw();
     static void setupGraphics(DrawContext* context);
 
