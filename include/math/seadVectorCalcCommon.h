@@ -16,6 +16,8 @@ public:
 
     static void set(Base& o, const Base& v);
     static void set(Base& v, T x, T y);
+
+    static T squaredLength(const Base& v);
 };
 
 template <typename T>

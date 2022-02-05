@@ -198,6 +198,18 @@ inline void Vector3<T>::set(T x_, T y_, T z_)
 }
 
 template <typename T>
+inline T Vector3<T>::sqrDistance(const Vector3<T>& o) const
+{
+    return Vector3CalcCommon<T>::squaredLength(*this - o);
+}
+
+template <typename T>
+inline T Vector3<T>::sqrXZDistance(const Vector3<T>& o) const
+{
+    return Vector2CalcCommon<T>::squaredLength(Vector2<T>(this->x - o.x, this->z - o.z));
+}
+
+template <typename T>
 inline void Vector3<T>::setCross(const Vector3<T>& a, const Vector3<T>& b)
 {
     Vector3CalcCommon<T>::cross(*this, a, b);
