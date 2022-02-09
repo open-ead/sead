@@ -39,6 +39,7 @@ public:
 
 }  // namespace RuntimeTypeInfo
 
+/// Tests if the object is a DerivedType or any type that derives from (i.e. inherits) DerivedType.
 template <typename DerivedType, typename Type>
 inline bool IsDerivedFrom(const Type* obj)
 {
@@ -46,6 +47,11 @@ inline bool IsDerivedFrom(const Type* obj)
     return obj != nullptr && obj->checkDerivedRuntimeTypeInfo(typeInfo);
 }
 
+/// If the object is a DerivedType or any type that derives from (i.e. inherits) DerivedType,
+/// this returns obj casted to DerivedType* -- otherwise this returns nullptr.
+///
+/// @note This is similar to C++'s dynamic_cast or LLVM's dyn_cast but only works with types
+/// that use the sead RTTI mechanism.
 template <typename DerivedType, typename Type>
 inline DerivedType* DynamicCast(Type* obj)
 {
@@ -57,6 +63,9 @@ inline DerivedType* DynamicCast(Type* obj)
 
 }  // namespace sead
 
+/// Use this macro to declare sead RTTI machinery for a base class.
+/// You must use SEAD_RTTI_OVERRIDE in all derived classes.
+/// @param CLASS The name of the class.
 #define SEAD_RTTI_BASE(CLASS)                                                                      \
 public:                                                                                            \
     static const sead::RuntimeTypeInfo::Interface* getRuntimeTypeInfoStatic()                      \
@@ -83,6 +92,9 @@ public:                                                                         
         return getRuntimeTypeInfoStatic();                                                         \
     }
 
+/// Use this macro to declare sead RTTI machinery for a derived class.
+/// @param CLASS The name of the class.
+/// @param BASE The name of the base class of CLASS.
 #define SEAD_RTTI_OVERRIDE(CLASS, BASE)                                                            \
 public:                                                                                            \
     static const sead::RuntimeTypeInfo::Interface* getRuntimeTypeInfoStatic()                      \
