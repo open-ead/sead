@@ -148,5 +148,52 @@ inline void QuatCalcCommon<T>::setRPY(Base& q, T roll, T pitch, T yaw)
 
     set(q, w, x, y, z);
 }
+// NON_MATCHING: major floating point calculation issues (https://decomp.me/scratch/jlIf0)
+template <typename T>
+inline void QuatCalcCommon<T>::calcRPY(Vec3& rpy, const Base& q)
+{
+    const T zz = q.z * q.z;
+    const T ww = q.w * q.w;
+    const T xx = q.x * q.x;
+    const T yy = q.y * q.y;
+
+    const T xy = q.x * q.y;
+    const T xz = q.x * q.z;
+    const T yz = q.y * q.z;
+    const T wx = q.w * q.x;
+    const T wy = q.w * q.y;
+    const T wz = q.w * q.z;
+
+    const T a11 = ww + xx - yy - zz;
+    // const T a11 = (1 - yy - zz)*2;
+    const T a12 = (xy - wz) * 2;
+    const T a13 = (xz + wy) * 2;
+    const T a21 = (xy + wz) * 2;
+    // const T a22 = (1 - xx - zz)*2;
+    // const T a23 = (yz - wx)*2;
+    const T a31 = (xz - wy) * 2;
+    const T a32 = (yz + wx) * 2;
+    const T a33 = ww - xx - yy + zz;
+    // const T a33 = (1 - xx - yy)*2;
+
+    T abs = MathCalcCommon<T>::abs(a31);
+    // making sure pitch stays within bounds, setting roll to 0 otherwise
+    if ((1.0f - abs) < MathCalcCommon<T>::epsilon() * 10)
+    {
+        rpy.x = 0.0f;
+        rpy.y = (a31 / abs) * (-numbers::pi_v<T> / 2);
+        rpy.z = std::atan2f(-a12, -(a31 * a13));
+    }
+    else
+    {
+        rpy.x = std::atan2f(a32, a33);
+        rpy.y = std::asinf(-a31);
+        rpy.z = std::atan2f(a21, a11);
+    }
+
+    /*Matrix34<T> mtx;
+    mtx.makeQT(q, Vec3::zero);
+    mtx.getRotation(rpy);*/
+}
 
 }  // namespace sead

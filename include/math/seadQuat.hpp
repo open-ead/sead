@@ -85,4 +85,10 @@ inline void Quat<T>::setRPY(T roll, T pitch, T yaw)
     QuatCalcCommon<T>::setRPY(*this, roll, pitch, yaw);
 }
 
+template <typename T>
+inline void Quat<T>::calcRPY(Vec3& vec) const
+{
+    QuatCalcCommon<T>::calcRPY(vec, *this);
+}
+
 }  // namespace sead
