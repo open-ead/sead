@@ -55,7 +55,7 @@ public:
     /// Returns -1 for strictly negative values and 1 otherwise.
     static T sign(T value);
 
-    static T fitSign(T value, T sign_value) { return value * sign(sign_value); }
+    static T fitSign(T value, T sign_value) { return abs(value) * sign(sign_value); }
 
     static T square(T t) { return t * t; }
 
