@@ -136,18 +136,6 @@ public:
         return PtrArrayImpl::compare(other, cmp);
     }
 
-    T* find(const T* ptr) const
-    {
-        return PtrArrayImpl::find(ptr,
-                                  [](const void* a, const void* b) { return a == b ? 0 : -1; });
-    }
-    T* find(const T* ptr, CompareCallback cmp) const { return PtrArrayImpl::find(ptr, cmp); }
-    s32 search(const T* ptr) const
-    {
-        return PtrArrayImpl::search(ptr,
-                                    [](const void* a, const void* b) { return a == b ? 0 : -1; });
-    }
-    s32 search(const T* ptr, CompareCallback cmp) const { return PtrArrayImpl::search(ptr, cmp); }
     s32 binarySearch(const T* ptr) const { return PtrArrayImpl::binarySearch(ptr, compareT); }
     s32 binarySearch(const T* ptr, CompareCallback cmp) const
     {
