@@ -108,6 +108,22 @@ public:
 
     void insert(s32 pos, const T& item) { PtrArrayImpl::insert(pos, alloc(item)); }
 
+    void erase(int index) { erase(index, 1); }
+
+    void erase(int index, int count)
+    {
+        if (index + count <= size())
+        {
+            for (int i = index; i < index + count; ++i)
+            {
+                auto* ptr = unsafeAt(i);
+                ptr->~T();
+                mFreeList.free(ptr);
+            }
+        }
+        PtrArrayImpl::erase(index, count);
+    }
+
     void clear()
     {
         for (s32 i = 0; i < mPtrNum; ++i)
