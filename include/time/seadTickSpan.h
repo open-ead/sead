@@ -35,19 +35,19 @@ public:
     void setMicroSeconds(s64 usec)
     {
         SEAD_ASSERT(LLONG_MIN / cFrequency <= usec && usec < LLONG_MAX / cFrequency);
-        mSpan = cFrequency * usec / 1'000'000;
+        mSpan = usec * cFrequency / 1'000'000;
     }
 
     void setMilliSeconds(s64 msec)
     {
         SEAD_ASSERT(LLONG_MIN / cFrequency <= msec && msec < LLONG_MAX / cFrequency);
-        mSpan = cFrequency * msec / 1000;
+        mSpan = msec * cFrequency / 1000;
     }
 
     void setSeconds(s64 sec)
     {
         SEAD_ASSERT(LLONG_MIN / cFrequency <= sec && sec < LLONG_MAX / cFrequency);
-        mSpan = cFrequency * sec;
+        mSpan = sec * cFrequency;
     }
 
     const TickSpan& operator+=(TickSpan span)
