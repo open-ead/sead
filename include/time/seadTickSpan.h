@@ -35,7 +35,7 @@ public:
     void setMicroSeconds(s64 usec)
     {
         SEAD_ASSERT(LLONG_MIN / cFrequency <= usec && usec < LLONG_MAX / cFrequency);
-        mSpan = usec * cFrequency / 1'000'000;
+        mSpan = usec * cFrequency / 1000 / 1000;
     }
 
     void setMilliSeconds(s64 msec)
