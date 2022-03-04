@@ -30,10 +30,25 @@ public:
 
     s64 toSeconds() const { return toMilliSeconds() / 1000; }
 
-    void setNanoSeconds(s64 ns);
-    void setMicroSeconds(s64 us) { setNanoSeconds(us * 1000); }
-    void setMilliSeconds(s64 ms) { setMicroSeconds(ms * 1000); }
-    void setSeconds(s64 s) { setMilliSeconds(s * 1000); }
+    void setNanoSeconds(s64 nsec);
+
+    void setMicroSeconds(s64 usec)
+    {
+        SEAD_ASSERT(LLONG_MIN / cFrequency <= usec && usec < LLONG_MAX / cFrequency);
+        mSpan = usec * cFrequency / 1000 / 1000;
+    }
+
+    void setMilliSeconds(s64 msec)
+    {
+        SEAD_ASSERT(LLONG_MIN / cFrequency <= msec && msec < LLONG_MAX / cFrequency);
+        mSpan = msec * cFrequency / 1000;
+    }
+
+    void setSeconds(s64 sec)
+    {
+        SEAD_ASSERT(LLONG_MIN / cFrequency <= sec && sec < LLONG_MAX / cFrequency);
+        mSpan = sec * cFrequency;
+    }
 
     const TickSpan& operator+=(TickSpan span)
     {
@@ -65,30 +80,32 @@ public:
     friend TickSpan operator*(f32 x, TickSpan a) { return a.mSpan * x; }
     friend TickSpan operator/(TickSpan a, f32 x) { return a.mSpan / x; }
 
-    static TickSpan fromNanoSeconds(s64 ns)
+    static TickSpan makeFromNanoSeconds(s64 nsec)
     {
-        SEAD_ASSERT(LLONG_MIN / cFrequency <= ns && ns < LLONG_MAX / cFrequency);
         TickSpan span;
-        span.setNanoSeconds(ns);
+        span.setNanoSeconds(nsec);
         return span;
     }
 
-    static TickSpan fromMicroSeconds(s64 usec)
+    static TickSpan makeFromMicroSeconds(s64 usec)
     {
-        SEAD_ASSERT(LLONG_MIN / cFrequency <= usec && usec < LLONG_MAX / cFrequency);
-        return {cFrequency * usec / 1'000'000};
+        TickSpan span;
+        span.setMicroSeconds(usec);
+        return span;
     }
 
-    static TickSpan fromMilliSeconds(s64 msec)
+    static TickSpan makeFromMilliSeconds(s64 msec)
     {
-        SEAD_ASSERT(LLONG_MIN / cFrequency <= msec && msec < LLONG_MAX / cFrequency);
-        return {cFrequency * msec / 1000};
+        TickSpan span;
+        span.setMilliSeconds(msec);
+        return span;
     }
 
-    static TickSpan fromSeconds(s64 sec)
+    static TickSpan makeFromSeconds(s64 sec)
     {
-        SEAD_ASSERT(LLONG_MIN / cFrequency <= sec && sec < LLONG_MAX / cFrequency);
-        return {cFrequency * sec};
+        TickSpan span;
+        span.setSeconds(sec);
+        return span;
     }
 
 private:

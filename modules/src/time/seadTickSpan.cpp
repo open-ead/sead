@@ -34,19 +34,19 @@ s64 TickSpan::toNanoSeconds() const
     return 1'000'000'000 * (mSpan / cFrequency);
 }
 
-void TickSpan::setNanoSeconds(s64 ns)
+void TickSpan::setNanoSeconds(s64 nsec)
 {
     const s64 threshold = std::numeric_limits<s64>::max() / cFrequency;
-    const s64 abs_ns = std::abs(ns);
+    const s64 abs_ns = std::abs(nsec);
 
     if (abs_ns <= threshold)
-        mSpan = cFrequency * ns / 1'000'000'000;
+        mSpan = cFrequency * nsec / 1'000'000'000;
     else if (abs_ns <= 1000 * threshold)
-        mSpan = cFrequency * (ns / 1000) / 1'000'000;
+        mSpan = cFrequency * (nsec / 1000) / 1'000'000;
     else if (abs_ns <= 1'000'000 * threshold)
-        mSpan = cFrequency * (ns / 1'000'000) / 1000;
+        mSpan = cFrequency * (nsec / 1'000'000) / 1000;
     else
-        mSpan = cFrequency * (ns / 1'000'000'000);
+        mSpan = cFrequency * (nsec / 1'000'000'000);
 }
 
 }  // namespace sead
