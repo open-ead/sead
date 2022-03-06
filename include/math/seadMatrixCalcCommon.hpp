@@ -9,6 +9,8 @@
 #include <arm_neon.h>
 #endif
 
+#include <cmath>
+
 #include <math/seadMathCalcCommon.h>
 #ifndef SEAD_MATH_MATRIX_CALC_COMMON_H_
 #include <math/seadMatrixCalcCommon.h>
@@ -1753,13 +1755,13 @@ void Matrix34CalcCommon<T>::getRotation(Vec3& v, const Base& n)
     {
         v.x = 0.0f;
         v.y = (a31 / abs) * (-numbers::pi_v<T> / 2);
-        v.z = std::atan2f(-a12, -(a31 * a13));
+        v.z = std::atan2(-a12, -(a31 * a13));
     }
     else
     {
-        v.x = std::atan2f(a32, a33);
-        v.y = std::asinf(-a31);
-        v.z = std::atan2f(a21, a11);
+        v.x = std::atan2(a32, a33);
+        v.y = std::asin(-a31);
+        v.z = std::atan2(a21, a11);
     }
 }
 

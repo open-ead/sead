@@ -431,13 +431,15 @@ s32 SZSDecompressor::decomp(void* dst, u32 dstSize, const void* src, u32)
     u32 decompSize = getDecompSize(src);
     s32 error = -2;
     if (dstSize >= decompSize)
+    {
 #ifdef cafe
         error = decodeSZSCafeAsm_(dst, src);
 #elif defined(SWITCH)
         error = decodeSZSNxAsm64_(dst, src);
 #else
-#error "Unknown platform"
+        SEAD_ASSERT_MSG(false, "SZSDecompressor::decomp not implemented");
 #endif  // cafe
+    }
 
     return error;
 }

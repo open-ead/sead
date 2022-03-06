@@ -56,7 +56,6 @@ private:
     using Self = Matrix33<T>;
     using Mtx34 = Matrix34<T>;
 
-    using Quat = Quat<T>;
     using Vec3 = Vector3<T>;
 
 public:
@@ -83,7 +82,7 @@ public:
     void setTranspose(const Self& n);
     void transpose();
 
-    void fromQuat(const Quat& q);
+    void fromQuat(const Quat<T>& q);
     void makeR(const Vec3& r);
     void makeRIdx(u32 xr, u32 yr, u32 zr);
     void makeRzxyIdx(u32 xr, u32 yr, u32 zr);
@@ -92,7 +91,7 @@ public:
     void makeSR(const Vec3& s, const Vec3& r);
     void makeSRIdx(const Vec3& s, const Vector3<u32>& r);
     void makeSRzxyIdx(const Vec3& s, const Vector3<u32>& r);
-    void toQuat(Quat& q) const;
+    void toQuat(Quat<T>& q) const;
 
     static const Matrix33 zero;
     static const Matrix33 ident;
@@ -106,7 +105,6 @@ private:
     using Mtx33 = Matrix33<T>;
     using Mtx44 = Matrix44<T>;
 
-    using Quat = Quat<T>;
     using Vec3 = Vector3<T>;
     using Vec4 = Vector4<T>;
 
@@ -135,8 +133,8 @@ public:
     void setTranspose(const Self& n);
     void transpose();
 
-    void fromQuat(const Quat& q);
-    void makeQT(const Quat& q, const Vec3& t);
+    void fromQuat(const Quat<T>& q);
+    void makeQT(const Quat<T>& q, const Vec3& t);
     void makeR(const Vec3& r);
     void makeRIdx(u32 xr, u32 yr, u32 zr);
     void makeRT(const Vec3& r, const Vec3& t);
@@ -154,7 +152,7 @@ public:
     void makeST(const Vec3& s, const Vec3& t);
     void makeT(const Vec3& t);
     void makeT(T x, T y, T z);
-    void toQuat(Quat& q) const;
+    void toQuat(Quat<T>& q) const;
 
     void getBase(Vec3& o, s32 axis) const;
     void getRow(Vec4& o, s32 row) const;
@@ -180,7 +178,6 @@ private:
     using Mtx33 = Matrix33<T>;
     using Mtx34 = Matrix34<T>;
 
-    using Quat = Quat<T>;
     using Vec3 = Vector3<T>;
     using Vec4 = Vector4<T>;
 
@@ -210,11 +207,11 @@ public:
     void setTranspose(const Self& n);
     void transpose();
 
-    void fromQuat(const Quat& q);
+    void fromQuat(const Quat<T>& q);
     void makeR(const Vec3& r);
     void makeRIdx(u32 xr, u32 yr, u32 zr);
     void makeRzxyIdx(u32 xr, u32 yr, u32 zr);
-    void toQuat(Quat& q) const;
+    void toQuat(Quat<T>& q) const;
 
     void getCol(Vec4& o, s32 axis) const;
     void getRow(Vec4& o, s32 row) const;

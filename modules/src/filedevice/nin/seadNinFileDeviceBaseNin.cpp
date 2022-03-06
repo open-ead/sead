@@ -36,7 +36,7 @@ FileDevice* NinFileDeviceBase::doOpen_(FileHandle* handle, const SafeString& pat
         nn::fs::OpenMode_ReadWrite | nn::fs::OpenMode_Append,
         nn::fs::OpenMode_Write | nn::fs::OpenMode_Append,
     };
-    const u32 mode = flag <= 3u ? sModes[s32(flag)] : nn::fs::OpenMode_Read;
+    const u32 mode = flag <= 3u ? sModes[s32(flag)] : u32(nn::fs::OpenMode_Read);
 
     FixedSafeString<256> fs_path;
     if (!formatPathForFS_(&fs_path, path))
