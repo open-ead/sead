@@ -16,7 +16,7 @@ protected:
 };
 
 template <typename T>
-inline ScopedLock<T> makeScopedLock(T& lock)
+[[nodiscard]] inline ScopedLock<T> makeScopedLock(T& lock)
 {
     return ScopedLock<T>(&lock);
 }
@@ -45,7 +45,7 @@ protected:
 };
 
 template <typename T>
-inline ConditionalScopedLock<T> makeScopedLock(T& lock, bool do_lock)
+[[nodiscard]] inline ConditionalScopedLock<T> makeScopedLock(T& lock, bool do_lock)
 {
     return ConditionalScopedLock<T>(&lock, do_lock);
 }
