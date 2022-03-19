@@ -34,7 +34,7 @@ private:
 
 /// To work around the lack of CTAD in compilers with incomplete C++17 support.
 template <typename Function>
-ScopeGuard<Function> makeScopeGuard(Function&& function)
+[[nodiscard]] ScopeGuard<Function> makeScopeGuard(Function&& function)
 {
     return ScopeGuard<Function>(std::forward<Function>(function));
 }
