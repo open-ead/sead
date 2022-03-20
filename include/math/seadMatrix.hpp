@@ -298,21 +298,39 @@ inline void Matrix34<T>::makeZero()
 }
 
 template <typename T>
-inline void Matrix34<T>::setInverse(const Self& n)
+inline bool Matrix34<T>::invert()
 {
-    Matrix34CalcCommon<T>::inverse(*this, n);
+    return setInverse(*this);
 }
 
 template <typename T>
-inline void Matrix34<T>::setInverse33(const Self& n)
+inline bool Matrix34<T>::invert33()
 {
-    Matrix34CalcCommon<T>::inverse33(*this, n);
+    return setInverse33(*this);
 }
 
 template <typename T>
-inline void Matrix34<T>::setInverseTranspose(const Self& n)
+inline bool Matrix34<T>::invertTranspose()
 {
-    Matrix34CalcCommon<T>::inverseTranspose(*this, n);
+    return setInverseTranspose(*this);
+}
+
+template <typename T>
+inline bool Matrix34<T>::setInverse(const Self& n)
+{
+    return Matrix34CalcCommon<T>::inverse(*this, n);
+}
+
+template <typename T>
+inline bool Matrix34<T>::setInverse33(const Self& n)
+{
+    return Matrix34CalcCommon<T>::inverse33(*this, n);
+}
+
+template <typename T>
+inline bool Matrix34<T>::setInverseTranspose(const Self& n)
+{
+    return Matrix34CalcCommon<T>::inverseTranspose(*this, n);
 }
 
 template <typename T>

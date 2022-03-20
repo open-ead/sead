@@ -831,7 +831,7 @@ void Matrix34CalcCommon<T>::copy(Base& o, const Mtx44& n)
 #endif  // cafe
 
 template <typename T>
-void Matrix34CalcCommon<T>::inverse(Base& o, const Base& n)
+bool Matrix34CalcCommon<T>::inverse(Base& o, const Base& n)
 {
     const T a11 = n.m[0][0];
     const T a12 = n.m[0][1];
@@ -852,7 +852,7 @@ void Matrix34CalcCommon<T>::inverse(Base& o, const Base& n)
             (a13 * a21 * a32 - a11 * a32 * a23);
 
     if (det == 0)
-        return makeIdentity(o);
+        return false;
 
     det = 1 / det;
 
@@ -871,24 +871,12 @@ void Matrix34CalcCommon<T>::inverse(Base& o, const Base& n)
     o.m[0][3] = o.m[0][0] * -a14 + o.m[0][1] * -a24 + o.m[0][2] * -a34;
     o.m[1][3] = o.m[1][0] * -a14 + o.m[1][1] * -a24 + o.m[1][2] * -a34;
     o.m[2][3] = o.m[2][0] * -a14 + o.m[2][1] * -a24 + o.m[2][2] * -a34;
+
+    return true;
 }
-
-#ifdef cafe
-
-template <>
-inline void Matrix34CalcCommon<f32>::inverse(Base& o, const Base& n)
-{
-    u32 ret = ASM_MTXInverse(const_cast<f32(*)[4]>(n.m), o.m);
-
-    // Nintendo did not actually call makeIdentity() for the cafe f32 specialization
-    // if (!ret)
-    //    return makeIdentity(o);
-}
-
-#endif  // cafe
 
 template <typename T>
-void Matrix34CalcCommon<T>::inverse33(Base& o, const Base& n)
+bool Matrix34CalcCommon<T>::inverse33(Base& o, const Base& n)
 {
     const T a11 = n.m[0][0];
     const T a12 = n.m[0][1];
@@ -906,7 +894,7 @@ void Matrix34CalcCommon<T>::inverse33(Base& o, const Base& n)
             (a13 * a21 * a32 - a11 * a32 * a23);
 
     if (det == 0)
-        return makeIdentity(o);
+        return false;
 
     det = 1 / det;
 
@@ -925,10 +913,12 @@ void Matrix34CalcCommon<T>::inverse33(Base& o, const Base& n)
     o.m[0][3] = 0;
     o.m[1][3] = 0;
     o.m[2][3] = 0;
+
+    return true;
 }
 
 template <typename T>
-void Matrix34CalcCommon<T>::inverseTranspose(Base& o, const Base& n)
+bool Matrix34CalcCommon<T>::inverseTranspose(Base& o, const Base& n)
 {
     const T a11 = n.m[0][0];
     const T a12 = n.m[0][1];
@@ -946,7 +936,7 @@ void Matrix34CalcCommon<T>::inverseTranspose(Base& o, const Base& n)
             (a13 * a21 * a32 - a11 * a32 * a23);
 
     if (det == 0)
-        return makeIdentity(o);
+        return false;
 
     det = 1 / det;
 
@@ -965,6 +955,8 @@ void Matrix34CalcCommon<T>::inverseTranspose(Base& o, const Base& n)
     o.m[0][3] = 0;
     o.m[1][3] = 0;
     o.m[2][3] = 0;
+
+    return true;
 }
 
 template <typename T>

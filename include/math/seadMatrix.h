@@ -125,9 +125,12 @@ public:
     void makeIdentity();
     void makeZero();
 
-    void setInverse(const Self& n);
-    void setInverse33(const Self& n);
-    void setInverseTranspose(const Self& n);
+    bool invert();
+    bool invert33();
+    bool invertTranspose();
+    bool setInverse(const Self& n);
+    bool setInverse33(const Self& n);
+    bool setInverseTranspose(const Self& n);
     void setMul(const Self& a, const Self& b);
     void setMul(const Mtx33& a, const Self& b);
     void setTranspose(const Self& n);

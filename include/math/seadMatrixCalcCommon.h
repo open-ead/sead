@@ -77,9 +77,9 @@ public:
     static void copy(Base& o, const Base& n);
     static void copy(Base& o, const Mtx33& n, const Vec3& t);
     static void copy(Base& o, const Mtx44& n);
-    static void inverse(Base& o, const Base& n);
-    static void inverse33(Base& o, const Base& n);
-    static void inverseTranspose(Base& o, const Base& n);
+    static bool inverse(Base& o, const Base& n);
+    static bool inverse33(Base& o, const Base& n);
+    static bool inverseTranspose(Base& o, const Base& n);
     static void multiply(Base& o, const Base& a, const Base& b);
     static void multiply(Base& o, const Mtx33& a, const Base& b);
     static void multiply(Base& o, const Base& a, const Mtx33& b);
