@@ -138,6 +138,14 @@ public:
             return *this;
         }
 
+        robustIterator operator++(int)
+        {
+            robustIterator copy = *this;
+            mPtr = mPtrNext;
+            mPtrNext = static_cast<TListNode<T>*>(mPtr->next());
+            return copy;
+        }
+
         TListNode<T>& operator*() const { return *mPtr; }
         TListNode<T>* operator->() const { return mPtr; }
 
