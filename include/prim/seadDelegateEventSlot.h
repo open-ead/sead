@@ -83,8 +83,8 @@ public:
 
     void emit(T arg)
     {
-        for (Slot* slot : mList.robustRange())
-            slot->invoke_(arg);
+        for (auto& slot_node : mList.robustRange())
+            slot_node.mData->invoke_(arg);
     }
 
     int getNumSlots() const { return mList.size(); }

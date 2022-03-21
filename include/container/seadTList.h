@@ -120,10 +120,13 @@ public:
         return iterator(static_cast<TListNode<T>*>(const_cast<ListNode*>(&mStartEnd)));
     }
 
+    /// An iterator that is safe to use even if the list is mutated during iteration.
+    /// Unlike the regular iterator class, this exposes ListNode<T> rather than T
+    /// to make it easier to modify the list.
     class robustIterator
     {
     public:
-        robustIterator(TListNode<T>* ptr) : mPtr(ptr)
+        explicit robustIterator(TListNode<T>* ptr) : mPtr(ptr)
         {
             mPtrNext = static_cast<TListNode<T>*>(mPtr->next());
         }
@@ -135,8 +138,8 @@ public:
             return *this;
         }
 
-        T& operator*() const { return mPtr->mData; }
-        T* operator->() const { return &mPtr->mData; }
+        TListNode<T>& operator*() const { return *mPtr; }
+        TListNode<T>* operator->() const { return mPtr; }
 
         friend bool operator==(robustIterator it1, robustIterator it2)
         {
