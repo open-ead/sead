@@ -40,6 +40,18 @@ inline void Vector2CalcCommon<T>::set(Base& v, T x, T y)
 }
 
 template <typename T>
+inline T Vector2CalcCommon<T>::squaredLength(const Base& v)
+{
+    return v.x * v.x + v.y * v.y;
+}
+
+template <typename T>
+inline T Vector2CalcCommon<T>::length(const Base& v)
+{
+    return MathCalcCommon<T>::sqrt(squaredLength(v));
+}
+
+template <typename T>
 inline void Vector3CalcCommon<T>::add(Base& o, const Base& a, const Base& b)
 {
     o.x = a.x + b.x;
