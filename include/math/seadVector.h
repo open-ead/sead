@@ -2,6 +2,7 @@
 
 #include <basis/seadTypes.h>
 #include <cmath>
+#include <math/seadMathCalcCommon.h>
 #include <math/seadMathPolicies.h>
 #include <math/seadVectorCalcCommon.h>
 
@@ -56,6 +57,12 @@ struct Vector2 : public Policies<T>::Vec2Base
 
     void set(const Vector2& other);
     void set(T x_, T y_);
+
+    T length() const
+    {
+        return sead::MathCalcCommon<T>::sqrt(this->x * this->x + this->y * this->y);
+    }
+    bool isZero() const { return *this == zero; }
 
     static const Vector2 zero;
     static const Vector2 ex;
