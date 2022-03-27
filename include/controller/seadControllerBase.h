@@ -11,58 +11,115 @@ class ControllerBase
 {
     SEAD_RTTI_BASE(ControllerBase)
 public:
-    ControllerBase(int, int, int, int);
+    static const f32 cStickHoldThresholdDefault;
+    static const f32 cStickReleaseThresholdDefault;
+    static const Vector2f cInvalidPointer;
+    static const Vector2i cInvalidPointerS32;
 
-    void setRightStickCrossThreshold(float, float);
+    ControllerBase(s32 padBitMax, s32 leftStickCrossStartBit, s32 rightStickCrossStartBit,
+                   s32 touchKeyBit);
+
+    u32 getHoldMask() const { return mPadHold.getDirect(); }
+    u32 getTrigMask() const { return mPadTrig.getDirect(); }
+    u32 getReleaseMask() const { return mPadRelease.getDirect(); }
+    u32 getRepeatMask() const { return mPadRepeat.getDirect(); }
+
+    u32 getPadHoldCount(s32 bit) const;
+
+    const Vector2f& getLeftStick() const { return mLeftStick; }
+    const Vector2f& getRightStick() const { return mRightStick; }
+    f32 getLeftAnalogTrigger() const { return mLeftAnalogTrigger; }
+    f32 getRightAnalogTrigger() const { return mRightAnalogTrigger; }
+    const Vector2f& getPointer() const { return mPointer; }
+    const Vector2i& getPointerPrev() const { return mPointerS32; }
+    bool isPointerOn() const { return mPointerFlag.isOn(cPointerOn); }
+    bool isPointerOnNow() const { return mPointerFlag.isOn(cPointerOnNow); }
+    bool isPointerOffNow() const { return mPointerFlag.isOn(cPointerOffNow); }
+    bool isPointerUnkFlag3() const { return mPointerFlag.isOn(cPointerUnkFlag3); }
+
+    bool isHold(u32 mask) const { return mask & getHoldMask(); }
+    bool isTrig(u32 mask) const { return mask & getTrigMask(); }
+    bool isHoldAll(u32 mask) const { return (mask & getHoldMask()) == mask; }
+    bool isRelease(u32 mask) const { return mask & getReleaseMask(); }
+    bool isRepeat(u32 mask) const { return mask & getRepeatMask(); }
+
+    bool isTrigWithRepeat(u32 mask) const
+    {
+        u32 trig = getTrigMask();
+        u32 repeat = getRepeatMask();
+        return (repeat | trig) & mask;
+    }
+
+    void setPadRepeat(u32 mask, u8 delay_frame, u8 pulse_frame);
+
+    void setLeftStickCrossThreshold(f32 hold, f32 release);
+    void setRightStickCrossThreshold(f32 hold, f32 release);
+
     void setPointerBound(const BoundBox2f& bound);
-    void setPadRepeat(u32, u8, u8);
-    void setLeftStickCrossThreshold(float, float);
-    // unknown return type
-    u32 getPadHoldCount(int) const;
-
-    BitFlag32 getButtonsTrigger() const { return mButtonsTrigger; }
-    BitFlag32 getButtonsRelease() const { return mButtonsRelease; }
-    BitFlag32 getButtonsRepeat() const { return mButtonsRepeat; }
-    BitFlag32 getButtonsHold() const { return mButtonsHold; }
-    const Vector2f& getTouchScreenPos() const { return mTouchScreenPos; }
-    const Vector2f& getLeftJoy() const { return mLeftJoy; }
-    const Vector2f& getRightJoy() const { return mRightJoy; }
+    const BoundBox2f& getPointerBound() const { return mPointerBound; }
 
 protected:
-    void updateDerivativeParams_(u32, bool);
-    void setPointerWithBound_(bool, bool, const Vector2f& bound);
-    void setIdleBase_();
     bool isIdleBase_();
-    // unknown return type
-    u32 getStickHold_(u32, const Vector2f&, float, float, int);
-    // unknown return type
+    void setIdleBase_();
+    void setPointerWithBound_(bool is_on, bool touchkey_hold, const Vector2f& pos);
+    void updateDerivativeParams_(u32 prev_hold, bool prev_pointer_on);
+    u32 getStickHold_(u32 prev_hold, const Vector2f& stick, f32 hold_threshold,
+                      f32 release_threshold, s32 start_bit);
     u32 createStickCrossMask_();
 
 private:
-    BitFlag32 mButtonsTrigger;
-    BitFlag32 mButtonsRelease;
-    BitFlag32 mButtonsRepeat;
-    unsigned int mFlags;
-    int _18;
-    int _1c;
+    enum
+    {
+        cPadIdx_MaxBase = 32
+    };
+
+    enum PointerFlagMask
+    {
+        cPointerOn = 1 << 0,
+        cPointerOnNow = 1 << 1,
+        cPointerOffNow = 1 << 2,
+        cPointerUnkFlag3 = 1 << 3
+    };
+
+    enum
+    {
+        cCrossUp,
+        cCrossDown,
+        cCrossLeft,
+        cCrossRight
+    };
+
+    BitFlag32 mPadTrig;
+    BitFlag32 mPadRelease;
+    BitFlag32 mPadRepeat;
+    BitFlag32 mPointerFlag;
+    Vector2i mPointerS32;
     BoundBox2f mPointerBound;
-    int mPadHoldCounts[32];
-    char _b0[32];
-    char _d0[32];
-    float mLeftStickThresholdX;
-    float mRightStickThresholdX;
-    float mLeftStickThresholdY;
-    float mRightStickThresholdY;
-    int _100;
-    int _104;
-    int _108;
-    int _10c;
-    unsigned int mIdleCounter;
-    sead::BitFlag32 mButtonsHold;
-    Vector2f mTouchScreenPos;
-    Vector2f mLeftJoy;
-    Vector2f mRightJoy;
-    Vector2f _130;
+    u32 mPadHoldCounts[cPadIdx_MaxBase];
+    u8 mPadRepeatDelays[cPadIdx_MaxBase];
+    u8 mPadRepeatPulses[cPadIdx_MaxBase];
+    f32 mLeftStickHoldThreshold;
+    f32 mRightStickHoldThreshold;
+    f32 mLeftStickReleaseThreshold;
+    f32 mRightStickReleaseThreshold;
+    s32 mPadBitMax;
+    s32 mLeftStickCrossStartBit;
+    s32 mRightStickCrossStartBit;
+    s32 mTouchKeyBit;
+    s32 mIdleFrame;
+    BitFlag32 mPadHold;
+    Vector2f mPointer;
+    Vector2f mLeftStick;
+    Vector2f mRightStick;
+    f32 mLeftAnalogTrigger;
+    f32 mRightAnalogTrigger;
+
+    friend class Controller;
+    friend class ControllerWrapper;
+    friend class ControllerWrapperBase;
 };
+#ifdef cafe
+static_assert(sizeof(ControllerBase) == 0x130, "sead::ControllerBase size mismatch");
+#endif  // cafe
 
 }  // namespace sead
