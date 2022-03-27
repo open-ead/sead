@@ -2,6 +2,7 @@
 
 #include <basis/seadTypes.h>
 #include <cmath>
+#include <math/seadMathCalcCommon.h>
 #include <math/seadMathPolicies.h>
 #include <math/seadVectorCalcCommon.h>
 
@@ -56,6 +57,9 @@ struct Vector2 : public Policies<T>::Vec2Base
 
     void set(const Vector2& other);
     void set(T x_, T y_);
+
+    T length() const;
+    bool isZero() const { return *this == zero; }
 
     static const Vector2 zero;
     static const Vector2 ex;
@@ -209,8 +213,11 @@ struct Vector4 : public Policies<T>::Vec4Base
     static const Vector4 ones;
 };
 
+typedef Vector2<s32> Vector2i;
 typedef Vector2<f32> Vector2f;
+typedef Vector3<s32> Vector3i;
 typedef Vector3<f32> Vector3f;
+typedef Vector4<s32> Vector4i;
 typedef Vector4<f32> Vector4f;
 
 template <>
