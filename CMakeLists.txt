@@ -37,6 +37,23 @@ add_library(sead OBJECT
   modules/src/container/seadPtrArray.cpp
   modules/src/container/seadTreeNode.cpp
 
+  include/controller/seadAccelerometerAddon.h
+  include/controller/seadControlDevice.h
+  include/controller/seadController.h
+  include/controller/seadControllerAddon.h
+  include/controller/seadControllerBase.h
+  include/controller/seadControllerDefine.h
+  include/controller/seadControllerMgr.h
+  include/controller/seadControllerWrapper.h
+  include/controller/seadControllerWrapperBase.h
+  include/controller/seadPatternRumbleAddon.h
+  modules/src/controller/seadController.cpp
+  modules/src/controller/seadControllerBase.cpp
+  modules/src/controller/seadControllerMgr.cpp
+  modules/src/controller/seadControllerWrapper.cpp
+  modules/src/controller/seadControllerWrapperBase.cpp
+  modules/src/controller/seadPatternRumbleAddon.cpp
+
   include/devenv/seadAssertConfig.h
   include/devenv/seadEnvUtil.h
   include/devenv/seadGameConfig.h
@@ -245,6 +262,8 @@ if(SEAD_PLATFORM STREQUAL "nin")
   target_link_libraries(sead PUBLIC NintendoSDK)
 
   target_sources(sead PRIVATE
+    include/controller/nin/seadNinJoyNpadDevice.h
+
     include/filedevice/nin/seadNinAocFileDeviceNin.h
     include/filedevice/nin/seadNinContentFileDeviceNin.h
     include/filedevice/nin/seadNinFileDeviceBaseNin.h
