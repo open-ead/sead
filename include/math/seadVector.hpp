@@ -63,6 +63,12 @@ inline void Vector2<T>::set(T x_, T y_)
 }
 
 template <typename T>
+inline T Vector2<T>::length() const
+{
+    return Vector2CalcCommon<T>::length(*this);
+}
+
+template <typename T>
 inline Vector3<T>::Vector3(T x_, T y_, T z_)
 {
     Vector3CalcCommon<T>::set(*this, x_, y_, z_);

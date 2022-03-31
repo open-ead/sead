@@ -10,6 +10,7 @@
 #include <prim/seadDelegateEventSlot.h>
 #include <prim/seadNamable.h>
 #include <prim/seadRuntimeTypeInfo.h>
+#include <thread/seadDelegateThread.h>
 
 namespace sead
 {
@@ -87,6 +88,8 @@ public:
     virtual const RuntimeTypeInfo::Interface* getCorrespondingMethodTreeMgrTypeInfo() const = 0;
     virtual MethodTreeNode* getMethodTreeNode(s32 method_type) = 0;
     virtual void onDestroy();
+
+    DelegateThread* getFramework() const;  // seems to return mTaskMgr->mPrepareThread;
 
     TaskParameter* mParameter;
     BitFlag32 mInternalFlag;
