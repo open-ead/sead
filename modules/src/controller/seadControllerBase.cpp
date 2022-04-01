@@ -90,7 +90,7 @@ void ControllerBase::updateDerivativeParams_(u32 prev_hold, bool prev_pointer_on
                                     mRightStickReleaseThreshold, mRightStickCrossStartBit);
     }
 
-    mPadHold.setDirect(mPadHold.getDirect() & ~createStickCrossMask_() | stick_hold);
+    mPadHold.setDirect((mPadHold.getDirect() & ~createStickCrossMask_()) | stick_hold);
 
     mPadTrig.setDirect(~prev_hold & mPadHold.getDirect());
     mPadRelease.setDirect(prev_hold & ~mPadHold.getDirect());
@@ -188,8 +188,8 @@ u32 ControllerBase::getStickHold_(u32 prev_hold, const Vector2f& stick, f32 hold
 
     if (length < release_threshold ||
         (length < hold_threshold &&
-         (prev_hold & (1 << start_bit + cCrossUp | 1 << start_bit + cCrossDown |
-                       1 << start_bit + cCrossLeft | 1 << start_bit + cCrossRight)) == 0))
+         (prev_hold & (1 << (start_bit + cCrossUp) | 1 << (start_bit + cCrossDown) |
+                       1 << (start_bit + cCrossLeft) | 1 << (start_bit + cCrossRight))) == 0))
     {
         return 0;
     }
@@ -199,39 +199,39 @@ u32 ControllerBase::getStickHold_(u32 prev_hold, const Vector2f& stick, f32 hold
 
         if (angle < 0x10000000)
         {
-            return 1 << start_bit + cCrossRight;
+            return 1 << (start_bit + cCrossRight);
         }
         else if (angle < 0x30000000)
         {
-            return 1 << start_bit + cCrossRight | 1 << start_bit + cCrossUp;
+            return 1 << (start_bit + cCrossRight) | 1 << (start_bit + cCrossUp);
         }
         else if (angle < 0x50000000)
         {
-            return 1 << start_bit + cCrossUp;
+            return 1 << (start_bit + cCrossUp);
         }
         else if (angle < 0x70000000)
         {
-            return 1 << start_bit + cCrossLeft | 1 << start_bit + cCrossUp;
+            return 1 << (start_bit + cCrossLeft) | 1 << (start_bit + cCrossUp);
         }
         else if (angle < 0x90000000)
         {
-            return 1 << start_bit + cCrossLeft;
+            return 1 << (start_bit + cCrossLeft);
         }
         else if (angle < 0xb0000000)
         {
-            return 1 << start_bit + cCrossLeft | 1 << start_bit + cCrossDown;
+            return 1 << (start_bit + cCrossLeft) | 1 << (start_bit + cCrossDown);
         }
         else if (angle < 0xd0000000)
         {
-            return 1 << start_bit + cCrossDown;
+            return 1 << (start_bit + cCrossDown);
         }
         else if (angle < 0xf0000000)
         {
-            return 1 << start_bit + cCrossRight | 1 << start_bit + cCrossDown;
+            return 1 << (start_bit + cCrossRight) | 1 << (start_bit + cCrossDown);
         }
         else
         {
-            return 1 << start_bit + cCrossRight;
+            return 1 << (start_bit + cCrossRight);
         }
     }
 }
