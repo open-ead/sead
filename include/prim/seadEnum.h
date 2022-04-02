@@ -218,7 +218,7 @@ private:
 /// SEAD_ENUM_EX_VALUES(AssetType, 0, 1, 0xFF)
 /// or SEAD_ENUM_EX_VALUES(AssetType, Wave, Stream, Unknown)
 ///
-/// Finally, in the .cpp file, add SEAD_ENUM_EX_IMPL(AssetType)
+/// at namespace scope.
 ///
 /// For the common case where enumerators do not require custom values, use SEAD_ENUM.
 ///
@@ -231,11 +231,17 @@ private:
             __VA_ARGS__                                                                            \
         };                                                                                         \
                                                                                                    \
+        struct IndexTag                                                                            \
+        {                                                                                          \
+        };                                                                                         \
+                                                                                                   \
         NAME() : mIdx(0) {}                                                                        \
         /* NOLINTNEXTLINE(google-explicit-constructor,cppcoreguidelines-pro-type-member-init) */   \
-        NAME(ValueType value)                                                                      \
+        NAME(ValueType value) : NAME(static_cast<int>(value)) {}                                   \
+        /* NOLINTNEXTLINE(google-explicit-constructor,cppcoreguidelines-pro-type-member-init) */   \
+        NAME(int value)                                                                            \
         {                                                                                          \
-            int idx = findRelativeIndex_(value);                                                   \
+            int idx = findRelativeIndex_(static_cast<ValueType>(value));                           \
             if (idx == -1)                                                                         \
             {                                                                                      \
                 SEAD_ASSERT_MSG(false, "could not convert to relative index: %d", idx);            \
@@ -243,8 +249,7 @@ private:
             }                                                                                      \
             setRelativeIndex(idx);                                                                 \
         }                                                                                          \
-        /* NOLINTNEXTLINE(google-explicit-constructor,cppcoreguidelines-pro-type-member-init) */   \
-        NAME(int idx) { setRelativeIndex(idx); }                                                   \
+        NAME(IndexTag, int index) : mIdx(index) {}                                                 \
                                                                                                    \
         NAME& operator=(const NAME& other) = default;                                              \
         bool operator==(const NAME& rhs) const { return mIdx == rhs.mIdx; }                        \
@@ -252,17 +257,19 @@ private:
         bool operator==(ValueType value) const { return mIdx == findRelativeIndex_(value); }       \
         bool operator!=(ValueType value) const { return mIdx != findRelativeIndex_(value); }       \
                                                                                                    \
-        ValueType value() const { return static_cast<ValueType>(getArray_()(mIdx)); }              \
-        ValueType value() const volatile { return static_cast<ValueType>(getArray_()(mIdx)); }     \
+        int value() const { return getArray_()[getRelativeIndex()]; }                              \
+        int value() const volatile { return getArray_()[getRelativeIndex()]; }                     \
+        /* XXX: Bafflingly, there is no purely const-qualified version of operator int().  */      \
+        /* This leads to suboptimal codegen in many places. */                                     \
         operator int() const volatile { return value(); }                                          \
                                                                                                    \
         bool fromText(const sead::SafeString& name)                                                \
         {                                                                                          \
-            for (int i = 0; i < size(); ++i)                                                       \
+            for (auto it = begin(), it_end = end(); it != it_end; ++it)                            \
             {                                                                                      \
-                if (name.isEqual(text(i)))                                                         \
+                if (name == it.get().text())                                                       \
                 {                                                                                  \
-                    mIdx = i;                                                                      \
+                    setRelativeIndex(it.getIndex());                                               \
                     return true;                                                                   \
                 }                                                                                  \
             }                                                                                      \
@@ -290,6 +297,7 @@ private:
         const char* getTypeText() const volatile { return #NAME; }                                 \
         constexpr static int size() { return cCount; }                                             \
         constexpr static int getSize() { return size(); }                                          \
+        constexpr static int getLastIndex() { return size() - 1; }                                 \
                                                                                                    \
         static void initialize() { text(0); }                                                      \
                                                                                                    \
@@ -301,7 +309,15 @@ private:
             bool operator!=(const iterator& rhs) const { return mIdx != rhs.mIdx; }                \
             iterator& operator++()                                                                 \
             {                                                                                      \
-                ++mIdx;                                                                            \
+                if (mIdx > getLastIndex())                                                         \
+                {                                                                                  \
+                    SEAD_ASSERT_MSG(false, "enum iterator overflow");                              \
+                    mIdx = getLastIndex();                                                         \
+                }                                                                                  \
+                else                                                                               \
+                {                                                                                  \
+                    ++mIdx;                                                                        \
+                }                                                                                  \
                 return *this;                                                                      \
             }                                                                                      \
             iterator& operator--()                                                                 \
@@ -309,7 +325,9 @@ private:
                 --mIdx;                                                                            \
                 return *this;                                                                      \
             }                                                                                      \
-            NAME operator*() const { return NAME(mIdx); }                                          \
+            NAME operator*() const { return get(); }                                               \
+            NAME get() const { return NAME(IndexTag{}, mIdx); }                                    \
+            int getIndex() const { return mIdx; }                                                  \
                                                                                                    \
         private:                                                                                   \
             int mIdx;                                                                              \
@@ -326,12 +344,12 @@ private:
                                                                                                    \
             s32 size() const { return mSize; }                                                     \
                                                                                                    \
-            int& operator()(s32 idx) { return *get(idx); }                                         \
-            const int& operator()(s32 idx) const { return *get(idx); }                             \
+            int& operator[](s32 idx) { return *get(idx); }                                         \
+            const int& operator[](s32 idx) const { return *get(idx); }                             \
                                                                                                    \
             int* get(s32 idx)                                                                      \
             {                                                                                      \
-                if (mSize <= u32(idx))                                                             \
+                if (u32(mSize) <= u32(idx))                                                        \
                 {                                                                                  \
                     SEAD_ASSERT_MSG(false, "index exceeded [%d/%d]", idx, mSize);                  \
                     return mBuffer;                                                                \
@@ -341,7 +359,7 @@ private:
                                                                                                    \
             const int* get(s32 idx) const                                                          \
             {                                                                                      \
-                if (mSize <= u32(idx))                                                             \
+                if (u32(mSize) <= u32(idx))                                                        \
                 {                                                                                  \
                     SEAD_ASSERT_MSG(false, "index exceeded [%d/%d]", idx, mSize);                  \
                     return mBuffer;                                                                \
@@ -354,7 +372,12 @@ private:
             int* mBuffer = nullptr;                                                                \
         };                                                                                         \
         friend class ValueArray;                                                                   \
-        static ValueArray& getArray_();                                                            \
+                                                                                                   \
+        static ValueArray& getArray_()                                                             \
+        {                                                                                          \
+            static ValueArray sBuffer;                                                             \
+            return sBuffer;                                                                        \
+        }                                                                                          \
                                                                                                    \
         /* Returns nullptr when not found. */                                                      \
         static const char* text_(int idx)                                                          \
@@ -380,7 +403,16 @@ private:
         }                                                                                          \
                                                                                                    \
         /* Returns -1 when not found. */                                                           \
-        static int findRelativeIndex_(ValueType value);                                            \
+        static int findRelativeIndex_(ValueType value)                                             \
+        {                                                                                          \
+            const ValueArray& array = getArray_();                                                 \
+            for (int i = 0, n = array.size(); i < n; ++i)                                          \
+            {                                                                                      \
+                if (array[i] == value)                                                             \
+                    return i;                                                                      \
+            }                                                                                      \
+            return -1;                                                                             \
+        }                                                                                          \
                                                                                                    \
         static constexpr const char* cTextAll = #__VA_ARGS__;                                      \
         static constexpr size_t cTextAllLen = sizeof(#__VA_ARGS__);                                \
@@ -389,7 +421,7 @@ private:
         int mIdx;                                                                                  \
     };
 
-/// For use with SEAD_ENUM_EX. Use immediately after SEAD_ENUM_EX.
+/// For use with SEAD_ENUM_EX.
 #define SEAD_ENUM_EX_VALUES(NAME, ...)                                                             \
     NAME::ValueArray::ValueArray()                                                                 \
     {                                                                                              \
@@ -403,26 +435,4 @@ private:
         static Array sArray{};                                                                     \
         mSize = sArray.size();                                                                     \
         mBuffer = sArray.getBufferPtr();                                                           \
-    }
-
-/// For use with SEAD_ENUM_EX. Use this in the .cpp file.
-#define SEAD_ENUM_EX_IMPL(NAME)                                                                    \
-    NAME::ValueArray& NAME::getArray_()                                                            \
-    {                                                                                              \
-        static ValueArray sBuffer;                                                                 \
-        return sBuffer;                                                                            \
-    }                                                                                              \
-                                                                                                   \
-    int NAME::findRelativeIndex_(NAME::ValueType value)                                            \
-    {                                                                                              \
-        ValueArray& array = getArray_();                                                           \
-        if (array.size() < 1)                                                                      \
-            return -1;                                                                             \
-                                                                                                   \
-        for (int i = 0; i < array.size(); ++i)                                                     \
-        {                                                                                          \
-            if (array(i) == value)                                                                 \
-                return i;                                                                          \
-        }                                                                                          \
-        return -1;                                                                                 \
     }
