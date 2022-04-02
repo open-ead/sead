@@ -144,7 +144,7 @@ private:
         class iterator                                                                             \
         {                                                                                          \
         public:                                                                                    \
-            iterator(int idx) /* NOLINT(google-explicit-constructor) */ : mIdx(idx) {}             \
+            explicit iterator(int idx) : mIdx(idx) {}                                              \
             bool operator==(const iterator& rhs) const { return mIdx == rhs.mIdx; }                \
             bool operator!=(const iterator& rhs) const { return mIdx != rhs.mIdx; }                \
             iterator& operator++()                                                                 \
@@ -224,6 +224,7 @@ private:
         };                                                                                         \
                                                                                                    \
         NAME() : mIdx(0) {}                                                                        \
+        /* NOLINTNEXTLINE(google-explicit-constructor,cppcoreguidelines-pro-type-member-init) */   \
         NAME(ValueType value)                                                                      \
         {                                                                                          \
             int idx = findRelativeIndex_(value);                                                   \
@@ -234,6 +235,7 @@ private:
             }                                                                                      \
             setRelativeIndex(idx);                                                                 \
         }                                                                                          \
+        /* NOLINTNEXTLINE(google-explicit-constructor,cppcoreguidelines-pro-type-member-init) */   \
         NAME(int idx) { setRelativeIndex(idx); }                                                   \
                                                                                                    \
         NAME& operator=(const NAME& other) = default;                                              \
@@ -286,7 +288,7 @@ private:
         class iterator                                                                             \
         {                                                                                          \
         public:                                                                                    \
-            iterator(int idx) : mIdx(idx) {}                                                       \
+            explicit iterator(int idx) : mIdx(idx) {}                                              \
             bool operator==(const iterator& rhs) const { return mIdx == rhs.mIdx; }                \
             bool operator!=(const iterator& rhs) const { return mIdx != rhs.mIdx; }                \
             iterator& operator++()                                                                 \
