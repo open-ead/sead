@@ -149,7 +149,15 @@ private:
             bool operator!=(const iterator& rhs) const { return mIdx != rhs.mIdx; }                \
             iterator& operator++()                                                                 \
             {                                                                                      \
-                mIdx = mIdx <= getLastIndex() ? mIdx + 1 : size();                                 \
+                if (mIdx <= getLastIndex())                                                        \
+                {                                                                                  \
+                    ++mIdx;                                                                        \
+                }                                                                                  \
+                else                                                                               \
+                {                                                                                  \
+                    SEAD_ASSERT_MSG(false, "enum iterator overflow");                              \
+                    mIdx = size();                                                                 \
+                }                                                                                  \
                 return *this;                                                                      \
             }                                                                                      \
             iterator& operator--()                                                                 \
