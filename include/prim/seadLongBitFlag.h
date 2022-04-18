@@ -5,6 +5,7 @@
 #include <basis/seadRawPrint.h>
 #include <basis/seadTypes.h>
 #include <math/seadMathCalcCommon.h>
+#include <prim/seadBitFlag.h>
 
 namespace sead
 {
@@ -31,6 +32,8 @@ public:
 
     /// Popcount.
     int countOnBit() const;
+    /// Counts the number of 1 bits to the right of `bit` (bits [0, bit)).
+    int countRightOnBit(int bit) const;
 
     static Word makeMask(int bit) { return 1u << (bit % BitsPerWord); }
 
@@ -117,6 +120,19 @@ inline int LongBitFlag<N>::countOnBit() const
         if (isOnBit(i))
             ++count;
     }
+    return count;
+}
+
+template <int N>
+inline int LongBitFlag<N>::countRightOnBit(int bit) const
+{
+    int count = 0;
+    const auto last_word_index = u32(bit) / u32(BitsPerWord);
+    for (u32 i = 0; i < last_word_index; ++i)
+    {
+        count += BitFlagUtil::countOnBit(mStorage[i]);
+    }
+    count += BitFlagUtil::countRightOnBit(mStorage[last_word_index], u32(bit) % u32(BitsPerWord));
     return count;
 }
 
