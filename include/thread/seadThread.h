@@ -30,7 +30,7 @@ using ThreadListNode = TListNode<Thread*>;
 class Thread : public IDisposer, public INamable, public hostio::Reflexible
 {
 public:
-    SEAD_ENUM(State, cInitialized, cRunning, cQuitting, cTerminated, cReleased);
+    SEAD_ENUM(State, cInitialized, cRunning, cQuitting, cTerminated, cReleased)
 
     Thread(const SafeString& name, Heap* heap, s32 priority, MessageQueue::BlockType block_type,
            MessageQueue::Element quit_msg, s32 stack_size, s32 message_queue_size);
