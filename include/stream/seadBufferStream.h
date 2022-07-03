@@ -56,10 +56,10 @@ private:
     u32 mCurrentPos;
 };
 
-class BufferWriteStream : public ReadStream
+class BufferWriteStream : public WriteStream
 {
 public:
-    BufferWriteStream(ReadStream* stream, void* buffer, u32 buffer_size);
+    BufferWriteStream(WriteStream* stream, void* buffer, u32 buffer_size);
     ~BufferWriteStream() override;
 
 private:
