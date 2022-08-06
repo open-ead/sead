@@ -65,6 +65,7 @@ public:
 
     virtual void dump() const {}
     virtual void dumpYAML(WriteStream& stream, int) const;
+    void dumpTreeYAML(WriteStream& stream, int) const;
 
 #ifdef SEAD_DEBUG
     void listenPropertyEvent(const hostio::PropertyEvent* event) override;
