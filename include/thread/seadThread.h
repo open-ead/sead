@@ -82,6 +82,15 @@ public:
 
     bool isDefaultPriority() const { return getPriority() == cDefaultPriority; }
 
+    Heap* getCurrentHeap() const { return mCurrentHeap; }
+    Heap* setCurrentHeap(Heap* heap)
+    {
+        Heap* old = mCurrentHeap;
+        mCurrentHeap = heap;
+        return old;
+    }
+    FindContainHeapCache* getFindContainHeapCache() { return &mFindContainHeapCache; }
+
     static const s32 cDefaultPriority;
 
 protected:
@@ -141,6 +150,21 @@ public:
 
     CriticalSection* getListCS() { return &mListCS; }
 
+    bool tryRemoveFromFindContainHeapCache(Heap* heap)
+    {
+        auto back = mList.end();
+        ScopedLock<CriticalSection> lock(getListCS());
+        bool found = false;
+        for (auto it = mList.begin(), end = back; it != end; ++it)
+        {
+            bool result = !(*it)->getFindContainHeapCache()->tryRemoveHeap(heap);
+            found |= result;
+            if (result)
+                break;
+        }
+        return found;
+    }
+
 #ifdef SEAD_DEBUG
     void initHostIO();
     void genMessage(hostio::Context* context) override;
@@ -166,7 +190,7 @@ protected:
     void destroyMainThread_();
     static u32 getCurrentThreadID_();
 
-private:
+public:
     ThreadList mList;
     CriticalSection mListCS;
     Thread* mMainThread = nullptr;
