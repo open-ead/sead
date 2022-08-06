@@ -4,25 +4,59 @@
 #include <container/seadPtrArray.h>
 #include <heap/seadArena.h>
 #include <heap/seadHeap.h>
+#include <hostio/seadHostIONode.h>
+#include <prim/seadDelegate.h>
+#include <prim/seadSafeString.h>
 #include <thread/seadAtomic.h>
 #include <thread/seadCriticalSection.h>
+#include <time/seadTickSpan.h>
 
 namespace sead
 {
-class HeapMgr
+class HeapMgr : hostio::Node
 {
+    struct AllocFailedCallbackArg;
+    struct AllocCallbackArg;
+    struct CreateCallbackArg;
+    struct DestroyCallbackArg;
+    struct FreeCallbackArg;
+    using IAllocFailedCallback = IDelegate1<const AllocFailedCallbackArg*>;
+    using IAllocCallback = IDelegate1<const AllocCallbackArg*>;
+    using ICreateCallback = IDelegate1<const CreateCallbackArg*>;
+    using IDestroyCallback = IDelegate1<const DestroyCallbackArg*>;
+    using IFreeCallback = IDelegate1<const FreeCallbackArg*>;
+
 public:
     HeapMgr();
     virtual ~HeapMgr() {}
 
-    Heap* getCurrentHeap();
+    static void initialize(size_t size);
+    static void initializeImpl_();
+    static void initialize(Arena* arena);
+    static void createRootHeap_();
+    static void destroy();
+    void initHostIO();
+
     Heap* findContainHeap(const void* ptr) const;
     static bool isContainedInAnyHeap(const void* ptr);
+    static void dumpTreeYAML(WriteStream& stream);
+    void setAllocFromNotSeadThreadHeap(Heap* heap);
+    static void removeFromFindContainHeapCache_(Heap* heap);
+
+    Heap* findHeapByName(const SafeString& name, int index) const;
+    static Heap* findHeapByName_(Heap*, const SafeString&, int* index);
+    Heap* getCurrentHeap() const;
+
+    static void removeRootHeap(Heap*);
+
+    IAllocFailedCallback* setAllocFailedCallback(IAllocFailedCallback* callback);
+    IAllocFailedCallback* getAllocFailedCallback() { return mAllocFailedCallback; }
 
     static HeapMgr* instance() { return sInstancePtr; }
     static s32 getRootHeapNum() { return sRootHeaps.size(); }
 
     // TODO: these should be private
+    static Arena* sArena;
     static HeapMgr sInstance;
     static HeapMgr* sInstancePtr;
 
@@ -39,9 +73,11 @@ private:
     static RootHeaps sRootHeaps;
     static IndependentHeaps sIndependentHeaps;
     static CriticalSection sHeapTreeLockCS;
+    static TickSpan sSleepSpanAtRemoveCacheFailure;
 
-    void*
-        mAllocFailedCallback;  // IAllocFailedCallback* = IDelegate1<const AllocFailedCallbackArg*>*
+    /// fallback heap that is returned when getting the current heap outside of an sead::Thread
+    Heap* mAllocFromNotSeadThreadHeap = nullptr;
+    IAllocFailedCallback* mAllocFailedCallback = nullptr;
 };
 
 /// Sets the "current heap" to the specified heap and restores the previous "current heap"
@@ -85,7 +121,14 @@ public:
     FindContainHeapCache();
 
     bool tryRemoveHeap(Heap* heap);
-    // getHeap and setHeap probably exist too
+    Heap* tryAddHeap()
+    {
+        mHeap |= 1;
+        return reinterpret_cast<Heap*>(mHeap.load());
+    }
+    Heap* getHeap() const { return reinterpret_cast<Heap*>(mHeap.load()); }
+    void setHeap(Heap* heap) { mHeap.storeNonAtomic(uintptr_t(heap)); }
+    void resetHeap() { mHeap.fetchAnd(~1LL); }
 
     Atomic<uintptr_t> mHeap;
 };
