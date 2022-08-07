@@ -6,7 +6,7 @@ template <typename T>
 class ScopedLock
 {
 public:
-    ScopedLock(T* lock) : mLocked(lock) { mLocked->lock(); }
+    explicit ScopedLock(T* lock) : mLocked(lock) { mLocked->lock(); }
     ScopedLock(const ScopedLock& other) = delete;
     const ScopedLock& operator=(const ScopedLock& other) = delete;
     virtual ~ScopedLock() { mLocked->unlock(); }
