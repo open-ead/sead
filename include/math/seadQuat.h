@@ -56,6 +56,11 @@ public:
         return *this;
     }
 
+    bool operator==(const Quat& rhs) const
+    {
+        return this->x == rhs.x && this->y == rhs.y && this->z == rhs.z && this->w == rhs.w;
+    }
+
     T length() const;
     T normalize();
     T dot(const Self& q);
