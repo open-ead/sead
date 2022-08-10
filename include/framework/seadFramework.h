@@ -22,7 +22,7 @@ class LogicalFrameBuffer;
 class MethodTreeMgr;
 class TaskMgr;
 
-class Framework
+class Framework : public hostio::Node
 {
     SEAD_RTTI_BASE(Framework)
 
@@ -32,7 +32,9 @@ public:
         inline CreateSystemTaskArg();
 
         HostIOMgr::Parameter* hostio_parameter;
+        Heap* heap;
         TickSpan infloop_detection_span;
+        int infloop_unk;
     };
 
     struct InitializeArg
@@ -70,9 +72,12 @@ public:
     virtual bool setProcessPriority(ProcessPriority);
     virtual void reserveReset(void*);
     virtual void initRun_(Heap*);
+    virtual void quitRun_(Heap*);
     virtual void runImpl_();
     virtual MethodTreeMgr* createMethodTreeMgr_(Heap*) = 0;
     virtual void procReset_();
+
+    void initialize(const InitializeArg&);
 
     MethodTreeMgr* getMethodTreeMgr() const { return mMethodTreeMgr; }
 
