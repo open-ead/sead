@@ -7,6 +7,8 @@ namespace sead
 // no content yet, just for the enum
 class Graphics : public IDisposer
 {
+    SEAD_SINGLETON_DISPOSER(Graphics)
+
 public:
     enum DevicePosture
     {
@@ -19,6 +21,9 @@ public:
         cDevicePosture_FlipXY = 3,
         cDevicePosture_Invalid = 4,
     };
+
+    void lockDrawContext();
+    void unlockDrawContext();
 };
 
 }  // namespace sead

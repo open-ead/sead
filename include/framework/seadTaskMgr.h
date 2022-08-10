@@ -45,6 +45,9 @@ public:
     void doDestroyTask_(TaskBase* task);
     void finalize();
 
+    void beforeCalc();
+    void afterCalc();
+
     CriticalSection mCriticalSection;
     Framework* mParentFramework;
     DelegateThread* mPrepareThread;

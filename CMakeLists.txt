@@ -76,6 +76,8 @@ add_library(sead OBJECT
   include/framework/seadCalculateTask.h
   include/framework/seadFramework.h
   include/framework/seadHeapPolicies.h
+  include/framework/seadGameFramework.h
+  include/framework/seadGameFrameworkNx.h
   include/framework/seadInfLoopChecker.h
   include/framework/seadMethodTree.h
   include/framework/seadMethodTreeMgr.h
@@ -86,8 +88,11 @@ add_library(sead OBJECT
   include/framework/seadTaskMgr.h
   include/framework/seadTaskParameter.h
   modules/src/framework/seadCalculateTask.cpp
+  modules/src/framework/seadFramework.cpp
+  modules/src/framework/seadGameFramework.cpp
   modules/src/framework/seadMethodTree.cpp
   modules/src/framework/seadProcessMeterBar.cpp
+  #modules/src/framework/seadTaskMgr.cpp
 
   include/gfx/seadCamera.h
   include/gfx/seadColor.h
