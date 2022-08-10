@@ -24,7 +24,7 @@ typedef TaskBase* (*TaskFactory)(const TaskConstructArg&);
 class TaskClassID
 {
 public:
-    enum Type
+    enum Type : u64
     {
         cInvalid = 0,
         cInt = 1,

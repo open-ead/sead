@@ -55,6 +55,8 @@ public:
     static HeapMgr* instance() { return sInstancePtr; }
     static s32 getRootHeapNum() { return sRootHeaps.size(); }
 
+    static Heap* getRootHeap(s32 index) { return sRootHeaps[index]; }
+
     // TODO: these should be private
     static Arena* sArena;
     static HeapMgr sInstance;
