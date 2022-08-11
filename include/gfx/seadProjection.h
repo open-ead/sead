@@ -32,6 +32,12 @@ public:
     Projection();
     virtual ~Projection();
 
+    virtual float getNear() const = 0;
+    virtual float getFar() const = 0;
+    virtual float getFovy() const = 0;
+    virtual float getAspect() const = 0;
+    virtual void getOffset(Vector2f* offset) const = 0;
+    virtual void updateAttributesForDirectProjection() = 0;
     virtual u32 getProjectionType() const = 0;
     virtual void doUpdateMatrix(Matrix44f* mtx) const = 0;
     virtual void doUpdateDeviceMatrix(Matrix44f*, const Matrix44f&, Graphics::DevicePosture) const;
@@ -40,6 +46,7 @@ public:
     void updateMatrixImpl_() const;
     const Matrix44f& getDeviceProjectionMatrix() const;
 
+private:
     mutable bool mDirty;
     mutable bool mDeviceDirty;
     Matrix44f mMatrix;
