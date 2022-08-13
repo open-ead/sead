@@ -1,6 +1,6 @@
 #pragma once
 
-#include <gfx/seadProjection.h>
+#include <gfx/seadGraphics.h>
 #include <math/seadBoundBox.h>
 #include <math/seadVector.h>
 
