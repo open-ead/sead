@@ -73,7 +73,7 @@ public:
     u32 getProjectionType() const override;
 
     void set(float near, float far, float fovy_rad, float aspect);
-    void doUpdateMatrix(Matrix44f* mtx);
+    void doUpdateMatrix(Matrix44f* mtx) const override;
     void setFovx(float);
     void createDividedProjection(sead::PerspectiveProjection* projection, int, int, int, int);
     float getTop();
