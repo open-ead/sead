@@ -3,6 +3,7 @@
 
 #include <gfx/seadColor.h>
 #include <heap/seadDisposer.h>
+#include <math/seadBoundBox.h>
 #include <math/seadMatrix.h>
 #include <math/seadVector.h>
 #include <prim/seadSafeString.h>
@@ -13,6 +14,126 @@ class Heap;
 class Camera;
 class Projection;
 class Texture;
+class DrawContext;
+class PrimitiveDrawMgrNvn;
+
+class PrimitiveDrawer
+{
+public:
+    class QuadArg
+    {
+    public:
+        QuadArg(Vector3f pos, Vector2f size, Color4f color = Color4f::cWhite,
+                Color4f color2 = Color4f::cWhite, bool isHorizontal = false)
+            : mCenter(pos), mSize(size), mColor0(color), mColor1(color2), mHorizontal(isHorizontal)
+        {
+        }
+        QuadArg() = default;
+
+        void setCornerAndSize(const Vector3f& corner, const Vector2f& size);
+        void setBoundBox(const BoundBox2f& box, float z);
+        void setColor(const Color4f& color0, const Color4f& color1);
+        void setColorHorizontal(const Color4f& color0, const Color4f& color1);
+
+        Vector3f mCenter = Vector3f::zero;
+        Vector2f mSize = Vector2f::zero;
+        Color4f mColor0 = Color4f::cWhite;
+        Color4f mColor1 = Color4f::cWhite;
+        bool mHorizontal = false;
+    };
+
+    class CubeArg
+    {
+    public:
+        CubeArg(const BoundBox3f& box, const Color4f& color)
+            : mCenter(box.getCenter()), mSize(box.getSizeX(), box.getSizeY(), box.getSizeZ()),
+              mColor0(color), mColor1(color)
+        {
+        }
+        CubeArg(const Vector3f& pos, const Vector3f& size, const Color4f& color)
+            : mCenter(pos), mSize(size), mColor0(color), mColor1(color)
+        {
+        }
+        void setCornerAndSize(const Vector3f& corner, const Vector3f& size);
+        void setBoundBox(const BoundBox3f& box);
+
+    private:
+        Vector3f mCenter;
+        Vector3f mSize;
+        Color4f mColor0;
+        Color4f mColor1;
+    };
+
+    class UVArg
+    {
+    public:
+        UVArg(const Vector2f& v1, const Vector2f& v2) : vec1(v1), vec2(v2) {}
+
+    private:
+        Vector2f vec1;
+        Vector2f vec2;
+    };
+
+    explicit PrimitiveDrawer(DrawContext* context);
+    virtual ~PrimitiveDrawer();
+
+    void prepareMgrFromBinary(Heap* heap, const void* bin_data, u32 bin_size);
+    void createDrawMgrInstance_(Heap* heap);
+    void prepareMgr(Heap* heap, const SafeString& path);
+    void prepareMgrFromBinary(Heap*, const void*, u32, u32, bool);
+    void prepareMgr(Heap*, const SafeString&, u32, bool);
+    void setCamera(const Camera* camera);
+    void setCameraViewMatrix(const Matrix34f* cameraViewMtx);
+    void setProjection(const Projection* projection);
+    void setProjectionMatrix(const Matrix44f* projectionMtx);
+    void setModelMatrix(const Matrix34f* modelMtx);
+    void setDrawContext(DrawContext* context);
+    void begin();
+    PrimitiveDrawMgrNvn* getDrawMgr_();
+    void end();
+    void drawQuad(const Color4f&, const Color4f&);
+    void drawQuad(const Texture&, const Color4f&, const Color4f&, const Vector2f&, const Vector2f&);
+    void drawBox(const Color4f&, const Color4f&);
+    void drawCube(const Color4f&, const Color4f&);
+    void drawWireCube(const Color4f&, const Color4f&);
+    void drawLine(const Color4f&, const Color4f&);
+    void drawSphere4x8(const Color4f&, const Color4f&);
+    void drawSphere8x16(const Color4f&, const Color4f&);
+    void drawDisk16(const Color4f&, const Color4f&);
+    void drawDisk32(const Color4f&, const Color4f&);
+    void drawCircle16(const Color4f&);
+    void drawCircle32(const Color4f&);
+    void drawCylinder16(const Color4f&, const Color4f&);
+    void drawCylinder32(const Color4f&, const Color4f&);
+    void drawQuad(const QuadArg&);
+    void drawQuad(const Texture&, const QuadArg&, const UVArg&);
+    void drawBox(const QuadArg&);
+    void drawCube(const CubeArg&);
+    void drawWireCube(const CubeArg&);
+    void drawLine(const Vector3f&, const Vector3f&, const Color4f&, const Color4f&);
+    void drawLine(const Vector3f&, const Vector3f&, const Color4f&);
+    void drawSphere4x8(const Vector3f&, float, const Color4f&, const Color4f&);
+    void drawSphere4x8(const Vector3f&, float, const Color4f&);
+    void drawSphere8x16(const Vector3f&, float, const Color4f&, const Color4f&);
+    void drawSphere8x16(const Vector3f&, float, const Color4f&);
+    void drawDisk16(const Vector3f&, float, const Color4f&, const Color4f&);
+    void drawDisk16(const Vector3f&, float, const Color4f&);
+    void drawDisk32(const Vector3f&, float, const Color4f&, const Color4f&);
+    void drawDisk32(const Vector3f&, float, const Color4f&);
+    void drawCircle16(const Vector3f&, float, const Color4f&);
+    void drawCircle32(const Vector3f&, float, const Color4f&);
+    void drawCylinder16(const Vector3f&, float, float, const Color4f&, const Color4f&);
+    void drawCylinder16(const Vector3f&, float, float, const Color4f&);
+    void drawCylinder32(const Vector3f&, float, float, const Color4f&, const Color4f&);
+    void drawCylinder32(const Vector3f&, float, float, const Color4f&);
+    void drawAxis(const Vector3f&, float);
+
+private:
+    Matrix34f* mModel;
+    Matrix34f* mCamera;
+    Matrix44f* mProjection;
+    DrawContext* mDrawContext;
+};
 
 class PrimitiveRendererBase
 {
@@ -50,41 +171,9 @@ public:
                                     const Color4f& btm) = 0;
 };
 
-class PrimitiveRenderer : public IDisposer
+class PrimitiveRenderer
 {
     SEAD_SINGLETON_DISPOSER(PrimitiveRenderer)
-
-public:
-    class QuadArg
-    {
-    public:
-        QuadArg()
-            : mCenter(Vector3f::zero), mSize(Vector2f::zero), mColor0(Color4f::cWhite),
-              mColor1(Color4f::cWhite), mHorizontal(false)
-        {
-        }
-
-        void setCornerAndSize(const Vector3f&, const Vector2f&);
-        // void setBoundBox(const BoundBox2f&, float);
-        void setColor(const Color4f&, const Color4f&);
-        void setColorHorizontal(const Color4f&, const Color4f&);
-
-        Vector3f mCenter;
-        Vector2f mSize;
-        Color4f mColor0;
-        Color4f mColor1;
-        bool mHorizontal;
-    };
-
-    class CubeArg
-    {
-    public:
-        void setCornerAndSize(const Vector3f&, const Vector3f&);
-        // void setBoundBox(const BoundBox3f&);
-    };
-
-    struct UVArg;
-
 public:
     PrimitiveRenderer();
     virtual ~PrimitiveRenderer() {}
@@ -112,11 +201,11 @@ public:
     void drawCylinder16(const Color4f&, const Color4f&);
     void drawCylinder32(const Color4f&, const Color4f&);
 
-    void drawQuad(const QuadArg&);
-    void drawQuad(const Texture&, const QuadArg&, const UVArg&);
-    void drawBox(const QuadArg&);
-    void drawCube(const CubeArg&);
-    void drawWireCube(const CubeArg&);
+    void drawQuad(const PrimitiveDrawer::QuadArg&);
+    void drawQuad(const Texture&, const PrimitiveDrawer::QuadArg&, const PrimitiveDrawer::UVArg&);
+    void drawBox(const PrimitiveDrawer::QuadArg&);
+    void drawCube(const PrimitiveDrawer::CubeArg&);
+    void drawWireCube(const PrimitiveDrawer::CubeArg&);
     void drawLine(const Vector3f&, const Vector3f&, const Color4f&, const Color4f&);
     void drawLine(const Vector3f&, const Vector3f&, const Color4f&);
     void drawSphere4x8(const Vector3f&, float, const Color4f&, const Color4f&);
@@ -139,8 +228,10 @@ public:
 private:
     void doPrepare_(Heap* heap);
 
-    PrimitiveRendererBase* mRendererImpl;
-    Matrix34f mModelMtx;
+    PrimitiveDrawer mDrawer;
+    Matrix34f mCameraMatrix;
+    Matrix44f mProjection;
+    Matrix34f mModelMatrix;
 };
 
 }  // namespace sead
