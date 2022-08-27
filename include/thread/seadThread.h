@@ -1,5 +1,6 @@
 #pragma once
 
+#include <utility>
 #ifdef NNSDK
 #include <nn/os.h>
 #endif
@@ -82,6 +83,10 @@ public:
 
     bool isDefaultPriority() const { return getPriority() == cDefaultPriority; }
 
+    Heap* getCurrentHeap() const { return mCurrentHeap; }
+    Heap* setCurrentHeap(Heap* heap) { return std::exchange(mCurrentHeap, heap); }
+    FindContainHeapCache* getFindContainHeapCache() { return &mFindContainHeapCache; }
+
     static const s32 cDefaultPriority;
 
 protected:
@@ -140,6 +145,21 @@ public:
     static void checkCurrentThreadStackPointerOverFlow(const char* source_file, s32 source_line);
 
     CriticalSection* getListCS() { return &mListCS; }
+
+    bool tryRemoveFromFindContainHeapCache(Heap* heap)
+    {
+        const auto end = mList.end();
+        ScopedLock<CriticalSection> lock(getListCS());
+        bool found = false;
+        for (auto it = mList.begin(); it != end; ++it)
+        {
+            bool result = !(*it)->getFindContainHeapCache()->tryRemoveHeap(heap);
+            found |= result;
+            if (result)
+                break;
+        }
+        return found;
+    }
 
 #ifdef SEAD_DEBUG
     void initHostIO();
