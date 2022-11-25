@@ -215,6 +215,22 @@ private:
     s32 mCapacity = 0;
 };
 
+template <typename Key, typename Value, int N>
+class FixedTreeMap : public TreeMap<Key, Value>
+{
+public:
+    FixedTreeMap() { TreeMap<Key, Value>::setBuffer(N, &mWork); }
+
+    void setBuffer(s32 ptrNumMax, void* buf) = delete;
+    void allocBuffer(s32 ptrNumMax, Heap* heap, s32 alignment = sizeof(void*)) = delete;
+    bool tryAllocBuffer(s32 ptrNumMax, Heap* heap, s32 alignment = sizeof(void*)) = delete;
+    void freeBuffer() = delete;
+
+private:
+    using NodeType = typename TreeMap<Key, Value>::Node;
+    alignas(std::max(alignof(NodeType), alignof(NodeType*))) u8 mWork[N * sizeof(NodeType)];
+};
+
 template <typename Key, typename Node>
 class IntrusiveTreeMap : public TreeMapImpl<Key>
 {
