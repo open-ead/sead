@@ -228,6 +228,8 @@ public:
 
 private:
     using NodeType = typename TreeMap<Key, Value>::Node;
+    static_assert(sizeof(NodeType) >= sizeof(void*));
+
     alignas(std::max(alignof(NodeType), alignof(NodeType*))) u8 mWork[N * sizeof(NodeType)];
 };
 
