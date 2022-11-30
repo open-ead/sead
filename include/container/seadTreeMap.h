@@ -189,8 +189,6 @@ public:
         TreeMap* mMap;
     };
 
-    ~TreeMap();
-
     void allocBuffer(s32 node_max, Heap* heap, s32 alignment = sizeof(void*));
     void setBuffer(s32 node_max, void* buffer);
     void freeBuffer();
@@ -500,17 +498,6 @@ inline void TreeMap<Key, Value>::Node::erase_()
     // Note: Nintendo does not call the destructor, which is dangerous...
     map->mFreeList.free(this_);
     --map->mSize;
-}
-
-template <typename Key, typename Value>
-inline TreeMap<Key, Value>::~TreeMap()
-{
-    void* work = mFreeList.work();
-    if (!work)
-        return;
-
-    clear();
-    freeBuffer();
 }
 
 template <typename Key, typename Value>
