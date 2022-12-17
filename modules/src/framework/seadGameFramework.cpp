@@ -48,18 +48,22 @@ void GameFramework::createSystemTasks(TaskBase* base,
     createCuckooClock(base);
 }
 
-void GameFramework::createHostIOMgr(TaskBase* base, HostIOMgr::Parameter* param, Heap* heap) {}
+void GameFramework::createHostIOMgr([[maybe_unused]] TaskBase* base,
+                                    [[maybe_unused]] HostIOMgr::Parameter* param,
+                                    [[maybe_unused]] Heap* heap)
+{
+}
 
 void GameFramework::createProcessMeter(TaskBase* base)
 {
     ProcessMeter::createInstance(base->mHeapArray.getPrimaryHeap());
 }
 
-void GameFramework::createSeadMenuMgr(TaskBase* base) {}
+void GameFramework::createSeadMenuMgr([[maybe_unused]] TaskBase* base) {}
 
-void GameFramework::createInfLoopChecker(TaskBase* base, const TickSpan&, int) {}
+void GameFramework::createInfLoopChecker([[maybe_unused]] TaskBase* base, const TickSpan&, int) {}
 
-void GameFramework::createCuckooClock(TaskBase* base) {}
+void GameFramework::createCuckooClock([[maybe_unused]] TaskBase* base) {}
 
 void GameFramework::initialize(const Framework::InitializeArg& initArg)
 {
@@ -116,7 +120,7 @@ void GameFramework::waitStartDisplayLoop_()
         mDisplayStarted = 1;
 }
 
-void GameFramework::quitRun_(Heap* heap) {}
+void GameFramework::quitRun_([[maybe_unused]] Heap* heap) {}
 
 void GameFramework::lockFrameDrawContext()
 {
