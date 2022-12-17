@@ -1,12 +1,12 @@
 #ifndef SEAD_FRAMEWORK_H_
 #define SEAD_FRAMEWORK_H_
 
-//#include <framework/seadMethodTreeMgr.h>
+// #include <framework/seadMethodTreeMgr.h>
 #include <framework/seadTaskBase.h>
-//#include <framework/seadTaskMgr.h>
-//#include <gfx/seadFrameBuffer.h>
-//#include <heap/seadArena.h>
-//#include <heap/seadHeap.h>
+// #include <framework/seadTaskMgr.h>
+// #include <gfx/seadFrameBuffer.h>
+// #include <heap/seadArena.h>
+// #include <heap/seadHeap.h>
 #include <hostio/seadHostIOMgr.h>
 #include <prim/seadDelegateEventSlot.h>
 #include <prim/seadRuntimeTypeInfo.h>
@@ -29,7 +29,7 @@ class Framework : public hostio::Node
 public:
     struct CreateSystemTaskArg
     {
-        inline CreateSystemTaskArg();
+        CreateSystemTaskArg();
 
         HostIOMgr::Parameter* hostio_parameter;
         Heap* heap;
