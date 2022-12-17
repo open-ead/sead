@@ -159,7 +159,7 @@ void Thread::ninThreadFunc_(void* arg)
 }
 
 Thread::Thread(Heap* heap, nn::os::ThreadType* nn_thread, u32 thread_id)
-    : INamable("sead::MainThread"), mStackSize(nn_thread->thread_stack_size),
+    : INamable("sead::MainThread"), mStackSize(nn_thread->_stackSize),
       mBlockType(MessageQueue::BlockType::NonBlocking), mQuitMsg(0x7FFFFFFF), mId(thread_id),
       mState(State::cRunning), mThreadInner(nn_thread),
       mPriority(nn::os::GetThreadPriority(nn_thread))
