@@ -358,13 +358,13 @@ inline void Matrix34<T>::transpose()
 }
 
 template <typename T>
-inline void Matrix34<T>::fromQuat(const Quat<T>& q)
+inline void Matrix34<T>::fromQuat(const Quat& q)
 {
     Matrix34CalcCommon<T>::makeQ(*this, q);
 }
 
 template <typename T>
-inline void Matrix34<T>::makeQT(const Quat<T>& q, const Vec3& t)
+inline void Matrix34<T>::makeQT(const Quat& q, const Vec3& t)
 {
     Matrix34CalcCommon<T>::makeQT(*this, q, t);
 }
@@ -474,7 +474,7 @@ inline void Matrix34<T>::makeT(T x, T y, T z)
 }
 
 template <typename T>
-inline void Matrix34<T>::toQuat(Quat<T>& q) const
+inline void Matrix34<T>::toQuat(Quat& q) const
 {
     Matrix34CalcCommon<T>::toQuat(q, *this);
 }
