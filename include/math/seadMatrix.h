@@ -161,6 +161,7 @@ public:
     void makeRzxyTIdx(const Vector3<u32>& r, const Vec3& t);
     void makeS(const Vec3& s);
     void makeS(T x, T y, T z);
+    void makeSQT(const Vec3& s, const Quat& q, const Vec3& t);
     void makeSR(const Vec3& s, const Vec3& r);
     void makeSRIdx(const Vec3& s, const Vector3<u32>& r);
     void makeSRT(const Vec3& s, const Vec3& r, const Vec3& t);

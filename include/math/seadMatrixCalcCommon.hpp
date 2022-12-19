@@ -1449,6 +1449,38 @@ inline void Matrix34CalcCommon<f32>::makeS(Base& o, const Vec3& s)
 #endif  // cafe
 
 template <typename T>
+void Matrix34CalcCommon<T>::makeSQT(Base& o, const Vec3& s, const Quat& q, const Vec3& t)
+{
+    // Assuming the quaternion "q" is normalized
+
+    const T yy = 2 * q.y * q.y;
+    const T zz = 2 * q.z * q.z;
+    const T xx = 2 * q.x * q.x;
+    const T xy = 2 * q.x * q.y;
+    const T xz = 2 * q.x * q.z;
+    const T yz = 2 * q.y * q.z;
+    const T wz = 2 * q.w * q.z;
+    const T wx = 2 * q.w * q.x;
+    const T wy = 2 * q.w * q.y;
+
+    o.m[0][0] = s.x * (1 - yy - zz);
+    o.m[0][1] = s.y * (xy - wz);
+    o.m[0][2] = s.z * (xz + wy);
+
+    o.m[1][0] = s.x * (xy + wz);
+    o.m[1][1] = s.y * (1 - xx - zz);
+    o.m[1][2] = s.z * (yz - wx);
+
+    o.m[2][0] = s.x * (xz - wy);
+    o.m[2][1] = s.y * (yz + wx);
+    o.m[2][2] = s.z * (1 - xx - yy);
+
+    o.m[0][3] = t.x;
+    o.m[1][3] = t.y;
+    o.m[2][3] = t.z;
+}
+
+template <typename T>
 void Matrix34CalcCommon<T>::makeSR(Base& o, const Vec3& s, const Vec3& r)
 {
     const T sinV[3] = {MathCalcCommon<T>::sin(r.x), MathCalcCommon<T>::sin(r.y),
