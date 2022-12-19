@@ -505,13 +505,13 @@ inline s32 MathCalcCommon<s32>::roundUpPow2(s32 val, s32 base)
 template <typename T>
 inline T MathCalcCommon<T>::clampMax(T val, T max_)
 {
-    return min(val, max_);
+    return val > max_ ? max_ : val;
 }
 
 template <typename T>
 inline T MathCalcCommon<T>::clampMin(T val, T min_)
 {
-    return max(val, min_);
+    return val < min_ ? min_ : val;
 }
 
 template <typename T>
