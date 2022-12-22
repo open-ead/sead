@@ -7,7 +7,6 @@
 
 namespace sead
 {
-
 template <typename T>
 struct Vector2;
 
