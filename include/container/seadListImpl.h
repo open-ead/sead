@@ -92,8 +92,8 @@ protected:
         --mCount;
     }
 
-    ListNode* front() const { return mCount >= 1 ? mStartEnd.mNext : nullptr; }
-    ListNode* back() const { return mCount >= 1 ? mStartEnd.mPrev : nullptr; }
+    ListNode* front() const { return mCount > 0 ? mStartEnd.mNext : nullptr; }
+    ListNode* back() const { return mCount > 0 ? mStartEnd.mPrev : nullptr; }
     ListNode* nth(int n) const;
     s32 indexOf(const ListNode*) const;
 
