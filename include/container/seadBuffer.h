@@ -7,7 +7,6 @@
 #include <basis/seadNew.h>
 #include <basis/seadRawPrint.h>
 #include <basis/seadTypes.h>
-#include <math/seadMathCalcCommon.h>
 #include <prim/seadPtrUtil.h>
 
 namespace sead
@@ -139,7 +138,7 @@ public:
             {
                 mSize = size;
                 mBuffer = buffer;
-                SEAD_ASSERT_MSG(PtrUtil::isAlignedPow2(mBuffer, sead::Mathi::abs(alignment)),
+                SEAD_ASSERT_MSG(PtrUtil::isAlignedPow2(mBuffer, abs(alignment)),
                                 "don't set alignment for a class with destructor");
             }
         }
@@ -159,7 +158,7 @@ public:
             {
                 mSize = size;
                 mBuffer = buffer;
-                SEAD_ASSERT_MSG(PtrUtil::isAlignedPow2(mBuffer, sead::Mathi::abs(alignment)),
+                SEAD_ASSERT_MSG(PtrUtil::isAlignedPow2(mBuffer, abs(alignment)),
                                 "don't set alignment for a class with destructor");
             }
         }
@@ -179,7 +178,7 @@ public:
             {
                 mSize = size;
                 mBuffer = buffer;
-                SEAD_ASSERT_MSG(PtrUtil::isAlignedPow2(mBuffer, sead::Mathi::abs(alignment)),
+                SEAD_ASSERT_MSG(PtrUtil::isAlignedPow2(mBuffer, abs(alignment)),
                                 "don't set alignment for a class with destructor");
                 return true;
             }
@@ -199,7 +198,7 @@ public:
             {
                 mSize = size;
                 mBuffer = buffer;
-                SEAD_ASSERT_MSG(PtrUtil::isAlignedPow2(mBuffer, sead::Mathi::abs(alignment)),
+                SEAD_ASSERT_MSG(PtrUtil::isAlignedPow2(mBuffer, abs(alignment)),
                                 "don't set alignment for a class with destructor");
                 return true;
             }
@@ -432,6 +431,10 @@ protected:
             return 1;
         return 0;
     }
+
+    // This is duplicated from Mathi::abs to avoid having to include the MathCalcCommon header;
+    // this limits the number of files we have to rebuild downstream whenever maths code is updated.
+    static s32 abs(s32 x) { return (x ^ x >> 31) - (x >> 31); }
 
     s32 mSize;
     T* mBuffer;
