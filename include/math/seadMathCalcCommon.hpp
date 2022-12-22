@@ -49,31 +49,13 @@ inline T MathCalcCommon<T>::pow(T x, T y)
 template <typename T>
 inline T MathCalcCommon<T>::sin(T t)
 {
-    if constexpr (std::is_same_v<T, float>)
-    {
-        const auto as_int = BitUtil::bitCast<u32>(t);
-        const SinCosSample& sample = cSinCosTbl[as_int >> 18];
-        return sample.sin_val + sample.sin_delta * (as_int & 0xFFFFFFu) * 0x1p-24f;
-    }
-    else
-    {
-        static_assert(!std::is_same<T, T>(), "Unsupported type");
-    }
+    return std::sin(t);
 }
 
 template <typename T>
 inline T MathCalcCommon<T>::cos(T t)
 {
-    if constexpr (std::is_same_v<T, float>)
-    {
-        const auto as_int = BitUtil::bitCast<u32>(t);
-        const SinCosSample& sample = cSinCosTbl[as_int >> 18];
-        return sample.cos_val + sample.cos_delta * (as_int & 0xFFFFFFu) * 0x1p-24f;
-    }
-    else
-    {
-        static_assert(!std::is_same<T, T>(), "Unsupported type");
-    }
+    return std::cos(t);
 }
 
 template <typename T>
