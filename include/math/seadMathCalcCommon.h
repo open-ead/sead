@@ -135,8 +135,9 @@ public:
     static s32 roundDownPow2(T x, s32 y);
     static T clampMax(T val, T max_);
     static T clampMin(T val, T min_);
-    static T clamp2(T min_, T val, T max_);  // is this the same function?
     static T clamp(T value, T low, T high);
+    // This is the same as clamp, but with a different order for arguments.
+    static T clamp2(T min_, T val, T max_);
     static T gcd(T x, T y);
     static T lcm(T x, T y);
     static bool isZero(T, T);

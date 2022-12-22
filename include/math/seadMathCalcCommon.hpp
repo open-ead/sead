@@ -497,6 +497,12 @@ inline T MathCalcCommon<T>::clampMin(T val, T min_)
 }
 
 template <typename T>
+inline T MathCalcCommon<T>::clamp2(T min_, T val, T max_)
+{
+    return clamp(val, min_, max_);
+}
+
+template <typename T>
 inline T MathCalcCommon<T>::clamp(T value, T low, T high)
 {
     if (value < low)
