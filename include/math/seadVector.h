@@ -5,6 +5,7 @@
 #include <math/seadMathCalcCommon.h>
 #include <math/seadMathPolicies.h>
 #include <math/seadVectorCalcCommon.h>
+#include <math/seadVectorFwd.h>
 
 namespace sead
 {
@@ -212,13 +213,6 @@ struct Vector4 : public Policies<T>::Vec4Base
     static const Vector4 ew;
     static const Vector4 ones;
 };
-
-typedef Vector2<s32> Vector2i;
-typedef Vector2<f32> Vector2f;
-typedef Vector3<s32> Vector3i;
-typedef Vector3<f32> Vector3f;
-typedef Vector4<s32> Vector4i;
-typedef Vector4<f32> Vector4f;
 
 template <>
 const Vector2<f32> Vector2<f32>::zero;

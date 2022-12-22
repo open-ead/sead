@@ -140,6 +140,7 @@ add_library(sead OBJECT
   include/math/seadVector.hpp
   include/math/seadVectorCalcCommon.h
   include/math/seadVectorCalcCommon.hpp
+  include/math/seadVectorFwd.h
   modules/src/math/seadBoundBox.cpp
   modules/src/math/seadMathCalcCommon.cpp
   modules/src/math/seadMatrix.cpp
