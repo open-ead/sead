@@ -107,7 +107,7 @@ private:
 
     using Vec3 = Vector3<T>;
     using Vec4 = Vector4<T>;
-    using Quat = Quat<T>;
+    using QuatT = Quat<T>;
 
 public:
     Matrix34() {}
@@ -151,8 +151,8 @@ public:
     void setTranspose(const Self& n);
     void transpose();
 
-    void fromQuat(const Quat& q);
-    void makeQT(const Quat& q, const Vec3& t);
+    void fromQuat(const QuatT& q);
+    void makeQT(const QuatT& q, const Vec3& t);
     void makeR(const Vec3& r);
     void makeRIdx(u32 xr, u32 yr, u32 zr);
     void makeRT(const Vec3& r, const Vec3& t);
@@ -161,7 +161,7 @@ public:
     void makeRzxyTIdx(const Vector3<u32>& r, const Vec3& t);
     void makeS(const Vec3& s);
     void makeS(T x, T y, T z);
-    void makeSQT(const Vec3& s, const Quat& q, const Vec3& t);
+    void makeSQT(const Vec3& s, const QuatT& q, const Vec3& t);
     void makeSR(const Vec3& s, const Vec3& r);
     void makeSRIdx(const Vec3& s, const Vector3<u32>& r);
     void makeSRT(const Vec3& s, const Vec3& r, const Vec3& t);
@@ -171,7 +171,7 @@ public:
     void makeST(const Vec3& s, const Vec3& t);
     void makeT(const Vec3& t);
     void makeT(T x, T y, T z);
-    void toQuat(Quat& q) const;
+    void toQuat(QuatT& q) const;
 
     void getBase(Vec3& o, s32 axis) const;
     void getRow(Vec4& o, s32 row) const;
