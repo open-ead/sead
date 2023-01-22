@@ -72,9 +72,10 @@ public:
 
     virtual void copyToDisplayBuffer(DrawContext* draw_context,
                                      const DisplayBuffer* display_buffer) const;
-    virtual void clear(u32 clr_flag, const Color4f& color, f32 depth, u32 stencil) const = 0;
+    virtual void clear(DrawContext* draw_context, u32 clr_flag, const Color4f& color, f32 depth,
+                       u32 stencil) const = 0;
     virtual void clearMRT(DrawContext* draw_context, u32 target, const Color4f& color) const;
-    virtual void bindImpl_() const = 0;
+    virtual void bindImpl_(DrawContext* draw_context) const = 0;
 
     void bind(DrawContext* draw_context) const;
 };
