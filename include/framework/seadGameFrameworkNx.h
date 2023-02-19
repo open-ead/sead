@@ -2,7 +2,7 @@
 
 #include <framework/seadGameFramework.h>
 #include <math/seadVector.h>
-#include <nvn/nvn_types.h>
+#include <nvn/nvn.h>
 #include <thread/seadThread.h>
 
 namespace sead
