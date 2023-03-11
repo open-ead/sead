@@ -1,13 +1,18 @@
 #pragma once
 
 #include <heap/seadDisposer.h>
+#include <gfx/seadDrawLockContext.h>
 
 namespace sead
 {
 // no content yet, just for the enum
 class Graphics : public IDisposer
 {
-    SEAD_SINGLETON_DISPOSER(Graphics)
+    using UnknownCallback = void(*)(int);
+    static Graphics* sInstance; // not SEAD_SINGLETON_DISPOSER
+
+    UnknownCallback _20;
+    DrawLockContext* mDrawLockContext;
 
 public:
     enum DevicePosture
@@ -24,6 +29,10 @@ public:
 
     void lockDrawContext();
     void unlockDrawContext();
+    void initHostIO();
+    void initializeDrawLockContext(Heap*);
+
+    static Graphics* instance() { return sInstance; }
 };
 
-}  // namespace sead
+} // namespace sead

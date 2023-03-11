@@ -68,23 +68,27 @@ public:
     void initialize(Heap* heap, const char* shader_path, const char* font_path,
                     const char* table_path, u32 unk);
     void initializeFromBinary(Heap* heap, void* shader_binary, u64 shader_size, void* font_binary,
-                              u64 font_size, void* table_binary, u32 unk3);
+                              u64 font_size, const void* table_binary, u32 unk3);
     void swapUniformBlockBuffer();
     u32 searchCharIndexFormCharCode_(u32 code) const;
 
+    static int sTextureID;
+
 private:
-    NVNprogram nvnProgram;
-    NVNtexture nvnTexture;
-    NVNtextureHandle nvnTextureHandle;
-    NVNmemoryPool pool1, pool2, pool3;
-    NVNbuffer buffer1;
-    u32 buffer1Size = 0;
-    void* fileData = nullptr;
-    NVNbuffer buffer2;
-    void* buffer2Map = nullptr;
+    NVNprogram mNvnProgram;
+    NVNtexture mNvnTexture;
+    NVNtextureHandle mNvnTextureHandle;
+    NVNmemoryPool mPool1, mPool2, mPool3;
+    NVNbuffer mBuffer1;
+    u32 mBuffer1Size = 0;
+    const void* mFileData = nullptr;
+    NVNbuffer mBuffer2;
+    void* mBuffer2Map = nullptr;
     UniformBlockBuffer mUniformBlockBuffer;
-    bool _530 = 0;
+    bool _530 = false;
+    bool _531;
 };
+
 static_assert(sizeof(DebugFontMgrJis1Nvn) == 0x538);
 
 class DebugFontMgrNvn : public FontBase
