@@ -75,7 +75,7 @@ public:
     void doUpdateMatrix(Matrix34f* dst) const override;
 
 private:
-    Matrix34f mMtx = Matrix34f::ident;
+    Matrix34f mDirectMatrix = Matrix34f::ident;
 };
 
 class OrthoCamera : public LookAtCamera
