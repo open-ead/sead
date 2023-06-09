@@ -31,10 +31,13 @@ const Matrix44f& Projection::getProjectionMatrix() const
     }
     else
     {
-        updateMatrixImpl_();
-        mDeviceDirty = false;
+        doUpdateMatrix(const_cast<Matrix44f*>(&mMatrix));
+        mDirty = false;
+        mDeviceDirty = true;
     }
 
+    doUpdateDeviceMatrix(const_cast<Matrix44f*>(&mDeviceMatrix), mMatrix, mDevicePosture);
+    mDeviceDirty = false;
     return mMatrix;
 }
 
