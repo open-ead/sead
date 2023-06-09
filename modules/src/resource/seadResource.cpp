@@ -22,8 +22,6 @@ s32 DirectResource::getLoadDataAlignment() const
     return 4;
 }
 
-void DirectResource::doCreate_(u8*, u32, Heap*) {}
-
 void DirectResource::create(u8* buffer, u32 bufferSize, u32 allocSize, bool allocated, Heap* heap)
 {
     if (mRawData)

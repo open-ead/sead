@@ -101,13 +101,23 @@ add_library(sead OBJECT
   include/gfx/seadPrimitiveRenderer.h
   include/gfx/seadPrimitiveRendererUtil.h
   include/gfx/seadProjection.h
+  include/gfx/seadFrustumProjection.h
+  include/gfx/seadPerspectiveProjection.h
+  include/gfx/seadOrthoProjection.h
+  include/gfx/seadDirectProjection.h
   include/gfx/seadTexture.h
+  include/gfx/seadViewport.h
   modules/src/gfx/seadCamera.cpp
   modules/src/gfx/seadColor.cpp
   modules/src/gfx/seadFrameBuffer.cpp
+  modules/src/gfx/seadViewport.cpp
   # modules/src/gfx/seadPrimitiveRenderer.cpp
   # modules/src/gfx/seadPrimitiveRendererUtil.cpp
   modules/src/gfx/seadProjection.cpp
+  modules/src/gfx/seadFrustumProjection.cpp
+  modules/src/gfx/seadPerspectiveProjection.cpp
+  modules/src/gfx/seadOrthoProjection.cpp
+  modules/src/gfx/seadDirectProjection.cpp
 
   include/heap/seadArena.h
   include/heap/seadDisposer.h

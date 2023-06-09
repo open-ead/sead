@@ -13,12 +13,29 @@ void Projection::updateMatrixImpl_() const
         doUpdateDeviceMatrix(const_cast<Matrix44f*>(&mDeviceMatrix), mMatrix, mDevicePosture);
         mDeviceDirty = false;
     }
-
     else if (mDeviceDirty)
     {
         doUpdateDeviceMatrix(const_cast<Matrix44f*>(&mDeviceMatrix), mMatrix, mDevicePosture);
         mDeviceDirty = false;
     }
+}
+
+const Matrix44f& Projection::getProjectionMatrix() const
+{
+    if (!mDirty)
+    {
+        if (!mDeviceDirty)
+        {
+            return mMatrix;
+        }
+    }
+    else
+    {
+        updateMatrixImpl_();
+        mDeviceDirty = false;
+    }
+
+    return mMatrix;
 }
 
 const Matrix44f& Projection::getDeviceProjectionMatrix() const
