@@ -59,6 +59,7 @@ add_library(sead OBJECT
   include/devenv/seadGameConfig.h
   include/devenv/seadStackTrace.h
   modules/src/devenv/seadAssertConfig.cpp
+  modules/src/devenv/seadFontMgr.cpp
   modules/src/devenv/seadGameConfig.cpp
   modules/src/devenv/seadStackTrace.cpp
 
@@ -97,6 +98,7 @@ add_library(sead OBJECT
   include/gfx/seadCamera.h
   include/gfx/seadColor.h
   include/gfx/seadDrawContext.h
+  include/gfx/seadDrawLockContext.h
   include/gfx/seadFrameBuffer.h
   include/gfx/seadPrimitiveRenderer.h
   include/gfx/seadPrimitiveRendererUtil.h
@@ -109,6 +111,7 @@ add_library(sead OBJECT
   include/gfx/seadViewport.h
   modules/src/gfx/seadCamera.cpp
   modules/src/gfx/seadColor.cpp
+  modules/src/gfx/seadDrawLockContext.cpp
   modules/src/gfx/seadFrameBuffer.cpp
   modules/src/gfx/seadViewport.cpp
   # modules/src/gfx/seadPrimitiveRenderer.cpp

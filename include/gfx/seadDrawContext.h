@@ -1,5 +1,7 @@
 #pragma once
 
+#include <nn/gfx/gfx_CommandBuffer.h>
+#include <nn/gfx/gfx_Types.h>
 #include "basis/seadTypes.h"
 #include "prim/seadRuntimeTypeInfo.h"
 
@@ -12,17 +14,11 @@ public:
     DrawContext();
     virtual ~DrawContext();
 
+    nn::gfx::CommandBuffer* getCommandBuffer() { return &mCommandBuffer; }
+
 private:
-    u32 _8;
-    u32 _c;
-    u64 _10;
-    u8 _18[0xC0 - 0x18];
-    u64 _c0;
-    u64 _c8;
-    u64 _d0;
-    u64 _d8;
-    u64 _e0;
-    u64 _e8;
+    nn::gfx::CommandBuffer mCommandBuffer;
 };
+static_assert(sizeof(DrawContext) == 0xF0);
 
 }  // namespace sead
