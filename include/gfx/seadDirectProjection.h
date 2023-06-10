@@ -33,6 +33,12 @@ public:
 
 private:
     Matrix44f mDirectMatrix;
+    float mNear;
+    float mFar;
+    float mFovy;
+    float mAspect;
+    Vector2f mOffset;
+    float mUnknown7;
 };
 
 }  // namespace sead

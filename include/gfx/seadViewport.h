@@ -38,9 +38,9 @@ public:
 private:
     inline void frameBufferHelper(const LogicalFrameBuffer& buffer);
     Graphics::DevicePosture mDevicePosture;
-    float mMaybeMinX;
-    float mMaybeMinY;
-    float mMaybeMaxX;
-    float mMaybeMaxY;
+    float mMinX;
+    float mMinY;
+    float mMaxX;
+    float mMaxY;
 };
 }  // namespace sead

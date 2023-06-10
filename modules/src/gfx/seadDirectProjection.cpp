@@ -3,7 +3,26 @@
 namespace sead
 {
 
+DirectProjection::DirectProjection()
+{
+    mDirectMatrix.makeIdentity();
+    mNear = 0.0;
+    mFar = 0.0;
+    mFovy = 0.0;
+    mAspect = 0.0;
+    mOffset.set(0.0, 0.0);
+    mUnknown7 = 1;
+    markDirty();
+    markDeviceDirty();
+}
+
 DirectProjection::DirectProjection(Matrix44f const& mtx, Graphics::DevicePosture posture)
+{
+    setDirectProjectionMatrix(mtx, posture);
+}
+
+void DirectProjection::setDirectProjectionMatrix(const Matrix44f& mtx,
+                                                 Graphics::DevicePosture posture)
 {
     mDirectMatrix = mtx;
     switch (posture)
@@ -17,34 +36,33 @@ DirectProjection::DirectProjection(Matrix44f const& mtx, Graphics::DevicePosture
     case Graphics::DevicePosture::cDevicePosture_FlipY:
         break;
     }
-
-    markDirty();
-}
-
-void DirectProjection::setDirectProjectionMatrix(const Matrix44f& mtx,
-                                                 Graphics::DevicePosture posture)
-{
-    mDirectMatrix = mtx;
     markDirty();
 }
 
 float DirectProjection::getNear() const
 {
-    return (float)0.0;
+    return mNear;
 }
+
 float DirectProjection::getFar() const
 {
-    return (float)0.0;
+    return mFar;
 }
+
 float DirectProjection::getFovy() const
 {
-    return (float)0.0;
+    return mFovy;
 }
+
 float DirectProjection::getAspect() const
 {
-    return (float)0.0;
+    return mAspect;
 }
-// void DirectProjection::getOffset(sead::Vector2<float>* offset) const {}
+
+void DirectProjection::getOffset(sead::Vector2<float>* offset) const
+{
+    offset->set(mOffset);
+}
 
 Projection::ProjectionType DirectProjection::getProjectionType() const
 {

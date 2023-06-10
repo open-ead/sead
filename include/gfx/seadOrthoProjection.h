@@ -11,13 +11,14 @@ public:
     OrthoProjection();
     OrthoProjection(float near, float far, float top, float bottom, float left, float right);
     OrthoProjection(float, float, Viewport* viewport);
-    ~OrthoProjection() override;
+    ~OrthoProjection() override = default;
 
     float getNear() const override;
     float getFar() const override;
     float getFovy() const override;
     float getAspect() const override;
     void getOffset(sead::Vector2<float>* offsetVec) const override;
+    void updateAttributesForDirectProjection() override;
 
     void setByViewport(sead::Viewport const& viewport);
     void setTBLR(float top, float bottom, float left, float right);

@@ -2,6 +2,17 @@
 namespace sead
 {
 
+OrthoProjection::OrthoProjection()
+{
+    mFar = 1.0;
+    mNear = 0.0;
+    mTop = 0.5;
+    mBottom = -0.5;
+    mLeft = -0.5;
+    mRight = 0.5;
+    markDirty();
+}
+
 OrthoProjection::OrthoProjection(float near, float far, float top, float bottom, float left,
                                  float right)
 {
@@ -84,6 +95,7 @@ void OrthoProjection::doUpdateMatrix(Matrix44f* mtx) const
     mtx->m[3][3] = 0;
 }
 
+// NON-MATCHING: Registers for multiplation, looks like ordering?
 void OrthoProjection::setByViewport(sead::Viewport const& viewport)
 {
     Vector2f max = viewport.getMax();

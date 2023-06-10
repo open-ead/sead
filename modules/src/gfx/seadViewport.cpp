@@ -8,8 +8,8 @@ namespace sead
 
 Viewport::Viewport()
 {
-    mMaybeMinX = 0.0;
-    mMaybeMinY = 1.0;
+    mMinX = 0.0;
+    mMinY = 1.0;
 }
 
 Viewport::Viewport(float left, float top, float right, float bottom)
@@ -68,8 +68,8 @@ Viewport::Viewport(LogicalFrameBuffer const& buffer)
 
 void Viewport::setByFrameBuffer(const LogicalFrameBuffer& buffer)
 {
-    mMaybeMinX = 0.0;
-    mMaybeMinY = 1.0;
+    mMinX = 0.0;
+    mMinY = 1.0;
 
     // mDevicePosture = // Some Global device posture //
     if (mDevicePosture <= Graphics::DevicePosture::cDevicePosture_FlipY)
@@ -144,8 +144,8 @@ void Viewport::getOnFrameBufferSize(Vector2f* out, const LogicalFrameBuffer& buf
 
 void Viewport::project(Vector2f* aVec, const Vector2f& bVec) const
 {
-    aVec->x = (float)0.5 * (mMaybeMaxX - mMaybeMinX) * bVec.x;
-    aVec->y = (float)0.5 * (mMaybeMaxY - mMaybeMinY) * bVec.y;
+    aVec->x = (float)0.5 * (mMaxX - mMinX) * bVec.x;
+    aVec->y = (float)0.5 * (mMaxY - mMinY) * bVec.y;
 }
 
 void Viewport::unproject(Vector3f* some3Vec, const Vector2f& some2Vec, const Projection& projection,

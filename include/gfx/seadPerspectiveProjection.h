@@ -10,7 +10,7 @@ class PerspectiveProjection : public Projection
 public:
     PerspectiveProjection();
     PerspectiveProjection(float near, float far, float fovy_rad, float aspect);
-    ~PerspectiveProjection() override;
+    ~PerspectiveProjection() override = default;
 
     float getNear() const override;
     float getFar() const override;
@@ -23,7 +23,7 @@ public:
     void set(float near, float far, float fovy_rad, float aspect);
     void doUpdateMatrix(Matrix44f* mtx) const override;
     void setFovx_(float aFloat);
-    void setFovy_(float aFloat);
+    void setFovy_(float newFovy);
     void createDividedProjection(sead::PerspectiveProjection* projection, int, int, int, int);
     float getTop();
     float getBottom();

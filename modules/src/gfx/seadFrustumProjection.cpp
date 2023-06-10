@@ -34,8 +34,7 @@ void FrustumProjection::doScreenPosToCameraPosTo(Vector3f* screenPos,
 
 float FrustumProjection::getFovy() const
 {
-    float someVal = 1.0;  // This appears to be a call into the mMatrix?
-    return (float)2.0 * atan2f((float)0.5 * (mTop - mBottom), someVal);
+    return (float)2.0 * atan2f((float)0.5 * (mTop - mBottom), getNear());
 }
 
 float FrustumProjection::getAspect() const
@@ -45,8 +44,11 @@ float FrustumProjection::getAspect() const
 
 void FrustumProjection::getOffset(Vector2f* offset) const
 {
-    offset->x = (float)0.5 * (mRight + mLeft) / (mRight - mLeft);
-    offset->y = (float)0.5 * (mTop + mBottom) / (mTop - mBottom);
+    float denom = mRight - mLeft;
+    offset->x = (float)0.5 * (mRight + mLeft) / denom;
+
+    denom = mTop - mBottom;
+    offset->y = (float)0.5 * (mTop + mBottom) / denom;
 }
 
 Projection::ProjectionType FrustumProjection::getProjectionType() const
