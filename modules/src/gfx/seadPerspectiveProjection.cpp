@@ -3,91 +3,113 @@
 
 namespace sead
 {
+PerspectiveProjection::PerspectiveProjection() = default;
 
-PerspectiveProjection::PerspectiveProjection()
+PerspectiveProjection::PerspectiveProjection(f32 near, f32 far, f32 fovy_rad, f32 aspect)
+    : mNear(near), mFar(far), mAspect(aspect), mOffset(Vector2f::zero)
 {
-    mNear = 1.0;
-    mFar = 1000.0;
-    mOffset.set(float(4.0 / 3.0), 0.0);
-    mFovyRad = M_PI / 4.0;  // pi / 4 radians or 45 degrees
-    mFovySin = sinf(mFovyRad / (float)2.0);
-    mFovyCos = cosf(mFovyRad / (float)2.0);
-    mFovyTan = tanf(mFovyRad / (float)2.0);
-    markDirty();
-}
-
-PerspectiveProjection::PerspectiveProjection(float near, float far, float fovy_rad, float aspect)
-{
-    mOffset.set((float)0.0, (float)0.0);
     set(near, far, fovy_rad, aspect);
 }
 
-float PerspectiveProjection::getNear() const
+void PerspectiveProjection::set(f32 _near, f32 _far, f32 fovy_rad, f32 aspect)
 {
-    return mNear;
+    setNear(_near);
+    setFar(_far);
+    setFovy_(fovy_rad);
+    setAspect(aspect);
 }
 
-float PerspectiveProjection::getFar() const
+void PerspectiveProjection::setFovy_(f32 fovy)
 {
-    return mFar;
+    mAngle = fovy;
+
+    fovy *= 0.5f;
+    mFovySin = Mathf::sin(fovy);
+    mFovyCos = Mathf::cos(fovy);
+    mFovyTan = Mathf::tan(fovy);
+
+    setDirty();
 }
 
-float PerspectiveProjection::getFovy() const
+f32 PerspectiveProjection::getTop() const
 {
-    return mFovyRad;
+    f32 clip_height = calcNearClipHeight_();
+    f32 center_y = mOffset.y * clip_height;
+    return clip_height * 0.5f + center_y;
 }
 
-float PerspectiveProjection::getAspect() const
+f32 PerspectiveProjection::getBottom() const
 {
-    return mAspect;
+    f32 clip_height = calcNearClipHeight_();
+    f32 center_y = mOffset.y * clip_height;
+    return -clip_height * 0.5f + center_y;
 }
 
-void PerspectiveProjection::getOffset(Vector2f* offset) const
+f32 PerspectiveProjection::getLeft() const
 {
-    offset->set(mOffset);
+    f32 clip_width = calcNearClipWidth_();
+    f32 center_x = mOffset.x * clip_width;
+    return -clip_width * 0.5f + center_x;
 }
 
-Projection::ProjectionType PerspectiveProjection::getProjectionType() const
+f32 PerspectiveProjection::getRight() const
 {
-    return ProjectionType::cPerspectiveProjection;
+    f32 clip_width = calcNearClipWidth_();
+    f32 center_x = mOffset.x * clip_width;
+    return clip_width * 0.5f + center_x;
 }
 
-void PerspectiveProjection::set(float near, float far, float fovy_rad, float aspect)
+void PerspectiveProjection::doUpdateMatrix(Matrix44f* dst) const
 {
-    mNear = near;
-    mFar = far;
-    markDirty();
-    mFovyRad = fovy_rad;
+    f32 clip_height = calcNearClipHeight_();
+    f32 clip_width = calcNearClipWidth_();
 
-    mFovySin = sinf((float)0.5 * fovy_rad);
-    mFovyCos = cosf((float)0.5 * fovy_rad);
-    mFovyTan = tanf((float)0.5 * fovy_rad);
+    f32 center_x = clip_width * mOffset.x;
+    f32 center_y = clip_height * mOffset.y;
 
-    mAspect = aspect;
-    markDirty();
+    clip_height *= 0.5f;
+    clip_width *= 0.5f;
+
+    f32 top = clip_height + center_y;
+    f32 bottom = -clip_height + center_y;
+
+    f32 left = -clip_width + center_x;
+    f32 right = clip_width + center_x;
+
+    f32 inv_size = 1.0f / (right - left);
+
+    (*dst)(0, 0) = mNear * 2 * inv_size;
+    (*dst)(0, 1) = 0.0f;
+    (*dst)(0, 2) = (right + left) * inv_size;
+    (*dst)(0, 3) = 0.0f;
+
+    inv_size = 1.0f / (top - bottom);
+
+    (*dst)(1, 0) = 0.0f;
+    (*dst)(1, 1) = mNear * 2 * inv_size;
+    (*dst)(1, 2) = (top + bottom) * inv_size;
+    (*dst)(1, 3) = 0.0f;
+
+    inv_size = 1.0f / (mFar - mNear);
+
+    (*dst)(2, 0) = 0.0f;
+    (*dst)(2, 1) = 0.0f;
+    (*dst)(2, 2) = -(mFar + mNear) * inv_size;
+    (*dst)(2, 3) = -(mFar * 2 * mNear) * inv_size;
+
+    (*dst)(3, 0) = 0.0f;
+    (*dst)(3, 1) = 0.0f;
+    (*dst)(3, 2) = -1.0f;
+    (*dst)(3, 3) = 0.0f;
 }
 
-// set
-// do Update
-
-// void PerspectiveProjection::setFovx_(float aFloat) {}
-
-void PerspectiveProjection::setFovy_(float newFovy)
+void PerspectiveProjection::doScreenPosToCameraPosTo(Vector3f* dst,
+                                                     const Vector3f& screen_pos) const
 {
-    float local = (float)0.5 * newFovy;
-    mFovyRad = newFovy;
-    mFovySin = sinf(local);
-    mFovyCos = cosf(local);
-    mFovyTan = tanf(local);
-    markDirty();
-}
+    dst->set(0.0f, 0.0f, -mNear);
 
-// void PerspectiveProjection::doUpdateMatrix(Matrix44f* mtx) const
-// {
-//     float temp = 1.0;
-//     mtx->m[0][0] = (this->mFovyRad + this->mFovyRad) * (1.0 / temp);
-//     mtx->m[0][1] = 0.0;
-//     mtx->m[0][3] = 0.0;
-// }
+    dst->y = (calcNearClipHeight_() / 2) * (screen_pos.y + mOffset.y * 2);
+    dst->x = (calcNearClipWidth_() / 2) * (screen_pos.x + mOffset.x * 2);
+}
 
 }  // namespace sead

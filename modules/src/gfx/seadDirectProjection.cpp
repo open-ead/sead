@@ -5,67 +5,42 @@ namespace sead
 
 DirectProjection::DirectProjection()
 {
-    mDirectMatrix.makeIdentity();
-    mNear = 0.0;
-    mFar = 0.0;
-    mFovy = 0.0;
-    mAspect = 0.0;
-    mOffset.set(0.0, 0.0);
-    mUnknown7 = 1;
-    markDirty();
-    markDeviceDirty();
+    setDirty();
 }
 
-DirectProjection::DirectProjection(Matrix44f const& mtx, Graphics::DevicePosture posture)
+DirectProjection::DirectProjection(const Matrix44f* mtx, Graphics::DevicePosture posture)
 {
     setDirectProjectionMatrix(mtx, posture);
 }
 
-void DirectProjection::setDirectProjectionMatrix(const Matrix44f& mtx,
+void DirectProjection::updateAttributesForDirectProjection()
+{
+    Matrix44f newMatrix;
+    newMatrix.setInverse(mDirectMatrix);
+}
+
+void DirectProjection::doUpdateMatrix(Matrix44f* dst) const
+{
+    *dst = mDirectMatrix;
+}
+
+void DirectProjection::setDirectProjectionMatrix(const Matrix44f* mtx,
                                                  Graphics::DevicePosture posture)
 {
-    mDirectMatrix = mtx;
-    switch (posture)
-    {
-    case Graphics::DevicePosture::cDevicePosture_RotateRight:
-        break;
-    case Graphics::DevicePosture::cDevicePosture_RotateLeft:
-        break;
-    case Graphics::DevicePosture::cDevicePosture_RotateHalfAround:
-        break;
-    case Graphics::DevicePosture::cDevicePosture_FlipY:
-        break;
-    }
-    markDirty();
+    mDirectMatrix = (*mtx);
 }
 
-float DirectProjection::getNear() const
+void DirectProjection::doScreenPosToCameraPosTo(Vector3f* dst, const Vector3f& screen_pos) const
 {
-    return mNear;
-}
-
-float DirectProjection::getFar() const
-{
-    return mFar;
-}
-
-float DirectProjection::getFovy() const
-{
-    return mFovy;
-}
-
-float DirectProjection::getAspect() const
-{
-    return mAspect;
-}
-
-void DirectProjection::getOffset(sead::Vector2<float>* offset) const
-{
-    offset->set(mOffset);
-}
-
-Projection::ProjectionType DirectProjection::getProjectionType() const
-{
-    return Projection::ProjectionType::cDirectProjection;
+    Matrix44f inverseDirect;
+    inverseDirect.setInverse(mDirectMatrix);
+    f32 scale = 1.0f / (inverseDirect(3, 3) + screen_pos.x * inverseDirect(3, 0) +
+                        screen_pos.y * inverseDirect(3, 1) + screen_pos.z * inverseDirect(3, 2));
+    dst->x = scale * (inverseDirect(0, 3) + screen_pos.x * inverseDirect(0, 0) +
+                      screen_pos.y * inverseDirect(0, 1) + screen_pos.z * inverseDirect(0, 2));
+    dst->y = scale * (inverseDirect(1, 3) + screen_pos.x * inverseDirect(1, 0) +
+                      screen_pos.y * inverseDirect(1, 1) + screen_pos.z * inverseDirect(1, 2));
+    dst->z = scale * (inverseDirect(2, 3) + screen_pos.x * inverseDirect(2, 0) +
+                      screen_pos.y * inverseDirect(2, 1) + screen_pos.z * inverseDirect(2, 2));
 }
 }  // namespace sead

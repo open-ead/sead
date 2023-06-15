@@ -1,53 +1,74 @@
-#ifndef SEAD_PROJECTION_H_
-#define SEAD_PROJECTION_H_
+#pragma once
 
-#include <basis/seadTypes.h>
 #include <gfx/seadGraphics.h>
-#include <gfx/seadViewport.h>
+#include <math/seadBoundBox.h>
 #include <math/seadMatrix.h>
 #include <math/seadVector.h>
-#include <prim/seadRuntimeTypeInfo.h>
-
-#define GLOBAL_DEVICE_Z_SCALE 1.0
+#include "math/seadMathNumbers.h"
+#include "prim/seadRuntimeTypeInfo.h"
 
 namespace sead
 {
+
+class Camera;
+class Viewport;
+
+template <typename T>
+class Ray;
+
 class Projection
 {
     SEAD_RTTI_BASE(Projection)
 
 public:
-    enum ProjectionType
+    enum Type
     {
-        cPerspectiveProjection = 0,
-        cOrthoProjection = 1,
-        cDirectProjection = 2,
+        cType_Perspective = 0,
+        cType_Ortho = 1,
+        cType_Undefined = 2
     };
 
     Projection();
     virtual ~Projection() = default;
 
-    void markDirty() { mDirty = true; };
-    void markDeviceDirty() { mDeviceDirty = true; };
+    void setDirty() { mDirty = true; }
+    void setDeviceDirty() { mDeviceDirty = true; }
+
+    void setDevicePosture(Graphics::DevicePosture pose)
+    {
+        mDevicePosture = pose;
+        setDeviceDirty();
+    }
+
+    const Matrix44f& getProjectionMatrix() const;
+    Matrix44f& getProjectionMatrixMutable();
+
+    const Matrix44f& getDeviceProjectionMatrix() const;
+
+    void cameraPosToScreenPos(Vector3f* dst, const Vector3f& camera_pos) const;
+    void screenPosToCameraPos(Vector3f* dst, const Vector3f& screen_pos) const;
+    void screenPosToCameraPos(Vector3f* dst, const Vector2f& screen_pos) const;
+
+    void project(Vector2f* dst, const Vector3f& camera_pos, const Viewport& viewport) const;
+    void unproject(Vector3f* dst, const Vector3f& screen_pos, const Camera& camera) const;
+    void unprojectRay(Ray<Vector3f>* dst, const Vector3f& screen_pos, const Camera& camera) const;
+
     virtual float getNear() const = 0;
     virtual float getFar() const = 0;
     virtual float getFovy() const = 0;
     virtual float getAspect() const = 0;
     virtual void getOffset(Vector2f* offset) const = 0;
-    virtual void updateAttributesForDirectProjection();
-    virtual ProjectionType getProjectionType() const = 0;
-    virtual void doUpdateMatrix(Matrix44f* mtx) const = 0;
-    virtual void doUpdateDeviceMatrix(Matrix44f*, const Matrix44f&, Graphics::DevicePosture) const;
-    virtual void doScreenPosToCameraPosTo(Vector3f* screen, const Vector3f& cam) const;
-    virtual void someFunction(Camera* camera) const;
-    virtual void project(Vector2f* aVec, Vector3f* bVec) const;
-    virtual void unproject(Vector3f*, float, Camera*) const = 0;
 
-    void updateMatrixImpl_() const;
-    const Matrix44f& getProjectionMatrix() const;
-    const Matrix44f& getDeviceProjectionMatrix() const;
+    virtual void updateAttributesForDirectProjection();
+    virtual Type getProjectionType() const = 0;
+    virtual void doUpdateMatrix(Matrix44f* dst) const = 0;
+    virtual void doUpdateDeviceMatrix(Matrix44f* dst, const Matrix44f& src,
+                                      Graphics::DevicePosture pose) const;
+    virtual void doScreenPosToCameraPosTo(Vector3f* dst, const Vector3f& screen_pos) const;
 
 private:
+    void updateMatrixImpl_() const;
+
     mutable bool mDirty;
     mutable bool mDeviceDirty;
     Matrix44f mMatrix;
@@ -56,7 +77,8 @@ private:
     f32 mDeviceZScale;
     f32 mDeviceZOffset;
 };
+#ifdef cafe
+static_assert(sizeof(Projection) == 0x94, "sead::Projection size mismatch");
+#endif  // cafe
 
 }  // namespace sead
-
-#endif  // SEAD_PROJECTION_H_

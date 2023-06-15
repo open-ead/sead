@@ -2,57 +2,79 @@
 
 namespace sead
 {
-FrustumProjection::FrustumProjection(float near, float far, float top, float bottom, float left,
-                                     float right)
+FrustumProjection::FrustumProjection(f32 _near, f32 _far, f32 top, f32 bottom, f32 left, f32 right)
+    : mNear(_near), mFar(_far), mTop(top), mBottom(bottom), mLeft(left), mRight(right)
+{
+    setDirty();
+}
+
+FrustumProjection::FrustumProjection(f32 _near, f32 _far, const BoundBox2f& box)
+    : mNear(_near), mFar(_far)
+{
+}
+
+void FrustumProjection::setNear(f32 near)
 {
     mNear = near;
+    setDirty();
+}
+
+void FrustumProjection::setFar(f32 far)
+{
     mFar = far;
+    setDirty();
+}
+
+void FrustumProjection::setTop(f32 top)
+{
     mTop = top;
+    setDirty();
+}
+
+void FrustumProjection::setBottom(f32 bottom)
+{
     mBottom = bottom;
+    setDirty();
+}
+
+void FrustumProjection::setLeft(f32 left)
+{
     mLeft = left;
+    setDirty();
+}
+
+void FrustumProjection::setRight(f32 right)
+{
     mRight = right;
-    markDirty();
+    setDirty();
 }
 
-float FrustumProjection::getNear() const
+void FrustumProjection::doUpdateMatrix(Matrix44f* dst) const
 {
-    return mNear;
-}
+    f32 inv_size = 1.0f / (mRight - mLeft);
 
-float FrustumProjection::getFar() const
-{
-    return mFar;
-}
+    (*dst)(0, 0) = mNear * 2 * inv_size;
+    (*dst)(0, 1) = 0.0f;
+    (*dst)(0, 2) = (mLeft + mRight) * inv_size;
+    (*dst)(0, 3) = 0.0f;
 
-void FrustumProjection::doScreenPosToCameraPosTo(Vector3f* screenPos,
-                                                 const Vector3f& cameraPos) const
-{
-    screenPos->z = mNear;
-    screenPos->x = (float)0.5 * ((mRight + mLeft) + (mRight - mLeft) * cameraPos.x);
-    screenPos->y = (float)0.5 * ((mTop + mBottom) + (mTop - mBottom) * cameraPos.y);
-}
+    inv_size = 1.0f / (mTop - mBottom);
 
-float FrustumProjection::getFovy() const
-{
-    return (float)2.0 * atan2f((float)0.5 * (mTop - mBottom), getNear());
-}
+    (*dst)(1, 0) = 0.0f;
+    (*dst)(1, 1) = mNear * 2 * inv_size;
+    (*dst)(1, 2) = (mTop + mBottom) * inv_size;
+    (*dst)(1, 3) = 0.0f;
 
-float FrustumProjection::getAspect() const
-{
-    return (mRight - mLeft) / (mTop - mBottom);
-}
+    inv_size = 1.0f / (mFar - mNear);
 
-void FrustumProjection::getOffset(Vector2f* offset) const
-{
-    float denom = mRight - mLeft;
-    offset->x = (float)0.5 * (mRight + mLeft) / denom;
+    (*dst)(2, 0) = 0.0f;
+    (*dst)(2, 1) = 0.0f;
+    (*dst)(2, 2) = -(mFar + mNear) * inv_size;
+    (*dst)(2, 3) = -(mFar * 2 * mNear) * inv_size;
 
-    denom = mTop - mBottom;
-    offset->y = (float)0.5 * (mTop + mBottom) / denom;
-}
-
-Projection::ProjectionType FrustumProjection::getProjectionType() const
-{
-    return ProjectionType::cPerspectiveProjection;
+    (*dst)(3, 0) = 0.0f;
+    (*dst)(3, 1) = 0.0f;
+    (*dst)(3, 2) = -1.0f;
+    (*dst)(3, 3) = 0.0f;
 }
 }  // namespace sead

@@ -1,3 +1,4 @@
+#include <gfx/seadDrawContext.h>
 #include <gfx/seadProjection.h>
 #include <gfx/seadViewport.h>
 #include "math/seadBoundBox.h"
@@ -8,158 +9,173 @@ namespace sead
 
 Viewport::Viewport()
 {
-    mMinX = 0.0;
-    mMinY = 1.0;
+    setUndef();
 }
 
-Viewport::Viewport(float left, float top, float right, float bottom)
-    : BoundBox2f(left, top, right, bottom)
+Viewport::Viewport(f32 left, f32 top, f32 sizeX, f32 sizeY)
+    : BoundBox2f(left, top, left + sizeX, top + sizeY)
 {
-    // float max = left + right;
-    // float min = left;
-
-    // if (max <= min)
-    // {
-    //     max = left;
-    //     min = right;
-    // }
-    // this->mMaybeMinX = min;
-    // this->mMaybeMaxX = max;
-
-    // min = top;
-    // max = bottom + top;
-    // if (max <= min)
-    // {
-    //     max = top;
-    //     min = bottom;
-    // }
-    // this->mMaybeMinY = min;
-    // this->mMaybeMaxY = max;
-
-    // // If L + R is smaller, then the left bound is the max X.
-    // if ((left + right) <= left)
-    // {
-    //     this->mMaybeMinX = left + right;
-    //     this->mMaybeMaxX = left;
-    // }
-    // else
-    // {
-    //     this->mMaybeMinX = left;
-    //     this->mMaybeMaxX = left + right;
-    // }
-
-    // // Same deal for top and bottom
-    // if ((top + bottom) <= top)
-    // {
-    //     this->mMaybeMinY = top + bottom;
-    //     this->mMaybeMaxY = top;
-    // }
-    // else
-    // {
-    //     this->mMaybeMinY = top;
-    //     this->mMaybeMaxY = top + bottom;
-    // }
+}
+Viewport::Viewport(const LogicalFrameBuffer& frame_buffer)
+{
+    setByFrameBuffer(frame_buffer);
 }
 
-Viewport::Viewport(LogicalFrameBuffer const& buffer)
+void Viewport::setByFrameBuffer(const LogicalFrameBuffer& frame_buffer)
 {
-    setByFrameBuffer(buffer);
-}
-
-void Viewport::setByFrameBuffer(const LogicalFrameBuffer& buffer)
-{
-    mMinX = 0.0;
-    mMinY = 1.0;
-
-    // mDevicePosture = // Some Global device posture //
-    if (mDevicePosture <= Graphics::DevicePosture::cDevicePosture_FlipY)
+    switch (mDevicePos)
     {
-        float minX;
-        float maxX;
-        float minY;
-        float maxY;
-        if (mDevicePosture == Graphics::DevicePosture::cDevicePosture_RotateLeft ||
-            mDevicePosture == Graphics::DevicePosture::cDevicePosture_RotateHalfAround)
-        {
-            maxX = buffer.getVirtualSize().x;
-            maxY = buffer.getVirtualSize().y;
-        }
-        else
-        {
-            maxY = buffer.getVirtualSize().x;
-            maxX = buffer.getVirtualSize().y;
-        }
-
-        minY = fmin(maxY, (float)0.0);
-        if (maxY < 0.0)
-        {
-            maxY = 0.0;
-        }
-
-        minX = fmin(maxX, (float)0.0);
-        if (maxX < 0.0)
-        {
-            maxX = 0.0;
-        }
-
-        set(minX, minY, maxX, maxY);
+    case Graphics::cDevicePosture_Same:
+    case Graphics::cDevicePosture_FlipX:
+    case Graphics::cDevicePosture_FlipY:
+    case Graphics::cDevicePosture_FlipXY:
+        set(0.0f, 0.0f, frame_buffer.getVirtualSize().x, frame_buffer.getVirtualSize().y);
+        break;
+    case Graphics::cDevicePosture_RotateRight:
+    case Graphics::cDevicePosture_RotateLeft:
+        set(0.0f, 0.0f, frame_buffer.getVirtualSize().y, frame_buffer.getVirtualSize().x);
+        break;
+    default:;
+        // SEAD_ASSERT_MSG(false, "Undefined DevicePosture(%d)", s32(mDevicePos));
     }
 }
 
-// void Viewport::apply(DrawContext*, const LogicalFrameBuffer& buffer) const {}
+void Viewport::getOnFrameBufferPos(Vector2f* dst, const LogicalFrameBuffer& fb) const
+{
+    *dst = getMin();
 
-// void Viewport::getOnFrameBufferPos(Vector2f* out, const LogicalFrameBuffer& buffer) const
+    switch (mDevicePos)
+    {
+    case Graphics::cDevicePosture_Same:
+        break;
+    case Graphics::cDevicePosture_RotateRight:
+    {
+        f32 y = (fb.getVirtualSize().y - getSizeX()) - dst->x;
+        dst->set(dst->y, y);
+    }
+    break;
+    case Graphics::cDevicePosture_RotateLeft:
+    {
+        f32 x = (fb.getVirtualSize().x - getSizeY()) - dst->y;
+        dst->set(x, dst->x);
+    }
+    break;
+    case Graphics::cDevicePosture_FlipXY:
+    {
+        f32 x = (fb.getVirtualSize().x - getSizeX()) - dst->x;
+        f32 y = (fb.getVirtualSize().y - getSizeY()) - dst->y;
+        dst->set(x, y);
+    }
+    break;
+    case Graphics::cDevicePosture_FlipX:
+    {
+        f32 x = (fb.getVirtualSize().x - getSizeX()) - dst->x;
+        dst->set(x, dst->y);
+    }
+    break;
+    case Graphics::cDevicePosture_FlipY:
+    {
+        f32 y = (fb.getVirtualSize().y - getSizeY()) - dst->y;
+        dst->set(dst->x, y);
+    }
+    break;
+    default:;
+        // SEAD_ASSERT_MSG(false, "Undefined DevicePosture(%d)", s32(mDevicePos));
+    }
+
+    dst->x /= fb.getVirtualSize().x;
+    dst->y /= fb.getVirtualSize().y;
+    dst->x *= fb.getPhysicalArea().getSizeX();
+    dst->y *= fb.getPhysicalArea().getSizeY();
+    dst->x = dst->x + fb.getPhysicalArea().getMin().x;
+    dst->y = dst->y + fb.getPhysicalArea().getMin().y;
+}
+
+void Viewport::getOnFrameBufferSize(Vector2f* dst, const LogicalFrameBuffer& fb) const
+{
+    dst->set(getSizeX(), getSizeY());
+
+    switch (mDevicePos)
+    {
+    case Graphics::cDevicePosture_Same:
+    case Graphics::cDevicePosture_FlipX:
+    case Graphics::cDevicePosture_FlipY:
+    case Graphics::cDevicePosture_FlipXY:
+        break;
+    case Graphics::cDevicePosture_RotateRight:
+    case Graphics::cDevicePosture_RotateLeft:
+        dst->set(dst->y, dst->x);
+        break;
+    default:;
+        // SEAD_ASSERT_MSG(false, "Undefined DevicePosture(%d)", s32(mDevicePos));
+    }
+
+    dst->x /= fb.getVirtualSize().x;
+    dst->y /= fb.getVirtualSize().y;
+    dst->x *= fb.getPhysicalArea().getSizeX();
+    dst->y *= fb.getPhysicalArea().getSizeY();
+}
+
+void Viewport::apply(DrawContext* context, const LogicalFrameBuffer& frame_buffer) const
+{
+    sead::Vector2f real_pos;
+    getOnFrameBufferPos(&real_pos, frame_buffer);
+
+    sead::Vector2f real_size;
+    getOnFrameBufferSize(&real_size, frame_buffer);
+
+    SEAD_ASSERT(frame_buffer.getPhysicalArea().isInside(real_pos) &&
+                frame_buffer.getPhysicalArea().isInside(real_pos + real_size));
+
+    real_pos.y = (frame_buffer.getPhysicalArea().getSizeY() - real_size.y) - real_pos.y;
+
+    // context->getCommandBuffer()->SetScissor(real_pos.x, real_pos.y, real_size.x, real_size.y);
+    sead::Graphics::instance()->setViewportRealPosition(real_pos.x, real_pos.y, real_size.x,
+                                                        real_size.y);
+    sead::Graphics::instance()->setScissorRealPosition(real_pos.x, real_pos.y, real_size.x,
+                                                       real_size.y);
+    context->getCommandBuffer()->SetDepthBounds(mDepthBounds.x, mDepthBounds.y);
+}
+
+// void Viewport::applyViewport(DrawContext* context, const LogicalFrameBuffer& buffer) const
 // {
-//     switch (mDevicePosture)
-//     {
-//     case Graphics::DevicePosture::cDevicePosture_Same:
-//     case Graphics::DevicePosture::cDevicePosture_RotateRight:
-//     case Graphics::DevicePosture::cDevicePosture_RotateLeft:
-//     case Graphics::DevicePosture::cDevicePosture_RotateHalfAround:
-//     case Graphics::DevicePosture::cDevicePosture_FlipX:
-//     case Graphics::DevicePosture::cDevicePosture_FlipY:
-//     default:
-//         break;
-//     }
+//     Vector2f temp;
+//     getOnFrameBufferPos(&temp, buffer);
+//     context->someFunction();
+//     // apply(buffer);
 // }
 
-void Viewport::getOnFrameBufferSize(Vector2f* out, const LogicalFrameBuffer& buffer) const
+void Viewport::applyScissor(DrawContext* context, const LogicalFrameBuffer& buffer) const {}
+
+void Viewport::project(Vector2f* aVec, const Vector3f& bVec) const
 {
-    out->x = getSizeX();
-    out->y = getSizeY();
-
-    if (mDevicePosture - 1 < Graphics::DevicePosture::cDevicePosture_RotateLeft)
-    {
-        out->x = getSizeY();
-        out->y = getSizeX();
-    }
-    out->x = out->x / buffer.getVirtualSize().x;
-    out->y = out->y / buffer.getVirtualSize().y;
-    out->x = out->x * buffer.getPhysicalArea().getSizeX();
-    out->y = out->y * buffer.getPhysicalArea().getSizeY();
+    aVec->x = getHalfSizeX() * bVec.x;
+    aVec->y = getHalfSizeY() * bVec.y;
 }
-
-// void Viewport::applyViewport(DrawContext* context, const LogicalFrameBuffer& buffer) const {}
-// void Viewport::applyScissor(DrawContext* context, const LogicalFrameBuffer& buffer) const {}
 
 void Viewport::project(Vector2f* aVec, const Vector2f& bVec) const
 {
-    aVec->x = (float)0.5 * (mMaxX - mMinX) * bVec.x;
-    aVec->y = (float)0.5 * (mMaxY - mMinY) * bVec.y;
+    aVec->x = getHalfSizeX() * bVec.x;
+    aVec->y = getHalfSizeY() * bVec.y;
 }
 
 void Viewport::unproject(Vector3f* some3Vec, const Vector2f& some2Vec, const Projection& projection,
                          const Camera& camera) const
 {
-    float some_value;
-    some_value = some2Vec.x / getHalfSizeX();
+    Vector3f tempVec;
+    tempVec.x = some2Vec.x / getHalfSizeX();
+    tempVec.y = some2Vec.y / getHalfSizeY();
+    tempVec.z = 0.0f;
+    projection.unproject(some3Vec, tempVec, camera);
 }
-void Viewport::unproject(Ray<Vector3f>* ray, const Vector2f& someVec, const Projection& projection,
-                         const Camera& camera) const
-{
-    float some_value;
-    some_value = someVec.x / (getHalfSizeX());
-    // projection.unproject(ray, some_value, camera);
-}
+
+// void Viewport::unproject(Ray<Vector3f>* ray, const Vector2f& someVec, const Projection&
+// projection,
+//                          const Camera& camera) const
+// {
+//     float some_value;
+//     some_value = someVec.x / (getHalfSizeX());
+//     // projection.unproject(ray, some_value, camera);
+// }
 
 }  // namespace sead
