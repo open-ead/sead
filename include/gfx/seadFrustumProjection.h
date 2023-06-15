@@ -42,8 +42,6 @@ public:
     f32 getFovy() const override;
     f32 getAspect() const override;
     void getOffset(Vector2f* dst) const override;
-    f32 getOffsetX() const;
-    f32 getOffsetY() const;
 
     void setFovyAspectOffset(f32 fovy, f32 aspect, const Vector2f& offset);
 

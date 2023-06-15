@@ -3,12 +3,16 @@
 
 namespace sead
 {
-PerspectiveProjection::PerspectiveProjection() = default;
+PerspectiveProjection::PerspectiveProjection()
+{
+    setFovy_(mAngle);  // 45 degrees
+}
 
 PerspectiveProjection::PerspectiveProjection(f32 near, f32 far, f32 fovy_rad, f32 aspect)
     : mNear(near), mFar(far), mAspect(aspect), mOffset(Vector2f::zero)
 {
-    set(near, far, fovy_rad, aspect);
+    setFovy_(fovy_rad);
+    setDirty();
 }
 
 void PerspectiveProjection::set(f32 _near, f32 _far, f32 fovy_rad, f32 aspect)

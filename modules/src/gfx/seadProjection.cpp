@@ -5,8 +5,7 @@
 namespace sead
 {
 Projection::Projection()
-    : mDirty(true), mDeviceDirty(true), mMatrix(), mDeviceMatrix(),
-      mDevicePosture(Graphics::getDefaultDevicePosture()),
+    : mDirty(true), mDeviceDirty(true), mDevicePosture(Graphics::getDefaultDevicePosture()),
       mDeviceZScale(Graphics::getDefaultDeviceZScale()),
       mDeviceZOffset(Graphics::getDefaultDeviceZOffset())
 {

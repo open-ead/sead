@@ -72,7 +72,7 @@ private:
 
     f32 mNear = 1.0f;
     f32 mFar = 10000.0f;
-    f32 mAngle;
+    f32 mAngle = numbers::pi / 2.0f;
     f32 mFovySin;
     f32 mFovyCos;
     f32 mFovyTan;

@@ -105,14 +105,15 @@ void OrthoProjection::doUpdateMatrix(Matrix44f* dst) const
     (*dst)(3, 3) = -1.0f;
 }
 
+// NON-MATCHING: Adds an additional register for a multiplication
 void OrthoProjection::setByViewport(const Viewport& vp)
 {
-    Vector2f max = vp.getMax();
-    Vector2f min = vp.getMin();
-    mTop = (float)0.5 * (max.y - min.y);
-    mBottom = -(float)0.5 * (max.y - min.y);
-    mLeft = -(float)0.5 * (max.x - min.x);
-    mRight = (float)0.5 * (max.x - min.x);
+    f32 halfY = vp.getHalfSizeY();
+    f32 halfX = vp.getHalfSizeX();
+    mTop = halfY;
+    mBottom = -halfY;
+    mLeft = -halfX;
+    mRight = halfX;
     setDirty();
 }
 
