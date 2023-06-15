@@ -1,6 +1,6 @@
-#ifndef SEAD_GRAPHICS_H_
-#define SEAD_GRAPHICS_H_
+#pragma once
 
+#include <gfx/seadDrawLockContext.h>
 #include <heap/seadDisposer.h>
 #include <thread/seadCriticalSection.h>
 
@@ -266,5 +266,3 @@ static_assert(sizeof(Graphics) == 0x54, "sead::Graphics size mismatch");
 #endif  // cafe
 
 }  // namespace sead
-
-#endif  // SEAD_GRAPHICS_H_

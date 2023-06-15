@@ -59,6 +59,7 @@ add_library(sead OBJECT
   include/devenv/seadGameConfig.h
   include/devenv/seadStackTrace.h
   modules/src/devenv/seadAssertConfig.cpp
+  modules/src/devenv/seadFontMgr.cpp
   modules/src/devenv/seadGameConfig.cpp
   modules/src/devenv/seadStackTrace.cpp
 
