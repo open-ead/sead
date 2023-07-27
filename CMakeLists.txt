@@ -84,6 +84,7 @@ add_library(sead OBJECT
   include/framework/seadMethodTreeMgr.h
   include/framework/seadProcessMeter.h
   include/framework/seadProcessMeterBar.h
+  include/framework/seadTask.h
   include/framework/seadTaskBase.h
   include/framework/seadTaskID.h
   include/framework/seadTaskMgr.h
