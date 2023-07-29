@@ -1,15 +1,15 @@
 #pragma once
 
-#include <prim/seadRuntimeTypeInfo.h>
-#include <framework/seadTaskBase.h>
 #include <framework/seadMethodTree.h>
+#include <framework/seadTaskBase.h>
+#include <prim/seadRuntimeTypeInfo.h>
 
 namespace sead
 {
-
 class Task : public TaskBase
 {
     SEAD_RTTI_BASE(TaskBase);
+
 public:
     explicit Task(const TaskConstructArg& arg);
     Task(const TaskConstructArg& arg, const char* name);
@@ -33,4 +33,4 @@ protected:
     MethodTreeNode mCalcNode{nullptr};
     MethodTreeNode mDrawNode{nullptr};
 };
-}
+} // namespace sead
