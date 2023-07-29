@@ -33,4 +33,4 @@ protected:
     MethodTreeNode mCalcNode{nullptr};
     MethodTreeNode mDrawNode{nullptr};
 };
-} // namespace sead
+}  // namespace sead
