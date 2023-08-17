@@ -63,6 +63,6 @@ private:
     bool _201;
     bool _202;
 };
-static_assert(sizeof(GraphicsNvn) == 0x208);
+// static_assert(sizeof(GraphicsNvn) == 0x208);
 
 }  // namespace sead

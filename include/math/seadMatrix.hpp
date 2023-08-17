@@ -605,7 +605,7 @@ inline Matrix44<T>& Matrix44<T>::operator=(const Self& n)
 template <typename T>
 inline void Matrix44<T>::makeIdentity()
 {
-    Matrix44CalcCommon<T>::makeIdentity();
+    Matrix44CalcCommon<T>::makeIdentity(*this);
 }
 
 template <typename T>
@@ -713,7 +713,7 @@ inline void Matrix44<T>::setCol(s32 axis, const Vec4& v)
 template <typename T>
 inline void Matrix44<T>::setRow(s32 row, const Vec4& v)
 {
-    Matrix44CalcCommon<T>::setRow(*this, row, v);
+    Matrix44CalcCommon<T>::setRow(*this, v, row);
 }
 
 template <typename T>
