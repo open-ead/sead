@@ -96,6 +96,7 @@ add_library(sead OBJECT
   modules/src/framework/seadProcessMeterBar.cpp
   #modules/src/framework/seadTaskMgr.cpp
 
+  include/gfx/nvn/seadDebugFontMgrNvn.h
   include/gfx/seadCamera.h
   include/gfx/seadColor.h
   include/gfx/seadDrawContext.h
@@ -105,6 +106,7 @@ add_library(sead OBJECT
   include/gfx/seadPrimitiveRendererUtil.h
   include/gfx/seadProjection.h
   include/gfx/seadTexture.h
+  modules/src/gfx/nvn/seadDebugFontMgrNvn.cpp
   modules/src/gfx/seadCamera.cpp
   modules/src/gfx/seadColor.cpp
   modules/src/gfx/seadDrawLockContext.cpp
