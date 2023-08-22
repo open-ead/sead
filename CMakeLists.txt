@@ -74,11 +74,11 @@ add_library(sead OBJECT
   modules/src/filedevice/seadMainFileDevice.cpp
   modules/src/filedevice/seadPath.cpp
 
+  include/framework/nx/seadGameFrameworkNx.h
   include/framework/seadCalculateTask.h
   include/framework/seadFramework.h
   include/framework/seadHeapPolicies.h
   include/framework/seadGameFramework.h
-  include/framework/seadGameFrameworkNx.h
   include/framework/seadInfLoopChecker.h
   include/framework/seadMethodTree.h
   include/framework/seadMethodTreeMgr.h
