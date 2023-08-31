@@ -5,6 +5,7 @@
 #endif  // cafe
 
 #include <math/seadMathCalcCommon.h>
+#include <math/seadQuatCalcCommon.h>
 #ifndef SEAD_MATH_VECTOR_CALC_COMMON_H_
 #include <math/seadVectorCalcCommon.h>
 #endif
@@ -120,6 +121,23 @@ inline void Vector3CalcCommon<T>::rotate(Base& o, const Mtx34& m, const Base& a)
     o.x = m.m[0][0] * tmp.x + m.m[0][1] * tmp.y + m.m[0][2] * tmp.z;
     o.y = m.m[1][0] * tmp.x + m.m[1][1] * tmp.y + m.m[1][2] * tmp.z;
     o.z = m.m[2][0] * tmp.x + m.m[2][1] * tmp.y + m.m[2][2] * tmp.z;
+}
+
+template <typename T>
+inline void Vector3CalcCommon<T>::rotate(Base& o, const Quat& q, const Base& v)
+{
+    Quat r;  // quat-multiplication with 0 on w for v
+    r.x = (q.y * v.z) - (q.z * v.y) + (q.w * v.x);
+    r.y = -(q.x * v.z) + (q.z * v.x) + (q.w * v.y);
+    r.z = (q.x * v.y) - (q.y * v.x) + (q.w * v.z);
+    r.w = -(q.x * v.x) - (q.y * v.y) - (q.z * v.z);
+
+    r.w *= -1;
+
+    // quat-multiplication
+    o.x = (q.w * r.x) - (q.z * r.y) + (q.y * r.z) + (q.x * r.w);
+    o.y = (q.z * r.x) + (q.w * r.y) - (q.x * r.z) + (q.y * r.w);
+    o.z = (q.w * r.z) + (-(q.y * r.x) + (q.x * r.y)) + (q.z * r.w);
 }
 
 template <typename T>

@@ -28,6 +28,7 @@ public:
     using Base = typename Policies<T>::Vec3Base;
     using Mtx33 = typename Policies<T>::Mtx33Base;
     using Mtx34 = typename Policies<T>::Mtx34Base;
+    using Quat = typename Policies<T>::QuatBase;
 
     static void add(Base& o, const Base& a, const Base& b);
     static void sub(Base& o, const Base& a, const Base& b);
@@ -40,6 +41,8 @@ public:
     static void rotate(Base& o, const Mtx33& m, const Base& a);
     /// Apply a rotation `m` to the vector `a`.
     static void rotate(Base& o, const Mtx34& m, const Base& a);
+    /// Apply a rotation 'q' to the vector 'a'
+    static void rotate(Base& o, const Quat& q, const Base& a);
 
     static void cross(Base& o, const Base& a, const Base& b);
     static T dot(const Base& a, const Base& b);
