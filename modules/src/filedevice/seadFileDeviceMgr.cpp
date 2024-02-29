@@ -4,7 +4,9 @@
 #endif  // cafe
 
 #ifdef NNSDK
-#include <nn/fs.h>
+#include <nn/fs/fs_mount.h>
+#include <nn/fs/fs_rom.h>
+#include <nn/fs/fs_save.h>
 #endif
 
 #include <basis/seadNew.h>
