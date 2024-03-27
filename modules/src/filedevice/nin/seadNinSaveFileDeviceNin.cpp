@@ -1,5 +1,7 @@
 #include "filedevice/nin/seadNinSaveFileDeviceNin.h"
 
+#include <nn/fs/fs_save.h>
+
 namespace sead
 {
 NinSaveFileDevice::NinSaveFileDevice(const SafeString& mount) : NinFileDeviceBase("save", mount) {}
