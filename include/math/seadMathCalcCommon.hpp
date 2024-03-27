@@ -369,7 +369,7 @@ inline f64 MathCalcCommon<f64>::abs(f64 x)
 template <typename T>
 inline T MathCalcCommon<T>::max(T a, T b)
 {
-    return a < b ? b : a;
+    return a > b ? a : b;
 }
 
 template <typename T>

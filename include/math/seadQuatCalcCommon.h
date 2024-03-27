@@ -20,6 +20,7 @@ public:
     static bool makeVectorRotation(Base& q, const Vec3& from, const Vec3& to);
     static void set(Base& q, T w, T x, T y, T z);
     static void setRPY(Base& q, T roll, T pitch, T yaw);
+    static void setAxisAngle(Base& q, const Vec3& axis, T angle);
     static void calcRPY(Vec3& rpy, const Base& q);
 };
 
