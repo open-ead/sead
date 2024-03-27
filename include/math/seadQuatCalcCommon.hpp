@@ -151,10 +151,10 @@ inline void QuatCalcCommon<T>::setRPY(Base& q, T roll, T pitch, T yaw)
 template <typename T>
 inline void QuatCalcCommon<T>::setAxisAngle(Base& q, const Vec3& axis, T angle)
 {
-    T angleRad = sead::MathCalcCommon<T>::deg2rad(angle);
+    T angleRad = MathCalcCommon<T>::deg2rad(angle);
     angleRad *= 0.5f;
-    q.w = sead::MathCalcCommon<T>::cos(angleRad);
-    T sa = sinf(angleRad);
+    q.w = MathCalcCommon<T>::cos(angleRad);
+    T sa = MathCalcCommon<T>::sin(angleRad);
     q.x = sa * axis.x;
     q.y = sa * axis.y;
     q.z = sa * axis.z;
