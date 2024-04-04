@@ -213,7 +213,7 @@ public:
     T** data() const { return reinterpret_cast<T**>(mPtrs); }
 
 private:
-    union Node
+    struct Node
     {
         void* next_node;
         T elem;
