@@ -243,9 +243,7 @@ T Vector3CalcCommon<T>::normalize(Base& v)
 template <typename T>
 inline void Vector3CalcCommon<T>::set(Base& o, const Base& v)
 {
-    o.x = v.x;
-    o.y = v.y;
-    o.z = v.z;
+    o = v;
 }
 
 template <typename T>
