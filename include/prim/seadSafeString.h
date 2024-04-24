@@ -489,7 +489,6 @@ inline namespace literals
 {
 inline namespace str
 {
-
 inline SafeString operator""_str(const char* str, std::size_t /*len*/)
 {
     return str;
