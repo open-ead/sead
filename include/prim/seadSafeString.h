@@ -485,6 +485,24 @@ inline bool operator>=(const SafeString& lhs, const SafeString& rhs)
     return lhs.compare(rhs) >= 0;
 }
 
+inline namespace literals
+{
+inline namespace str
+{
+
+inline SafeString operator""_str(const char* str, std::size_t /*len*/)
+{
+    return str;
+}
+
+inline WSafeString operator""_str(const char16* str, std::size_t /*len*/)
+{
+    return str;
+}
+
+}  // namespace str
+}  // namespace literals
+
 }  // namespace sead
 
 #define SEAD_PRIM_SAFE_STRING_H_
