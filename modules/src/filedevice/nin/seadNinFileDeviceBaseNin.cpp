@@ -1,6 +1,9 @@
 #include "filedevice/nin/seadNinFileDeviceBaseNin.h"
 #include "filedevice/seadPath.h"
 
+#include <nn/fs/fs_directories.h>
+#include <nn/fs/fs_files.h>
+
 namespace sead
 {
 struct NinFileDeviceBase::FileHandleInner
@@ -398,8 +401,8 @@ bool NinFileDeviceBase::doReadDirectory_(u32* entries_read, DirectoryHandle* han
             return true;
         }
 
-        entries[i].name = entry.name;
-        entries[i].is_directory = entry.type == nn::fs::DirectoryEntryType_Directory;
+        entries[i].name = entry.mName;
+        entries[i].is_directory = entry.mTypeByte == nn::fs::DirectoryEntryType_Directory;
     }
 
     if (entries_read)
