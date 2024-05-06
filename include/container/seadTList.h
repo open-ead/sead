@@ -35,11 +35,15 @@ public:
 
     void insertBefore(TListNode<T>* node, TListNode<T>* node_to_insert)
     {
+        node_to_insert->erase();
+        node_to_insert->mList = this;
         ListImpl::insertBefore(node, node_to_insert);
     }
 
     void insertAfter(TListNode<T>* node, TListNode<T>* node_to_insert)
     {
+        node_to_insert->erase();
+        node_to_insert->mList = this;
         ListImpl::insertAfter(node, node_to_insert);
     }
 
