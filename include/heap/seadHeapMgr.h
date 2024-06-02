@@ -47,7 +47,6 @@ public:
     Heap* findHeapByName(const SafeString& name, int index) const;
     static Heap* findHeapByName_(Heap*, const SafeString&, int* index);
     Heap* getCurrentHeap() const;
-    Heap* setCurrentHeap(Heap* heap) { return setCurrentHeap_(heap); }
 
     static void removeRootHeap(Heap*);
 
