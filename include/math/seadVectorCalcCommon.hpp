@@ -41,6 +41,18 @@ inline void Vector2CalcCommon<T>::set(Base& v, T x, T y)
 }
 
 template <typename T>
+inline T Vector2CalcCommon<T>::dot(const Base& a, const Base& b)
+{
+    return a.x * b.x + a.y * b.y;
+}
+
+template <typename T>
+inline T Vector2CalcCommon<T>::cross(const Base& a, const Base& b)
+{
+    return a.x * b.y - a.y * b.x;
+}
+
+template <typename T>
 inline T Vector2CalcCommon<T>::squaredLength(const Base& v)
 {
     return v.x * v.x + v.y * v.y;

@@ -59,7 +59,11 @@ struct Vector2 : public Policies<T>::Vec2Base
     void set(const Vector2& other);
     void set(T x_, T y_);
 
+    T dot(const Vector2& other) const;
+    T cross(const Vector2& other) const;
     T length() const;
+    T squaredLength() const;
+
     bool isZero() const { return *this == zero; }
 
     static const Vector2 zero;
