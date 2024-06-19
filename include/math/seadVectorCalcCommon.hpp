@@ -29,8 +29,7 @@ inline void Vector2CalcCommon<T>::sub(Base& o, const Base& a, const Base& b)
 template <typename T>
 inline void Vector2CalcCommon<T>::set(Base& o, const Base& v)
 {
-    o.x = v.x;
-    o.y = v.y;
+    o = v;
 }
 
 template <typename T>
@@ -275,10 +274,7 @@ inline void Vector3CalcCommon<T>::set(Base& v, T x, T y, T z)
 template <typename T>
 inline void Vector4CalcCommon<T>::set(Base& o, const Base& v)
 {
-    o.x = v.x;
-    o.y = v.y;
-    o.z = v.z;
-    o.w = v.w;
+    o = v;
 }
 
 template <typename T>

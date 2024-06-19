@@ -46,7 +46,8 @@ inline Vector2<T>& Vector2<T>::operator/=(T t)
 template <typename T>
 inline Vector2<T>& Vector2<T>::operator=(const Vector2<T>& other)
 {
-    Vector2CalcCommon<T>::set(*this, other);
+    this->x = other.x;
+    this->y = other.y;
     return *this;
 }
 
@@ -302,7 +303,10 @@ inline Vector4<T>& Vector4<T>::operator/=(T t)
 template <typename T>
 inline Vector4<T>& Vector4<T>::operator=(const Vector4<T>& other)
 {
-    Vector4CalcCommon<T>::set(*this, other);
+    this->x = other.x;
+    this->y = other.y;
+    this->z = other.z;
+    this->w = other.w;
     return *this;
 }
 
