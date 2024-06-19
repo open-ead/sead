@@ -17,6 +17,8 @@ public:
     static void set(Base& o, const Base& v);
     static void set(Base& v, T x, T y);
 
+    static T dot(const Base& a, const Base& b);
+    static T cross(const Base& a, const Base& b);
     static T squaredLength(const Base& v);
     static T length(const Base& v);
 };

@@ -64,9 +64,27 @@ inline void Vector2<T>::set(T x_, T y_)
 }
 
 template <typename T>
+inline T Vector2<T>::dot(const Vector2<T>& t) const
+{
+    return Vector2CalcCommon<T>::dot(*this, t);
+}
+
+template <typename T>
+inline T Vector2<T>::cross(const Vector2<T>& t) const
+{
+    return Vector2CalcCommon<T>::cross(*this, t);
+}
+
+template <typename T>
 inline T Vector2<T>::length() const
 {
     return Vector2CalcCommon<T>::length(*this);
+}
+
+template <typename T>
+inline T Vector2<T>::squaredLength() const
+{
+    return Vector2CalcCommon<T>::squaredLength(*this);
 }
 
 template <typename T>
