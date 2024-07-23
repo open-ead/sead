@@ -7,6 +7,21 @@
 
 namespace sead
 {
+
+class DisplayBufferNvn;
+
+namespace nn
+{
+namespace mem
+{
+class StandardAllocator;
+}
+namespace vi
+{
+class Layer;
+}
+}  // namespace nn
+
 class GameFrameworkNx : public GameFramework
 {
     SEAD_RTTI_OVERRIDE(GameFrameworkNx, GameFramework)
@@ -42,7 +57,21 @@ public:
     float calcFps();
     void setCaption(const SafeString&);
 
-    // missing member variables
+private:
+    int mVBlankWaitInterval;
+    int padding;
+    void* filler[10];
+    FrameBuffer* mMethodFrameBuffer;
+    FrameBuffer* mMethodLogicalFrameBuffer;
+    void* filler2[4];
+    DisplayBufferNvn* mDisplayBuffer;
+    void* filler3[9];
+    nn::mem::StandardAllocator* mGraphicsDevToolsAllocator;
+    void* filler4[5];
+    nn::vi::Layer* mDisplay;
+    void* filler5[14];
 };
+
+static_assert(sizeof(sead::GameFrameworkNx) == 0x220, "GameFrameworkNx size");
 
 }  // namespace sead
