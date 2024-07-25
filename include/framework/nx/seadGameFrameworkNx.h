@@ -1,6 +1,7 @@
 #pragma once
 
 #include <framework/seadGameFramework.h>
+#include <gfx/seadFrameBuffer.h>
 #include <math/seadVector.h>
 #include <nvn/nvn.h>
 #include <thread/seadThread.h>
@@ -26,7 +27,11 @@ class GameFrameworkNx : public GameFramework
 {
     SEAD_RTTI_OVERRIDE(GameFrameworkNx, GameFramework)
 public:
-    struct CreateArg;
+    struct CreateArg
+    {
+        s32 mVBlankWaitInterval;
+        char _8[68];
+    };
 
     GameFrameworkNx(const CreateArg&);
     ~GameFrameworkNx() override;
@@ -58,20 +63,21 @@ public:
     void setCaption(const SafeString&);
 
 private:
-    int mVBlankWaitInterval;
-    int padding;
-    void* filler[10];
+    CreateArg mCreateArg;
+    char _E8[8];
+    u64 mSystemTick;
     FrameBuffer* mMethodFrameBuffer;
-    FrameBuffer* mMethodLogicalFrameBuffer;
-    void* filler2[4];
+    LogicalFrameBuffer mMethodLogicalFrameBuffer;
+    char _120[8];
     DisplayBufferNvn* mDisplayBuffer;
-    void* filler3[9];
+    char _130[72];
     nn::mem::StandardAllocator* mGraphicsDevToolsAllocator;
-    void* filler4[5];
+    char _180[40];
     nn::vi::Layer* mDisplay;
-    void* filler5[14];
+    char _1B0[96];
 };
 
-static_assert(sizeof(sead::GameFrameworkNx) == 0x220, "GameFrameworkNx size");
+static_assert(sizeof(sead::GameFrameworkNx) == 0x210, "GameFrameworkNx size");
+static_assert(sizeof(sead::GameFrameworkNx::CreateArg) == 0x48, "GameFrameworkNx::CreateArg size");
 
 }  // namespace sead
