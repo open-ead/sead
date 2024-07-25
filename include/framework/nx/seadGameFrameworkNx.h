@@ -8,9 +8,7 @@
 
 namespace sead
 {
-
 class DisplayBufferNvn;
-
 namespace nn
 {
 namespace mem
@@ -32,6 +30,8 @@ public:
         s32 mVBlankWaitInterval;
         char _8[68];
     };
+
+    static_assert(sizeof(CreateArg) == 0x48, "");
 
     GameFrameworkNx(const CreateArg&);
     ~GameFrameworkNx() override;
@@ -77,7 +77,6 @@ private:
     char _1B0[96];
 };
 
-static_assert(sizeof(sead::GameFrameworkNx) == 0x210, "GameFrameworkNx size");
-static_assert(sizeof(sead::GameFrameworkNx::CreateArg) == 0x48, "GameFrameworkNx::CreateArg size");
+static_assert(sizeof(GameFrameworkNx) == 0x210, "");
 
 }  // namespace sead
