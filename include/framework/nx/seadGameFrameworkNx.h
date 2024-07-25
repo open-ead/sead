@@ -31,7 +31,7 @@ public:
         char _8[68];
     };
 
-    static_assert(sizeof(CreateArg) == 0x48, "");
+    static_assert(sizeof(CreateArg) == 0x48);
 
     GameFrameworkNx(const CreateArg&);
     ~GameFrameworkNx() override;
@@ -77,6 +77,6 @@ private:
     char _1B0[96];
 };
 
-static_assert(sizeof(GameFrameworkNx) == 0x210, "");
+static_assert(sizeof(GameFrameworkNx) == 0x210);
 
 }  // namespace sead
