@@ -1,17 +1,37 @@
 #pragma once
 
 #include <framework/seadGameFramework.h>
+#include <gfx/seadFrameBuffer.h>
 #include <math/seadVector.h>
 #include <nvn/nvn.h>
 #include <thread/seadThread.h>
 
 namespace sead
 {
+class DisplayBufferNvn;
+namespace nn
+{
+namespace mem
+{
+class StandardAllocator;
+}
+namespace vi
+{
+class Layer;
+}
+}  // namespace nn
+
 class GameFrameworkNx : public GameFramework
 {
     SEAD_RTTI_OVERRIDE(GameFrameworkNx, GameFramework)
 public:
-    struct CreateArg;
+    struct CreateArg
+    {
+        s32 mVBlankWaitInterval;
+        char _8[68];
+    };
+
+    static_assert(sizeof(CreateArg) == 0x48);
 
     GameFrameworkNx(const CreateArg&);
     ~GameFrameworkNx() override;
@@ -42,7 +62,21 @@ public:
     float calcFps();
     void setCaption(const SafeString&);
 
-    // missing member variables
+private:
+    CreateArg mCreateArg;
+    char _E8[8];
+    u64 mSystemTick;
+    FrameBuffer* mMethodFrameBuffer;
+    LogicalFrameBuffer mMethodLogicalFrameBuffer;
+    char _120[8];
+    DisplayBufferNvn* mDisplayBuffer;
+    char _130[72];
+    nn::mem::StandardAllocator* mGraphicsDevToolsAllocator;
+    char _180[40];
+    nn::vi::Layer* mDisplay;
+    char _1B0[96];
 };
+
+static_assert(sizeof(GameFrameworkNx) == 0x210);
 
 }  // namespace sead
