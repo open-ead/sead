@@ -6,6 +6,7 @@
 
 #include <limits>
 #include <math/seadMathCalcCommon.h>
+#include <math/seadVectorCalcCommon.h>
 
 namespace sead
 {
