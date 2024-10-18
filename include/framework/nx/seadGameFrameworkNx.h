@@ -6,9 +6,6 @@
 #include <nvn/nvn.h>
 #include <thread/seadThread.h>
 
-namespace sead
-{
-class DisplayBufferNvn;
 namespace nn
 {
 namespace mem
@@ -20,6 +17,10 @@ namespace vi
 class Layer;
 }
 }  // namespace nn
+
+namespace sead
+{
+class DisplayBufferNvn;
 
 class GameFrameworkNx : public GameFramework
 {
