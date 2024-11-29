@@ -74,6 +74,12 @@ inline bool Quat<T>::makeVectorRotation(const Vec3& from, const Vec3& to)
 }
 
 template <typename T>
+inline void Quat<T>::set(const Self& other)
+{
+    QuatCalcCommon<T>::set(*this, other);
+}
+
+template <typename T>
 inline void Quat<T>::set(T w_, T x_, T y_, T z_)
 {
     QuatCalcCommon<T>::set(*this, w_, x_, y_, z_);
