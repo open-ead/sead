@@ -49,7 +49,7 @@ class LookAtCamera : public Camera
 public:
     LookAtCamera() = default;
     LookAtCamera(const Vector3f& pos, const Vector3f& at, const Vector3f& up);
-    ~LookAtCamera() override;
+    ~LookAtCamera() override = default;
 
     void doUpdateMatrix(Matrix34f* dst) const override;
 
