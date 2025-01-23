@@ -8,8 +8,6 @@ namespace sead
 {
 class Task : public TaskBase
 {
-    SEAD_RTTI_BASE(TaskBase);
-
 public:
     explicit Task(const TaskConstructArg& arg);
     Task(const TaskConstructArg& arg, const char* name);
