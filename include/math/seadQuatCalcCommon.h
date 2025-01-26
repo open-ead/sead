@@ -2,7 +2,6 @@
 
 #include <basis/seadTypes.h>
 #include <math/seadMathPolicies.h>
-#include <math/seadQuat.h>
 
 namespace sead
 {
@@ -11,7 +10,6 @@ class QuatCalcCommon
 {
 public:
     using Base = typename Policies<T>::QuatBase;
-    using Quat = typename Quat<T>;
     using Vec3 = typename Policies<T>::Vec3Base;
 
     static T length(const Base& v);
