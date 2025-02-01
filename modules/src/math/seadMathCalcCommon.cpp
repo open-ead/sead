@@ -647,7 +647,8 @@ u32 MathCalcCommon<f32>::atanIdx_(f32 t)
     return cAtanTbl[index].atan_val + (u32)(cAtanTbl[index].atan_delta * rest);
 }
 
-f32 ldexp(f32 x, s32 exp) {
+f32 ldexp(f32 x, s32 exp)
+{
     u32 result2 = (*(u32*)(&x) + (exp << 23)) & 0x7FFFFFFF;
     return *(f32*)(&result2);
 }
