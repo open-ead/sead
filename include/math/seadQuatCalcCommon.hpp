@@ -92,7 +92,7 @@ inline void QuatCalcCommon<T>::slerpTo(Base& out, const Base& q1, const Base& q2
 template <typename T>
 inline void QuatCalcCommon<T>::makeUnit(Base& q)
 {
-    q = Base::unit;
+    q = {1, 0, 0, 0};
 }
 
 template <typename T>
