@@ -31,6 +31,15 @@ public:
     void updateMatrixImpl_() const;
     const Matrix44f& getDeviceProjectionMatrix() const;
 
+    void setDirty() { mDirty = true; }
+    void setDeviceDirty() { mDeviceDirty = true; }
+
+    void setDevicePosture(Graphics::DevicePosture pose)
+    {
+        mDevicePosture = pose;
+        setDeviceDirty();
+    }
+
 private:
     mutable bool mDirty;
     mutable bool mDeviceDirty;
@@ -61,11 +70,32 @@ public:
     void doUpdateMatrix(Matrix44f* mtx) const override;
     void setFovx(float);
     void createDividedProjection(sead::PerspectiveProjection* projection, int, int, int, int);
-    float getTop();
-    float getBottom();
-    float getLeft();
-    float getRight();
+    float getTop() const;
+    float getBottom() const;
+    float getLeft() const;
+    float getRight() const;
     void setTBLR(float top, float bottom, float left, float right);
+
+    void setNear(f32 near)
+    {
+        mNear = near;
+        setDirty();
+    }
+    void setFar(f32 far)
+    {
+        mFar = far;
+        setDirty();
+    }
+    void setAspect(f32 aspect)
+    {
+        mAspect = aspect;
+        setDirty();
+    }
+    void setOffset(const Vector2f& offset)
+    {
+        mOffset = offset;
+        setDirty();
+    }
 
 private:
     float mNear;
