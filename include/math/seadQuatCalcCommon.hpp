@@ -147,12 +147,10 @@ inline void QuatCalcCommon<T>::setRPY(Base& q, T roll, T pitch, T yaw)
     const T cy_sp = cy * sp;
     const T sy_cp = sy * cp;
 
-    const T w = (cy_cp * cr) + (sy_sp * sr);
-    const T x = (cy_cp * sr) - (sy_sp * cr);
-    const T y = (cy_sp * cr) + (sy_cp * sr);
-    const T z = (sy_cp * cr) - (cy_sp * sr);
-
-    set(q, w, x, y, z);
+    q.w = (cy_cp * cr) + (sy_sp * sr);
+    q.x = (cy_cp * sr) - (sy_sp * cr);
+    q.y = (cy_sp * cr) + (sy_cp * sr);
+    q.z = (sy_cp * cr) - (cy_sp * sr);
 }
 
 template <typename T>
