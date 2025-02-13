@@ -8,7 +8,7 @@ namespace sead
 {
 class Task : public TaskBase
 {
-    SEAD_RTTI_BASE(TaskBase);
+    SEAD_RTTI_OVERRIDE(Task, TaskBase);
 
 public:
     explicit Task(const TaskConstructArg& arg);
