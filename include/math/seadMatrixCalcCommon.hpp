@@ -1542,9 +1542,9 @@ void Matrix34CalcCommon<T>::makeSRT(Base& o, const Vec3& s, const Vec3& r, const
     const T cosV[3] = {MathCalcCommon<T>::cos(r.x), MathCalcCommon<T>::cos(r.y),
                        MathCalcCommon<T>::cos(r.z)};
 
-    f32 c0_c2 = cosV[0] * cosV[2];
-    f32 s0_s1 = sinV[0] * sinV[1];
-    f32 c0_s2 = cosV[0] * sinV[2];
+    T c0_c2 = cosV[0] * cosV[2];
+    T s0_s1 = sinV[0] * sinV[1];
+    T c0_s2 = cosV[0] * sinV[2];
 
     o.m[0][0] = s.x * (cosV[1] * cosV[2]);
     o.m[1][0] = s.x * (cosV[1] * sinV[2]);
