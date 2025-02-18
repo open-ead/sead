@@ -151,6 +151,7 @@ struct Vector3 : public Policies<T>::Vec3Base
     void multScalar(T t);
 
     T normalize();
+    void negate();
     void set(const Vector3& other);
     void set(T x, T y, T z);
     void setCross(const Vector3<T>& a, const Vector3<T>& b);

@@ -270,6 +270,14 @@ T Vector3CalcCommon<T>::normalize(Base& v)
 }
 
 template <typename T>
+inline void Vector3CalcCommon<T>::negate(Base& v)
+{
+    v.x = -v.x;
+    v.y = -v.y;
+    v.z = -v.z;
+}
+
+template <typename T>
 inline void Vector3CalcCommon<T>::set(Base& o, const Base& v)
 {
     o = v;

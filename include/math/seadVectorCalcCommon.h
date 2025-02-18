@@ -54,6 +54,7 @@ public:
     static void multScalar(Base& o, const Base& v, T t);
     static void multScalarAdd(Base& o, T t, const Base& a, const Base& b);
     static T normalize(Base& v);
+    static void negate(Base& v);
     static void set(Base& o, const Base& v);
     static void set(Base& v, T x, T y, T z);
 };

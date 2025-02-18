@@ -225,6 +225,12 @@ inline T Vector3<T>::normalize()
 }
 
 template <typename T>
+inline void Vector3<T>::negate()
+{
+    Vector3CalcCommon<T>::negate(*this);
+}
+
+template <typename T>
 inline void Vector3<T>::set(const Vector3<T>& other)
 {
     Vector3CalcCommon<T>::set(*this, other);
