@@ -56,9 +56,18 @@ public:
     Vector3f& getPos() { return mPos; }
     Vector3f& getAt() { return mAt; }
     Vector3f& getUp() { return mUp; }
+
     const Vector3f& getPos() const { return mPos; }
     const Vector3f& getAt() const { return mAt; }
     const Vector3f& getUp() const { return mUp; }
+
+    void setPos(const Vector3f& pos) { mPos = pos; }
+    void setAt(const Vector3f& at) { mAt = at; }
+    void setUp(const Vector3f& up) { mUp = up; }
+
+    void normalizeUp() { mUp.normalize(); }
+    void addPos(const Vector3f& pos) { mPos += pos; }
+    void addAt(const Vector3f& at) { mAt += at; }
 
 private:
     Vector3f mPos = {0.0f, 0.0f, 10.0f};

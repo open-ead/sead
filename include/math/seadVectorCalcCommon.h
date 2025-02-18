@@ -14,6 +14,7 @@ public:
     static void add(Base& o, const Base& a, const Base& b);
     static void sub(Base& o, const Base& a, const Base& b);
 
+    static void negate(Base& v);
     static void set(Base& o, const Base& v);
     static void set(Base& v, T x, T y);
 
@@ -54,6 +55,7 @@ public:
     static void multScalar(Base& o, const Base& v, T t);
     static void multScalarAdd(Base& o, T t, const Base& a, const Base& b);
     static T normalize(Base& v);
+    static void negate(Base& v);
     static void set(Base& o, const Base& v);
     static void set(Base& v, T x, T y, T z);
 };
@@ -65,6 +67,7 @@ public:
     using Base = typename Policies<T>::Vec4Base;
 
 public:
+    static void negate(Base& v);
     static void set(Base& o, const Base& v);
     static void set(Base& v, T x, T y, T z, T w);
 };

@@ -56,6 +56,7 @@ struct Vector2 : public Policies<T>::Vec2Base
     bool operator==(const Vector2& rhs) const { return this->x == rhs.x && this->y == rhs.y; }
     bool operator!=(const Vector2& rhs) const { return !operator==(rhs); }
 
+    void negate();
     void set(const Vector2& other);
     void set(T x_, T y_);
 
@@ -151,6 +152,7 @@ struct Vector3 : public Policies<T>::Vec3Base
     void multScalar(T t);
 
     T normalize();
+    void negate();
     void set(const Vector3& other);
     void set(T x, T y, T z);
     void setCross(const Vector3<T>& a, const Vector3<T>& b);
@@ -207,6 +209,7 @@ struct Vector4 : public Policies<T>::Vec4Base
     }
     bool operator!=(const Vector4& rhs) const { return !operator==(rhs); }
 
+    void negate();
     void set(const Vector4& v);
     void set(T x_, T y_, T z_, T w_);
 
