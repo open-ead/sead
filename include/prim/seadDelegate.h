@@ -429,7 +429,7 @@ static auto makeLambdaDelegate(Lambda&& l)
 template <typename Lambda>
 static auto makeLambdaDelegateR(Lambda&& l)
 {
-    using R = std::result_of_t<Lambda>;
+    using R = std::result_of_t<Lambda()>;
     return LambdaDelegateR<Lambda, R>(std::forward<Lambda>(l));
 }
 
