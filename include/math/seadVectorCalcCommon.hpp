@@ -27,6 +27,12 @@ inline void Vector2CalcCommon<T>::sub(Base& o, const Base& a, const Base& b)
 }
 
 template <typename T>
+inline void Vector2CalcCommon<T>::negate(Base& v)
+{
+    v.x = -v.x;
+    v.y = -v.y;
+}
+template <typename T>
 inline void Vector2CalcCommon<T>::set(Base& o, const Base& v)
 {
     o = v;
@@ -270,6 +276,14 @@ T Vector3CalcCommon<T>::normalize(Base& v)
 }
 
 template <typename T>
+inline void Vector3CalcCommon<T>::negate(Base& v)
+{
+    v.x = -v.x;
+    v.y = -v.y;
+    v.z = -v.z;
+}
+
+template <typename T>
 inline void Vector3CalcCommon<T>::set(Base& o, const Base& v)
 {
     o = v;
@@ -281,6 +295,15 @@ inline void Vector3CalcCommon<T>::set(Base& v, T x, T y, T z)
     v.x = x;
     v.y = y;
     v.z = z;
+}
+
+template <typename T>
+inline void Vector4CalcCommon<T>::negate(Base& v)
+{
+    v.x = -v.x;
+    v.y = -v.y;
+    v.z = -v.z;
+    v.w = -v.w;
 }
 
 template <typename T>

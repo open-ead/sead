@@ -52,6 +52,12 @@ inline Vector2<T>& Vector2<T>::operator=(const Vector2<T>& other)
 }
 
 template <typename T>
+inline void Vector2<T>::negate()
+{
+    Vector2CalcCommon<T>::negate(*this);
+}
+
+template <typename T>
 inline void Vector2<T>::set(const Vector2<T>& other)
 {
     Vector2CalcCommon<T>::set(*this, other);
@@ -225,6 +231,12 @@ inline T Vector3<T>::normalize()
 }
 
 template <typename T>
+inline void Vector3<T>::negate()
+{
+    Vector3CalcCommon<T>::negate(*this);
+}
+
+template <typename T>
 inline void Vector3<T>::set(const Vector3<T>& other)
 {
     Vector3CalcCommon<T>::set(*this, other);
@@ -326,6 +338,12 @@ inline Vector4<T>& Vector4<T>::operator=(const Vector4<T>& other)
     this->z = other.z;
     this->w = other.w;
     return *this;
+}
+
+template <typename T>
+inline void Vector4<T>::negate()
+{
+    Vector4CalcCommon<T>::negate(*this);
 }
 
 template <typename T>
