@@ -429,7 +429,7 @@ static auto makeLambdaDelegate(Lambda&& l)
 template <typename Lambda>
 static auto makeLambdaDelegateR(Lambda&& l)
 {
-    using R = std::result_of_t<Lambda()>;
+    using R = std::invoke_result_t<Lambda>;
     return LambdaDelegateR<Lambda, R>(std::forward<Lambda>(l));
 }
 
@@ -442,7 +442,7 @@ static auto makeLambdaDelegate1(Lambda&& l)
 template <typename A1, typename Lambda>
 static auto makeLambdaDelegate1R(Lambda&& l)
 {
-    using R = std::result_of_t<Lambda(A1)>;
+    using R = std::invoke_result_t<Lambda, A1>;
     return LambdaDelegate1R<Lambda, A1, R>(std::forward<Lambda>(l));
 }
 
@@ -455,7 +455,7 @@ static auto makeLambdaDelegate2(Lambda&& l)
 template <typename A1, typename A2, typename Lambda>
 static auto makeLambdaDelegate2R(Lambda&& l)
 {
-    using R = std::result_of_t<Lambda(A1, A2)>;
+    using R = std::invoke_result_t<Lambda, A1, A2>;
     return LambdaDelegate2R<Lambda, A1, A2, R>(std::forward<Lambda>(l));
 }
 
