@@ -154,7 +154,7 @@ inline void Vector3CalcCommon<T>::rotate(Base& o, const Quat& q, const Base& v)
     // quat-multiplication
     o.x = (q.w * r.x) - (q.z * r.y) + (q.y * r.z) + (q.x * r.w);
     o.y = (q.z * r.x) + (q.w * r.y) - (q.x * r.z) + (q.y * r.w);
-    o.z = (q.w * r.z) + (-(q.y * r.x) + (q.x * r.y)) + (q.z * r.w);
+    o.z = -(q.y * r.x) + (q.x * r.y) + (q.w * r.z) + (q.z * r.w);
 }
 
 template <typename T>
