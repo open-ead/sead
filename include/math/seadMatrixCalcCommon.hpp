@@ -1542,16 +1542,20 @@ void Matrix34CalcCommon<T>::makeSRT(Base& o, const Vec3& s, const Vec3& r, const
     const T cosV[3] = {MathCalcCommon<T>::cos(r.x), MathCalcCommon<T>::cos(r.y),
                        MathCalcCommon<T>::cos(r.z)};
 
+    T c0_c2 = cosV[0] * cosV[2];
+    T s0_s1 = sinV[0] * sinV[1];
+    T c0_s2 = cosV[0] * sinV[2];
+
     o.m[0][0] = s.x * (cosV[1] * cosV[2]);
     o.m[1][0] = s.x * (cosV[1] * sinV[2]);
     o.m[2][0] = s.x * -sinV[1];
 
-    o.m[0][1] = s.y * (sinV[0] * sinV[1] * cosV[2] - cosV[0] * sinV[2]);
-    o.m[1][1] = s.y * (sinV[0] * sinV[1] * sinV[2] + cosV[0] * cosV[2]);
+    o.m[0][1] = s.y * (s0_s1 * cosV[2] - c0_s2);
+    o.m[1][1] = s.y * (s0_s1 * sinV[2] + c0_c2);
     o.m[2][1] = s.y * (sinV[0] * cosV[1]);
 
-    o.m[0][2] = s.z * (cosV[0] * cosV[2] * sinV[1] + sinV[0] * sinV[2]);
-    o.m[1][2] = s.z * (cosV[0] * sinV[2] * sinV[1] - sinV[0] * cosV[2]);
+    o.m[0][2] = s.z * (c0_c2 * sinV[1] + sinV[0] * sinV[2]);
+    o.m[1][2] = s.z * (c0_s2 * sinV[1] - sinV[0] * cosV[2]);
     o.m[2][2] = s.z * (cosV[0] * cosV[1]);
 
     o.m[0][3] = t.x;
