@@ -44,6 +44,8 @@ public:
     void setBuffer(s32 node_max, void* buffer);
     void freeBuffer();
 
+    bool isBufferReady() const { return mFreeList.work() != nullptr; }
+
     Value* insert(const SafeString& key, const Value& value);
     void clear();
 
