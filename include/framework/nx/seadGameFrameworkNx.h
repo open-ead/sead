@@ -15,7 +15,8 @@ class StandardAllocator;
 namespace vi
 {
 class Layer;
-}
+class Display;
+}  // namespace vi
 }  // namespace nn
 
 namespace sead
@@ -30,19 +31,21 @@ public:
     {
         s32 mVBlankWaitInterval;
         Color4f mClearColor;
-        u32 _14;
-        u32 _18;
+        Vector2u mDisplayResolution;
         bool _1c;
         bool mIsTripleBuffer;
-        bool _1e;
+        bool mIsUseDebug;
         bool _1f;
-        u64 _20;
-        u64 _28;
-        u32 _30;
+        u32 _20;
+        u32 _24;
+        u32 _28;
+        s32 mTransferMemorySize;
+        s32 mGraphicsDevToolsMemorySize;
         s32 mComputeMemorySize;
         s32 mCommandMemorySize;
         s32 mControlMemorySize;
         u32 mDebugLevel;
+        u32 _44;
     };
 
     static_assert(sizeof(CreateArg) == 0x48);
@@ -83,9 +86,9 @@ private:
     u64 mPrevFrameTick;
     FrameBuffer* mMethodFrameBuffer;
     LogicalFrameBuffer mMethodLogicalFrameBuffer;
-    char _120[8];
+    u64 mVBlankWaitTicks;
     DisplayBufferNvn* mDisplayBuffer;
-    void* _130;
+    char _130[8];
     void* mGpuErrorCallback;
     NVNmemoryPool* _140;
     void* mCommandBufferControl;
@@ -93,12 +96,12 @@ private:
     NVNbuffer* _158;
     NVNcounterData* _160;
     NVNmemoryPool* mShaderScratchMemory;
-    void* _170;
+    u32 _170;
     nn::mem::StandardAllocator* mGraphicsDevToolsAllocator;
-    void* _180;
-    void* _188;
+    u64 mCommandBufferCommandMemoryUsed;
+    u64 mCommandBufferControlMemoryUsed;
     NVNqueue* _190;
-    agl::RenderBuffer* mCurRenderBuffer;
+    FrameBuffer* mCurFrameBuffer;
     nn::vi::Display* mDisplay;
     nn::vi::Layer* mLayer;
     DelegateThread* mPresentationThread;
@@ -106,11 +109,8 @@ private:
     SafeString _1C0;
     NVNcommandHandle mCommandHandle;
     nn::os::SystemEventType mVsyncEvent;
-    void* _1F0;
-    void* _1F8;
-    void* _200;
     bool _208;
-    bool _209;
+    u8 _209;
     bool _20a;
     u8 _20b;
 };
