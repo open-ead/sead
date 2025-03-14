@@ -26,6 +26,7 @@ public:
     virtual void createSeadMenuMgr(TaskBase* base);
     virtual void createInfLoopChecker(TaskBase* base, const TickSpan&, int);
     virtual void createCuckooClock(TaskBase* base);
+    virtual float calcFps() = 0;
     virtual void saveScreenShot(const SafeString&);
     virtual bool isScreenShotBusy() const;
     virtual void waitStartDisplayLoop_();
