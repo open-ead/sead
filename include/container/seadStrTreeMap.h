@@ -38,8 +38,6 @@ public:
         char mKeyData[MaxKeyLength + 1];
     };
 
-    ~StrTreeMap();
-
     void allocBuffer(s32 node_max, Heap* heap, s32 alignment = sizeof(void*));
     void setBuffer(s32 node_max, void* buffer);
     void freeBuffer();
@@ -69,17 +67,6 @@ inline void StrTreeMap<N, Value>::Node::erase_()
     // Note: Nintendo does not call the destructor, which is dangerous...
     map->mFreeList.free(this_);
     --map->mSize;
-}
-
-template <size_t N, typename Value>
-inline StrTreeMap<N, Value>::~StrTreeMap()
-{
-    void* work = mFreeList.work();
-    if (!work)
-        return;
-
-    clear();
-    freeBuffer();
 }
 
 template <size_t N, typename Value>
