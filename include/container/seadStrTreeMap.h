@@ -10,7 +10,7 @@ namespace sead
 {
 /// Sorted associative container with fixed-length string keys.
 /// This is essentially std::map<char[MaxKeyLength], Value>
-template <size_t MaxKeyLength, typename Value>
+template <s32 MaxKeyLength, typename Value>
 class StrTreeMap : public TreeMapImpl<SafeString>
 {
 public:
@@ -61,7 +61,7 @@ private:
     s32 mCapacity = 0;
 };
 
-template <size_t N, typename Value>
+template <s32 N, typename Value>
 inline void StrTreeMap<N, Value>::Node::erase_()
 {
     StrTreeMap* const map = mMap;
@@ -71,7 +71,7 @@ inline void StrTreeMap<N, Value>::Node::erase_()
     --map->mSize;
 }
 
-template <size_t N, typename Value>
+template <s32 N, typename Value>
 inline void StrTreeMap<N, Value>::allocBuffer(s32 node_max, Heap* heap, s32 alignment)
 {
     SEAD_ASSERT(mFreeList.work() == nullptr);
@@ -86,14 +86,14 @@ inline void StrTreeMap<N, Value>::allocBuffer(s32 node_max, Heap* heap, s32 alig
         setBuffer(node_max, work);
 }
 
-template <size_t N, typename Value>
+template <s32 N, typename Value>
 inline void StrTreeMap<N, Value>::setBuffer(s32 node_max, void* buffer)
 {
     mCapacity = node_max;
     mFreeList.setWork(buffer, sizeof(Node), node_max);
 }
 
-template <size_t N, typename Value>
+template <s32 N, typename Value>
 inline void StrTreeMap<N, Value>::freeBuffer()
 {
     void* buffer = mFreeList.work();
@@ -105,7 +105,7 @@ inline void StrTreeMap<N, Value>::freeBuffer()
     mFreeList.reset();
 }
 
-template <size_t N, typename Value>
+template <s32 N, typename Value>
 inline Value* StrTreeMap<N, Value>::insert(const SafeString& key, const Value& value)
 {
     if (mSize >= mCapacity)
@@ -125,7 +125,7 @@ inline Value* StrTreeMap<N, Value>::insert(const SafeString& key, const Value& v
     return &node->value();
 }
 
-template <size_t N, typename Value>
+template <s32 N, typename Value>
 inline void StrTreeMap<N, Value>::clear()
 {
     Delegate1<StrTreeMap<N, Value>, typename MapImpl::Node*> delegate(
@@ -135,13 +135,13 @@ inline void StrTreeMap<N, Value>::clear()
     MapImpl::clear();
 }
 
-template <size_t N, typename Value>
+template <s32 N, typename Value>
 inline typename StrTreeMap<N, Value>::Node* StrTreeMap<N, Value>::find(const SafeString& key) const
 {
     return static_cast<Node*>(MapImpl::find(key));
 }
 
-template <size_t N, typename Value>
+template <s32 N, typename Value>
 template <typename Callable>
 inline void StrTreeMap<N, Value>::forEach(const Callable& delegate) const
 {
@@ -151,7 +151,7 @@ inline void StrTreeMap<N, Value>::forEach(const Callable& delegate) const
     });
 }
 
-template <size_t N, typename Value>
+template <s32 N, typename Value>
 inline void StrTreeMap<N, Value>::eraseNodeForClear_(typename MapImpl::Node* node)
 {
     // Note: Nintendo does not call the destructor, which is dangerous...
