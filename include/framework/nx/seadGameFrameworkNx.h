@@ -68,7 +68,7 @@ public:
     virtual void swapBuffer_();
     virtual void clearFrameBuffers_(int);
     virtual void waitForGpuDone_();
-    virtual u64 setGpuTimeStamp_();  // unknown return type
+    virtual void setGpuTimeStamp_();
 
     void initializeArg(const Framework::InitializeArg&);
     void initializeGraphicsSystem(Heap*, const Vector2f&);
