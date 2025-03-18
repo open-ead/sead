@@ -8,7 +8,6 @@
 
 namespace sead
 {
-
 class OrthoProjection : public Projection
 {
     SEAD_RTTI_OVERRIDE(OrthoProjection, Projection);
