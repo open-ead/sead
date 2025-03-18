@@ -6,9 +6,11 @@
 #include <gfx/seadViewport.h>
 #include <math/seadBoundBox.h>
 
-namespace sead {
+namespace sead
+{
 
-class OrthoProjection : public Projection {
+class OrthoProjection : public Projection
+{
     SEAD_RTTI_OVERRIDE(OrthoProjection, Projection);
 
 public:
@@ -17,7 +19,7 @@ public:
     OrthoProjection(f32 near, f32 far, const BoundBox2f& boundBox);
     OrthoProjection(f32 near, f32 far, const Viewport& viewport);
     ~OrthoProjection() override;
-    
+
     f32 getNear() const override;
     f32 getFar() const override;
     f32 getFovy() const override;
@@ -41,6 +43,6 @@ private:
     f32 mRight;
 };
 
-}
+}  // namespace sead
 
 #endif
