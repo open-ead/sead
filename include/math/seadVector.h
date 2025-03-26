@@ -165,6 +165,7 @@ struct Vector3 : public Policies<T>::Vec3Base
     void setRotated(const Mtx33& m, const Vector3& a);
     void setRotated(const Mtx34& m, const Vector3& a);
     void setRotated(const Quat& q, const Vector3& a);
+    void setSub(const Vector3& a, const Vector3& b);
 
     static const Vector3 zero;
     static const Vector3 ex;

@@ -297,6 +297,12 @@ inline void Vector3<T>::setRotated(const Quat& q, const Vector3<T>& a)
 }
 
 template <typename T>
+inline void Vector3<T>::setSub(const Vector3<T>& a, const Vector3<T>& b)
+{
+    Vector3CalcCommon<T>::sub(*this, a, b);
+}
+
+template <typename T>
 inline Vector4<T>::Vector4(T x_, T y_, T z_, T w_)
 {
     Vector4CalcCommon<T>::set(*this, x_, y_, z_, w_);
