@@ -503,14 +503,16 @@ inline void TreeMap<Key, Value>::Node::erase_()
 template <typename Key, typename Value>
 inline void TreeMap<Key, Value>::allocBuffer(s32 node_max, Heap* heap, s32 alignment)
 {
+    s32 node_size = sizeof(Node);
+
     SEAD_ASSERT(mFreeList.work() == nullptr);
     if (node_max <= 0)
     {
         SEAD_ASSERT_MSG(false, "node_max[%d] must be larger than zero", node_max);
-        AllocFailAssert(heap, node_max * sizeof(Node), alignment);
+        AllocFailAssert(heap, node_max * node_size, alignment);
     }
 
-    void* work = AllocBuffer(node_max * sizeof(Node), heap, alignment);
+    void* work = AllocBuffer(node_max * node_size, heap, alignment);
     if (work)
         setBuffer(node_max, work);
 }

@@ -74,14 +74,16 @@ inline void StrTreeMap<N, Value>::Node::erase_()
 template <s32 N, typename Value>
 inline void StrTreeMap<N, Value>::allocBuffer(s32 node_max, Heap* heap, s32 alignment)
 {
+    s32 node_size = sizeof(Node);
+
     SEAD_ASSERT(mFreeList.work() == nullptr);
     if (node_max <= 0)
     {
         SEAD_ASSERT_MSG(false, "node_max[%d] must be larger than zero", node_max);
-        AllocFailAssert(heap, node_max * sizeof(Node), alignment);
+        AllocFailAssert(heap, node_max * node_size, alignment);
     }
 
-    void* work = AllocBuffer(node_max * sizeof(Node), heap, alignment);
+    void* work = AllocBuffer(node_max * node_size, heap, alignment);
     if (work)
         setBuffer(node_max, work);
 }
