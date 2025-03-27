@@ -251,13 +251,13 @@ public:
 
     bool forcePushBack(const T& item)
     {
-        if (!pushBack(item))
+        bool isEnoughSpace = pushBack(item);
+        if (!isEnoughSpace)
         {
             popFront();
             pushBack(item);
-            return false;
         }
-        return true;
+        return isEnoughSpace;
     }
 
     bool pushBack(const T& item)
