@@ -261,6 +261,12 @@ inline void Vector3<T>::setCross(const Vector3<T>& a, const Vector3<T>& b)
 }
 
 template <typename T>
+inline void Vector3<T>::setScale(const Vector3<T>& a, T t)
+{
+    Vector3CalcCommon<T>::multScalar(*this, a, t);
+}
+
+template <typename T>
 inline void Vector3<T>::setScaleAdd(T t, const Vector3<T>& a, const Vector3<T>& b)
 {
     Vector3CalcCommon<T>::multScalarAdd(*this, t, a, b);

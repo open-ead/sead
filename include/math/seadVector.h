@@ -159,6 +159,7 @@ struct Vector3 : public Policies<T>::Vec3Base
     void set(const Vector3& other);
     void set(T x, T y, T z);
     void setCross(const Vector3<T>& a, const Vector3<T>& b);
+    void setScale(const Vector3<T>& a, T t);
     void setScaleAdd(T t, const Vector3<T>& a, const Vector3<T>& b);
     void setMul(const Mtx33& m, const Vector3& a);
     void setMul(const Mtx34& m, const Vector3& a);
