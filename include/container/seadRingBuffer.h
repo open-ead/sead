@@ -249,17 +249,15 @@ public:
     T* data() { return mBuffer; }
     const T* data() const { return mBuffer; }
 
-    void forcePushBack(const T& item)
+    bool forcePushBack(const T& item)
     {
-        if (mSize < mCapacity)
+        bool isEnoughSpace = pushBack(item);
+        if (!isEnoughSpace)
         {
-            pushBack(item);
-            return;
-        }
-
-        if (mSize >= 1)
             popFront();
-        pushBack(item);
+            pushBack(item);
+        }
+        return isEnoughSpace;
     }
 
     bool pushBack(const T& item)
