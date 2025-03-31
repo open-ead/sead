@@ -1265,17 +1265,21 @@ void Matrix34CalcCommon<T>::makeR(Base& o, const Vec3& r)
     const T cosV[3] = {MathCalcCommon<T>::cos(r.x), MathCalcCommon<T>::cos(r.y),
                        MathCalcCommon<T>::cos(r.z)};
 
-    o.m[0][0] = (cosV[1] * cosV[2]);
-    o.m[1][0] = (cosV[1] * sinV[2]);
+    T c0_c2 = cosV[0] * cosV[2];
+    T s0_s1 = sinV[0] * sinV[1];
+    T c0_s2 = cosV[0] * sinV[2];
+
+    o.m[0][0] = cosV[1] * cosV[2];
+    o.m[1][0] = cosV[1] * sinV[2];
     o.m[2][0] = -sinV[1];
 
-    o.m[0][1] = (sinV[0] * sinV[1] * cosV[2] - cosV[0] * sinV[2]);
-    o.m[1][1] = (sinV[0] * sinV[1] * sinV[2] + cosV[0] * cosV[2]);
-    o.m[2][1] = (sinV[0] * cosV[1]);
+    o.m[0][1] = s0_s1 * cosV[2] - c0_s2;
+    o.m[1][1] = s0_s1 * sinV[2] + c0_c2;
+    o.m[2][1] = sinV[0] * cosV[1];
 
-    o.m[0][2] = (cosV[0] * cosV[2] * sinV[1] + sinV[0] * sinV[2]);
-    o.m[1][2] = (cosV[0] * sinV[2] * sinV[1] - sinV[0] * cosV[2]);
-    o.m[2][2] = (cosV[0] * cosV[1]);
+    o.m[0][2] = c0_c2 * sinV[1] + sinV[0] * sinV[2];
+    o.m[1][2] = c0_s2 * sinV[1] - sinV[0] * cosV[2];
+    o.m[2][2] = cosV[0] * cosV[1];
 
     o.m[0][3] = 0;
     o.m[1][3] = 0;
@@ -1312,24 +1316,26 @@ void Matrix34CalcCommon<T>::makeRIdx(Base& o, u32 xr, u32 yr, u32 zr)
 template <typename T>
 inline void Matrix34CalcCommon<T>::makeRT(Base& o, const Vec3& r, const Vec3& t)
 {
-    const T sinV[3] = {std::sin(r.x), std::sin(r.y), std::sin(r.z)};
+    const T sinV[3] = {MathCalcCommon<T>::sin(r.x), MathCalcCommon<T>::sin(r.y),
+                       MathCalcCommon<T>::sin(r.z)};
 
-    const T cosV[3] = {std::cos(r.x), std::cos(r.y), std::cos(r.z)};
+    const T cosV[3] = {MathCalcCommon<T>::cos(r.x), MathCalcCommon<T>::cos(r.y),
+                       MathCalcCommon<T>::cos(r.z)};
 
+    T c0_c2 = cosV[0] * cosV[2];
     T s0_s1 = sinV[0] * sinV[1];
     T c0_s2 = cosV[0] * sinV[2];
-    T c0_c2 = cosV[0] * cosV[2];
 
     o.m[0][0] = cosV[1] * cosV[2];
     o.m[1][0] = cosV[1] * sinV[2];
     o.m[2][0] = -sinV[1];
 
-    o.m[0][1] = (s0_s1 * cosV[2]) - c0_s2;
-    o.m[1][1] = (s0_s1 * sinV[2]) + c0_c2;
+    o.m[0][1] = s0_s1 * cosV[2] - c0_s2;
+    o.m[1][1] = s0_s1 * sinV[2] + c0_c2;
     o.m[2][1] = sinV[0] * cosV[1];
 
-    o.m[0][2] = (c0_c2 * sinV[1]) + (sinV[0] * sinV[2]);
-    o.m[1][2] = (c0_s2 * sinV[1]) - (sinV[0] * cosV[2]);
+    o.m[0][2] = c0_c2 * sinV[1] + sinV[0] * sinV[2];
+    o.m[1][2] = c0_s2 * sinV[1] - sinV[0] * cosV[2];
     o.m[2][2] = cosV[0] * cosV[1];
 
     o.m[0][3] = t.x;
