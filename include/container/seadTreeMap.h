@@ -539,21 +539,26 @@ inline void TreeMap<Key, Value>::freeBuffer()
 template <typename Key, typename Value>
 inline Value* TreeMap<Key, Value>::insert(const Key& key, const Value& value)
 {
-    if (mSize >= mCapacity)
+    Value* ptr = nullptr;
+
+    if (mSize < mCapacity)
     {
-        if (Node* node = find(key))
-        {
-            node->value() = value;
-            return &node->value();
-        }
+        Node* node = new (mFreeList.alloc()) Node(this, key, value);
+        ptr = &node->value();
+        ++mSize;
+        MapImpl::insert(node);
+    }
+    else if (Node* node = find(key))
+    {
+        ptr = &node->value();
+        new (ptr) Value(value);
+    }
+    else
+    {
         SEAD_ASSERT_MSG(false, "map is full.");
-        return nullptr;
     }
 
-    Node* node = new (mFreeList.alloc()) Node(this, key, value);
-    ++mSize;
-    MapImpl::insert(node);
-    return &node->value();
+    return ptr;
 }
 
 template <typename Key, typename Value>
