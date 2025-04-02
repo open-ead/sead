@@ -165,7 +165,7 @@ public:
     void doScreenPosToCameraPosTo(Vector3f* cameraPos, const Vector3f& screenPos) const override;
     void setTBLR(f32 top, f32 bottom, f32 left, f32 right) override;
     void setBoundBox(BoundBox2f& boundBox);
-    void createDividedProjection(FrustumProjection* out, s32, s32, s32, s32)
+    void createDividedProjection(FrustumProjection* out, s32, s32, s32, s32);
     void setFovyAspectOffset(f32 fovy, f32 aspect, const Vector2f& offset);
 
 private:
