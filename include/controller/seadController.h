@@ -83,7 +83,7 @@ T Controller::getAddonAs() const
 {
     for (auto& addon : mAddons)
     {
-        T result = DynamicCast<std::remove_pointer<T>>(addon);
+        T result = DynamicCast<typename std::remove_pointer<T>>(addon);
         if (result)
             return result;
     }
