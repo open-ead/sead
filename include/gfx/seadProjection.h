@@ -3,6 +3,8 @@
 
 #include <basis/seadTypes.h>
 #include <gfx/seadGraphics.h>
+#include <gfx/seadViewport.h>
+#include <math/seadBoundBox.h>
 #include <math/seadMatrix.h>
 #include <math/seadVector.h>
 #include <prim/seadRuntimeTypeInfo.h>
@@ -150,7 +152,7 @@ class FrustumProjection : public Projection
 public:
     FrustumProjection();
     FrustumProjection(f32 near, f32 far, f32 top, f32 bottom, f32 left, f32 right);
-    FrustumProjection(f32 near, f32 far, const BoundBox& boundBox);
+    FrustumProjection(f32 near, f32 far, const BoundBox2f& boundBox);
     ~FrustumProjection() override;
 
     f32 getNear() const override;
@@ -164,7 +166,7 @@ public:
 
     void doUpdateMatrix(Matrix44f* mtx) const override;
     void doScreenPosToCameraPosTo(Vector3f* cameraPos, const Vector3f& screenPos) const override;
-    void setTBLR(f32 top, f32 bottom, f32 left, f32 right) override;
+    void setTBLR(f32 top, f32 bottom, f32 left, f32 right);
     void setBoundBox(BoundBox2f& boundBox);
     void createDividedProjection(FrustumProjection* out, s32, s32, s32, s32) const;
     void setFovyAspectOffset(f32 fovy, f32 aspect, const Vector2f& offset);
@@ -193,7 +195,7 @@ public:
     f32 getFovy() const override;
     f32 getAspect() const override;
     void getOffset(Vector2f* offset) const override;
-    void updateAttributesForDirectProjection();
+    void updateAttributesForDirectProjection() override;
     void doUpdateMatrix(Matrix44f* mtx) const override;
     void doScreenPosToCameraPosTo(Vector3f* cameraPos, const Vector3f& screenPos) const override;
     u32 getProjectionType() const override;
