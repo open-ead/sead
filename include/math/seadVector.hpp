@@ -58,6 +58,12 @@ inline void Vector2<T>::negate()
 }
 
 template <typename T>
+inline void Vector2<T>::multScalar(T t)
+{
+    Vector2CalcCommon<T>::multScalar(*this, *this, t);
+}
+
+template <typename T>
 inline void Vector2<T>::set(const Vector2<T>& other)
 {
     Vector2CalcCommon<T>::set(*this, other);
@@ -67,6 +73,12 @@ template <typename T>
 inline void Vector2<T>::set(T x_, T y_)
 {
     Vector2CalcCommon<T>::set(*this, x_, y_);
+}
+
+template <typename T>
+inline void Vector2<T>::setScale(const Vector2<T>& a, T t)
+{
+    Vector2CalcCommon<T>::multScalar(*this, a, t);
 }
 
 template <typename T>
@@ -91,6 +103,12 @@ template <typename T>
 inline T Vector2<T>::squaredLength() const
 {
     return Vector2CalcCommon<T>::squaredLength(*this);
+}
+
+template <typename T>
+inline T Vector2<T>::normalize()
+{
+    return Vector2CalcCommon<T>::normalize(*this);
 }
 
 template <typename T>
