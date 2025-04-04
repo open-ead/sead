@@ -86,6 +86,12 @@ struct BoundBox3
     void set(const Vector3& min, const Vector3& max);
     void setMin(const Vector3& min);
     void setMax(const Vector3& max);
+    void setMinX(T x);
+    void setMinY(T y);
+    void setMinZ(T z);
+    void setMaxX(T x);
+    void setMaxY(T y);
+    void setMaxZ(T z);
     void offset(T dx, T dy, T dz);
     void offset(const Vector3& dv);
     void scaleX(T sx);
