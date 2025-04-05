@@ -66,7 +66,7 @@ protected:
     virtual void setIdle_();
 
     ControllerDefine::ControllerId mId;
-    
+
 private:
     ControllerMgr* mMgr;
     OffsetList<ControllerAddon> mAddons;
