@@ -42,8 +42,7 @@ struct Vector2 : public Policies<T>::Vec2Base
     friend Vector2 operator*(const Vector2& a, T t)
     {
         Vector2 o;
-        o.x = a.x * t;
-        o.y = a.y * t;
+        Vector2CalcCommon<T>::multScalar(o, a, t);
         return o;
     }
 
