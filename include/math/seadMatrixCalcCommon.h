@@ -56,6 +56,12 @@ public:
     static void makeSRIdx(Base& o, const Vec3& s, const Vector3<u32>& r);
     static void makeSRzxyIdx(Base& o, const Vec3& s, const Vector3<u32>& r);
     static void toQuat(Quat& q, const Base& n);
+
+    static void getBase(Vec3& v, const Base& n, s32 axis);
+    static void getRow(Vec3& v, const Base& n, s32 row);
+
+    static void setBase(Base& n, s32 axis, const Vec3& v);
+    static void setRow(Base& n, const Vec3& v, s32 row);
 };
 
 template <typename T>
