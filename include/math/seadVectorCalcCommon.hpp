@@ -298,12 +298,40 @@ inline void Vector3CalcCommon<T>::set(Base& v, T x, T y, T z)
 }
 
 template <typename T>
+T Vector4CalcCommon<T>::normalize(Base& v)
+{
+    const T len = length(v);
+    if (len > 0)
+    {
+        const T inv_len = 1 / len;
+        v.x *= inv_len;
+        v.y *= inv_len;
+        v.z *= inv_len;
+        v.w *= inv_len;
+    }
+
+    return len;
+}
+
+template <typename T>
 inline void Vector4CalcCommon<T>::negate(Base& v)
 {
     v.x = -v.x;
     v.y = -v.y;
     v.z = -v.z;
     v.w = -v.w;
+}
+
+template <typename T>
+inline T Vector4CalcCommon<T>::squaredLength(const Base& v)
+{
+    return v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w;
+}
+
+template <typename T>
+inline T Vector4CalcCommon<T>::length(const Base& v)
+{
+    return MathCalcCommon<T>::sqrt(squaredLength(v));
 }
 
 template <typename T>
