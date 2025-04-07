@@ -42,8 +42,7 @@ struct Vector2 : public Policies<T>::Vec2Base
     friend Vector2 operator*(const Vector2& a, T t)
     {
         Vector2 o;
-        o.x = a.x * t;
-        o.y = a.y * t;
+        Vector2CalcCommon<T>::multScalar(o, a, t);
         return o;
     }
 
@@ -56,14 +55,17 @@ struct Vector2 : public Policies<T>::Vec2Base
     bool operator==(const Vector2& rhs) const { return this->x == rhs.x && this->y == rhs.y; }
     bool operator!=(const Vector2& rhs) const { return !operator==(rhs); }
 
+    void multScalar(T t);
     void negate();
     void set(const Vector2& other);
     void set(T x_, T y_);
+    void setScale(const Vector2<T>& a, T t);
 
     T dot(const Vector2& other) const;
     T cross(const Vector2& other) const;
     T length() const;
     T squaredLength() const;
+    T normalize();
 
     bool isZero() const { return *this == zero; }
 
