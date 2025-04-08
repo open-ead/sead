@@ -257,7 +257,7 @@ inline void Matrix33<T>::getBase(Vec3& o, s32 axis) const
 }
 
 template <typename T>
-inline void Matrix33<T>::getRow(Vec4& o, s32 row) const
+inline void Matrix33<T>::getRow(Vec3& o, s32 row) const
 {
     Matrix33CalcCommon<T>::getRow(o, *this, row);
 }
@@ -542,18 +542,18 @@ inline Vector4<T> Matrix34<T>::getRow(s32 axis) const
 }
 
 template <typename T>
-inline Vector3<T> Matrix34<T>::getTranslation(s32 axis) const
+inline Vector3<T> Matrix34<T>::getTranslation() const
 {
     Vec3 o;
-    Matrix34CalcCommon<T>::getTranslation(o, *this, axis);
+    Matrix34CalcCommon<T>::getTranslation(o, *this);
     return o;
 }
 
 template <typename T>
-inline Vector3<T> Matrix34<T>::getRotation(s32 axis) const
+inline Vector3<T> Matrix34<T>::getRotation() const
 {
     Vec3 o;
-    Matrix34CalcCommon<T>::getRotation(o, *this, axis);
+    Matrix34CalcCommon<T>::getRotation(o, *this);
     return o;
 }
 
