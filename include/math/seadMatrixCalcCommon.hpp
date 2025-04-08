@@ -689,6 +689,38 @@ void Matrix33CalcCommon<T>::toQuat(Quat& q, const Base& n)
 }
 
 template <typename T>
+void Matrix33CalcCommon<T>::getBase(Vec3& v, const Base& n, s32 axis)
+{
+    v.x = n.m[0][axis];
+    v.y = n.m[1][axis];
+    v.z = n.m[2][axis];
+}
+
+template <typename T>
+void Matrix33CalcCommon<T>::getRow(Vec3& v, const Base& n, s32 row)
+{
+    v.x = n.m[row][0];
+    v.y = n.m[row][1];
+    v.z = n.m[row][2];
+}
+
+template <typename T>
+void Matrix33CalcCommon<T>::setBase(Base& n, s32 axis, const Vec3& v)
+{
+    n.m[0][axis] = v.x;
+    n.m[1][axis] = v.y;
+    n.m[2][axis] = v.z;
+}
+
+template <typename T>
+void Matrix33CalcCommon<T>::setRow(Base& n, const Vec3& v, s32 row)
+{
+    n.m[row][0] = v.x;
+    n.m[row][1] = v.y;
+    n.m[row][2] = v.z;
+}
+
+template <typename T>
 void Matrix34CalcCommon<T>::makeIdentity(Base& o)
 {
     Matrix34CalcCommon<T>::copy(o, Base{{{{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}}}});
