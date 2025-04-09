@@ -69,7 +69,10 @@ public:
     using Base = typename Policies<T>::Vec4Base;
 
 public:
+    static T normalize(Base& v);
     static void negate(Base& v);
+    static T squaredLength(const Base& v);
+    static T length(const Base& v);
     static void set(Base& o, const Base& v);
     static void set(Base& v, T x, T y, T z, T w);
 };

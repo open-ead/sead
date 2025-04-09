@@ -217,7 +217,10 @@ struct Vector4 : public Policies<T>::Vec4Base
     }
     bool operator!=(const Vector4& rhs) const { return !operator==(rhs); }
 
+    T normalize();
     void negate();
+    T length() const;
+    T squaredLength() const;
     void set(const Vector4& v);
     void set(T x_, T y_, T z_, T w_);
 

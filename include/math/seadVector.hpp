@@ -383,9 +383,27 @@ inline Vector4<T>& Vector4<T>::operator=(const Vector4<T>& other)
 }
 
 template <typename T>
+inline T Vector4<T>::normalize()
+{
+    return Vector4CalcCommon<T>::normalize(*this);
+}
+
+template <typename T>
 inline void Vector4<T>::negate()
 {
     Vector4CalcCommon<T>::negate(*this);
+}
+
+template <typename T>
+inline T Vector4<T>::length() const
+{
+    return Vector4CalcCommon<T>::length(*this);
+}
+
+template <typename T>
+inline T Vector4<T>::squaredLength() const
+{
+    return Vector4CalcCommon<T>::squaredLength(*this);
 }
 
 template <typename T>
