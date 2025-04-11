@@ -6,6 +6,7 @@
 #include "controller/seadControlDevice.h"
 #include "controller/seadController.h"
 #include "heap/seadHeap.h"
+#include "thread/seadCriticalSection.h"
 #include "thread/seadThread.h"
 
 namespace sead
@@ -26,7 +27,8 @@ public:
                               const nn::hid::VibrationValue& value);
 
     private:
-        u8 _0[0x198];
+        u8 _fc[0x158];
+        CriticalSection mCS;
     };
 
     static_assert(sizeof(VibrationThread) == 0x298);
@@ -52,7 +54,7 @@ public:
     void setNpadIdUpdateNum(u32);
     void setSupportedNpadStyleSet(nn::hid::NpadStyleSet);
     void setNpadJoyHoldType(nn::hid::NpadJoyHoldType);
-    void getNpadJoyAssignment(s32);
+    nn::hid::NpadJoyAssignmentMode getNpadJoyAssignment(s32);
     void setNpadJoyAssignmentModeSingle(s32);
     void setNpadJoyAssignmentModeSingle(s32, nn::hid::NpadJoyDeviceType);
     void setNpadJoyAssignmentModeDual(s32);
@@ -61,7 +63,7 @@ public:
     void disconnectNpad(s32);
     void sendVibrationValue(s32, s32, const nn::hid::VibrationValue&);
 
-    NpadState& getNpadState(s32 idx) { return mNpadStates[idx]; }
+    const NpadState& getNpadState(s32 idx) { return mNpadStates[idx]; }
 
 private:
     u32 mNpadIdUpdateNum;
