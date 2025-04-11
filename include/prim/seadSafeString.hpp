@@ -558,6 +558,24 @@ inline s32 BufferedSafeStringBase<T>::append(const SafeStringBase<T>& str, s32 a
 }
 
 template <typename T>
+inline s32 BufferedSafeStringBase<T>::append(T c)
+{
+    const s32 length = this->calcLength();
+
+    if (length >= getBufferSize() - 1)
+    {
+        SEAD_ASSERT_MSG(false, "Buffer overflow. (Buffer Size: %d, Length: %d)", getBufferSize(),
+                        length);
+        return 0;
+    }
+
+    T* top = getMutableStringTop_();
+    top[length] = c;
+    top[length + 1] = this->cNullChar;
+    return 1;
+}
+
+template <typename T>
 inline s32 BufferedSafeStringBase<T>::append(T c, s32 num)
 {
     if (num < 0)
@@ -571,7 +589,7 @@ inline s32 BufferedSafeStringBase<T>::append(T c, s32 num)
 
     const s32 length = this->calcLength();
 
-    if (getBufferSize() - length <= num)
+    if (length >= getBufferSize() - num)
     {
         SEAD_ASSERT_MSG(false, "Buffer overflow. (Buffer Size: %d, Length: %d, Num: %d)",
                         getBufferSize(), length, num);
