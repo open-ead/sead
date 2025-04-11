@@ -589,7 +589,7 @@ inline s32 BufferedSafeStringBase<T>::append(T c, s32 num)
 
     const s32 length = this->calcLength();
 
-    if (getBufferSize() - length <= num)
+    if (length >= getBufferSize() - num)
     {
         SEAD_ASSERT_MSG(false, "Buffer overflow. (Buffer Size: %d, Length: %d, Num: %d)",
                         getBufferSize(), length, num);
