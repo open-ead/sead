@@ -223,7 +223,7 @@ public:
     /// Append append_length characters from str.
     s32 append(const SafeStringBase<T>& str, s32 append_length = -1);
     /// Append a character.
-    s32 append(T c) { return append(c, 1); }
+    s32 append(T c);
     /// Append a character n times.
     s32 append(T c, s32 n);
 
