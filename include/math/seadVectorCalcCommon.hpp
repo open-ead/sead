@@ -170,12 +170,10 @@ inline void Vector3CalcCommon<T>::rotate(Base& o, const Quat& q, const Base& v)
     r.z = (q.x * v.y) - (q.y * v.x) + (q.w * v.z);
     r.w = -(q.x * v.x) - (q.y * v.y) - (q.z * v.z);
 
-    r.w *= -1;
-
-    // quat-multiplication
-    o.x = (q.w * r.x) - (q.z * r.y) + (q.y * r.z) + (q.x * r.w);
-    o.y = (q.z * r.x) + (q.w * r.y) - (q.x * r.z) + (q.y * r.w);
-    o.z = -(q.y * r.x) + (q.x * r.y) + (q.w * r.z) + (q.z * r.w);
+    // quat-multiplication with zero on o.w and everything is negated
+    o.x = (r.x * q.w) - (r.y * q.z) + (r.z * q.y) - (r.w * q.x);
+    o.y = (r.x * q.z) + (r.y * q.w) - (r.z * q.x) - (r.w * q.y);
+    o.z = -(r.x * q.y) + (r.y * q.x) + (r.z * q.w) - (r.w * q.z);
 }
 
 template <typename T>
