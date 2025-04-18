@@ -135,6 +135,13 @@ struct Vector3 : public Policies<T>::Vec3Base
 
     Vector3 operator-() const { return {-this->x, -this->y, -this->z}; }
 
+    Vector3 cross(const Vector3& t) const
+    {
+        Vector3 o;
+        o.setCross(*this, t);
+        return o;
+    }
+
     T dot(const Vector3& t) const;
     T length() const;
     T squaredLength() const;
