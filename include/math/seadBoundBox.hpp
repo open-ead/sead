@@ -233,6 +233,42 @@ inline void BoundBox3<T>::setMax(const Vector3& max)
 }
 
 template <typename T>
+inline void BoundBox3<T>::setMinX(T x)
+{
+    mMin.x = x;
+}
+
+template <typename T>
+inline void BoundBox3<T>::setMinY(T y)
+{
+    mMin.y = y;
+}
+
+template <typename T>
+inline void BoundBox3<T>::setMinZ(T z)
+{
+    mMin.z = z;
+}
+
+template <typename T>
+inline void BoundBox3<T>::setMaxX(T x)
+{
+    mMax.x = x;
+}
+
+template <typename T>
+inline void BoundBox3<T>::setMaxY(T y)
+{
+    mMax.y = y;
+}
+
+template <typename T>
+inline void BoundBox3<T>::setMaxZ(T z)
+{
+    mMax.z = z;
+}
+
+template <typename T>
 inline void BoundBox3<T>::offset(T dx, T dy, T dz)
 {
     mMin.x += dx;
