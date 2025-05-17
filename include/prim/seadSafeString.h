@@ -106,6 +106,8 @@ public:
         return mStringTop;
     }
 
+    const T* getStringTop() const { return mStringTop; }
+
     inline const T& at(s32 idx) const;
     inline const T& operator[](s32 idx) const { return at(idx); }
 
