@@ -5,7 +5,6 @@
 
 namespace sead
 {
-
 class ParallelSZSDecompressor : public Decompressor
 {
 public:
