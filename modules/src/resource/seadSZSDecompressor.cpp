@@ -119,7 +119,56 @@ __attribute__((aligned(0x20))) s32 decodeSZSCafeAsm_(void* dst, const void* src)
 }  // namespace
 
 #ifdef SWITCH
-s32 decodeSZSNxAsm64_(void* dst, const void* src);
+s32 decodeSZSNxAsm64_(void* dst, const void* src)
+{
+    register s32 error asm("w2");
+    asm("ldr w5, [%[src],#4]\n"
+        "rev w4, w5\n"
+        "mov %w[error], w4\n"
+        "add %[src], %[src], #0x10\n"
+        "mov w5, #0\n"
+        "mov w14, #0x1000\n"
+        "sub w14, w14, #0x1\n"
+
+        "1: lsr w5, w5, #1\n"
+        "cbnz w5, 2f\n"
+        "ldrb w6, [%[src]],#1\n"
+        "mov w5, #0x80\n"
+
+        "2: tst w6, w5\n"
+        "b.ne 5f\n"
+        "ldrb w3, [%[src]],#1\n"
+        "ldrb w7, [%[src]],#1\n"
+        "add w3, w7, w3,lsl#8\n"
+        "lsr w9, w3, #0xc\n"
+        "and w3, w3, w14\n"
+        "add w3, w3, #1\n"
+        "add w7, w9, #2\n"
+        "cbnz w9, 3f\n"
+        "ldrb w7, [%[src]],#1\n"
+        "add w7, w7, #0x12\n"
+
+        "3: sub w4, w4, w7\n"
+        "neg w10, w3\n"
+
+        "4: ldrb w12, [%[dst],w10,sxtw]\n"
+        "subs w7, w7, #1\n"
+        "strb w12, [%[dst]],#1\n"
+        "b.ne 4b\n"
+        "cbnz w4, 1b\n"
+        "b 6f\n"
+
+        "5: ldrb w12, [%[src]],#1\n"
+        "subs w4, w4, #1\n"
+        "strb w12, [%[dst]],#1\n"
+        "b.ne 1b\n"
+
+        "6:"
+        : [error] "=r" (error)
+        : [dst] "r" (dst), [src] "r" (src)
+    );
+    return error;
+}
 #endif
 
 namespace sead
