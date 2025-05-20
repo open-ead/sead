@@ -203,6 +203,7 @@ add_library(sead OBJECT
 
   include/resource/seadArchiveRes.h
   include/resource/seadDecompressor.h
+  include/resource/seadParallelSZSDecompressor.h
   include/resource/seadResource.h
   include/resource/seadResourceMgr.h
   include/resource/seadSharcArchiveRes.h
