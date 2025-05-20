@@ -8,16 +8,17 @@ namespace sead
 class ParallelSZSDecompressor : public Decompressor
 {
 public:
-    ParallelSZSDecompressor(u32, s32, sead::Heap*, u8*, const CoreIdMask&);
+    ParallelSZSDecompressor(u32 workSize, s32 threadPriority, sead::Heap* heap, u8* workBuffer,
+                            const CoreIdMask& mask);
     ~ParallelSZSDecompressor() override;
 
-    u8* tryDecompFromDevice(const sead::ResourceMgr::LoadArg&, sead::Resource*, u32*, u32*,
-                            bool*) override;
+    u8* tryDecompFromDevice(const ResourceMgr::LoadArg& loadArg, Resource* resource, u32* outSize,
+                            u32* outAllocSize, bool* outAllocated) override;
 
     void setDivSize(u32);
 
 private:
-    void* size[0x1a8 / 8];
+    void* _78[0x1a8 / 8];
 };
 
 static_assert(sizeof(ParallelSZSDecompressor) == 0x220);
