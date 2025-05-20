@@ -30,6 +30,7 @@ void* operator new[](size_t size, s32 alignment, const std::nothrow_t&) noexcept
 void* operator new(size_t size, sead::Heap* heap, const std::nothrow_t&) noexcept;
 void* operator new[](size_t size, sead::Heap* heap, const std::nothrow_t&) noexcept;
 
+[[deprecated("test 2")]]
 void* operator new(size_t size, sead::Heap* heap, s32 alignment = sizeof(void*));
 void* operator new[](size_t size, sead::Heap* heap, s32 alignment = sizeof(void*));
 void* operator new(size_t size, sead::Heap* heap, s32 alignment, const std::nothrow_t&) noexcept;
