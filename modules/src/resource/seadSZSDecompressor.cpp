@@ -164,9 +164,8 @@ s32 decodeSZSNxAsm64_(void* dst, const void* src)
         "b.ne 1b\n"
 
         "6:"
-        : [error] "=r" (error)
-        : [dst] "r" (dst), [src] "r" (src)
-    );
+        : [error] "=r"(error)
+        : [dst] "r"(dst), [src] "r"(src));
     return error;
 }
 #endif
