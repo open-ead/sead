@@ -1830,8 +1830,6 @@ void Matrix34CalcCommon<T>::getRotation(Vec3& v, const Base& n)
     const T a13 = n.m[0][2];
 
     const T a21 = n.m[1][0];
-    const T a22 = n.m[1][1];
-    const T a23 = n.m[1][2];
 
     const T a31 = n.m[2][0];
     const T a32 = n.m[2][1];
