@@ -25,7 +25,14 @@ class HeapMgr : hostio::Node
     using IFreeCallback = IDelegate1<const FreeCallbackArg*>;
 
 public:
-    struct AllocFailedCallbackArg;
+    struct AllocFailedCallbackArg
+    {
+        Heap* heap;
+        size_t request_size;
+        s32 request_alignment;
+        size_t alloc_size;
+        s32 alloc_alignment;
+    };
     using IAllocFailedCallback = IDelegate1<const AllocFailedCallbackArg*>;
 
     HeapMgr();
