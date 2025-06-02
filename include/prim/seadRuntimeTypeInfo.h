@@ -1,6 +1,8 @@
 #ifndef SEAD_RUNTIMETYPEINFO_H_
 #define SEAD_RUNTIMETYPEINFO_H_
 
+#include <seadVersion.h>
+
 namespace sead
 {
 namespace RuntimeTypeInfo
@@ -63,6 +65,22 @@ inline DerivedType* DynamicCast(Type* obj)
 
 }  // namespace sead
 
+#if SEAD_RTTI_CHECKDERIVEDRUNTIMETYPEINFO_RETURNS_INSTANCE
+#define SEAD_RTTI_CHECKDERIVEDRUNTIMETYPEINFO(CLASS, OVERRIDE)                                     \
+    virtual const CLASS* checkDerivedRuntimeTypeInfo(                                              \
+        const sead::RuntimeTypeInfo::Interface* typeInfo) const OVERRIDE                           \
+    {                                                                                              \
+        return checkDerivedRuntimeTypeInfoStatic(typeInfo) ? this : nullptr;                       \
+    }
+#else
+#define SEAD_RTTI_CHECKDERIVEDRUNTIMETYPEINFO(CLASS, OVERRIDE)                                     \
+    virtual bool checkDerivedRuntimeTypeInfo(const sead::RuntimeTypeInfo::Interface* typeInfo)     \
+        const OVERRIDE                                                                             \
+    {                                                                                              \
+        return checkDerivedRuntimeTypeInfoStatic(typeInfo);                                        \
+    }
+#endif
+
 /// Use this macro to declare sead RTTI machinery for a base class.
 /// You must use SEAD_RTTI_OVERRIDE in all derived classes.
 /// @param CLASS The name of the class.
@@ -81,11 +99,7 @@ public:                                                                         
         return typeInfo == clsTypeInfo;                                                            \
     }                                                                                              \
                                                                                                    \
-    virtual bool checkDerivedRuntimeTypeInfo(const sead::RuntimeTypeInfo::Interface* typeInfo)     \
-        const                                                                                      \
-    {                                                                                              \
-        return checkDerivedRuntimeTypeInfoStatic(typeInfo);                                        \
-    }                                                                                              \
+    SEAD_RTTI_CHECKDERIVEDRUNTIMETYPEINFO(CLASS, )                                                 \
                                                                                                    \
     virtual const sead::RuntimeTypeInfo::Interface* getRuntimeTypeInfo() const                     \
     {                                                                                              \
@@ -114,11 +128,7 @@ public:                                                                         
         return BASE::checkDerivedRuntimeTypeInfoStatic(typeInfo);                                  \
     }                                                                                              \
                                                                                                    \
-    bool checkDerivedRuntimeTypeInfo(const sead::RuntimeTypeInfo::Interface* typeInfo)             \
-        const override                                                                             \
-    {                                                                                              \
-        return checkDerivedRuntimeTypeInfoStatic(typeInfo);                                        \
-    }                                                                                              \
+    SEAD_RTTI_CHECKDERIVEDRUNTIMETYPEINFO(CLASS, override)                                         \
                                                                                                    \
     const sead::RuntimeTypeInfo::Interface* getRuntimeTypeInfo() const override                    \
     {                                                                                              \

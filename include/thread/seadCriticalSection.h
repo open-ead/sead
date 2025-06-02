@@ -14,13 +14,18 @@ namespace sead
 {
 class Heap;
 
-class CriticalSection : public IDisposer
+class CriticalSection
+#if not SEAD_CRITICALSECTION_PURE
+    : public IDisposer
+#endif
 {
 public:
     CriticalSection();
     explicit CriticalSection(Heap* disposer_heap);
+#if not SEAD_CRITICALSECTION_PURE
     CriticalSection(Heap* disposer_heap, HeapNullOption heap_null_option);
-    ~CriticalSection() override;
+#endif
+    ~CriticalSection() SEAD_CRITIALSECTION_OVERRIDE_TOKEN;
 
     CriticalSection(const CriticalSection&) = delete;
     CriticalSection& operator=(const CriticalSection&) = delete;

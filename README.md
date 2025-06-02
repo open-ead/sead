@@ -52,6 +52,20 @@ Platform-specific files are usually placed into a subdirectory that is called:
 * **ctr** for 3DS
 * **nin** for nnSdk (Switch)
 
+### Version specific source
+
+Different features of sead can be implemented/left out in conjunction to which game the library is being used for:
+
+Set `SEAD_VERSION` to:
+- 1: The Legend of Zelda: Breath of the Wild
+- 2: Super Mario Odyssey
+- 3: Splatoon 3
+- 4: The Legend of Zelda: Tears of the Kingdom
+- 5: Super Mario Bros. Wonder
+- 0: For a custom set of features. All feature macros must be set to either 1 or 0, read `seadVersion.h` for specifics.
+
+Presets and features for more games can be added if desired.
+
 ## Building
 
 Building this project requires:
