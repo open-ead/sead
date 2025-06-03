@@ -17,6 +17,7 @@ HeapMgr::IndependentHeaps HeapMgr::sIndependentHeaps;
 CriticalSection HeapMgr::sHeapTreeLockCS;
 
 HeapMgr::HeapMgr() = default;
+HeapMgr::~HeapMgr() = default;
 
 void HeapMgr::initialize(size_t size)
 {

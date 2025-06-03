@@ -36,7 +36,7 @@ public:
     using IAllocFailedCallback = IDelegate1<const AllocFailedCallbackArg*>;
 
     HeapMgr();
-    virtual ~HeapMgr() {}
+    virtual ~HeapMgr();
 
     static void initialize(size_t size);
     static void initializeImpl_();
