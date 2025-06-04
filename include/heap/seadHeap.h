@@ -48,6 +48,9 @@ public:
     virtual size_t adjust() = 0;
     virtual void* tryAlloc(size_t size, s32 alignment) = 0;
     virtual void free(void* ptr) = 0;
+#if SEAD_HEAP_FREEANDGETALLOCATABLESIZE_VIRTUAL
+    virtual size_t freeAndGetAllocatableSize(void* ptr, s32) = 0;
+#endif
     virtual void* resizeFront(void*, size_t) = 0;
     virtual void* resizeBack(void*, size_t) = 0;
     virtual void* tryRealloc(void* ptr, size_t size, s32 alignment);
