@@ -54,7 +54,7 @@ public:
     void shuffle(Random* random);
 
 protected:
-    using CompareCallbackImpl = int (*)(const void* a, const void* b);
+    using CompareCallbackImpl = s32 (*)(const void* a, const void* b);
 
     void* at(s32 idx) const
     {
@@ -342,10 +342,10 @@ protected:
         return static_cast<void*>(const_cast<std::remove_const_t<T>*>(ptr));
     }
 
-    static int compareT(const void* a_, const void* b_)
+    static s32 compareT(const void* a, const void* b) { return compareT((const T*)a, (const T*)b); }
+
+    static s32 compareT(const T* a, const T* b)
     {
-        const T* a = static_cast<const T*>(a_);
-        const T* b = static_cast<const T*>(b_);
         if (*a < *b)
             return -1;
         if (*b < *a)
