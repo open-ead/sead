@@ -377,6 +377,12 @@ private:
     T* mWork[N];
 };
 
+// TODO: Restrict calls this object type
+template <typename T>
+class ConstPtrArray : public PtrArray<T>
+{
+};
+
 }  // namespace sead
 
 #endif  // SEAD_PTR_ARRAY_H_
