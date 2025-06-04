@@ -63,16 +63,34 @@ inline DerivedType* DynamicCast(Type* obj)
 
 }  // namespace sead
 
+/// To allow easier use of headers in mods, SEAD_RTTI_STATIC_SOURCE_STATIC_VARIABLE and
+/// SEAD_RTTI_STATIC_SOURCE_CUSTOM allow sourcing RuntimeTypeInfo objects from a variable that can
+/// be linked in, or a custom function. By default, a new instance of the object will be created.
+#if defined(SEAD_RTTI_STATIC_SOURCE_STATIC_VARIABLE)
+#define _SEAD_GETRUNTIMETYPEINFOSTATIC(TYPE)                                                       \
+    static const TYPE cRuntimeTypeInfoStatic;                                                      \
+    static const sead::RuntimeTypeInfo::Interface* getRuntimeTypeInfoStatic()                      \
+    {                                                                                              \
+        return &cRuntimeTypeInfoStatic;                                                            \
+    }
+#elif defined(SEAD_RTTI_STATIC_SOURCE_CUSTOM)
+#define _SEAD_GETRUNTIMETYPEINFOSTATIC(TYPE)                                                       \
+    static const sead::RuntimeTypeInfo::Interface* getRuntimeTypeInfoStatic();
+#else
+#define _SEAD_GETRUNTIMETYPEINFOSTATIC(TYPE)                                                       \
+    static const sead::RuntimeTypeInfo::Interface* getRuntimeTypeInfoStatic()                      \
+    {                                                                                              \
+        static const TYPE typeInfo;                                                                \
+        return &typeInfo;                                                                          \
+    }
+#endif
+
 /// Use this macro to declare sead RTTI machinery for a base class.
 /// You must use SEAD_RTTI_OVERRIDE in all derived classes.
 /// @param CLASS The name of the class.
 #define SEAD_RTTI_BASE(CLASS)                                                                      \
 public:                                                                                            \
-    static const sead::RuntimeTypeInfo::Interface* getRuntimeTypeInfoStatic()                      \
-    {                                                                                              \
-        static const sead::RuntimeTypeInfo::Root typeInfo;                                         \
-        return &typeInfo;                                                                          \
-    }                                                                                              \
+    _SEAD_GETRUNTIMETYPEINFOSTATIC(sead::RuntimeTypeInfo::Root)                                    \
                                                                                                    \
     static bool checkDerivedRuntimeTypeInfoStatic(                                                 \
         const sead::RuntimeTypeInfo::Interface* typeInfo)                                          \
@@ -97,11 +115,7 @@ public:                                                                         
 /// @param BASE The name of the base class of CLASS.
 #define SEAD_RTTI_OVERRIDE(CLASS, BASE)                                                            \
 public:                                                                                            \
-    static const sead::RuntimeTypeInfo::Interface* getRuntimeTypeInfoStatic()                      \
-    {                                                                                              \
-        static const sead::RuntimeTypeInfo::Derive<BASE> typeInfo;                                 \
-        return &typeInfo;                                                                          \
-    }                                                                                              \
+    _SEAD_GETRUNTIMETYPEINFOSTATIC(sead::RuntimeTypeInfo::Derive<BASE>)                            \
                                                                                                    \
     static bool checkDerivedRuntimeTypeInfoStatic(                                                 \
         const sead::RuntimeTypeInfo::Interface* typeInfo)                                          \
