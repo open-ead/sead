@@ -86,7 +86,8 @@ protected:
 
     void pushFront(void* ptr) { insert(0, ptr); }
 
-    void* popBack() {
+    void* popBack()
+    {
         if (mPtrNum >= 1)
             return mPtrs[--mPtrNum];
         return nullptr;
