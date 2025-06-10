@@ -84,6 +84,7 @@ struct BoundBox3
     void setUndef();
     void set(T x0, T y0, T z0, T x1, T y1, T z1);
     void set(const Vector3& min, const Vector3& max);
+    void setIncludePoint(const Vector3& p);
     void setMin(const Vector3& min);
     void setMax(const Vector3& max);
     void offset(T dx, T dy, T dz);
