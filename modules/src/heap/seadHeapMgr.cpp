@@ -48,7 +48,6 @@ void HeapMgr::createRootHeap_()
     sRootHeaps.pushBack(expHeap);
 }
 
-// NON_MATCHING: mismatching on the loops, maybe due to an issue in popBack
 void HeapMgr::destroy()
 {
     sHeapTreeLockCS.lock();
