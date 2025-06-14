@@ -35,8 +35,12 @@ public:
         s32 alignment = 0x20;
     };
 #ifdef NNSDK
+#if SEAD_SAFESTRING_NONVIRTUAL
+    static_assert(sizeof(CreateArg) == 0x38);
+#else
     static_assert(sizeof(CreateArg) == 0x40);
 #endif
+#endif  // NNSDK
 
     struct LoadArg
     {
@@ -56,8 +60,12 @@ public:
         bool* has_tried_create_with_decomp = nullptr;
     };
 #ifdef NNSDK
+#if SEAD_SAFESTRING_NONVIRTUAL
+    static_assert(sizeof(LoadArg) == 0x50);
+#else
     static_assert(sizeof(LoadArg) == 0x58);
 #endif
+#endif  // NNSDK
 
 public:
     ResourceMgr();
@@ -78,7 +86,10 @@ public:
     void unregisterDecompressor(Decompressor* decompressor);
     Decompressor* findDecompressor(const SafeString& name);
 
-    Resource* tryLoad(const LoadArg& arg, const SafeString& factory_name,
+    Resource* tryLoad(const LoadArg& arg,
+#if not SEAD_RESOURCEMGR_TRYCREATE_NO_FACTORY_NAME
+                      const SafeString& factory_name,
+#endif
                       Decompressor* decompressor);
     Resource* tryLoadWithoutDecomp(const LoadArg& arg);
     void unload(Resource* res);
