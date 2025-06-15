@@ -1,4 +1,5 @@
 #include "math/seadMathCalcCommon.h"
+#include "prim/seadBitUtil.h"
 
 namespace sead
 {
@@ -649,14 +650,14 @@ u32 MathCalcCommon<f32>::atanIdx_(f32 t)
 
 f32 ldexp(f32 x, s32 exp)
 {
-    u32 result2 = (*(u32*)(&x) + (exp << 23)) & 0x7FFFFFFF;
-    return *(f32*)(&result2);
+    u32 result2 = (sead::BitUtil::bitCast<u32>(x) + (exp << 23)) & 0x7FFFFFFF;
+    return sead::BitUtil::bitCast<f32>(result2);
 }
 
 template <>
 f32 MathCalcCommon<f32>::expTable(f32 x)
 {
-    s32 v1 = (s32)(x * ln2Inv());
+    s32 v1 = static_cast<s32>(x * ln2Inv());
     f32 t = ((x - (v1 * ln2())) + ln2()) * 23.0831203460693359375f;
     u32 index = (s32)t;
     f32 rest = t - index;
@@ -666,10 +667,10 @@ f32 MathCalcCommon<f32>::expTable(f32 x)
 
 f32 frexp(f32 x, s32* exp)
 {
-    u32 v2 = *(u32*)&x;
+    u32 v2 = sead::BitUtil::bitCast<u32>(x);
     *exp = (v2 >> 23) & 0xFF;
     v2 = (v2 & 0x7FFFFF) | 0x3F800000;
-    return *(f32*)&v2;
+    return sead::BitUtil::bitCast<f32>(v2);
 }
 
 // NON_MATCHING: regswap (https://decomp.me/scratch/9YZfd)
