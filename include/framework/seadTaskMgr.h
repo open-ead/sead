@@ -82,10 +82,7 @@ public:                                                                         
         bool mActive = false;                                                                      \
     };                                                                                             \
                                                                                                    \
-    static CLASS* instance()                                                                       \
-    {                                                                                              \
-        return sInstance;                                                                          \
-    }                                                                                              \
+    static CLASS* instance() { return sInstance; }                                                 \
     static void setInstance_(sead::TaskBase* task);                                                \
     static void deleteInstance();                                                                  \
                                                                                                    \
