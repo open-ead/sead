@@ -347,7 +347,10 @@ protected:
         return static_cast<void*>(const_cast<std::remove_const_t<T>*>(ptr));
     }
 
-    static s32 compareT(const void* a, const void* b) { return compareT((const T*)a, (const T*)b); }
+    static s32 compareT(const void* a, const void* b)
+    {
+        return compareT(static_cast<const T*>(a), static_cast<const T*>(b));
+    }
 
     static s32 compareT(const T* a, const T* b)
     {
@@ -377,7 +380,7 @@ private:
     T* mWork[N];
 };
 
-// TODO: Restrict calls this object type
+// TODO: Restrict usage of this object type
 template <typename T>
 class ConstPtrArray : public PtrArray<T>
 {

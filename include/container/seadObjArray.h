@@ -236,7 +236,10 @@ protected:
         return new (storage) T(item);
     }
 
-    static s32 compareT(const void* a, const void* b) { return compareT((const T*)a, (const T*)b); }
+    static s32 compareT(const void* a, const void* b)
+    {
+        return compareT(static_cast<const T*>(a), static_cast<const T*>(b));
+    }
 
     static s32 compareT(const T* a, const T* b)
     {
