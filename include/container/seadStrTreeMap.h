@@ -81,6 +81,7 @@ inline void StrTreeMap<N, Value>::allocBuffer(s32 node_max, Heap* heap, s32 alig
     {
         SEAD_ASSERT_MSG(false, "node_max[%d] must be larger than zero", node_max);
         AllocFailAssert(heap, node_max * node_size, alignment);
+        return;
     }
 
     void* work = AllocBuffer(node_max * node_size, heap, alignment);
