@@ -94,7 +94,7 @@ add_library(sead OBJECT
   modules/src/framework/seadGameFramework.cpp
   modules/src/framework/seadMethodTree.cpp
   modules/src/framework/seadProcessMeterBar.cpp
-  #modules/src/framework/seadTaskMgr.cpp
+  modules/src/framework/seadTaskMgr.cpp
 
   include/gfx/nvn/seadDebugFontMgrNvn.h
   include/gfx/seadCamera.h

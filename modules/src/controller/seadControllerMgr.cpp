@@ -155,10 +155,10 @@ s32 ControllerMgr::findControllerPort(const Controller* controller) const
     return -1;
 }
 
-DelegateThread* ControllerMgr::getFramework() const
+Framework* ControllerMgr::getFramework() const
 {
     if (mTaskMgr)
-        return mTaskMgr->mPrepareThread;
+        return mTaskMgr->mParentFramework;
     return nullptr;
 }
 

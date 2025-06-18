@@ -72,7 +72,7 @@ public:
 
     s32 findControllerPort(const Controller* controller) const;
 
-    DelegateThread* getFramework() const;
+    Framework* getFramework() const;
 
     Controller* getController(int port) { return mControllers[port]; }
 
