@@ -54,7 +54,7 @@ public:
     void shuffle(Random* random);
 
 protected:
-    using CompareCallbackImpl = int (*)(const void* a, const void* b);
+    using CompareCallbackImpl = s32 (*)(const void* a, const void* b);
 
     void* at(s32 idx) const
     {
@@ -347,10 +347,13 @@ protected:
         return static_cast<void*>(const_cast<std::remove_const_t<T>*>(ptr));
     }
 
-    static int compareT(const void* a_, const void* b_)
+    static s32 compareT(const void* a, const void* b)
     {
-        const T* a = static_cast<const T*>(a_);
-        const T* b = static_cast<const T*>(b_);
+        return compareT(static_cast<const T*>(a), static_cast<const T*>(b));
+    }
+
+    static s32 compareT(const T* a, const T* b)
+    {
         if (*a < *b)
             return -1;
         if (*b < *a)
@@ -375,6 +378,12 @@ private:
     // Nintendo uses an untyped u8[N*sizeof(void*)] buffer. That is undefined behavior,
     // so we will not do that.
     T* mWork[N];
+};
+
+// TODO: Restrict usage of this object type
+template <typename T>
+class ConstPtrArray : public PtrArray<T>
+{
 };
 
 }  // namespace sead
