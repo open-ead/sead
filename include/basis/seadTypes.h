@@ -1,6 +1,8 @@
 #ifndef SEAD_TYPES_H_
 #define SEAD_TYPES_H_
 
+#include <seadVersion.h>
+
 #ifdef cafe
 #include <types.h>
 #else
