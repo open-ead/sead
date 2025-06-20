@@ -117,6 +117,7 @@ Decompressor* ResourceMgr::findDecompressor(const SafeString& name)
     return nullptr;
 }
 
+#if not SEAD_RESOURCEMGR_TRYCREATE_NO_FACTORY_NAME
 Resource* ResourceMgr::tryLoad(const ResourceMgr::LoadArg& arg, const SafeString& factory_name,
                                Decompressor* decompressor)
 {
@@ -153,6 +154,7 @@ Resource* ResourceMgr::tryLoad(const ResourceMgr::LoadArg& arg, const SafeString
         return factory->tryCreateWithDecomp(arg, decompressor);
     return factory->tryCreate(arg);
 }
+#endif
 
 Resource* ResourceMgr::tryLoadWithoutDecomp(const ResourceMgr::LoadArg& arg)
 {
