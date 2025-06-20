@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <basis/seadNew.h>
 #include <basis/seadRawPrint.h>
 #include <container/seadPtrArray.h>
@@ -142,7 +143,11 @@ bool PtrArrayImpl::checkInsert(s32 pos, s32 num)
 
 // TODO: PtrArrayImpl::insertArray
 
-// TODO: PtrArrayImpl::sort
+void PtrArrayImpl::sort(CompareCallbackImpl cmp)
+{
+    // Note: Nintendo did not use <algorithm>
+    std::sort(mPtrs, mPtrs + size(), [&](const void* a, const void* b) { return cmp(a, b) < 0; });
+}
 
 // TODO: PtrArrayImpl::heapSort
 

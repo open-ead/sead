@@ -164,11 +164,10 @@ protected:
     template <typename T, typename Compare>
     void sort_(Compare cmp)
     {
-        // Note: Nintendo did not use <algorithm>
-        std::sort(mPtrs, mPtrs + size(), [&](const void* a, const void* b) {
-            return cmp(static_cast<const T*>(a), static_cast<const T*>(b)) < 0;
-        });
+        sort(reinterpret_cast<CompareCallbackImpl>(cmp));
     }
+
+    void sort(CompareCallbackImpl cmp);
 
     template <typename T, typename Compare>
     void heapSort_(Compare cmp)
