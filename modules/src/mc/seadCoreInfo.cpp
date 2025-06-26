@@ -45,7 +45,7 @@ void CoreInfo::configure()
     const auto alloc_result = nn::os::AllocateTlsSlot(&sCoreNumberTlsSlot, nullptr);
     SEAD_ASSERT(alloc_result.IsSuccess());
 
-    for (u32 i = 0; i != sNumCores; ++i)
+    for (u64 i = 0; i != sNumCores; ++i)
     {
         const u32 id = sPlatformCoreId[i];
         sCoreIdFromPlatformCoreIdTable[id] = i;
