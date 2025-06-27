@@ -394,6 +394,18 @@ public:
     WFixedSafeString() : FixedSafeStringBase<char16, L>() {}
 
     WFixedSafeString(const WSafeString& str) : FixedSafeStringBase<char16, L>(str) {}
+
+    WFixedSafeString& operator=(const WFixedSafeString& other)
+    {
+        this->copy(other);
+        return *this;
+    }
+
+    WFixedSafeString& operator=(const WSafeString& other) SEAD_SAFESTRING_OVERRIDE_TOKEN
+    {
+        this->copy(other);
+        return *this;
+    }
 };
 
 template <s32 L>
