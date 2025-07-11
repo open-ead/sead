@@ -60,7 +60,8 @@ bool Event::wait(TickSpan duration)
 #ifdef SEAD_DEBUG
     SEAD_ASSERT_MSG(mInitialized, "Event is not initialized.");
 #endif
-    return nn::os::TimedWaitLightEvent(&mEventInner, nn::os::ConvertToTimeSpan(duration.toTicks()));
+    return nn::os::TimedWaitLightEvent(&mEventInner,
+                                       nn::os::ConvertToTimeSpan({duration.toTicks()}));
 }
 
 void Event::setSignal()

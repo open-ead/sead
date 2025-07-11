@@ -18,7 +18,7 @@ public:
     u64 toTicks() const { return mTick; }
 
 #ifdef NNSDK
-    void setNow() { mTick = nn::os::GetSystemTick(); }
+    void setNow() { mTick = nn::os::GetSystemTick().value; }
 #else
     void setNow();
 #endif

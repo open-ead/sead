@@ -126,7 +126,7 @@ void Thread::yield()
 
 void Thread::sleep(TickSpan howLong)
 {
-    nn::os::SleepThread(nn::os::ConvertToTimeSpan(howLong.toTicks()));
+    nn::os::SleepThread(nn::os::ConvertToTimeSpan({howLong.toTicks()}));
 }
 
 uintptr_t Thread::getStackCheckStartAddress_() const
