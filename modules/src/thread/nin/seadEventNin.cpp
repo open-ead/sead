@@ -61,7 +61,7 @@ bool Event::wait(TickSpan duration)
     SEAD_ASSERT_MSG(mInitialized, "Event is not initialized.");
 #endif
     return nn::os::TimedWaitLightEvent(&mEventInner,
-                                       nn::os::ConvertToTimeSpan({duration.toTicks()}));
+                                       nn::os::ConvertToTimeSpan({static_cast<u64>(duration.toS64())}));
 }
 
 void Event::setSignal()

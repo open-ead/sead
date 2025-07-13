@@ -28,13 +28,13 @@ public:
 
     TickTime& operator+=(const TickSpan& span)
     {
-        mTick += span.toTicks();
+        mTick += span.toS64();
         return *this;
     }
 
     TickTime& operator-=(const TickSpan& span)
     {
-        mTick -= span.toTicks();
+        mTick -= span.toS64();
         return *this;
     }
 
