@@ -15,7 +15,6 @@ public:
     TickSpan(s64 span = 0) : mSpan(span) {}
 
     s64 toS64() const { return mSpan; }
-    s64 toTicks() const { return mSpan; }
 
     s64 toNanoSeconds() const;
 
