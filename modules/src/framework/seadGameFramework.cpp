@@ -103,7 +103,7 @@ void GameFramework::waitStartDisplayLoop_()
     mTaskMgr->afterCalc();
     Graphics::instance()->unlockDrawContext();
 
-    while (mTaskMgr->mRootTaskCreateArg.factory.mType == TaskClassID::cInvalid)
+    while (!mTaskMgr->mRootTask)
     {
         if (mDisplayStarted)
             break;

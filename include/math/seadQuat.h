@@ -22,10 +22,10 @@ public:
 
     Quat& operator=(const Quat& other)
     {
-        this->w = other.w;
         this->x = other.x;
         this->y = other.y;
         this->z = other.z;
+        this->w = other.w;
         return *this;
     }
 
@@ -68,6 +68,7 @@ public:
 
     void makeUnit();
     bool makeVectorRotation(const Vec3& from, const Vec3& to);
+    void set(const Self& other);
     void set(T w, T x, T y, T z);
     void setRPY(T roll, T pitch, T yaw);
     void calcRPY(Vec3& rpy) const;

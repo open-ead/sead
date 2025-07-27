@@ -54,7 +54,7 @@ public:
     void shuffle(Random* random);
 
 protected:
-    using CompareCallbackImpl = int (*)(const void* a, const void* b);
+    using CompareCallbackImpl = s32 (*)(const void* a, const void* b);
 
     void* at(s32 idx) const
     {
@@ -86,7 +86,12 @@ protected:
 
     void pushFront(void* ptr) { insert(0, ptr); }
 
-    void* popBack() { return isEmpty() ? nullptr : mPtrs[--mPtrNum]; }
+    void* popBack()
+    {
+        if (mPtrNum >= 1)
+            return mPtrs[--mPtrNum];
+        return nullptr;
+    }
 
     void* popFront()
     {
@@ -156,14 +161,17 @@ protected:
     void insertArray(s32 idx, void* array, s32 array_length, s32 elem_size);
     bool checkInsert(s32 idx, s32 num);
 
-    template <typename T, typename Compare>
-    void sort_(Compare cmp)
+    template <typename T>
+    void sort(s32 (*cmpT)(const T* a, const T* b))
     {
-        // Note: Nintendo did not use <algorithm>
-        std::sort(mPtrs, mPtrs + size(), [&](const void* a, const void* b) {
-            return cmp(static_cast<const T*>(a), static_cast<const T*>(b)) < 0;
-        });
+        // Symbols show that `sort()` accepts a `void*` comparer, but needs to receive a `T*`
+        // comparer in order to match SMO. This overload exists to safely accept a `T*` comparer.
+        // This cast is UB, but we know that `cmpT` and `cmpVoid` have the same representation.
+        auto cmpVoid = reinterpret_cast<s32 (*)(const void*, const void*)>(cmpT);
+        sort(cmpVoid);
     }
+
+    void sort(CompareCallbackImpl cmp);
 
     template <typename T, typename Compare>
     void heapSort_(Compare cmp)
@@ -246,7 +254,7 @@ public:
     using CompareCallback = s32 (*)(const T*, const T*);
 
     void sort() { sort(compareT); }
-    void sort(CompareCallback cmp) { PtrArrayImpl::sort_<T>(cmp); }
+    void sort(CompareCallback cmp) { PtrArrayImpl::sort<T>(cmp); }
     void heapSort() { heapSort(compareT); }
     void heapSort(CompareCallback cmp) { PtrArrayImpl::heapSort_<T>(cmp); }
 
@@ -342,10 +350,13 @@ protected:
         return static_cast<void*>(const_cast<std::remove_const_t<T>*>(ptr));
     }
 
-    static int compareT(const void* a_, const void* b_)
+    static s32 compareT(const void* a, const void* b)
     {
-        const T* a = static_cast<const T*>(a_);
-        const T* b = static_cast<const T*>(b_);
+        return compareT(static_cast<const T*>(a), static_cast<const T*>(b));
+    }
+
+    static s32 compareT(const T* a, const T* b)
+    {
         if (*a < *b)
             return -1;
         if (*b < *a)
@@ -370,6 +381,12 @@ private:
     // Nintendo uses an untyped u8[N*sizeof(void*)] buffer. That is undefined behavior,
     // so we will not do that.
     T* mWork[N];
+};
+
+// TODO: Restrict usage of this object type
+template <typename T>
+class ConstPtrArray : public PtrArray<T>
+{
 };
 
 }  // namespace sead

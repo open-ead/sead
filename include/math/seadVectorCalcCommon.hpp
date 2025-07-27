@@ -5,6 +5,7 @@
 #endif  // cafe
 
 #include <math/seadMathCalcCommon.h>
+#include <math/seadQuatCalcCommon.h>
 #ifndef SEAD_MATH_VECTOR_CALC_COMMON_H_
 #include <math/seadVectorCalcCommon.h>
 #endif
@@ -19,6 +20,13 @@ inline void Vector2CalcCommon<T>::add(Base& o, const Base& a, const Base& b)
 }
 
 template <typename T>
+inline void Vector2CalcCommon<T>::multScalar(Base& o, const Base& v, T t)
+{
+    o.x = v.x * t;
+    o.y = v.y * t;
+}
+
+template <typename T>
 inline void Vector2CalcCommon<T>::sub(Base& o, const Base& a, const Base& b)
 {
     o.x = a.x - b.x;
@@ -26,10 +34,15 @@ inline void Vector2CalcCommon<T>::sub(Base& o, const Base& a, const Base& b)
 }
 
 template <typename T>
+inline void Vector2CalcCommon<T>::negate(Base& v)
+{
+    v.x = -v.x;
+    v.y = -v.y;
+}
+template <typename T>
 inline void Vector2CalcCommon<T>::set(Base& o, const Base& v)
 {
-    o.x = v.x;
-    o.y = v.y;
+    o = v;
 }
 
 template <typename T>
@@ -37,6 +50,18 @@ inline void Vector2CalcCommon<T>::set(Base& v, T x, T y)
 {
     v.x = x;
     v.y = y;
+}
+
+template <typename T>
+inline T Vector2CalcCommon<T>::dot(const Base& a, const Base& b)
+{
+    return a.x * b.x + a.y * b.y;
+}
+
+template <typename T>
+inline T Vector2CalcCommon<T>::cross(const Base& a, const Base& b)
+{
+    return a.x * b.y - a.y * b.x;
 }
 
 template <typename T>
@@ -49,6 +74,20 @@ template <typename T>
 inline T Vector2CalcCommon<T>::length(const Base& v)
 {
     return MathCalcCommon<T>::sqrt(squaredLength(v));
+}
+
+template <typename T>
+T Vector2CalcCommon<T>::normalize(Base& v)
+{
+    const T len = length(v);
+    if (len > 0)
+    {
+        const T inv_len = 1 / len;
+        v.x *= inv_len;
+        v.y *= inv_len;
+    }
+
+    return len;
 }
 
 template <typename T>
@@ -120,6 +159,21 @@ inline void Vector3CalcCommon<T>::rotate(Base& o, const Mtx34& m, const Base& a)
     o.x = m.m[0][0] * tmp.x + m.m[0][1] * tmp.y + m.m[0][2] * tmp.z;
     o.y = m.m[1][0] * tmp.x + m.m[1][1] * tmp.y + m.m[1][2] * tmp.z;
     o.z = m.m[2][0] * tmp.x + m.m[2][1] * tmp.y + m.m[2][2] * tmp.z;
+}
+
+template <typename T>
+inline void Vector3CalcCommon<T>::rotate(Base& o, const Quat& q, const Base& v)
+{
+    Quat r;  // quat-multiplication with 0 on w for v
+    r.x = (q.y * v.z) - (q.z * v.y) + (q.w * v.x);
+    r.y = -(q.x * v.z) + (q.z * v.x) + (q.w * v.y);
+    r.z = (q.x * v.y) - (q.y * v.x) + (q.w * v.z);
+    r.w = -(q.x * v.x) - (q.y * v.y) - (q.z * v.z);
+
+    // quat-multiplication with zero on o.w and everything is negated
+    o.x = (r.x * q.w) - (r.y * q.z) + (r.z * q.y) - (r.w * q.x);
+    o.y = (r.x * q.z) + (r.y * q.w) - (r.z * q.x) - (r.w * q.y);
+    o.z = -(r.x * q.y) + (r.y * q.x) + (r.z * q.w) - (r.w * q.z);
 }
 
 template <typename T>
@@ -241,11 +295,17 @@ T Vector3CalcCommon<T>::normalize(Base& v)
 }
 
 template <typename T>
+inline void Vector3CalcCommon<T>::negate(Base& v)
+{
+    v.x = -v.x;
+    v.y = -v.y;
+    v.z = -v.z;
+}
+
+template <typename T>
 inline void Vector3CalcCommon<T>::set(Base& o, const Base& v)
 {
-    o.x = v.x;
-    o.y = v.y;
-    o.z = v.z;
+    o = v;
 }
 
 template <typename T>
@@ -257,12 +317,46 @@ inline void Vector3CalcCommon<T>::set(Base& v, T x, T y, T z)
 }
 
 template <typename T>
+T Vector4CalcCommon<T>::normalize(Base& v)
+{
+    const T len = length(v);
+    if (len > 0)
+    {
+        const T inv_len = 1 / len;
+        v.x *= inv_len;
+        v.y *= inv_len;
+        v.z *= inv_len;
+        v.w *= inv_len;
+    }
+
+    return len;
+}
+
+template <typename T>
+inline void Vector4CalcCommon<T>::negate(Base& v)
+{
+    v.x = -v.x;
+    v.y = -v.y;
+    v.z = -v.z;
+    v.w = -v.w;
+}
+
+template <typename T>
+inline T Vector4CalcCommon<T>::squaredLength(const Base& v)
+{
+    return v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w;
+}
+
+template <typename T>
+inline T Vector4CalcCommon<T>::length(const Base& v)
+{
+    return MathCalcCommon<T>::sqrt(squaredLength(v));
+}
+
+template <typename T>
 inline void Vector4CalcCommon<T>::set(Base& o, const Base& v)
 {
-    o.x = v.x;
-    o.y = v.y;
-    o.z = v.z;
-    o.w = v.w;
+    o = v;
 }
 
 template <typename T>

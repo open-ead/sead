@@ -17,6 +17,7 @@ HeapMgr::IndependentHeaps HeapMgr::sIndependentHeaps;
 CriticalSection HeapMgr::sHeapTreeLockCS;
 
 HeapMgr::HeapMgr() = default;
+HeapMgr::~HeapMgr() = default;
 
 void HeapMgr::initialize(size_t size)
 {
@@ -47,7 +48,6 @@ void HeapMgr::createRootHeap_()
     sRootHeaps.pushBack(expHeap);
 }
 
-// NON_MATCHING: mismatching on the loops, maybe due to an issue in popBack
 void HeapMgr::destroy()
 {
     sHeapTreeLockCS.lock();

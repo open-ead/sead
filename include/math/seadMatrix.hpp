@@ -235,6 +235,46 @@ inline void Matrix33<T>::toQuat(Quat<T>& q) const
 }
 
 template <typename T>
+inline Vector3<T> Matrix33<T>::getBase(s32 axis) const
+{
+    Vec3 o;
+    Matrix33CalcCommon<T>::getBase(o, *this, axis);
+    return o;
+}
+
+template <typename T>
+inline Vector3<T> Matrix33<T>::getRow(s32 axis) const
+{
+    Vec3 o;
+    Matrix33CalcCommon<T>::getRow(o, *this, axis);
+    return o;
+}
+
+template <typename T>
+inline void Matrix33<T>::getBase(Vec3& o, s32 axis) const
+{
+    Matrix33CalcCommon<T>::getBase(o, *this, axis);
+}
+
+template <typename T>
+inline void Matrix33<T>::getRow(Vec3& o, s32 row) const
+{
+    Matrix33CalcCommon<T>::getRow(o, *this, row);
+}
+
+template <typename T>
+inline void Matrix33<T>::setBase(s32 axis, const Vec3& v)
+{
+    Matrix33CalcCommon<T>::setBase(*this, axis, v);
+}
+
+template <typename T>
+inline void Matrix33<T>::setRow(s32 row, const Vec3& v)
+{
+    Matrix33CalcCommon<T>::setRow(*this, v, row);
+}
+
+template <typename T>
 inline Matrix34<T>::Matrix34(T a00, T a01, T a02, T a03, T a10, T a11, T a12, T a13, T a20, T a21,
                              T a22, T a23)
 {
@@ -486,6 +526,38 @@ inline void Matrix34<T>::toQuat(QuatT& q) const
 }
 
 template <typename T>
+inline Vector3<T> Matrix34<T>::getBase(s32 axis) const
+{
+    Vec3 o;
+    Matrix34CalcCommon<T>::getBase(o, *this, axis);
+    return o;
+}
+
+template <typename T>
+inline Vector4<T> Matrix34<T>::getRow(s32 axis) const
+{
+    Vec4 o;
+    Matrix34CalcCommon<T>::getRow(o, *this, axis);
+    return o;
+}
+
+template <typename T>
+inline Vector3<T> Matrix34<T>::getTranslation() const
+{
+    Vec3 o;
+    Matrix34CalcCommon<T>::getTranslation(o, *this);
+    return o;
+}
+
+template <typename T>
+inline Vector3<T> Matrix34<T>::getRotation() const
+{
+    Vec3 o;
+    Matrix34CalcCommon<T>::getRotation(o, *this);
+    return o;
+}
+
+template <typename T>
 inline void Matrix34<T>::getBase(Vec3& o, s32 axis) const
 {
     Matrix34CalcCommon<T>::getBase(o, *this, axis);
@@ -678,6 +750,22 @@ template <typename T>
 inline void Matrix44<T>::toQuat(Quat<T>& q) const
 {
     Matrix44CalcCommon<T>::toQuat(q, *this);
+}
+
+template <typename T>
+inline Vector4<T> Matrix44<T>::getCol(s32 axis) const
+{
+    Vec4 o;
+    Matrix44CalcCommon<T>::getCol(o, *this, axis);
+    return o;
+}
+
+template <typename T>
+inline Vector4<T> Matrix44<T>::getRow(s32 axis) const
+{
+    Vec4 o;
+    Matrix44CalcCommon<T>::getRow(o, *this, axis);
+    return o;
 }
 
 template <typename T>

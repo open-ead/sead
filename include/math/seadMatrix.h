@@ -93,6 +93,14 @@ public:
     void makeSRzxyIdx(const Vec3& s, const Vector3<u32>& r);
     void toQuat(Quat<T>& q) const;
 
+    Vec3 getBase(s32 axis) const;
+    Vec3 getRow(s32 row) const;
+
+    void getBase(Vec3& o, s32 axis) const;
+    void getRow(Vec3& o, s32 row) const;
+    void setBase(s32 axis, const Vec3& v);
+    void setRow(s32 row, const Vec3& v);
+
     static const Matrix33 zero;
     static const Matrix33 ident;
 };
@@ -173,6 +181,11 @@ public:
     void makeT(T x, T y, T z);
     void toQuat(QuatT& q) const;
 
+    Vec3 getBase(s32 axis) const;
+    Vec4 getRow(s32 row) const;
+    Vec3 getTranslation() const;
+    Vec3 getRotation() const;
+
     void getBase(Vec3& o, s32 axis) const;
     void getRow(Vec4& o, s32 row) const;
     void getTranslation(Vec3& o) const;
@@ -231,6 +244,9 @@ public:
     void makeRIdx(u32 xr, u32 yr, u32 zr);
     void makeRzxyIdx(u32 xr, u32 yr, u32 zr);
     void toQuat(Quat<T>& q) const;
+
+    Vec4 getCol(s32 axis) const;
+    Vec4 getRow(s32 row) const;
 
     void getCol(Vec4& o, s32 axis) const;
     void getRow(Vec4& o, s32 row) const;

@@ -15,20 +15,28 @@ namespace sead
 {
 class HeapMgr : hostio::Node
 {
-    struct AllocFailedCallbackArg;
     struct AllocCallbackArg;
     struct CreateCallbackArg;
     struct DestroyCallbackArg;
     struct FreeCallbackArg;
-    using IAllocFailedCallback = IDelegate1<const AllocFailedCallbackArg*>;
     using IAllocCallback = IDelegate1<const AllocCallbackArg*>;
     using ICreateCallback = IDelegate1<const CreateCallbackArg*>;
     using IDestroyCallback = IDelegate1<const DestroyCallbackArg*>;
     using IFreeCallback = IDelegate1<const FreeCallbackArg*>;
 
 public:
+    struct AllocFailedCallbackArg
+    {
+        Heap* heap;
+        size_t request_size;
+        s32 request_alignment;
+        size_t alloc_size;
+        s32 alloc_alignment;
+    };
+    using IAllocFailedCallback = IDelegate1<const AllocFailedCallbackArg*>;
+
     HeapMgr();
-    virtual ~HeapMgr() {}
+    virtual ~HeapMgr();
 
     static void initialize(size_t size);
     static void initializeImpl_();
@@ -69,7 +77,7 @@ private:
     friend class ScopedCurrentHeapSetter;
 
     /// Set the current heap to the specified heap and returns the previous "current heap".
-    sead::Heap* setCurrentHeap_(sead::Heap* heap);
+    Heap* setCurrentHeap_(Heap* heap);
 
     static Arena sDefaultArena;
     static RootHeaps sRootHeaps;

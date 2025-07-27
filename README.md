@@ -52,11 +52,25 @@ Platform-specific files are usually placed into a subdirectory that is called:
 * **ctr** for 3DS
 * **nin** for nnSdk (Switch)
 
+### Version specific source
+
+Different features of sead can be implemented/left out in conjunction to which game the library is being used for:
+
+Set `SEAD_VERSION` to:
+- `SEAD_VERSION_BOTW` (1): The Legend of Zelda: Breath of the Wild
+- `SEAD_VERSION_SMO` (2): Super Mario Odyssey
+- `SEAD_VERSION_SPL3` (3): Splatoon 3
+- `SEAD_VERSION_TOTK` (4): The Legend of Zelda: Tears of the Kingdom
+- `SEAD_VERSION_SMBW` (5): Super Mario Bros. Wonder
+- `SEAD_VERSION_CUSTOM` (0): For a custom set of features. All feature macros must be set to either 1 or 0, read `seadVersion.h` for details.
+
+Presets and features for more games can be added if desired.
+
 ## Building
 
 Building this project requires:
 
-- A C++17 capable compiler (or >= Clang 4.0). While older parts of sead are written in C++03, the newer modules in sead target C++11 (or newer) and recent C++ language or library features make writing C++ more convenient.
+- A partially C++17 capable compiler (like >= Clang 3.9). While older parts of sead are written in C++03, the newer modules in sead target C++11 (or newer) and recent C++ language or library features make writing C++ more convenient. Not all features of C++17 are utilized, compilers supporting parts of C++1z might be enough to compile the project.
 - CMake 3.10+
 
 ### Configuration

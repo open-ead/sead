@@ -48,20 +48,18 @@ private:
     Viewport* mViewport;
     Projection* mProjection;
     Camera* mCamera;
-    int _20;
-    int _24;
-    int _28;
-    int _2c;
+    FontBase* mFont;
+    sead::Vector2i mCursor;
     Vector2f mScale;
     Color4f mColor;
     int _48;
     float mLineSpace;
     BoundBox2f mBoundBox2;
-    float _58;
-    int _5c;
+    float _60;
+    int _64;
     char16_t* mFormatBuffer;
     int mFormatBufferSize;
-    int _6c;
+    bool mEndedDrawing;
     DrawContext* mDrawContext;
 };
 }  // namespace sead

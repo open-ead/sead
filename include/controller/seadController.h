@@ -65,8 +65,9 @@ protected:
     virtual bool isIdle_();
     virtual void setIdle_();
 
-private:
     ControllerDefine::ControllerId mId;
+
+private:
     ControllerMgr* mMgr;
     OffsetList<ControllerAddon> mAddons;
     OffsetList<ControllerWrapperBase> mWrappers;
@@ -83,7 +84,7 @@ T Controller::getAddonAs() const
 {
     for (auto& addon : mAddons)
     {
-        T result = DynamicCast<std::remove_pointer<T>>(addon);
+        T result = DynamicCast<typename std::remove_pointer<T>>(addon);
         if (result)
             return result;
     }

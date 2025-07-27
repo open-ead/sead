@@ -253,8 +253,8 @@ void ControllerBase::setIdleBase_()
     for (s32 i = 0; i < mPadBitMax; i++)
         mPadHoldCounts[i] = 0;
 
-    mPointer.set(cInvalidPointer);
-    mPointerS32.set(cInvalidPointerS32);
+    mPointer = cInvalidPointer;
+    mPointerS32 = cInvalidPointerS32;
     mLeftStick.set(0.0f, 0.0f);
     mRightStick.set(0.0f, 0.0f);
     mLeftAnalogTrigger = 0.0f;

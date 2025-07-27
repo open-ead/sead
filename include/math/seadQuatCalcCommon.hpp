@@ -6,7 +6,7 @@
 
 #include <limits>
 #include <math/seadMathCalcCommon.h>
-#include <math/seadQuat.h>
+#include <math/seadVectorCalcCommon.h>
 
 namespace sead
 {
@@ -92,7 +92,7 @@ inline void QuatCalcCommon<T>::slerpTo(Base& out, const Base& q1, const Base& q2
 template <typename T>
 inline void QuatCalcCommon<T>::makeUnit(Base& q)
 {
-    q = Quat<T>::unit;
+    q = {0, 0, 0, 1};
 }
 
 template <typename T>
@@ -115,6 +115,12 @@ inline bool QuatCalcCommon<T>::makeVectorRotation(Base& q, const Vec3& from, con
         set(q, s * 0.5f, cross.x * rs, cross.y * rs, cross.z * rs);
         return true;
     }
+}
+
+template <typename T>
+inline void QuatCalcCommon<T>::set(Base& q, const Base& other)
+{
+    q = other;
 }
 
 template <typename T>
@@ -141,12 +147,22 @@ inline void QuatCalcCommon<T>::setRPY(Base& q, T roll, T pitch, T yaw)
     const T cy_sp = cy * sp;
     const T sy_cp = sy * cp;
 
-    const T w = (cy_cp * cr) + (sy_sp * sr);
-    const T x = (cy_cp * sr) - (sy_sp * cr);
-    const T y = (cy_sp * cr) + (sy_cp * sr);
-    const T z = (sy_cp * cr) - (cy_sp * sr);
+    q.w = (cy_cp * cr) + (sy_sp * sr);
+    q.x = (cy_cp * sr) - (sy_sp * cr);
+    q.y = (cy_sp * cr) + (sy_cp * sr);
+    q.z = (sy_cp * cr) - (cy_sp * sr);
+}
 
-    set(q, w, x, y, z);
+template <typename T>
+inline void QuatCalcCommon<T>::setAxisAngle(Base& q, const Vec3& axis, T angle)
+{
+    T angleRad = MathCalcCommon<T>::deg2rad(angle);
+    angleRad *= 0.5f;
+    q.w = MathCalcCommon<T>::cos(angleRad);
+    T sa = MathCalcCommon<T>::sin(angleRad);
+    q.x = sa * axis.x;
+    q.y = sa * axis.y;
+    q.z = sa * axis.z;
 }
 
 }  // namespace sead

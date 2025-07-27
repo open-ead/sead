@@ -689,6 +689,38 @@ void Matrix33CalcCommon<T>::toQuat(Quat& q, const Base& n)
 }
 
 template <typename T>
+void Matrix33CalcCommon<T>::getBase(Vec3& v, const Base& n, s32 axis)
+{
+    v.x = n.m[0][axis];
+    v.y = n.m[1][axis];
+    v.z = n.m[2][axis];
+}
+
+template <typename T>
+void Matrix33CalcCommon<T>::getRow(Vec3& v, const Base& n, s32 row)
+{
+    v.x = n.m[row][0];
+    v.y = n.m[row][1];
+    v.z = n.m[row][2];
+}
+
+template <typename T>
+void Matrix33CalcCommon<T>::setBase(Base& n, s32 axis, const Vec3& v)
+{
+    n.m[0][axis] = v.x;
+    n.m[1][axis] = v.y;
+    n.m[2][axis] = v.z;
+}
+
+template <typename T>
+void Matrix33CalcCommon<T>::setRow(Base& n, const Vec3& v, s32 row)
+{
+    n.m[row][0] = v.x;
+    n.m[row][1] = v.y;
+    n.m[row][2] = v.z;
+}
+
+template <typename T>
 void Matrix34CalcCommon<T>::makeIdentity(Base& o)
 {
     Matrix34CalcCommon<T>::copy(o, Base{{{{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}}}});
@@ -1265,17 +1297,21 @@ void Matrix34CalcCommon<T>::makeR(Base& o, const Vec3& r)
     const T cosV[3] = {MathCalcCommon<T>::cos(r.x), MathCalcCommon<T>::cos(r.y),
                        MathCalcCommon<T>::cos(r.z)};
 
-    o.m[0][0] = (cosV[1] * cosV[2]);
-    o.m[1][0] = (cosV[1] * sinV[2]);
+    T c0_c2 = cosV[0] * cosV[2];
+    T s0_s1 = sinV[0] * sinV[1];
+    T c0_s2 = cosV[0] * sinV[2];
+
+    o.m[0][0] = cosV[1] * cosV[2];
+    o.m[1][0] = cosV[1] * sinV[2];
     o.m[2][0] = -sinV[1];
 
-    o.m[0][1] = (sinV[0] * sinV[1] * cosV[2] - cosV[0] * sinV[2]);
-    o.m[1][1] = (sinV[0] * sinV[1] * sinV[2] + cosV[0] * cosV[2]);
-    o.m[2][1] = (sinV[0] * cosV[1]);
+    o.m[0][1] = s0_s1 * cosV[2] - c0_s2;
+    o.m[1][1] = s0_s1 * sinV[2] + c0_c2;
+    o.m[2][1] = sinV[0] * cosV[1];
 
-    o.m[0][2] = (cosV[0] * cosV[2] * sinV[1] + sinV[0] * sinV[2]);
-    o.m[1][2] = (cosV[0] * sinV[2] * sinV[1] - sinV[0] * cosV[2]);
-    o.m[2][2] = (cosV[0] * cosV[1]);
+    o.m[0][2] = c0_c2 * sinV[1] + sinV[0] * sinV[2];
+    o.m[1][2] = c0_s2 * sinV[1] - sinV[0] * cosV[2];
+    o.m[2][2] = cosV[0] * cosV[1];
 
     o.m[0][3] = 0;
     o.m[1][3] = 0;
@@ -1312,24 +1348,26 @@ void Matrix34CalcCommon<T>::makeRIdx(Base& o, u32 xr, u32 yr, u32 zr)
 template <typename T>
 inline void Matrix34CalcCommon<T>::makeRT(Base& o, const Vec3& r, const Vec3& t)
 {
-    const T sinV[3] = {std::sin(r.x), std::sin(r.y), std::sin(r.z)};
+    const T sinV[3] = {MathCalcCommon<T>::sin(r.x), MathCalcCommon<T>::sin(r.y),
+                       MathCalcCommon<T>::sin(r.z)};
 
-    const T cosV[3] = {std::cos(r.x), std::cos(r.y), std::cos(r.z)};
+    const T cosV[3] = {MathCalcCommon<T>::cos(r.x), MathCalcCommon<T>::cos(r.y),
+                       MathCalcCommon<T>::cos(r.z)};
 
+    T c0_c2 = cosV[0] * cosV[2];
     T s0_s1 = sinV[0] * sinV[1];
     T c0_s2 = cosV[0] * sinV[2];
-    T c0_c2 = cosV[0] * cosV[2];
 
     o.m[0][0] = cosV[1] * cosV[2];
     o.m[1][0] = cosV[1] * sinV[2];
     o.m[2][0] = -sinV[1];
 
-    o.m[0][1] = (s0_s1 * cosV[2]) - c0_s2;
-    o.m[1][1] = (s0_s1 * sinV[2]) + c0_c2;
+    o.m[0][1] = s0_s1 * cosV[2] - c0_s2;
+    o.m[1][1] = s0_s1 * sinV[2] + c0_c2;
     o.m[2][1] = sinV[0] * cosV[1];
 
-    o.m[0][2] = (c0_c2 * sinV[1]) + (sinV[0] * sinV[2]);
-    o.m[1][2] = (c0_s2 * sinV[1]) - (sinV[0] * cosV[2]);
+    o.m[0][2] = c0_c2 * sinV[1] + sinV[0] * sinV[2];
+    o.m[1][2] = c0_s2 * sinV[1] - sinV[0] * cosV[2];
     o.m[2][2] = cosV[0] * cosV[1];
 
     o.m[0][3] = t.x;
@@ -1542,16 +1580,20 @@ void Matrix34CalcCommon<T>::makeSRT(Base& o, const Vec3& s, const Vec3& r, const
     const T cosV[3] = {MathCalcCommon<T>::cos(r.x), MathCalcCommon<T>::cos(r.y),
                        MathCalcCommon<T>::cos(r.z)};
 
+    T c0_c2 = cosV[0] * cosV[2];
+    T s0_s1 = sinV[0] * sinV[1];
+    T c0_s2 = cosV[0] * sinV[2];
+
     o.m[0][0] = s.x * (cosV[1] * cosV[2]);
     o.m[1][0] = s.x * (cosV[1] * sinV[2]);
     o.m[2][0] = s.x * -sinV[1];
 
-    o.m[0][1] = s.y * (sinV[0] * sinV[1] * cosV[2] - cosV[0] * sinV[2]);
-    o.m[1][1] = s.y * (sinV[0] * sinV[1] * sinV[2] + cosV[0] * cosV[2]);
+    o.m[0][1] = s.y * (s0_s1 * cosV[2] - c0_s2);
+    o.m[1][1] = s.y * (s0_s1 * sinV[2] + c0_c2);
     o.m[2][1] = s.y * (sinV[0] * cosV[1]);
 
-    o.m[0][2] = s.z * (cosV[0] * cosV[2] * sinV[1] + sinV[0] * sinV[2]);
-    o.m[1][2] = s.z * (cosV[0] * sinV[2] * sinV[1] - sinV[0] * cosV[2]);
+    o.m[0][2] = s.z * (c0_c2 * sinV[1] + sinV[0] * sinV[2]);
+    o.m[1][2] = s.z * (c0_s2 * sinV[1] - sinV[0] * cosV[2]);
     o.m[2][2] = s.z * (cosV[0] * cosV[1]);
 
     o.m[0][3] = t.x;
@@ -1665,19 +1707,18 @@ template <typename T>
 void Matrix34CalcCommon<T>::makeT(Base& o, const Vec3& t)
 {
     o.m[0][0] = 1;
-    o.m[1][0] = 0;
-    o.m[2][0] = 0;
-
     o.m[0][1] = 0;
-    o.m[1][1] = 1;
-    o.m[2][1] = 0;
-
     o.m[0][2] = 0;
-    o.m[1][2] = 0;
-    o.m[2][2] = 1;
-
     o.m[0][3] = t.x;
+
+    o.m[1][0] = 0;
+    o.m[1][1] = 1;
+    o.m[1][2] = 0;
     o.m[1][3] = t.y;
+
+    o.m[2][0] = 0;
+    o.m[2][1] = 0;
+    o.m[2][2] = 1;
     o.m[2][3] = t.z;
 }
 
@@ -1789,8 +1830,6 @@ void Matrix34CalcCommon<T>::getRotation(Vec3& v, const Base& n)
     const T a13 = n.m[0][2];
 
     const T a21 = n.m[1][0];
-    const T a22 = n.m[1][1];
-    const T a23 = n.m[1][2];
 
     const T a31 = n.m[2][0];
     const T a32 = n.m[2][1];

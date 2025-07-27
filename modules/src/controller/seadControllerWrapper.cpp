@@ -45,8 +45,8 @@ void ControllerWrapper::calc(u32 prev_hold, bool prev_pointer_on)
     {
         mPadHold = BitFlag32(createPadMaskFromControllerPadMask_(mController->getHoldMask()));
 
-        mLeftStick.set(mController->getLeftStick());
-        mRightStick.set(mController->getRightStick());
+        mLeftStick = mController->getLeftStick();
+        mRightStick = mController->getRightStick();
         mLeftAnalogTrigger = mController->getLeftAnalogTrigger();
         mRightAnalogTrigger = mController->getRightAnalogTrigger();
 

@@ -72,7 +72,7 @@ public:
 
     s32 findControllerPort(const Controller* controller) const;
 
-    DelegateThread* getFramework() const;
+    Framework* getFramework() const;
 
     Controller* getController(int port) { return mControllers[port]; }
 
@@ -89,7 +89,7 @@ T ControllerMgr::getControllerByOrderAs(s32 index) const
 {
     for (PtrArray<Controller>::iterator it = mControllers.begin(); it != mControllers.end(); ++it)
     {
-        T controller = DynamicCast<std::remove_pointer<T>::type>(&(*it));
+        T controller = DynamicCast<typename std::remove_pointer<T>::type>(&(*it));
         if (controller)
         {
             if (index == 0)
@@ -107,7 +107,7 @@ T ControllerMgr::getControlDeviceAs() const
 {
     for (OffsetList<ControlDevice>::iterator it = mDevices.begin(); it != mDevices.end(); ++it)
     {
-        T device = DynamicCast<std::remove_pointer<T>::type>(&(*it));
+        T device = DynamicCast<typename std::remove_pointer<T>::type>(&(*it));
         if (device)
             return device;
     }

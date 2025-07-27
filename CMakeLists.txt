@@ -74,16 +74,17 @@ add_library(sead OBJECT
   modules/src/filedevice/seadMainFileDevice.cpp
   modules/src/filedevice/seadPath.cpp
 
+  include/framework/nx/seadGameFrameworkNx.h
   include/framework/seadCalculateTask.h
   include/framework/seadFramework.h
   include/framework/seadHeapPolicies.h
   include/framework/seadGameFramework.h
-  include/framework/seadGameFrameworkNx.h
   include/framework/seadInfLoopChecker.h
   include/framework/seadMethodTree.h
   include/framework/seadMethodTreeMgr.h
   include/framework/seadProcessMeter.h
   include/framework/seadProcessMeterBar.h
+  include/framework/seadTask.h
   include/framework/seadTaskBase.h
   include/framework/seadTaskID.h
   include/framework/seadTaskMgr.h
@@ -93,8 +94,9 @@ add_library(sead OBJECT
   modules/src/framework/seadGameFramework.cpp
   modules/src/framework/seadMethodTree.cpp
   modules/src/framework/seadProcessMeterBar.cpp
-  #modules/src/framework/seadTaskMgr.cpp
+  modules/src/framework/seadTaskMgr.cpp
 
+  include/gfx/nvn/seadDebugFontMgrNvn.h
   include/gfx/seadCamera.h
   include/gfx/seadColor.h
   include/gfx/seadDrawContext.h
@@ -110,7 +112,11 @@ add_library(sead OBJECT
   include/gfx/seadOrthoProjection.h
   include/gfx/seadDirectProjection.h
   include/gfx/seadTexture.h
+<<<<<<< HEAD
   include/gfx/seadViewport.h
+=======
+  modules/src/gfx/nvn/seadDebugFontMgrNvn.cpp
+>>>>>>> 9c5efc4
   modules/src/gfx/seadCamera.cpp
   modules/src/gfx/seadColor.cpp
   modules/src/gfx/seadDrawLockContext.cpp
@@ -214,6 +220,7 @@ add_library(sead OBJECT
 
   include/resource/seadArchiveRes.h
   include/resource/seadDecompressor.h
+  include/resource/seadParallelSZSDecompressor.h
   include/resource/seadResource.h
   include/resource/seadResourceMgr.h
   include/resource/seadSharcArchiveRes.h
