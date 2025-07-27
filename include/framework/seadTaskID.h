@@ -24,7 +24,7 @@ typedef TaskBase* (*TaskFactory)(const TaskConstructArg&);
 class TaskClassID
 {
 public:
-    enum Type : u64
+    enum Type : u32
     {
         cInvalid = 0,
         cInt = 1,
@@ -33,19 +33,19 @@ public:
     };
 
 public:
-    Type mType;
+    Type mType = cInvalid;
     union
     {
         s32 mInt;
         TaskFactory mFactory;
-        const char* mString;
+        const char* mString = nullptr;
     } mID;
 };
 
 class TaskUserID
 {
 public:
-    s32 mID;
+    s32 mID = -1;
 };
 
 }  // namespace sead
