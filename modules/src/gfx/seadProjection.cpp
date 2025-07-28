@@ -155,7 +155,6 @@ PerspectiveProjection::PerspectiveProjection(f32 near, f32 far, f32 fovy_rad, f3
     : mNear(near), mFar(far), mAspect(aspect), mOffset(Vector2f::zero)
 {
     setFovy_(fovy_rad);
-    setDirty();
 }
 
 void PerspectiveProjection::set(f32 _near, f32 _far, f32 fovy_rad, f32 aspect)

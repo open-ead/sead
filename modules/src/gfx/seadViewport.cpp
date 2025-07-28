@@ -137,13 +137,13 @@ void Viewport::apply(DrawContext* context, const LogicalFrameBuffer& frame_buffe
     context->getCommandBuffer()->SetDepthBounds(mDepthBounds.x, mDepthBounds.y);
 }
 
-// void Viewport::applyViewport(DrawContext* context, const LogicalFrameBuffer& buffer) const
-// {
-//     Vector2f temp;
-//     getOnFrameBufferPos(&temp, buffer);
-//     context->someFunction();
-//     // apply(buffer);
-// }
+void Viewport::applyViewport(DrawContext* context, const LogicalFrameBuffer& buffer) const
+{
+    Vector2f temp;
+    getOnFrameBufferPos(&temp, buffer);
+    // context->someFunction();
+    apply(context, buffer);
+}
 
 void Viewport::applyScissor(DrawContext* context, const LogicalFrameBuffer& buffer) const {}
 
