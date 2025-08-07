@@ -22,23 +22,20 @@ void Camera::getWorldPosByMatrix(Vector3f* dst) const
 void Camera::getLookVectorByMatrix(Vector3f* dst) const
 {
     // Also known as the forward vector
-    dst->x = mMatrix(2, 0);
-    dst->y = mMatrix(2, 1);
-    dst->z = mMatrix(2, 2);
+    auto vec = mMatrix.getRow(2);
+    dst->set(vec.x, vec.y, vec.z);
 };
 
 void Camera::getRightVectorByMatrix(Vector3f* dst) const
 {
-    dst->x = mMatrix(0, 0);
-    dst->y = mMatrix(0, 1);
-    dst->z = mMatrix(0, 2);
+    auto vec = mMatrix.getRow(0);
+    dst->set(vec.x, vec.y, vec.z);
 }
 
 void Camera::getUpVectorByMatrix(Vector3f* dst) const
 {
-    dst->x = mMatrix(1, 0);
-    dst->y = mMatrix(1, 1);
-    dst->z = mMatrix(1, 2);
+    auto vec = mMatrix.getRow(1);
+    dst->set(vec.x, vec.y, vec.z);
 };
 
 void Camera::worldPosToCameraPosByMatrix(Vector3f* dst, const Vector3f& world_pos) const
