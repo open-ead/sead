@@ -52,8 +52,8 @@ public:
     void screenPosToCameraPos(Vector3f* dst, const Vector2f& screen_pos) const;
 
     void project(Vector2f* dst, const Vector3f& camera_pos, const Viewport& viewport) const;
-    void unproject(Vector3f* dst, const Vector3f& screen_pos, const Camera& camera) const;
-    void unprojectRay(Ray<Vector3f>* dst, const Vector3f& screen_pos, const Camera& camera) const;
+    void unproject(Vector3f* dst, const Vector3f& screenPos, const Camera& camera) const;
+    void unprojectRay(Ray<Vector3f>* dst, const Vector3f& screenPos, const Camera& camera) const;
 
     void setDirty() { mDirty = true; }
     void setDeviceDirty() { mDeviceDirty = true; }

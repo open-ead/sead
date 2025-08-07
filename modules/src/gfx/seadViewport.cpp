@@ -1,3 +1,4 @@
+#include <gfx/seadCamera.h>
 #include <gfx/seadDrawContext.h>
 #include <gfx/seadProjection.h>
 #include <gfx/seadViewport.h>
@@ -116,20 +117,19 @@ void Viewport::getOnFrameBufferSize(Vector2f* dst, const LogicalFrameBuffer& fb)
     dst->y *= fb.getPhysicalArea().getSizeY();
 }
 
-void Viewport::apply(DrawContext* context, const LogicalFrameBuffer& frame_buffer) const
+void Viewport::apply(DrawContext* context, const LogicalFrameBuffer& buffer) const
 {
     sead::Vector2f real_pos;
-    getOnFrameBufferPos(&real_pos, frame_buffer);
+    getOnFrameBufferPos(&real_pos, buffer);
 
     sead::Vector2f real_size;
-    getOnFrameBufferSize(&real_size, frame_buffer);
+    getOnFrameBufferSize(&real_size, buffer);
 
-    SEAD_ASSERT(frame_buffer.getPhysicalArea().isInside(real_pos) &&
-                frame_buffer.getPhysicalArea().isInside(real_pos + real_size));
+    SEAD_ASSERT(buffer.getPhysicalArea().isInside(real_pos) &&
+                buffer.getPhysicalArea().isInside(real_pos + real_size));
 
-    real_pos.y = (frame_buffer.getPhysicalArea().getSizeY() - real_size.y) - real_pos.y;
+    real_pos.y = (buffer.getPhysicalArea().getSizeY() - real_size.y) - real_pos.y;
 
-    // context->getCommandBuffer()->SetScissor(real_pos.x, real_pos.y, real_size.x, real_size.y);
     sead::Graphics::instance()->setViewportRealPosition(real_pos.x, real_pos.y, real_size.x,
                                                         real_size.y);
     sead::Graphics::instance()->setScissorRealPosition(real_pos.x, real_pos.y, real_size.x,
@@ -139,13 +139,38 @@ void Viewport::apply(DrawContext* context, const LogicalFrameBuffer& frame_buffe
 
 void Viewport::applyViewport(DrawContext* context, const LogicalFrameBuffer& buffer) const
 {
-    Vector2f temp;
-    getOnFrameBufferPos(&temp, buffer);
-    // context->someFunction();
-    apply(context, buffer);
+    sead::Vector2f real_pos;
+    getOnFrameBufferPos(&real_pos, buffer);
+
+    sead::Vector2f real_size;
+    getOnFrameBufferSize(&real_size, buffer);
+
+    SEAD_ASSERT(buffer.getPhysicalArea().isInside(real_pos) &&
+                buffer.getPhysicalArea().isInside(real_pos + real_size));
+
+    real_pos.y = (buffer.getPhysicalArea().getSizeY() - real_size.y) - real_pos.y;
+    // real_pos.x = (buffer.getPhysicalArea().getSizeX() - real_size.x) - real_pos.x;
+
+    sead::Graphics::instance()->setViewportRealPosition(real_pos.x, real_pos.y, real_size.x,
+                                                        real_size.y);
 }
 
-void Viewport::applyScissor(DrawContext* context, const LogicalFrameBuffer& buffer) const {}
+void Viewport::applyScissor(DrawContext* context, const LogicalFrameBuffer& buffer) const
+{
+    sead::Vector2f real_pos;
+    getOnFrameBufferPos(&real_pos, buffer);
+
+    sead::Vector2f real_size;
+    getOnFrameBufferSize(&real_size, buffer);
+
+    SEAD_ASSERT(buffer.getPhysicalArea().isInside(real_pos) &&
+                buffer.getPhysicalArea().isInside(real_pos + real_size));
+
+    real_pos.y = (buffer.getPhysicalArea().getSizeY() - real_size.y) - real_pos.y;
+
+    sead::Graphics::instance()->setScissorRealPosition(real_pos.x, real_pos.y, real_size.x,
+                                                       real_size.y);
+}
 
 void Viewport::project(Vector2f* aVec, const Vector3f& bVec) const
 {
@@ -159,23 +184,24 @@ void Viewport::project(Vector2f* aVec, const Vector2f& bVec) const
     aVec->y = getHalfSizeY() * bVec.y;
 }
 
-void Viewport::unproject(Vector3f* some3Vec, const Vector2f& some2Vec, const Projection& projection,
+void Viewport::unproject(Vector3f* dst, const Vector2f& some2Vec, const Projection& projection,
                          const Camera& camera) const
 {
-    Vector3f tempVec;
-    tempVec.x = some2Vec.x / getHalfSizeX();
-    tempVec.y = some2Vec.y / getHalfSizeY();
-    tempVec.z = 0.0f;
-    projection.unproject(some3Vec, tempVec, camera);
+    Vector3f screenPos;
+    screenPos.x = some2Vec.x / getHalfSizeX();
+    screenPos.y = some2Vec.y / getHalfSizeY();
+    screenPos.z = 0.0f;
+    projection.unproject(dst, screenPos, camera);
 }
 
-// void Viewport::unproject(Ray<Vector3f>* ray, const Vector2f& someVec, const Projection&
-// projection,
-//                          const Camera& camera) const
-// {
-//     float some_value;
-//     some_value = someVec.x / (getHalfSizeX());
-//     // projection.unproject(ray, some_value, camera);
-// }
+void Viewport::unprojectRay(Ray<Vector3f>* dst, const Vector2f& some2Vec,
+                            const Projection& projection, const Camera& camera) const
+{
+    Vector3f screenPos;
+    screenPos.x = some2Vec.x / getHalfSizeX();
+    screenPos.y = some2Vec.y / getHalfSizeY();
+    screenPos.z = 0.0f;
+    projection.unprojectRay(dst, screenPos, camera);
+}
 
 }  // namespace sead

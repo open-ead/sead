@@ -10,14 +10,16 @@ class OrthoProjection;
 class Projection;
 class Viewport;
 template <typename T>
-class Ray;
+class Ray : public T
+{
+};
 
 class Camera
 {
     SEAD_RTTI_BASE(Camera)
 
 public:
-    Camera() = default;
+    Camera();
     virtual ~Camera();
 
     virtual void doUpdateMatrix(Matrix34f* dst) const = 0;
@@ -79,19 +81,21 @@ class DirectCamera : public Camera
 {
     SEAD_RTTI_OVERRIDE(DirectCamera, Camera)
 public:
+    DirectCamera();
     ~DirectCamera() override;
 
     void doUpdateMatrix(Matrix34f* dst) const override;
 
 private:
-    Matrix34f mDirectMatrix = Matrix34f::ident;
+    Matrix34f mDirectMatrix = Matrix34f::ident;  // I don't think this is right, the Matrix has 0, 2
+                                                 // and 1, 3 populated as 1.0f
 };
 
 class OrthoCamera : public LookAtCamera
 {
     SEAD_RTTI_OVERRIDE(OrthoCamera, LookAtCamera)
 public:
-    OrthoCamera();
+    OrthoCamera() = default;
     OrthoCamera(const Vector2f&, float);
     OrthoCamera(const OrthoProjection&);
     ~OrthoCamera() override;

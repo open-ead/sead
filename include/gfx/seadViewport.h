@@ -34,7 +34,7 @@ public:
     void project(Vector2f*, const Vector3f&) const;
     void project(Vector2f*, const Vector2f&) const;
     void unproject(Vector3f*, const Vector2f&, const Projection&, const Camera&) const;
-    void unproject(Ray<Vector3f>*, const Vector2f&, const Projection&, const Camera&) const;
+    void unprojectRay(Ray<Vector3f>*, const Vector2f&, const Projection&, const Camera&) const;
 
 private:
     Graphics::DevicePosture mDevicePosture = Graphics::getDefaultDevicePosture();

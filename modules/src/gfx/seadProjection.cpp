@@ -1,6 +1,8 @@
 #include <gfx/seadCamera.h>
 #include <gfx/seadProjection.h>
 #include <gfx/seadViewport.h>
+#include "math/seadMatrixCalcCommon.h"
+#include "math/seadVectorCalcCommon.h"
 
 namespace sead
 {
@@ -46,17 +48,18 @@ void Projection::project(Vector2f* dst, const Vector3f& camera_pos, const Viewpo
     viewport.project(dst, temp);
 }
 
-void Projection::unproject(Vector3f* dst, const Vector3f& screen_pos, const Camera& camera) const
+void Projection::unproject(Vector3f* dst, const Vector3f& screenPos, const Camera& camera) const
 {
-    doScreenPosToCameraPosTo(dst, screen_pos);
-    camera.cameraPosToWorldPosByMatrix(dst, screen_pos);
+    doScreenPosToCameraPosTo(dst, screenPos);
+    camera.cameraPosToWorldPosByMatrix(dst, screenPos);
 }
 
-void Projection::unprojectRay(Ray<Vector3f>* dst, const Vector3f& screen_pos,
+void Projection::unprojectRay(Ray<Vector3f>* dst, const Vector3f& screenPos,
                               const Camera& camera) const
 {
-    // doScreenPosToCameraPosTo(dst, screen_pos);
-    // camera.cameraPosToWorldPosByMatrix(dst, screen_pos);
+    Vector3f newVec;
+    doScreenPosToCameraPosTo(dst, screenPos);
+    camera.unprojectRayByMatrix(dst, newVec);
 }
 
 void Projection::updateAttributesForDirectProjection() {}
@@ -64,15 +67,10 @@ void Projection::updateAttributesForDirectProjection() {}
 void Projection::doScreenPosToCameraPosTo(Vector3f* dst, const Vector3f& screen_pos) const
 {
     updateMatrixImpl_();
-
     f32 scale = 1.0f / (mMatrix(3, 3) + screen_pos.x * mMatrix(3, 0) +
                         screen_pos.y * mMatrix(3, 1) + screen_pos.z * mMatrix(3, 2));
-    dst->x = scale * (mMatrix(3, 3) + screen_pos.x * mMatrix(0, 0) + screen_pos.y * mMatrix(1, 0) +
-                      screen_pos.z * mMatrix(2, 0));
-    dst->y = scale * (mMatrix(1, 3) + screen_pos.x * mMatrix(1, 0) + screen_pos.y * mMatrix(1, 1) +
-                      screen_pos.z * mMatrix(1, 2));
-    dst->z = scale * (mMatrix(2, 3) + screen_pos.x * mMatrix(2, 0) + screen_pos.y * mMatrix(2, 1) +
-                      screen_pos.z * mMatrix(2, 2));
+    *dst = static_cast<Matrix34f>(mMatrix) * screen_pos;
+    *dst *= scale;
 }
 
 namespace
@@ -371,6 +369,13 @@ void OrthoProjection::setByViewport(const Viewport& vp)
     mLeft = -halfX;
     mRight = halfX;
     setDirty();
+}
+
+void OrthoProjection::doScreenPosToCameraPosTo(Vector3f* dst, const Vector3f& screen_pos) const
+{
+    dst->x = 0.5f * ((mRight + mLeft) + screen_pos.x * (mRight - mLeft));
+    dst->y = 0.5f * ((mTop + mBottom) + (screen_pos.y * (mTop - mBottom)));
+    dst->z = mNear;
 }
 
 FrustumProjection::FrustumProjection(f32 _near, f32 _far, f32 top, f32 bottom, f32 left, f32 right)
