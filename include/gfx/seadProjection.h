@@ -15,7 +15,7 @@ class Camera;
 class Viewport;
 
 template <typename T>
-class Ray;
+struct Ray;
 
 class Projection
 {

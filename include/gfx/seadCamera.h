@@ -1,5 +1,6 @@
 #pragma once
 
+#include <math/seadGeometry.h>
 #include <math/seadMatrix.h>
 #include <math/seadVector.h>
 #include <prim/seadRuntimeTypeInfo.h>
@@ -9,10 +10,6 @@ namespace sead
 class OrthoProjection;
 class Projection;
 class Viewport;
-template <typename T>
-class Ray : public T
-{
-};
 
 class Camera
 {

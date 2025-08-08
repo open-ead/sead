@@ -58,7 +58,7 @@ void Projection::unprojectRay(Ray<Vector3f>* dst, const Vector3f& screenPos,
                               const Camera& camera) const
 {
     Vector3f newVec;
-    doScreenPosToCameraPosTo(dst, screenPos);
+    doScreenPosToCameraPosTo(&dst->position, screenPos);
     camera.unprojectRayByMatrix(dst, newVec);
 }
 

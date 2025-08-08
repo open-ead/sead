@@ -10,7 +10,7 @@ class Camera;
 class Projection;
 
 template <typename T>
-class Ray;
+struct Ray;
 
 class Viewport : public BoundBox2f
 {

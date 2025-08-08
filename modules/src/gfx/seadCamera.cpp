@@ -1,5 +1,4 @@
 #include "gfx/seadCamera.h"
-#include <cmath>
 #include <gfx/seadProjection.h>
 #include <math/seadMathCalcCommon.h>
 #include "basis/seadRawPrint.h"
@@ -10,13 +9,10 @@ Camera::~Camera() = default;
 
 void Camera::getWorldPosByMatrix(Vector3f* dst) const
 {
-    // Currently not matching the function, but this _should_ be the math.
-    dst->x = -(mMatrix(0, 0) * mMatrix(0, 3)) - mMatrix(1, 0) * mMatrix(1, 3) -
-             mMatrix(2, 0) * mMatrix(2, 3);
-    dst->y = -(mMatrix(0, 1) * mMatrix(0, 3)) - mMatrix(1, 1) * mMatrix(1, 3) -
-             mMatrix(2, 1) * mMatrix(2, 3);
-    dst->z = -(mMatrix(0, 2) * mMatrix(0, 3)) - mMatrix(1, 2) * mMatrix(1, 3) -
-             mMatrix(2, 2) * mMatrix(2, 3);
+    dst->x = mMatrix.getBase(3).dot(mMatrix.getBase(0));
+    dst->x = mMatrix.getBase(3).dot(mMatrix.getBase(1));
+    dst->x = mMatrix.getBase(3).dot(mMatrix.getBase(2));
+    *dst *= -1.0f;
 }
 
 void Camera::getLookVectorByMatrix(Vector3f* dst) const
@@ -41,14 +37,6 @@ void Camera::getUpVectorByMatrix(Vector3f* dst) const
 void Camera::worldPosToCameraPosByMatrix(Vector3f* dst, const Vector3f& world_pos) const
 {
     *dst = mMatrix * world_pos;
-    *dst = mMatrix.getBase(3);
-    // *dst += mMatrix.getBase(3);
-    // dst->x = mMatrix(0, 3) + world_pos.x * mMatrix(0, 0) + world_pos.y * mMatrix(0, 1) +
-    //          world_pos.z * mMatrix(0, 2);
-    // dst->y = mMatrix(1, 3) + world_pos.x * mMatrix(1, 0) + world_pos.y * mMatrix(1, 1) +
-    //          world_pos.z * mMatrix(1, 2);
-    // dst->z = mMatrix(2, 3) + world_pos.x * mMatrix(2, 0) + world_pos.y * mMatrix(2, 1) +
-    //          world_pos.z * mMatrix(2, 2);
 }
 
 void Camera::cameraPosToWorldPosByMatrix(Vector3f* dst, const Vector3f& camera_pos) const
@@ -74,27 +62,18 @@ void Camera::projectByMatrix(Vector2f* dst, const Vector3f& world_pos, const Pro
 
 void Camera::unprojectRayByMatrix(Ray<Vector3f>* dst, const Vector3f& camera_pos) const
 {
-    auto col_0 = mMatrix.getBase(0).dot(camera_pos);
-    auto col_1 = mMatrix.getBase(1).dot(camera_pos);
-    auto col_2 = mMatrix.getBase(2).dot(camera_pos);
-    auto length = sqrt(col_0 * col_0 + col_1 * col_1 + col_2 * col_2);
-    if (sead::MathCalcCommon<float>::isNan(length))
-    {
-        length = sqrtf(length);
-    };
-    if (length < 0.0f)
-    {
-        auto scale = 1.0f / length;
-        col_0 *= scale;
-        col_1 *= scale;
-        col_2 *= scale;
-    }
-    dst->x = ((-mMatrix(0, 0) * mMatrix(0, 3)) - mMatrix(1, 0) * mMatrix(1, 3)) -
-             mMatrix(2, 0) * mMatrix(2, 3);
-    dst->y = ((-mMatrix(0, 1) * mMatrix(0, 3)) - mMatrix(1, 1) * mMatrix(1, 3)) -
-             mMatrix(2, 1) * mMatrix(2, 3);
-    dst->z = ((-mMatrix(0, 2) * mMatrix(0, 3)) - mMatrix(1, 2) * mMatrix(1, 3)) -
-             mMatrix(2, 2) * mMatrix(2, 3);
+    dst->direction.x = mMatrix.getBase(0).dot(camera_pos);
+    dst->direction.y = mMatrix.getBase(1).dot(camera_pos);
+    dst->direction.z = mMatrix.getBase(2).dot(camera_pos);
+    dst->direction.normalize();
+
+    dst->position.x = ((-mMatrix(0, 0) * mMatrix(0, 3)) - mMatrix(1, 0) * mMatrix(1, 3)) -
+                      mMatrix(2, 0) * mMatrix(2, 3);
+    dst->position.y = ((-mMatrix(0, 1) * mMatrix(0, 3)) - mMatrix(1, 1) * mMatrix(1, 3)) -
+                      mMatrix(2, 1) * mMatrix(2, 3);
+    dst->position.z = ((-mMatrix(0, 2) * mMatrix(0, 3)) - mMatrix(1, 2) * mMatrix(1, 3)) -
+                      mMatrix(2, 2) * mMatrix(2, 3);
+    dst->position *= -1.0f;
 }
 
 LookAtCamera::~LookAtCamera() = default;

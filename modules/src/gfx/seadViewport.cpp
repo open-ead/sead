@@ -3,7 +3,7 @@
 #include <gfx/seadProjection.h>
 #include <gfx/seadViewport.h>
 #include "math/seadBoundBox.h"
-#include "math/seadMathCalcCommon.h"
+#include "nn/gfx/gfx_StateInfo.h"
 
 namespace sead
 {
