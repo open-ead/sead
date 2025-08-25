@@ -78,7 +78,7 @@ class DirectCamera : public Camera
 {
     SEAD_RTTI_OVERRIDE(DirectCamera, Camera)
 public:
-    DirectCamera();
+    DirectCamera() = default;
     ~DirectCamera() override;
 
     void doUpdateMatrix(Matrix34f* dst) const override;
@@ -92,7 +92,7 @@ class OrthoCamera : public LookAtCamera
 {
     SEAD_RTTI_OVERRIDE(OrthoCamera, LookAtCamera)
 public:
-    OrthoCamera() = default;
+    OrthoCamera();
     OrthoCamera(const Vector2f&, float);
     OrthoCamera(const OrthoProjection&);
     ~OrthoCamera() override;

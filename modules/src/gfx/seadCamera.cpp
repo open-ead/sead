@@ -87,9 +87,9 @@ LookAtCamera::LookAtCamera(const Vector3f& pos, const Vector3f& at, const Vector
 
 void LookAtCamera::doUpdateMatrix(Matrix34f* dst) const {}
 
-DirectCamera::DirectCamera() {}
-
 DirectCamera::~DirectCamera() = default;
+
+OrthoCamera::OrthoCamera() = default;
 
 OrthoCamera::~OrthoCamera() = default;
 

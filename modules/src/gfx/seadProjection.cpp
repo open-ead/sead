@@ -280,8 +280,8 @@ f32 OrthoProjection::getAspect() const
 
 void OrthoProjection::getOffset(Vector2f* offset) const
 {
-    offset->x = ((float)0.5 * (this->mLeft + this->mRight)) / (this->mRight - this->mLeft);
-    offset->y = ((float)0.5 * (this->mTop + this->mBottom)) / (this->mTop - this->mBottom);
+    offset->x = ((float)0.5 * (mLeft + mRight)) / (mRight - mLeft);
+    offset->y = ((float)0.5 * (mTop + mBottom)) / (mTop - mBottom);
 }
 
 void OrthoProjection::setNear(f32 near)

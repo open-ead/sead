@@ -4,6 +4,7 @@
 
 namespace sead
 {
+
 template <typename T>
 struct Ray
 {
@@ -12,6 +13,7 @@ struct Ray
     T position;
     T direction;
 };
+
 namespace Geometry
 {
 float calcSquaredDistancePointToRay(Vector2<float>* point, Ray<Vector2<float>>* ray, float* scalar);
