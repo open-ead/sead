@@ -2,6 +2,7 @@
 #include <gfx/seadProjection.h>
 #include <math/seadMathCalcCommon.h>
 #include "basis/seadRawPrint.h"
+#include "math/seadMatrixCalcCommon.h"
 
 namespace sead
 {
@@ -9,10 +10,13 @@ Camera::~Camera() = default;
 
 void Camera::getWorldPosByMatrix(Vector3f* dst) const
 {
-    dst->x = mMatrix.getBase(3).dot(mMatrix.getBase(0));
-    dst->x = mMatrix.getBase(3).dot(mMatrix.getBase(1));
-    dst->x = mMatrix.getBase(3).dot(mMatrix.getBase(2));
-    *dst *= -1.0f;
+    f32 x = (-mMatrix(0, 0) * mMatrix(0, 3) - mMatrix(1, 0) * mMatrix(1, 3)) -
+            mMatrix(2, 0) * mMatrix(2, 3);
+    f32 y = (-mMatrix(0, 1) * mMatrix(0, 3) - mMatrix(1, 1) * mMatrix(1, 3)) -
+            mMatrix(2, 1) * mMatrix(2, 3);
+    f32 z = (-mMatrix(0, 2) * mMatrix(0, 3) - mMatrix(1, 2) * mMatrix(1, 3)) -
+            mMatrix(2, 2) * mMatrix(2, 3);
+    dst->set(x, y, z);
 }
 
 void Camera::getLookVectorByMatrix(Vector3f* dst) const

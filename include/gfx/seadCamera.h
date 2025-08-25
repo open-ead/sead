@@ -1,6 +1,6 @@
 #pragma once
 
-#include <math/seadGeometry.h>
+#include <geom/seadLine.h>
 #include <math/seadMatrix.h>
 #include <math/seadVector.h>
 #include <prim/seadRuntimeTypeInfo.h>
@@ -31,7 +31,7 @@ public:
 
     void projectByMatrix(Vector2f* dst, const Vector3f& world_pos, const Projection& projection,
                          const Viewport& viewport) const;
-    void unprojectRayByMatrix(Ray<Vector3f>* dst, const Vector3f& camera_pos) const;
+    void unprojectRayByMatrix(Ray3f* dst, const Vector3f& camera_pos) const;
 
     Matrix34f& getMatrix() { return mMatrix; }
     const Matrix34f& getMatrix() const { return mMatrix; }
@@ -84,8 +84,7 @@ public:
     void doUpdateMatrix(Matrix34f* dst) const override;
 
 private:
-    Matrix34f mDirectMatrix = Matrix34f::ident;  // I don't think this is right, the Matrix has 0, 2
-                                                 // and 1, 3 populated as 1.0f
+    Matrix34f mDirectMatrix = Matrix34f::ident;
 };
 
 class OrthoCamera : public LookAtCamera

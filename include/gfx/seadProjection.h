@@ -1,6 +1,7 @@
 #pragma once
 
 #include <basis/seadTypes.h>
+#include <geom/seadLine.h>
 #include <gfx/seadGraphics.h>
 #include <gfx/seadViewport.h>
 #include <math/seadBoundBox.h>
@@ -13,9 +14,6 @@ namespace sead
 
 class Camera;
 class Viewport;
-
-template <typename T>
-struct Ray;
 
 class Projection
 {
