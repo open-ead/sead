@@ -113,7 +113,6 @@ add_library(sead OBJECT
   modules/src/gfx/nvn/seadDebugFontMgrNvn.cpp
   modules/src/gfx/seadCamera.cpp
   modules/src/gfx/seadColor.cpp
-  modules/src/gfx/seadDrawContext.cpp
   modules/src/gfx/seadDrawLockContext.cpp
   modules/src/gfx/seadFrameBuffer.cpp
   modules/src/gfx/seadGraphics.cpp
