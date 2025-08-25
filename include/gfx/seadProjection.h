@@ -140,7 +140,7 @@ private:
     f32 mFovySin;
     f32 mFovyCos;
     f32 mFovyTan;
-    f32 mAspect = 1.333333f;
+    f32 mAspect = 4.0f / 3.0f;
     Vector2f mOffset = Vector2f::zero;
 };
 #ifdef cafe

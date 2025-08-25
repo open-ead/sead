@@ -40,7 +40,7 @@ void Camera::getUpVectorByMatrix(Vector3f* dst) const
 
 void Camera::worldPosToCameraPosByMatrix(Vector3f* dst, const Vector3f& world_pos) const
 {
-    *dst = mMatrix * world_pos;
+    dst->setMul(mMatrix, world_pos);
 }
 
 void Camera::cameraPosToWorldPosByMatrix(Vector3f* dst, const Vector3f& camera_pos) const

@@ -138,7 +138,6 @@ add_library(sead OBJECT
 
   include/math/seadBoundBox.h
   include/math/seadBoundBox.hpp
-  include/math/seadGeometry.h
   include/math/seadMathBase.h
   include/math/seadMathCalcCommon.h
   include/math/seadMathCalcCommon.hpp
@@ -158,7 +157,6 @@ add_library(sead OBJECT
   include/math/seadVectorCalcCommon.hpp
   include/math/seadVectorFwd.h
   modules/src/math/seadBoundBox.cpp
-  modules/src/math/seadGeometry.cpp
   modules/src/math/seadMathCalcCommon.cpp
   modules/src/math/seadMatrix.cpp
   modules/src/math/seadQuat.cpp
