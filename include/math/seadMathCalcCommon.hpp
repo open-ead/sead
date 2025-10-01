@@ -441,7 +441,12 @@ inline s32 MathCalcCommon<s32>::roundOff(s32 val)
 template <typename T>
 inline s32 MathCalcCommon<T>::floor(T val)
 {
-    return std::floor(val);
+    s32 x = static_cast<s32>(val);
+
+    if (x == val)
+        return x;
+
+    return x + (val >= 0 ? 0 : -1);
 }
 
 template <>
