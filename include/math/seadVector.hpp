@@ -76,6 +76,12 @@ inline void Vector2<T>::set(T x_, T y_)
 }
 
 template <typename T>
+inline void Vector2<T>::setAdd(const Vector2<T>& a, const Vector2<T>& b)
+{
+    Vector2CalcCommon<T>::add(*this, a, b);
+}
+
+template <typename T>
 inline void Vector2<T>::setScale(const Vector2<T>& a, T t)
 {
     Vector2CalcCommon<T>::multScalar(*this, a, t);
