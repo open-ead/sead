@@ -14,9 +14,30 @@ inline Quat<T>::Quat(T w_, T x_, T y_, T z_)
 }
 
 template <typename T>
-inline Quat<T>& Quat<T>::operator*=(const Quat<T>& t)
+inline Quat<T>& Quat<T>::operator+=(const Quat<T>& other)
 {
-    QuatCalcCommon<T>::setMul(*this, *this, t);
+    QuatCalcCommon<T>::add(*this, *this, other);
+    return *this;
+}
+
+template <typename T>
+inline Quat<T>& Quat<T>::operator-=(const Quat<T>& other)
+{
+    QuatCalcCommon<T>::sub(*this, *this, other);
+    return *this;
+}
+
+template <typename T>
+inline Quat<T>& Quat<T>::operator*=(const Quat<T>& other)
+{
+    QuatCalcCommon<T>::setMul(*this, *this, other);
+    return *this;
+}
+
+template <typename T>
+inline Quat<T>& Quat<T>::operator*=(T other)
+{
+    QuatCalcCommon<T>::setMulScalar(*this, *this, other);
     return *this;
 }
 
@@ -24,6 +45,12 @@ template <typename T>
 inline T Quat<T>::length() const
 {
     return QuatCalcCommon<T>::length(*this);
+}
+
+template <typename T>
+inline T Quat<T>::squaredLength() const
+{
+    return QuatCalcCommon<T>::squaredLength(*this);
 }
 
 template <typename T>
@@ -89,6 +116,18 @@ template <typename T>
 inline void Quat<T>::setRPY(T roll, T pitch, T yaw)
 {
     QuatCalcCommon<T>::setRPY(*this, roll, pitch, yaw);
+}
+
+template <typename T>
+inline void Quat<T>::setAdd(const Quat<T>& a, const Quat<T>& b)
+{
+    QuatCalcCommon<T>::add(*this, a, b);
+}
+
+template <typename T>
+inline void Quat<T>::setSub(const Quat<T>& a, const Quat<T>& b)
+{
+    QuatCalcCommon<T>::sub(*this, a, b);
 }
 
 template <typename T>
