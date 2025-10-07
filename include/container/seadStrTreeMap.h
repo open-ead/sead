@@ -44,6 +44,8 @@ public:
 
     bool isBufferReady() const { return mFreeList.work() != nullptr; }
 
+    bool isEmpty() const { return mSize == 0; }
+
     Value* insert(const SafeString& key, const Value& value);
     void clear();
 
