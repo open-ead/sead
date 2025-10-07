@@ -59,6 +59,7 @@ struct Vector2 : public Policies<T>::Vec2Base
     void negate();
     void set(const Vector2& other);
     void set(T x_, T y_);
+    void setAdd(const Vector2<T>& a, const Vector2<T>& b);
     void setScale(const Vector2<T>& a, T t);
 
     T dot(const Vector2& other) const;
