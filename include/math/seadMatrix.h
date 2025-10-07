@@ -153,6 +153,17 @@ public:
         result.setMul(lhs, rhs);
         return result;
     }
+    friend Self operator*=(Self& lhs, const Self& rhs)
+    {
+        lhs = lhs * rhs;
+        return lhs;
+    }
+    friend Self operator*=(Mtx33& lhs, const Self& rhs)
+    {
+        lhs = lhs * rhs;
+        return lhs * rhs;
+    }
+
     void setMul(const Self& a, const Self& b);
     void setMul(const Mtx33& a, const Self& b);
 
