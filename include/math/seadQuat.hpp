@@ -35,9 +35,9 @@ inline Quat<T>& Quat<T>::operator*=(const Quat<T>& other)
 }
 
 template <typename T>
-inline Quat<T>& Quat<T>::operator*=(T other)
+inline Quat<T>& Quat<T>::operator*=(T t)
 {
-    QuatCalcCommon<T>::setMulScalar(*this, *this, other);
+    QuatCalcCommon<T>::setMulScalar(*this, *this, t);
     return *this;
 }
 
@@ -60,7 +60,7 @@ inline T Quat<T>::normalize()
 }
 
 template <typename T>
-inline T Quat<T>::dot(const Self& q)
+inline T Quat<T>::dot(const Quat& q)
 {
     return QuatCalcCommon<T>::dot(*this, q);
 }
@@ -68,7 +68,7 @@ inline T Quat<T>::dot(const Self& q)
 // reference?
 // conjugate(q) / dot(q)?
 template <typename T>
-inline void Quat<T>::inverse(Self* q)
+inline void Quat<T>::inverse(Quat* q)
 {
     T prod = dot(*this);
     if (prod > std::numeric_limits<T>::epsilon())
@@ -101,7 +101,7 @@ inline bool Quat<T>::makeVectorRotation(const Vec3& from, const Vec3& to)
 }
 
 template <typename T>
-inline void Quat<T>::set(const Self& other)
+inline void Quat<T>::set(const Quat& other)
 {
     QuatCalcCommon<T>::set(*this, other);
 }
