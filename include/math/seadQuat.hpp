@@ -14,9 +14,30 @@ inline Quat<T>::Quat(T w_, T x_, T y_, T z_)
 }
 
 template <typename T>
-inline Quat<T>& Quat<T>::operator*=(const Quat<T>& t)
+inline Quat<T>& Quat<T>::operator+=(const Quat<T>& other)
 {
-    QuatCalcCommon<T>::setMul(*this, *this, t);
+    QuatCalcCommon<T>::add(*this, *this, other);
+    return *this;
+}
+
+template <typename T>
+inline Quat<T>& Quat<T>::operator-=(const Quat<T>& other)
+{
+    QuatCalcCommon<T>::sub(*this, *this, other);
+    return *this;
+}
+
+template <typename T>
+inline Quat<T>& Quat<T>::operator*=(const Quat<T>& other)
+{
+    QuatCalcCommon<T>::setMul(*this, *this, other);
+    return *this;
+}
+
+template <typename T>
+inline Quat<T>& Quat<T>::operator*=(T t)
+{
+    QuatCalcCommon<T>::setMulScalar(*this, *this, t);
     return *this;
 }
 
@@ -27,13 +48,19 @@ inline T Quat<T>::length() const
 }
 
 template <typename T>
+inline T Quat<T>::squaredLength() const
+{
+    return QuatCalcCommon<T>::squaredLength(*this);
+}
+
+template <typename T>
 inline T Quat<T>::normalize()
 {
     return QuatCalcCommon<T>::normalize(*this);
 }
 
 template <typename T>
-inline T Quat<T>::dot(const Self& q)
+inline T Quat<T>::dot(const Quat& q)
 {
     return QuatCalcCommon<T>::dot(*this, q);
 }
@@ -41,7 +68,7 @@ inline T Quat<T>::dot(const Self& q)
 // reference?
 // conjugate(q) / dot(q)?
 template <typename T>
-inline void Quat<T>::inverse(Self* q)
+inline void Quat<T>::inverse(Quat* q)
 {
     T prod = dot(*this);
     if (prod > std::numeric_limits<T>::epsilon())
@@ -74,7 +101,7 @@ inline bool Quat<T>::makeVectorRotation(const Vec3& from, const Vec3& to)
 }
 
 template <typename T>
-inline void Quat<T>::set(const Self& other)
+inline void Quat<T>::set(const Quat& other)
 {
     QuatCalcCommon<T>::set(*this, other);
 }
@@ -89,6 +116,18 @@ template <typename T>
 inline void Quat<T>::setRPY(T roll, T pitch, T yaw)
 {
     QuatCalcCommon<T>::setRPY(*this, roll, pitch, yaw);
+}
+
+template <typename T>
+inline void Quat<T>::setAdd(const Quat<T>& a, const Quat<T>& b)
+{
+    QuatCalcCommon<T>::add(*this, a, b);
+}
+
+template <typename T>
+inline void Quat<T>::setSub(const Quat<T>& a, const Quat<T>& b)
+{
+    QuatCalcCommon<T>::sub(*this, a, b);
 }
 
 template <typename T>
