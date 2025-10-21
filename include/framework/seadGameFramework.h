@@ -12,6 +12,8 @@ class GameFramework : public Framework
     SEAD_RTTI_OVERRIDE(GameFramework, Framework);
 
 public:
+    static void initialize(const Framework::InitializeArg&);
+
     GameFramework();
     // TODO: implement (missing unk1)
     ~GameFramework() override;
@@ -33,7 +35,6 @@ public:
     virtual void initHostIO_();
 
     void startDisplay();
-    void initialize(const Framework::InitializeArg&);
     void lockFrameDrawContext();
     void unlockFrameDrawContext();
 
