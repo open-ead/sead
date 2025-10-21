@@ -27,6 +27,7 @@ GameFramework::GameFramework()
 GameFramework::~GameFramework()
 {
     // required for RTTI functions to generate
+    (void)mUnk4;  // mark as used
 }
 
 void GameFramework::startDisplay()
@@ -49,7 +50,8 @@ void GameFramework::createSystemTasks(TaskBase* base,
     createCuckooClock(base);
 }
 
-void GameFramework::createControllerMgr(TaskBase* base) {
+void GameFramework::createControllerMgr(TaskBase* base)
+{
     TaskBase::SystemMgrTaskArg arg(&TTaskFactory<ControllerMgr>);
     arg.parent = base;
 
