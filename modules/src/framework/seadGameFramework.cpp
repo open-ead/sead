@@ -1,3 +1,4 @@
+#include <controller/seadControllerMgr.h>
 #include <filedevice/seadFileDeviceMgr.h>
 #include <framework/seadFramework.h>
 #include <framework/seadGameFramework.h>
@@ -46,6 +47,13 @@ void GameFramework::createSystemTasks(TaskBase* base,
     createHostIOMgr(base, createArg.hostio_parameter, createArg.heap);
     createInfLoopChecker(base, createArg.infloop_detection_span, createArg.infloop_unk);
     createCuckooClock(base);
+}
+
+void GameFramework::createControllerMgr(TaskBase* base) {
+    TaskBase::SystemMgrTaskArg arg(&TTaskFactory<ControllerMgr>);
+    arg.parent = base;
+
+    mTaskMgr->createSingletonTaskSync<ControllerMgr>(arg);
 }
 
 void GameFramework::createHostIOMgr([[maybe_unused]] TaskBase* base,
