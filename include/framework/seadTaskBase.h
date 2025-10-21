@@ -67,6 +67,28 @@ public:
         SingletonFunc instance_cb = nullptr;
     };
 
+    struct TakeoverArg : public CreateArg
+    {
+        TakeoverArg(TaskBase* src, const TaskClassID& dst, FaderTaskBase* fader);
+        TakeoverArg(const TaskClassID& dst, FaderTaskBase* fader);
+    };
+
+    struct PushArg : public CreateArg
+    {
+        PushArg(TaskBase* src, const TaskClassID& dst, FaderTaskBase* fader);
+        PushArg(const TaskClassID& dst, FaderTaskBase* fader);
+    };
+
+    struct MgrTaskArg : public CreateArg
+    {
+        explicit MgrTaskArg(const TaskClassID& classID);
+    };
+
+    struct SystemMgrTaskArg : public MgrTaskArg
+    {
+        explicit SystemMgrTaskArg(const TaskClassID& classID);
+    };
+
 public:
     explicit TaskBase(const TaskConstructArg& arg);
     TaskBase(const TaskConstructArg& arg, const char* name);
