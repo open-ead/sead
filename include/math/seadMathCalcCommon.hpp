@@ -446,7 +446,7 @@ inline s32 MathCalcCommon<T>::floor(T val)
     if (x == val)
         return x;
 
-    return x + (val >= 0 ? 0 : -1);
+    return val >= 0 ? x : x - 1;
 }
 
 template <>
