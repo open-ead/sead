@@ -103,6 +103,9 @@ add_library(sead OBJECT
   include/gfx/seadDrawContext.h
   include/gfx/seadDrawLockContext.h
   include/gfx/seadFrameBuffer.h
+  include/gfx/seadGraphics.h
+  include/gfx/seadGraphicsContext.h
+  include/gfx/seadViewport.h
   include/gfx/seadPrimitiveRenderer.h
   include/gfx/seadPrimitiveRendererUtil.h
   include/gfx/seadProjection.h
@@ -112,6 +115,9 @@ add_library(sead OBJECT
   modules/src/gfx/seadColor.cpp
   modules/src/gfx/seadDrawLockContext.cpp
   modules/src/gfx/seadFrameBuffer.cpp
+  modules/src/gfx/seadGraphics.cpp
+  modules/src/gfx/seadGraphicsContext.cpp
+  modules/src/gfx/seadViewport.cpp
   # modules/src/gfx/seadPrimitiveRenderer.cpp
   # modules/src/gfx/seadPrimitiveRendererUtil.cpp
   modules/src/gfx/seadProjection.cpp
@@ -154,6 +160,8 @@ add_library(sead OBJECT
   modules/src/math/seadMatrix.cpp
   modules/src/math/seadQuat.cpp
   modules/src/math/seadVector.cpp
+
+  include/geom/seadLine.h
 
   include/mc/seadCoreInfo.h
   include/mc/seadJob.h
