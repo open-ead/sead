@@ -14,21 +14,21 @@ inline Quat<T>::Quat(T w_, T x_, T y_, T z_)
 }
 
 template <typename T>
-inline Quat<T>& Quat<T>::operator+=(const Quat<T>& other)
+inline Quat<T>& Quat<T>::operator+=(const Quat& other)
 {
     QuatCalcCommon<T>::add(*this, *this, other);
     return *this;
 }
 
 template <typename T>
-inline Quat<T>& Quat<T>::operator-=(const Quat<T>& other)
+inline Quat<T>& Quat<T>::operator-=(const Quat& other)
 {
     QuatCalcCommon<T>::sub(*this, *this, other);
     return *this;
 }
 
 template <typename T>
-inline Quat<T>& Quat<T>::operator*=(const Quat<T>& other)
+inline Quat<T>& Quat<T>::operator*=(const Quat& other)
 {
     QuatCalcCommon<T>::setMul(*this, *this, other);
     return *this;
@@ -114,25 +114,25 @@ inline void Quat<T>::setAxisRadian(const Vec3& axis, T radian)
 }
 
 template <typename T>
-inline void Quat<T>::setAdd(const Quat<T>& a, const Quat<T>& b)
+inline void Quat<T>::setAdd(const Quat& a, const Quat& b)
 {
     QuatCalcCommon<T>::add(*this, a, b);
 }
 
 template <typename T>
-inline void Quat<T>::setSub(const Quat<T>& a, const Quat<T>& b)
+inline void Quat<T>::setSub(const Quat& a, const Quat& b)
 {
     QuatCalcCommon<T>::sub(*this, a, b);
 }
 
 template <typename T>
-inline void Quat<T>::setMul(const Quat<T>& a, const Quat<T>& b)
+inline void Quat<T>::setMul(const Quat& a, const Quat& b)
 {
     QuatCalcCommon<T>::setMul(*this, a, b);
 }
 
 template <typename T>
-inline void Quat<T>::setInverse(const Quat<T>& q)
+inline void Quat<T>::setInverse(const Quat& q)
 {
     QuatCalcCommon<T>::setInverse(*this, q);
 }

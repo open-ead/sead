@@ -28,7 +28,7 @@ inline T QuatCalcCommon<T>::normalize(Base& q)
     const T len = length(q);
     if (len > 0)
     {
-        const T inv_len = 1 / len;
+        const T inv_len = T(1) / len;
         q.w *= inv_len;
         q.x *= inv_len;
         q.y *= inv_len;
