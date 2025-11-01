@@ -41,7 +41,7 @@ public:
     {
         InitializeArg();
 
-        u32 heap_size;
+        u64 heap_size;
         Arena* arena;
     };
 
@@ -62,6 +62,8 @@ public:
     };
 
 public:
+    static void initialize(const InitializeArg&);
+
     Framework();
     virtual ~Framework();
 
@@ -76,8 +78,6 @@ public:
     virtual void runImpl_();
     virtual MethodTreeMgr* createMethodTreeMgr_(Heap*) = 0;
     virtual void procReset_();
-
-    void initialize(const InitializeArg&);
 
     MethodTreeMgr* getMethodTreeMgr() const { return mMethodTreeMgr; }
 
