@@ -11,28 +11,28 @@
 namespace sead
 {
 template <typename T>
-inline T QuatCalcCommon<T>::length(const Base& v)
+inline T QuatCalcCommon<T>::length(const Base& q)
 {
-    return MathCalcCommon<T>::sqrt(squaredLength(v));
+    return MathCalcCommon<T>::sqrt(squaredLength(q));
 }
 
 template <typename T>
-inline T QuatCalcCommon<T>::squaredLength(const Base& v)
+inline T QuatCalcCommon<T>::squaredLength(const Base& q)
 {
-    return (v.w * v.w) + (v.x * v.x) + (v.y * v.y) + (v.z * v.z);
+    return (q.w * q.w) + (q.x * q.x) + (q.y * q.y) + (q.z * q.z);
 }
 
 template <typename T>
-inline T QuatCalcCommon<T>::normalize(Base& v)
+inline T QuatCalcCommon<T>::normalize(Base& q)
 {
-    const T len = length(v);
+    const T len = length(q);
     if (len > 0)
     {
-        const T inv_len = 1 / len;
-        v.w *= inv_len;
-        v.x *= inv_len;
-        v.y *= inv_len;
-        v.z *= inv_len;
+        const T inv_len = T(1) / len;
+        q.w *= inv_len;
+        q.x *= inv_len;
+        q.y *= inv_len;
+        q.z *= inv_len;
     }
 
     return len;
@@ -45,21 +45,21 @@ inline T QuatCalcCommon<T>::dot(const Base& u, const Base& v)
 }
 
 template <typename T>
-inline void QuatCalcCommon<T>::add(Base& out, const Base& a, const Base& b)
+inline void QuatCalcCommon<T>::add(Base& out, const Base& u, const Base& v)
 {
-    out.w = a.w + b.w;
-    out.x = a.x + b.x;
-    out.y = a.y + b.y;
-    out.z = a.z + b.z;
+    out.w = u.w + v.w;
+    out.x = u.x + v.x;
+    out.y = u.y + v.y;
+    out.z = u.z + v.z;
 }
 
 template <typename T>
-inline void QuatCalcCommon<T>::sub(Base& out, const Base& a, const Base& b)
+inline void QuatCalcCommon<T>::sub(Base& out, const Base& u, const Base& v)
 {
-    out.w = a.w - b.w;
-    out.x = a.x - b.x;
-    out.y = a.y - b.y;
-    out.z = a.z - b.z;
+    out.w = u.w - v.w;
+    out.x = u.x - v.x;
+    out.y = u.y - v.y;
+    out.z = u.z - v.z;
 }
 
 template <typename T>
@@ -82,6 +82,27 @@ inline void QuatCalcCommon<T>::setMulScalar(Base& out, const Base& q, T t)
     out.x = q.x * t;
     out.y = q.y * t;
     out.z = q.z * t;
+}
+
+template <typename T>
+inline void QuatCalcCommon<T>::setInverse(Base& out, const Base& q)
+{
+    T prod = squaredLength(q);
+    if (prod > std::numeric_limits<T>::epsilon())
+    {
+        T inv = 1 / prod;
+        out.w = inv * q.w;
+        out.x = inv * -q.x;
+        out.y = inv * -q.y;
+        out.z = inv * -q.z;
+    }
+    else
+    {
+        out.w = q.w;
+        out.x = -q.x;
+        out.y = -q.y;
+        out.z = -q.z;
+    }
 }
 
 template <typename T>
@@ -189,10 +210,15 @@ inline void QuatCalcCommon<T>::setRPY(Base& q, T roll, T pitch, T yaw)
 template <typename T>
 inline void QuatCalcCommon<T>::setAxisAngle(Base& q, const Vec3& axis, T angle)
 {
-    T angleRad = MathCalcCommon<T>::deg2rad(angle);
-    angleRad *= 0.5f;
-    q.w = MathCalcCommon<T>::cos(angleRad);
-    T sa = MathCalcCommon<T>::sin(angleRad);
+    setAxisRadian(q, axis, MathCalcCommon<T>::deg2rad(angle));
+}
+
+template <typename T>
+inline void QuatCalcCommon<T>::setAxisRadian(Base& q, const Vec3& axis, T radian)
+{
+    radian *= 0.5f;
+    q.w = MathCalcCommon<T>::cos(radian);
+    T sa = MathCalcCommon<T>::sin(radian);
     q.x = sa * axis.x;
     q.y = sa * axis.y;
     q.z = sa * axis.z;
