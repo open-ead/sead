@@ -298,14 +298,14 @@ public:
 
     void remove(s32 index)
     {
-        if (index >= mSize || mSize - 1 < 0 || index < 0)
+        if (index >= mSize || mSize <= 0 || index < 0)
             return;
 
         for (s32 i = index; i < mSize - 1; i++)
         {
             *unsafeGet(i) = *unsafeGet(i + 1);
         }
-        --mSize;
+        mSize--;
     }
 
     void clear() { mHead = mSize = 0; }
