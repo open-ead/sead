@@ -296,6 +296,18 @@ public:
         return {};
     }
 
+    void remove(s32 index)
+    {
+        if (index >= mSize || mSize - 1 < 0 || index < 0)
+            return;
+
+        for (s32 i = index; i < mSize - 1; i++)
+        {
+            *unsafeGet(i) = *unsafeGet(i + 1);
+        }
+        --mSize;
+    }
+
     void clear() { mHead = mSize = 0; }
 
 protected:
