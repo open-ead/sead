@@ -52,6 +52,15 @@ class FrameBuffer : public LogicalFrameBuffer
 {
     SEAD_RTTI_OVERRIDE(FrameBuffer, LogicalFrameBuffer)
 public:
+    enum ClearFlag
+    {
+        cNone = 0,
+        cColor = 1 << 0,
+        cDepth = 1 << 1,
+        cStencil = 1 << 2,
+        cAll = cColor | cDepth | cStencil
+    };
+
     FrameBuffer(const Vector2f& virtual_size, const BoundBox2f& physical_area)
         : LogicalFrameBuffer(virtual_size, physical_area)
     {
