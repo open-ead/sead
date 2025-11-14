@@ -458,7 +458,12 @@ inline s32 MathCalcCommon<s32>::floor(s32 val)
 template <typename T>
 inline s32 MathCalcCommon<T>::ceil(T val)
 {
-    return std::ceil(val);
+    s32 x = static_cast<s32>(val);
+
+    if (x == val)
+        return x;
+
+    return val >= 0 ? x + 1 : x;
 }
 
 template <>
