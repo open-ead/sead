@@ -27,7 +27,6 @@ GameFramework::GameFramework()
 GameFramework::~GameFramework()
 {
     // required for RTTI functions to generate
-    (void)mUnk4;  // mark as used
 }
 
 void GameFramework::startDisplay()
