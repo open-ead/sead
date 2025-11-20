@@ -12,6 +12,8 @@ Projection::Projection()
     mDeviceZOffset = Graphics::sDefaultDeviceZOffset;
 }
 
+Projection::~Projection() = default;
+
 void Projection::updateAttributesForDirectProjection() {}
 
 const Matrix44f& Projection::getProjectionMatrix() const
@@ -46,6 +48,11 @@ const Matrix44f& Projection::getDeviceProjectionMatrix() const
 {
     updateMatrixImpl_();
     return mDeviceMatrix;
+}
+
+void Projection::cameraPosToScreenPos(Vector3f* screen_pos, const Vector3f& camera_pos) const
+{
+    Vector3CalcCommon<f32>::mul(*screen_pos, getProjectionMatrix(), camera_pos);
 }
 
 void Projection::screenPosToCameraPos(Vector3f* camera_pos, const Vector3f& screen_pos) const
