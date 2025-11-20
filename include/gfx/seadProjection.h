@@ -3,7 +3,6 @@
 
 #include <basis/seadTypes.h>
 #include <gfx/seadGraphics.h>
-#include <gfx/seadViewport.h>
 #include <math/seadBoundBox.h>
 #include <math/seadMatrix.h>
 #include <math/seadVector.h>
@@ -11,6 +10,11 @@
 
 namespace sead
 {
+class Camera;
+template <typename T>
+class Ray;
+class Viewport;
+
 class Projection
 {
     SEAD_RTTI_BASE(Projection)
@@ -28,10 +32,19 @@ public:
     virtual u32 getProjectionType() const = 0;
     virtual void doUpdateMatrix(Matrix44f* mtx) const = 0;
     virtual void doUpdateDeviceMatrix(Matrix44f*, const Matrix44f&, Graphics::DevicePosture) const;
-    virtual void doScreenPosToCameraPosTo(Vector3f*, const Vector3f&) const = 0;
+    virtual void doScreenPosToCameraPosTo(Vector3f* camera_pos,
+                                          const Vector3f& screen_pos) const = 0;
 
+    const Matrix44f& getProjectionMatrix() const;
     void updateMatrixImpl_() const;
+    Matrix44f& getProjectionMatrixMutable();
     const Matrix44f& getDeviceProjectionMatrix() const;
+    void cameraPosToScreenPos(Vector3f* screen_pos, const Vector3f& camera_pos) const;
+    void screenPosToCameraPos(Vector3f* camera_pos, const Vector3f& screen_pos) const;
+    void screenPosToCameraPos(Vector3f* camera_pos, const Vector2f& screen_pos) const;
+    void project(Vector2f* dst, const Vector3f& camera_pos, const Viewport& viewport) const;
+    void unproject(Vector3f* world_pos, const Vector3f& screen_pos, const Camera& camera) const;
+    void unprojectRay(Ray<Vector3f>* dst, const Vector3f& screen_pos, const Camera& camera) const;
 
     void setDirty() { mDirty = true; }
     void setDeviceDirty() { mDeviceDirty = true; }
@@ -43,8 +56,8 @@ public:
     }
 
 private:
-    mutable bool mDirty;
-    mutable bool mDeviceDirty;
+    mutable bool mDirty = true;
+    mutable bool mDeviceDirty = true;
     Matrix44f mMatrix;
     Matrix44f mDeviceMatrix;
     Graphics::DevicePosture mDevicePosture;
