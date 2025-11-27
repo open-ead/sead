@@ -129,10 +129,10 @@ public:
     static s32 roundOff(T);
     static s32 floor(T);
     static s32 ceil(T);
-    static T roundUp(T x, s32 multNumber);
-    static s32 roundUpPow2(T x, s32 y);
-    static s32 roundDownN(T val, s32 multNumber);
-    static s32 roundDownPow2(T x, s32 y);
+    static T roundUp(T x, u32 multNumber);
+    static s32 roundUpPow2(T x, u32 y);
+    static s32 roundDownN(T val, u32 multNumber);
+    static s32 roundDownPow2(T x, u32 y);
     static T clampMax(T val, T max_);
     static T clampMin(T val, T min_);
     static T clamp(T value, T low, T high);
