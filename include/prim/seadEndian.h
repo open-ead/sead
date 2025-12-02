@@ -95,9 +95,9 @@ public:
     static s64 toHostS64(Types from, s64 v) { return toHostU64(from, v); }
 
     static s8 fromHostS8(Types to, s8 v) { return fromHostU8(to, v); }
-    static s16 fromHostS16(Types to, s16 v) { return fromHostU8(to, v); }
-    static s32 fromHostS32(Types to, s32 v) { return fromHostU8(to, v); }
-    static s64 fromHostS64(Types to, s64 v) { return fromHostU8(to, v); }
+    static s16 fromHostS16(Types to, s16 v) { return fromHostU16(to, v); }
+    static s32 fromHostS32(Types to, s32 v) { return fromHostU32(to, v); }
+    static s64 fromHostS64(Types to, s64 v) { return fromHostU64(to, v); }
 
     static f32 toHostF32(Types from, const u32* ptr)
     {
