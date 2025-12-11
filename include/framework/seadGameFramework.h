@@ -21,7 +21,6 @@ public:
     void createSystemTasks(TaskBase* base,
                            const Framework::CreateSystemTaskArg& createSystemTaskArg) override;
     void quitRun_(Heap* heap) override;
-    // TODO: implement (missing TaskBase::SystemMgrTaskArg, sead::TTaskFactory)
     virtual void createControllerMgr(TaskBase* base);
     virtual void createHostIOMgr(TaskBase* base, HostIOMgr::Parameter* hostioParam, Heap* heap);
     virtual void createProcessMeter(TaskBase* base);
@@ -43,7 +42,7 @@ private:
     sead::SafeString mUnk1 = "";
     sead::SafeString mUnk2 = "";
     sead::SafeString mUnk3 = "";
-    void* mUnk4 = nullptr;
+    [[maybe_unused]] void* mUnk4 = nullptr;  // TODO: remove [[maybe_unused]] once mUnk4 is used
     void (*mUnk5)(bool) = nullptr;
     void (*mUnk6)(bool);
 };

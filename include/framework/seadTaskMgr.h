@@ -45,6 +45,22 @@ public:
     void beforeCalc();
     void afterCalc();
 
+    TaskBase* createTaskSync(const TaskBase::CreateArg& arg);
+
+    template <typename T>
+    T* createSingletonTaskSync(const TaskBase::CreateArg& arg)
+    {
+        TaskBase::CreateArg arg_ = arg;
+        arg_.instance_cb = &T::setInstance_;
+
+        TaskBase* task = createTaskSync(arg_);
+
+        T* derived = DynamicCast<T>(task);
+        SEAD_ASSERT(derived != nullptr);
+
+        return T::instance();
+    }
+
     CriticalSection mCriticalSection;
     Framework* mParentFramework;
     DelegateThread* mPrepareThread;
