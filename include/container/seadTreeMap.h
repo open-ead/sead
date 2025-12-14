@@ -380,16 +380,16 @@ inline TreeMapNode<Key>* TreeMapImpl<Key>::find(Node* root, const Key& key) cons
 
 template <typename Key>
 template <typename Callable>
-inline void TreeMapImpl<Key>::forEach(Node* node, const Callable& callable)
+inline void TreeMapImpl<Key>::forEach(Node* node, const Callable& fun)
 {
     if (node->mLeft)
-        forEach(node->mLeft, callable);
+        forEach(node->mLeft, fun);
 
     Node* right = node->mRight;
-    callable(node);
+    fun(node);
 
     if (right)
-        forEach(right, callable);
+        forEach(right, fun);
 }
 
 template <typename Key>
