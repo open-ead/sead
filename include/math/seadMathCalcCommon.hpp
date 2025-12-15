@@ -484,8 +484,8 @@ inline s32 MathCalcCommon<u32>::roundUpPow2(u32 val, u32 base)
 template <>
 inline s32 MathCalcCommon<s32>::roundUpPow2(s32 val, u32 base)
 {
-    SEAD_ASSERT_MSG(val >= 0 && ((base - 1) & base) == 0, "illegal param[val:%d, base:%d]",
-                    val, base);
+    SEAD_ASSERT_MSG(val >= 0 && ((base - 1) & base) == 0, "illegal param[val:%d, base:%d]", val,
+                    base);
     return (val + base - 1) & ~(base - 1);
 }
 
