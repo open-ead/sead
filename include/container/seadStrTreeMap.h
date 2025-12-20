@@ -38,6 +38,22 @@ public:
         char mKeyData[MaxKeyLength + 1];
     };
 
+    template <typename T>
+    class ForEachConstContext
+    {
+    public:
+        ForEachConstContext(const T& callback) : context(callback) {}
+
+        void call(TreeMapNode<SafeString>* node)
+        {
+            Node* strNode = static_cast<Node*>(node);
+            context(strNode->key(), strNode->value());
+        }
+
+    private:
+        const T& context;
+    };
+
     void allocBuffer(s32 node_max, Heap* heap, s32 alignment = sizeof(void*));
     void setBuffer(s32 node_max, void* buffer);
     void freeBuffer();
@@ -153,12 +169,14 @@ inline typename StrTreeMap<N, Value>::Node* StrTreeMap<N, Value>::find(const Saf
 
 template <s32 N, typename Value>
 template <typename Callable>
-inline void StrTreeMap<N, Value>::forEach(const Callable& delegate) const
+inline void StrTreeMap<N, Value>::forEach(const Callable& callback) const
 {
-    MapImpl::forEach([&delegate](auto* base_node) {
-        auto* node = static_cast<Node*>(base_node);
-        delegate(node->key(), node->value());
-    });
+    ForEachConstContext<Callable> ctx(callback);
+
+    Delegate1<ForEachConstContext<Callable>, typename MapImpl::Node*> delegate(
+        &ctx, &ForEachConstContext<Callable>::call);
+
+    MapImpl::forEach(delegate);
 }
 
 template <s32 N, typename Value>
