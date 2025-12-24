@@ -473,25 +473,25 @@ inline s32 MathCalcCommon<s32>::ceil(s32 val)
 }
 
 template <typename T>
-inline T MathCalcCommon<T>::roundUp(T x, s32 multNumber)
+inline T MathCalcCommon<T>::roundUp(T x, u32 multNumber)
 {
     SEAD_ASSERT(multNumber > 0);
     return (x + multNumber - 1) / multNumber * multNumber;
 }
 
 template <>
-inline s32 MathCalcCommon<u32>::roundUpPow2(u32 val, s32 base)
+inline s32 MathCalcCommon<u32>::roundUpPow2(u32 val, u32 base)
 {
-    SEAD_ASSERT_MSG((u32(base - 1) & u32(base)) == 0, "illegal param[val:%d, base:%d]", val, base);
-    return (val + base - 1) & (u32)-base;
+    SEAD_ASSERT_MSG(((base - 1) & base) == 0, "illegal param[val:%d, base:%d]", val, base);
+    return (val + base - 1) & ~(base - 1);
 }
 
 template <>
-inline s32 MathCalcCommon<s32>::roundUpPow2(s32 val, s32 base)
+inline s32 MathCalcCommon<s32>::roundUpPow2(s32 val, u32 base)
 {
-    SEAD_ASSERT_MSG(val >= 0 && (u32(base - 1) & u32(base)) == 0, "illegal param[val:%d, base:%d]",
-                    val, base);
-    return (val + base - 1) & (u32)-base;
+    SEAD_ASSERT_MSG(val >= 0 && ((base - 1) & base) == 0, "illegal param[val:%d, base:%d]", val,
+                    base);
+    return (val + base - 1) & ~(base - 1);
 }
 
 template <typename T>
