@@ -429,7 +429,7 @@ inline T MathCalcCommon<T>::idx2rad(u32 a)
 template <typename T>
 inline s32 MathCalcCommon<T>::round(T val)
 {
-    return val >= 0 ? val + 0.5f : val - 0.5f;
+    return static_cast<s32>(val >= 0 ? val + 0.5f : val - 0.5f);
 }
 
 template <typename T>
