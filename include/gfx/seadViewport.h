@@ -1,20 +1,18 @@
 #pragma once
 
+#include <geom/seadLine.h>
+#include <gfx/seadFrameBuffer.h>
 #include <gfx/seadGraphics.h>
-#include <math/seadBoundBox.h>
-#include <math/seadVector.h>
+#include <gfx/seadProjection.h>
 
 namespace sead
 {
-template <typename T>
-class Ray;
-class DrawContext;
-class LogicalFrameBuffer;
-class Projection;
 class Camera;
+class Projection;
 
 class Viewport : public BoundBox2f
 {
+    SEAD_RTTI_BASE(Viewport)
 public:
     Viewport();
     Viewport(float left, float top, float right, float bottom);
@@ -23,17 +21,25 @@ public:
     virtual ~Viewport() = default;
 
     void setByFrameBuffer(const LogicalFrameBuffer& buffer);
-    void apply(DrawContext*, const LogicalFrameBuffer& buffer) const;
+
     void getOnFrameBufferPos(Vector2f* out, const LogicalFrameBuffer& buffer) const;
     void getOnFrameBufferSize(Vector2f* out, const LogicalFrameBuffer& buffer) const;
+
+    void apply(DrawContext*, const LogicalFrameBuffer& buffer) const;
     void applyViewport(DrawContext* context, const LogicalFrameBuffer& buffer) const;
     void applyScissor(DrawContext* context, const LogicalFrameBuffer& buffer) const;
+
     void project(Vector2f*, const Vector3f&) const;
     void project(Vector2f*, const Vector2f&) const;
     void unproject(Vector3f*, const Vector2f&, const Projection&, const Camera&) const;
-    void unproject(Ray<Vector3f>*, const Vector2f&, const Projection&, const Camera&) const;
+    void unprojectRay(Ray3f*, const Vector2f&, const Projection&, const Camera&) const;
 
 private:
-    Graphics::DevicePosture mDevicePosture;
+    Graphics::DevicePosture mDevicePosture = Graphics::getDefaultDevicePosture();
+    Vector2f mDepthBounds = Vector2f(0.0f, 1.0f);
 };
+#ifdef cafe
+static_assert(sizeof(Viewport) == 0x18, "sead::Viewport size mismatch");
+#endif  // cafe
+
 }  // namespace sead
