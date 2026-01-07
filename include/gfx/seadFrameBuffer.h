@@ -79,6 +79,10 @@ public:
     }
     ~FrameBuffer() override;
 
+#if SEAD_FRAMEBUFFER_BINDCLEAR_UNBIND
+    virtual void bindClear_(DrawContext* draw_context) const;
+    virtual void unbindImpl_(DrawContext* draw_context) const;
+#endif
     virtual void copyToDisplayBuffer(DrawContext* draw_context,
                                      const DisplayBuffer* display_buffer) const;
     virtual void clear(DrawContext* draw_context, u32 clr_flag, const Color4f& color, f32 depth,
