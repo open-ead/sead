@@ -126,6 +126,7 @@ public:
     static T getRand(T);
     static T getRandRange(T, T);
     static T getRandSign();
+    static s32 round(T);
     static s32 roundOff(T);
     static s32 floor(T);
     static s32 ceil(T);
