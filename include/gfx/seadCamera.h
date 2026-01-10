@@ -53,10 +53,6 @@ public:
 
     void doUpdateMatrix(Matrix34f* dst) const override;
 
-    Vector3f& getPos() { return mPos; }
-    Vector3f& getAt() { return mAt; }
-    Vector3f& getUp() { return mUp; }
-
     const Vector3f& getPos() const { return mPos; }
     const Vector3f& getAt() const { return mAt; }
     const Vector3f& getUp() const { return mUp; }
