@@ -79,14 +79,14 @@ RamReadStream::~RamReadStream()
 }
 
 RamWriteStream::RamWriteStream(void* buffer, u32 buffer_size, Stream::Modes mode)
-    : mSrc(const_cast<void*>(buffer), buffer_size)
+    : mSrc(buffer, buffer_size)
 {
     setSrc(&mSrc);
     setMode(mode);
 }
 
 RamWriteStream::RamWriteStream(void* buffer, u32 buffer_size, StreamFormat* format)
-    : mSrc(const_cast<void*>(buffer), buffer_size)
+    : mSrc(buffer, buffer_size)
 {
     setSrc(&mSrc);
     setUserFormat(format);
