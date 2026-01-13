@@ -81,6 +81,7 @@ struct Vector3 : public Policies<T>::Vec3Base
 {
     using Mtx33 = typename Policies<T>::Mtx33Base;
     using Mtx34 = typename Policies<T>::Mtx34Base;
+    using Mtx44 = typename Policies<T>::Mtx44Base;
     using Quat = typename Policies<T>::QuatBase;
 
     /// @warning This constructor leaves member variables uninitialized.
@@ -111,6 +112,7 @@ struct Vector3 : public Policies<T>::Vec3Base
     Vector3& operator*=(T t);
     Vector3& operator*=(const Mtx33& m);
     Vector3& operator*=(const Mtx34& m);
+    Vector3& operator*=(const Mtx44& m);
     friend Vector3 operator*(const Vector3& a, T t)
     {
         Vector3 o;
@@ -125,6 +127,12 @@ struct Vector3 : public Policies<T>::Vec3Base
         return o;
     }
     friend Vector3 operator*(const Mtx34& m, const Vector3& a)
+    {
+        Vector3 o;
+        o.setMul(m, a);
+        return o;
+    }
+    friend Vector3 operator*(const Mtx44& m, const Vector3& a)
     {
         Vector3 o;
         o.setMul(m, a);
@@ -156,6 +164,8 @@ struct Vector3 : public Policies<T>::Vec3Base
     void mul(const Mtx33& m);
     /// Apply a transformation `m` (rotation then translation) to this vector.
     void mul(const Mtx34& m);
+    /// Apply a transformation `m` (rotation, translation, homogenous coordinates) to this vector.
+    void mul(const Mtx44& m);
     /// Apply a rotation `m` to this vector.
     void rotate(const Mtx33& m);
     /// Apply a rotation `m` to this vector.
@@ -174,6 +184,7 @@ struct Vector3 : public Policies<T>::Vec3Base
     void setScaleAdd(T t, const Vector3<T>& a, const Vector3<T>& b);
     void setMul(const Mtx33& m, const Vector3& a);
     void setMul(const Mtx34& m, const Vector3& a);
+    void setMul(const Mtx44& m, const Vector3& a);
     void setRotated(const Mtx33& m, const Vector3& a);
     void setRotated(const Mtx34& m, const Vector3& a);
     void setRotated(const Quat& q, const Vector3& a);

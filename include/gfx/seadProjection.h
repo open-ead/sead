@@ -37,7 +37,7 @@ public:
 
     const Matrix44f& getProjectionMatrix() const;
     void updateMatrixImpl_() const;
-    Matrix44f& getProjectionMatrixMutable();
+    Matrix44f* getProjectionMatrixMutable();
     const Matrix44f& getDeviceProjectionMatrix() const;
     void cameraPosToScreenPos(Vector3f* screen_pos, const Vector3f& camera_pos) const;
     void screenPosToCameraPos(Vector3f* camera_pos, const Vector3f& screen_pos) const;

@@ -38,10 +38,10 @@ void Projection::updateMatrixImpl_() const
     }
 }
 
-Matrix44f& Projection::getProjectionMatrixMutable()
+Matrix44f* Projection::getProjectionMatrixMutable()
 {
     updateMatrixImpl_();
-    return mMatrix;
+    return &mMatrix;
 }
 
 const Matrix44f& Projection::getDeviceProjectionMatrix() const
@@ -52,7 +52,7 @@ const Matrix44f& Projection::getDeviceProjectionMatrix() const
 
 void Projection::cameraPosToScreenPos(Vector3f* screen_pos, const Vector3f& camera_pos) const
 {
-    Vector3CalcCommon<f32>::mul(*screen_pos, getProjectionMatrix(), camera_pos);
+    screen_pos->setMul(getProjectionMatrix(), camera_pos);
 }
 
 void Projection::screenPosToCameraPos(Vector3f* camera_pos, const Vector3f& screen_pos) const

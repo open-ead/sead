@@ -42,7 +42,7 @@ public:
     static void mul(Base& o, const Mtx33& m, const Base& a);
     /// Apply a transformation `m` (rotation then translation) to the vector `a`.
     static void mul(Base& o, const Mtx34& m, const Base& a);
-    /// Apply a transformation `m` (rotation, translation, normalize) to the vector `a`.
+    /// Apply a transformation `m` (rotation, translation, homogenous coord) to the vector `a`.
     static void mul(Base& o, const Mtx44& m, const Base& a);
 
     /// Apply a rotation `m` to the vector `a`.
