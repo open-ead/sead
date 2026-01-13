@@ -12,8 +12,6 @@ Projection::Projection()
     mDeviceZOffset = Graphics::sDefaultDeviceZOffset;
 }
 
-Projection::~Projection() = default;
-
 void Projection::updateAttributesForDirectProjection() {}
 
 const Matrix44f& Projection::getProjectionMatrix() const

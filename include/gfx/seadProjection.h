@@ -21,7 +21,7 @@ class Projection
 
 public:
     Projection();
-    virtual ~Projection();
+    virtual ~Projection() = default;
 
     virtual f32 getNear() const = 0;
     virtual f32 getFar() const = 0;
