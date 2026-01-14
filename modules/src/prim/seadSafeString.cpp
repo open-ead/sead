@@ -90,7 +90,7 @@ template <>
 s32 BufferedSafeStringBase<char16>::formatImpl_(char16* s, s32 n, const char16* formatStr,
                                                 va_list args)
 {
-    const s32 ret = StringUtil::vsnw16printf(s, n, formatStr, args);
+    const s32 ret = StringUtil::vsw16printf(s, n, formatStr, args);
     if (ret >= 0 && ret < n)
         return ret;
     s[n - 1] = WSafeString::cNullChar;
