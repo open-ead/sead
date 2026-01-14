@@ -41,4 +41,73 @@ public:
     virtual void flush(StreamSrc*) = 0;
     virtual void rewind(StreamSrc*) = 0;
 };
+
+class BinaryStreamFormat : public StreamFormat
+{
+public:
+    u8 readU8(StreamSrc*, Endian::Types) override;
+    u16 readU16(StreamSrc*, Endian::Types) override;
+    u32 readU32(StreamSrc*, Endian::Types) override;
+    u64 readU64(StreamSrc*, Endian::Types) override;
+    s8 readS8(StreamSrc*, Endian::Types) override;
+    s16 readS16(StreamSrc*, Endian::Types) override;
+    s32 readS32(StreamSrc*, Endian::Types) override;
+    s64 readS64(StreamSrc*, Endian::Types) override;
+    f32 readF32(StreamSrc*, Endian::Types) override;
+    void readBit(StreamSrc*, void*, u32) override;
+    void readString(StreamSrc*, BufferedSafeString*, u32) override;
+    u32 readMemBlock(StreamSrc*, void*, u32) override;
+    void writeU8(StreamSrc*, Endian::Types, u8) override;
+    void writeU16(StreamSrc*, Endian::Types, u16) override;
+    void writeU32(StreamSrc*, Endian::Types, u32) override;
+    void writeU64(StreamSrc*, Endian::Types, u64) override;
+    void writeS8(StreamSrc*, Endian::Types, s8) override;
+    void writeS16(StreamSrc*, Endian::Types, s16) override;
+    void writeS32(StreamSrc*, Endian::Types, s32) override;
+    void writeS64(StreamSrc*, Endian::Types, s64) override;
+    void writeF32(StreamSrc*, Endian::Types, f32) override;
+    void writeBit(StreamSrc*, const void*, u32) override;
+    void writeString(StreamSrc*, const SafeString&, u32) override;
+    void writeMemBlock(StreamSrc*, const void*, u32) override;
+    void writeDecorationText(StreamSrc*, const SafeString&) override;
+    void writeNullChar(StreamSrc*) override;
+    void skip(StreamSrc*, u32) override;
+    void flush(StreamSrc*) override;
+    void rewind(StreamSrc*) override;
+};
+
+class TextStreamFormat : public StreamFormat
+{
+public:
+    u8 readU8(StreamSrc*, Endian::Types) override;
+    u16 readU16(StreamSrc*, Endian::Types) override;
+    u32 readU32(StreamSrc*, Endian::Types) override;
+    u64 readU64(StreamSrc*, Endian::Types) override;
+    s8 readS8(StreamSrc*, Endian::Types) override;
+    s16 readS16(StreamSrc*, Endian::Types) override;
+    s32 readS32(StreamSrc*, Endian::Types) override;
+    s64 readS64(StreamSrc*, Endian::Types) override;
+    f32 readF32(StreamSrc*, Endian::Types) override;
+    void readBit(StreamSrc*, void*, u32) override;
+    void readString(StreamSrc*, BufferedSafeString*, u32) override;
+    u32 readMemBlock(StreamSrc*, void*, u32) override;
+    void writeU8(StreamSrc*, Endian::Types, u8) override;
+    void writeU16(StreamSrc*, Endian::Types, u16) override;
+    void writeU32(StreamSrc*, Endian::Types, u32) override;
+    void writeU64(StreamSrc*, Endian::Types, u64) override;
+    void writeS8(StreamSrc*, Endian::Types, s8) override;
+    void writeS16(StreamSrc*, Endian::Types, s16) override;
+    void writeS32(StreamSrc*, Endian::Types, s32) override;
+    void writeS64(StreamSrc*, Endian::Types, s64) override;
+    void writeF32(StreamSrc*, Endian::Types, f32) override;
+    void writeBit(StreamSrc*, const void*, u32) override;
+    void writeString(StreamSrc*, const SafeString&, u32) override;
+    void writeMemBlock(StreamSrc*, const void*, u32) override;
+    void writeDecorationText(StreamSrc*, const SafeString&) override;
+    void writeNullChar(StreamSrc*) override;
+    void skip(StreamSrc*, u32) override;
+    void flush(StreamSrc*) override;
+    void rewind(StreamSrc*) override;
+};
+
 }  // namespace sead
