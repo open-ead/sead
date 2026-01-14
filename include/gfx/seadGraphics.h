@@ -30,6 +30,9 @@ public:
     void initializeDrawLockContext(Heap*);
 
     static Graphics* instance() { return sInstance; }
+    static DevicePosture sDefaultDevicePosture;
+    static f32 sDefaultDeviceZScale;
+    static f32 sDefaultDeviceZOffset;
 
 private:
     UnknownCallback _20;
