@@ -61,7 +61,6 @@ s64 BinaryStreamFormat::readS64(StreamSrc* src, Endian::Types endian)
     return Endian::toHostU64(endian, rawValue);
 }
 
-// NON_MATCHING: Wrong loading order https://decomp.me/scratch/L5MO9
 f32 BinaryStreamFormat::readF32(StreamSrc* src, Endian::Types endian)
 {
     u32 rawValue = 0;
