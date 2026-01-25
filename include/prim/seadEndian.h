@@ -65,6 +65,7 @@ public:
     {
         return cConvFuncTable.conv32[from ^ to](v);
     }
+    static u32 convertU32(s32 endian, u32 v) { return cConvFuncTable.conv32[endian](v); }
     static u64 convertU64(Types from, Types to, u64 v)
     {
         return cConvFuncTable.conv64[from ^ to](v);
@@ -74,9 +75,9 @@ public:
     static s16 convertS16(Types from, Types to, s16 v) { return convertU16(from, to, v); }
     static s32 convertS32(Types from, Types to, s32 v) { return convertU32(from, to, v); }
     static s64 convertS64(Types from, Types to, s64 v) { return convertU64(from, to, v); }
-    static u32 convertF32(Types from, Types to, const void* ptr)
+    static f32 convertF32(s32 endian, const void* ptr)
     {
-        return convertU32(from, to, *static_cast<const u32*>(ptr));
+        return BitUtil::bitCast<f32>(convertU32(endian, *static_cast<const u32*>(ptr)));
     }
 
     static u8 toHostU8(Types from, u8 v) { return convertU8(from, cHostEndian, v); }
@@ -95,15 +96,15 @@ public:
     static s64 toHostS64(Types from, s64 v) { return toHostU64(from, v); }
 
     static s8 fromHostS8(Types to, s8 v) { return fromHostU8(to, v); }
-    static s16 fromHostS16(Types to, s16 v) { return fromHostU8(to, v); }
-    static s32 fromHostS32(Types to, s32 v) { return fromHostU8(to, v); }
-    static s64 fromHostS64(Types to, s64 v) { return fromHostU8(to, v); }
+    static s16 fromHostS16(Types to, s16 v) { return fromHostU16(to, v); }
+    static s32 fromHostS32(Types to, s32 v) { return fromHostU32(to, v); }
+    static s64 fromHostS64(Types to, s64 v) { return fromHostU64(to, v); }
 
-    static f32 toHostF32(Types from, const u32* ptr)
+    static f32 toHostF32(Types from, const u32* ptr) { return convertF32(from ^ cHostEndian, ptr); }
+    static u32 fromHostF32(Types to, const f32* ptr)
     {
-        return BitUtil::bitCast<f32>(convertF32(from, cHostEndian, ptr));
+        return convertU32(cHostEndian, to, *reinterpret_cast<const u32*>(ptr));
     }
-    static u32 fromHostF32(Types to, const f32* ptr) { return convertF32(cHostEndian, to, ptr); }
 
 private:
     static const Types cHostEndian;
