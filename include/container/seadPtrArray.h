@@ -72,16 +72,17 @@ protected:
     void* front() const { return mPtrs[0]; }
     void* back() const { return mPtrs[mPtrNum - 1]; }
 
-    void pushBack(void* ptr)
+    bool pushBack(void* ptr)
     {
         if (isFull())
         {
             SEAD_ASSERT_MSG(false, "list is full.");
-            return;
+            return false;
         }
         // Simplest insert case, so this is implemented directly without using insert().
         mPtrs[mPtrNum] = ptr;
         ++mPtrNum;
+        return true;
     }
 
     void pushFront(void* ptr) { insert(0, ptr); }
@@ -235,7 +236,7 @@ public:
     T* front() const { return at(0); }
     T* back() const { return at(mPtrNum - 1); }
 
-    void pushBack(T* ptr) { PtrArrayImpl::pushBack(constCast(ptr)); }
+    bool pushBack(T* ptr) { return PtrArrayImpl::pushBack(constCast(ptr)); }
     void pushFront(T* ptr) { PtrArrayImpl::pushFront(constCast(ptr)); }
 
     T* popBack() { return static_cast<T*>(PtrArrayImpl::popBack()); }
