@@ -56,6 +56,9 @@ public:
     const void* getFileImpl_(const SafeString& file_path,
                              FileInfo* file_info = NULL) const override;
     const void* getFileFastImpl_(s32 entry_id, FileInfo* file_info) const override;
+#if SEAD_ARCHIVERES_TRYGETFILEPATH
+    bool tryGetFilePathImpl_(SafeString* out_file_path, s32 entry_id) const override;
+#endif
     s32 convertPathToEntryIDImpl_(const SafeString& file_path) const override;
     bool setCurrentDirectoryImpl_(const SafeString&) override;
     bool openDirectoryImpl_(HandleBuffer* handle, const SafeString& path) const override;
