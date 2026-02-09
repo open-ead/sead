@@ -140,7 +140,7 @@ public:
     void sort() { sort(compareT); }
     void sort(CompareCallback cmp) { PtrArrayImpl::sort<T>(cmp); }
     void heapSort() { heapSort(compareT); }
-    void heapSort(CompareCallback cmp) { PtrArrayImpl::heapSort_<T>(cmp); }
+    void heapSort(CompareCallback cmp) { PtrArrayImpl::heapSort<T>(cmp); }
 
     bool equal(const ObjArray& other, CompareCallback cmp) const
     {

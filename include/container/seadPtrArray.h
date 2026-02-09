@@ -174,17 +174,15 @@ protected:
 
     void sort(CompareCallbackImpl cmp);
 
-    template <typename T, typename Compare>
-    void heapSort_(Compare cmp)
+    template <typename T>
+    void heapSort(s32 (*cmpT)(const T* a, const T* b))
     {
-        // Note: Nintendo did not use <algorithm>
-        const auto less_cmp = [&](const void* a, const void* b) {
-            return cmp(static_cast<const T*>(a), static_cast<const T*>(b)) < 0;
-        };
-        std::make_heap(mPtrs, mPtrs + size(), less_cmp);
-        std::sort_heap(mPtrs, mPtrs + size(), less_cmp);
+        // Symbols show that `sort()` accepts a `void*` comparer, but needs to receive a `T*`
+        // comparer in order to match SMO. This overload exists to safely accept a `T*` comparer.
+        // This cast is UB, but we know that `cmpT` and `cmpVoid` have the same representation.
+        auto cmpVoid = reinterpret_cast<s32 (*)(const void*, const void*)>(cmpT);
+        heapSort(cmpVoid);
     }
-
     void heapSort(CompareCallbackImpl cmp);
 
     s32 compare(const PtrArrayImpl& other, CompareCallbackImpl cmp) const;
@@ -257,7 +255,7 @@ public:
     void sort() { sort(compareT); }
     void sort(CompareCallback cmp) { PtrArrayImpl::sort<T>(cmp); }
     void heapSort() { heapSort(compareT); }
-    void heapSort(CompareCallback cmp) { PtrArrayImpl::heapSort_<T>(cmp); }
+    void heapSort(CompareCallback cmp) { PtrArrayImpl::heapSort<T>(cmp); }
 
     bool equal(const PtrArray& other, CompareCallback cmp) const
     {
