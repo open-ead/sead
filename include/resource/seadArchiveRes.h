@@ -47,6 +47,14 @@ public:
         return convertPathToEntryIDImpl_(path);
     }
 
+#if SEAD_ARCHIVERES_TRYGETFILEPATH
+    bool tryGetFilePath(SafeString* out_file_path, s32 entry_id)
+    {
+        SEAD_ASSERT(mEnable);
+        return tryGetFilePathImpl_(out_file_path, entry_id);
+    }
+#endif
+
     bool setCurrentDirectory(const SafeString& dir)
     {
         SEAD_ASSERT(mEnable);
@@ -71,6 +79,9 @@ protected:
     virtual const void* getFileImpl_(const SafeString& file_path,
                                      FileInfo* file_info = nullptr) const = 0;
     virtual const void* getFileFastImpl_(s32 entry_id, FileInfo* file_info) const = 0;
+#if SEAD_ARCHIVERES_TRYGETFILEPATH
+    virtual bool tryGetFilePathImpl_(SafeString* out_file_path, s32 entry_id) const = 0;
+#endif
     virtual s32 convertPathToEntryIDImpl_(const SafeString& file_path) const = 0;
     virtual bool setCurrentDirectoryImpl_(const SafeString&) = 0;
     virtual bool openDirectoryImpl_(HandleBuffer* handle, const SafeString& path) const = 0;
