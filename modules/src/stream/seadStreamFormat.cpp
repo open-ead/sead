@@ -87,7 +87,6 @@ void BinaryStreamFormat::readBit(StreamSrc* src, void* data, u32 bits)
     dataU8[size] |= lastByte & ~mask;
 }
 
-// NON_MATCHING: Potential wrong imlementation https://decomp.me/scratch/jCek1
 void BinaryStreamFormat::readString(StreamSrc* src, BufferedSafeString* str, u32 size)
 {
     u32 remainingSize = 0;
