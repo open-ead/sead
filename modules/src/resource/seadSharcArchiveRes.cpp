@@ -66,6 +66,16 @@ struct SharcArchiveRes::HandleInner
     u32 x;
 };
 
+static SharcArchiveRes::HandleInner* getHandleInner_(HandleBuffer* handle, bool create_new = false)
+{
+    static_assert(sizeof(SharcArchiveRes::HandleInner) <= sizeof(HandleBuffer));
+    if (create_new)
+        return new (handle) SharcArchiveRes::HandleInner;
+    return reinterpret_cast<SharcArchiveRes::HandleInner*>(handle);
+}
+
+
+
 SharcArchiveRes::SharcArchiveRes()
     : ArchiveRes(), mArchiveBlockHeader(NULL), mFATBlockHeader(NULL), mFNTBlock(NULL),
       mDataBlock(NULL)
@@ -81,7 +91,7 @@ SharcArchiveRes::SharcArchiveRes()
 
 SharcArchiveRes::~SharcArchiveRes() {}
 
-const void* SharcArchiveRes::getFileImpl_(const SafeString& file_path, FileInfo* file_info) const
+const void* SharcArchiveRes::getFileImpl_(const SafeString& file_path, FileInfo* file_info) SEAD_ARCHIVERES_CONST_TOKEN
 {
     s32 id = convertPathToEntryIDImpl_(file_path);
     if (id < 0)
@@ -90,7 +100,7 @@ const void* SharcArchiveRes::getFileImpl_(const SafeString& file_path, FileInfo*
     return getFileFastImpl_(id, file_info);
 }
 
-const void* SharcArchiveRes::getFileFastImpl_(s32 entry_id, FileInfo* file_info) const
+const void* SharcArchiveRes::getFileFastImpl_(s32 entry_id, FileInfo* file_info) SEAD_ARCHIVERES_CONST_TOKEN
 {
     if (entry_id < 0 || entry_id >= mFATEntrys.size())
         return NULL;
@@ -112,7 +122,7 @@ const void* SharcArchiveRes::getFileFastImpl_(s32 entry_id, FileInfo* file_info)
     return mDataBlock + start;
 }
 
-s32 SharcArchiveRes::convertPathToEntryIDImpl_(const SafeString& file_path) const
+s32 SharcArchiveRes::convertPathToEntryIDImpl_(const SafeString& file_path) SEAD_ARCHIVERES_CONST_TOKEN
 {
     u32 hash = calcHash32(file_path, Endian::toHostU32(mEndianType, mFATBlockHeader->hash_key));
 
@@ -165,7 +175,7 @@ bool SharcArchiveRes::setCurrentDirectoryImpl_(const SafeString&)
     return false;
 }
 
-bool SharcArchiveRes::openDirectoryImpl_(HandleBuffer* handle, const SafeString& path) const
+bool SharcArchiveRes::openDirectoryImpl_(HandleBuffer* handle, const SafeString& path) SEAD_ARCHIVERES_CONST_TOKEN
 {
     if (path.isEmpty() || path == "/")
     {
@@ -177,12 +187,12 @@ bool SharcArchiveRes::openDirectoryImpl_(HandleBuffer* handle, const SafeString&
     return false;
 }
 
-bool SharcArchiveRes::closeDirectoryImpl_(HandleBuffer*) const
+bool SharcArchiveRes::closeDirectoryImpl_(HandleBuffer*) SEAD_ARCHIVERES_CONST_TOKEN
 {
     return true;
 }
 
-u32 SharcArchiveRes::readDirectoryImpl_(HandleBuffer* handle_, DirectoryEntry* entry, u32 num) const
+u32 SharcArchiveRes::readDirectoryImpl_(HandleBuffer* handle_, DirectoryEntry* entry, u32 num) SEAD_ARCHIVERES_CONST_TOKEN
 {
     auto* handle = getHandleInner_(handle_);
     u32 count = 0;
@@ -303,16 +313,8 @@ bool SharcArchiveRes::prepareArchive_(const void* archive)
     return true;
 }
 
-SharcArchiveRes::HandleInner* SharcArchiveRes::getHandleInner_(HandleBuffer* handle,
-                                                               bool create_new) const
-{
-    static_assert(sizeof(HandleInner) <= sizeof(HandleBuffer));
-    if (create_new)
-        return new (handle) HandleInner;
-    return reinterpret_cast<HandleInner*>(handle);
-}
-
-bool SharcArchiveRes::isExistFileImpl_(const SafeString& path) const
+#if SEAD_ARCHIVERES_ISEXISTFILEIMPL
+bool SharcArchiveRes::isExistFileImpl_(const SafeString& path) SEAD_ARCHIVERES_CONST_TOKEN
 {
     const u32 hash = calcHash32(path, Endian::toHostU32(mEndianType, mFATBlockHeader->hash_key));
     const u32 size = mFATEntrys.size();
@@ -323,4 +325,5 @@ bool SharcArchiveRes::isExistFileImpl_(const SafeString& path) const
 #endif
     return id != -1;
 }
+#endif
 }  // namespace sead
