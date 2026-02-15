@@ -29,7 +29,8 @@ public:
     s32 getLoadDataAlignment() const override;
     void doCreate_(u8* buf, u32, Heap*) override;
 
-    const void* getFile(const SafeString& file_path, FileInfo* info = nullptr) SEAD_ARCHIVERES_CONST_TOKEN
+    const void* getFile(const SafeString& file_path,
+                        FileInfo* info = nullptr) SEAD_ARCHIVERES_CONST_TOKEN
     {
         SEAD_ASSERT(mEnable);
         return getFileImpl_(file_path, info);
@@ -66,27 +67,38 @@ public:
         return openDirectoryImpl_(handle, dir);
     }
 
-    bool closeDirectory(HandleBuffer* handle) SEAD_ARCHIVERES_CONST_TOKEN { return closeDirectoryImpl_(handle); }
+    bool closeDirectory(HandleBuffer* handle) SEAD_ARCHIVERES_CONST_TOKEN
+    {
+        return closeDirectoryImpl_(handle);
+    }
 
-    u32 readDirectory(HandleBuffer* handle, DirectoryEntry* entries, u32 num) SEAD_ARCHIVERES_CONST_TOKEN
+    u32 readDirectory(HandleBuffer* handle, DirectoryEntry* entries,
+                      u32 num) SEAD_ARCHIVERES_CONST_TOKEN
     {
         return readDirectoryImpl_(handle, entries, num);
     }
 
 #if SEAD_ARCHIVERES_ISEXISTFILEIMPL
-    bool isExistFile(const SafeString& path) SEAD_ARCHIVERES_CONST_TOKEN { return isExistFileImpl_(path); }
+    bool isExistFile(const SafeString& path) SEAD_ARCHIVERES_CONST_TOKEN
+    {
+        return isExistFileImpl_(path);
+    }
 #endif
 
 protected:
     virtual const void* getFileImpl_(const SafeString& file_path,
                                      FileInfo* file_info = nullptr) SEAD_ARCHIVERES_CONST_TOKEN = 0;
-    virtual const void* getFileFastImpl_(s32 entry_id, FileInfo* file_info) SEAD_ARCHIVERES_CONST_TOKEN = 0;
+    virtual const void* getFileFastImpl_(s32 entry_id,
+                                         FileInfo* file_info) SEAD_ARCHIVERES_CONST_TOKEN = 0;
 #if SEAD_ARCHIVERES_TRYGETFILEPATH
-    virtual bool tryGetFilePathImpl_(SafeString* out_file_path, s32 entry_id) SEAD_ARCHIVERES_CONST_TOKEN = 0;
+    virtual bool tryGetFilePathImpl_(SafeString* out_file_path,
+                                     s32 entry_id) SEAD_ARCHIVERES_CONST_TOKEN = 0;
 #endif
-    virtual s32 convertPathToEntryIDImpl_(const SafeString& file_path) SEAD_ARCHIVERES_CONST_TOKEN = 0;
+    virtual s32
+    convertPathToEntryIDImpl_(const SafeString& file_path) SEAD_ARCHIVERES_CONST_TOKEN = 0;
     virtual bool setCurrentDirectoryImpl_(const SafeString&) = 0;
-    virtual bool openDirectoryImpl_(HandleBuffer* handle, const SafeString& path) SEAD_ARCHIVERES_CONST_TOKEN = 0;
+    virtual bool openDirectoryImpl_(HandleBuffer* handle,
+                                    const SafeString& path) SEAD_ARCHIVERES_CONST_TOKEN = 0;
     virtual bool closeDirectoryImpl_(HandleBuffer* handle) SEAD_ARCHIVERES_CONST_TOKEN = 0;
     virtual u32 readDirectoryImpl_(HandleBuffer* handle, DirectoryEntry* entries,
                                    u32 num) SEAD_ARCHIVERES_CONST_TOKEN = 0;
