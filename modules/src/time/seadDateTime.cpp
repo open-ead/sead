@@ -53,6 +53,7 @@ u64 convertCalendarTimeToSeconds(const CalendarTime::Time& time)
 
 u64 convertCalendarDateTimeToSeconds(const CalendarTime::Date& date, const CalendarTime::Time& time)
 {
+#ifdef SEAD_DEBUG
     const u32 y = date.mYear.getValue();
 
     const s32 m = date.mMonth.getValueOneOrigin();
@@ -68,6 +69,7 @@ u64 convertCalendarDateTimeToSeconds(const CalendarTime::Date& date, const Calen
     const u32 d = date.mDay.getValue();
     SEAD_ASSERT_MSG(d <= num_days, "wrong day, correct range is [1, %d] (when year %4d month %2d)",
                     num_days, y, m);
+#endif
 
     const u32 days_since_1970 = convertCalendarDateToDaysSince1970(date);
     return 3600 * 24 * days_since_1970 + convertCalendarTimeToSeconds(time);
