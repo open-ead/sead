@@ -56,6 +56,7 @@ public:
     virtual bool isConnected() const;
     ControllerAddon* getAddonByOrder(ControllerDefine::AddonId id, int index) const;
     ControllerAddon* getAddon(ControllerDefine::AddonId id) const;
+    ControllerMgr* getMgr() const { return mMgr; }
 
     template <typename T>
     T getAddonAs() const;
