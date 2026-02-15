@@ -19,6 +19,7 @@ void HashCRC32::initialize()
     sInitialized = true;
 }
 
+#if SEAD_HASHCRC_WITHCONTEXT
 u32 HashCRC32::calcHash(const void* ptr, u32 size)
 {
     Context ctx;
@@ -38,6 +39,22 @@ u32 HashCRC32::calcHashWithContext(Context* context, const void* ptr, u32 size)
     return ~hash;
 }
 
+#else
+
+u32 HashCRC32::calcHash(const void* ptr, u32 size)
+{
+    if (!sInitialized)
+        initialize();
+
+    u32 hash = -1;
+    const u8* data = static_cast<const u8*>(ptr);
+    while (size--)
+        hash = sTable[*data++ ^ (hash & 0xFF)] ^ (hash >> 8);
+    return ~hash;
+}
+#endif
+
+#if SEAD_HASHCRC_WITHCONTEXT
 u32 HashCRC32::calcStringHash(const char* str)
 {
     Context ctx;
@@ -55,5 +72,19 @@ u32 HashCRC32::calcStringHashWithContext(Context* context, const char* str)
     context->hash = hash;
     return ~hash;
 }
+
+#else
+
+u32 HashCRC32::calcStringHash(const char* str)
+{
+    if (!sInitialized)
+        initialize();
+
+    u32 hash = -1;
+    while (*str)
+        hash = sTable[*str++ ^ (hash & 0xFF)] ^ (hash >> 8);
+    return ~hash;
+}
+#endif
 
 }  // namespace sead
