@@ -53,9 +53,9 @@ public:
     Curve()
     {
         mInfo.curveType = 0;
+        mInfo.numFloats = 0;
         mInfo.numUse = 0;
         mInfo._1 = 4;
-        mInfo.numFloats = 0;
         mFloats = nullptr;
     }
 
