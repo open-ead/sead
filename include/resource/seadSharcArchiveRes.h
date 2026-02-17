@@ -49,28 +49,33 @@ public:
         u16 reserved;
     };
 
+    struct HandleInner;
+
 public:
     SharcArchiveRes();
     ~SharcArchiveRes() override;
 
     const void* getFileImpl_(const SafeString& file_path,
-                             FileInfo* file_info = NULL) const override;
-    const void* getFileFastImpl_(s32 entry_id, FileInfo* file_info) const override;
+                             FileInfo* file_info = NULL) SEAD_ARCHIVERES_CONST_TOKEN override;
+    const void* getFileFastImpl_(s32 entry_id,
+                                 FileInfo* file_info) SEAD_ARCHIVERES_CONST_TOKEN override;
 #if SEAD_ARCHIVERES_TRYGETFILEPATH
-    bool tryGetFilePathImpl_(SafeString* out_file_path, s32 entry_id) const override;
+    bool tryGetFilePathImpl_(SafeString* out_file_path,
+                             s32 entry_id) SEAD_ARCHIVERES_CONST_TOKEN override;
 #endif
-    s32 convertPathToEntryIDImpl_(const SafeString& file_path) const override;
+    s32 convertPathToEntryIDImpl_(const SafeString& file_path) SEAD_ARCHIVERES_CONST_TOKEN override;
     bool setCurrentDirectoryImpl_(const SafeString&) override;
-    bool openDirectoryImpl_(HandleBuffer* handle, const SafeString& path) const override;
-    bool closeDirectoryImpl_(HandleBuffer* handle) const override;
-    u32 readDirectoryImpl_(HandleBuffer* handle, DirectoryEntry* entry, u32 num) const override;
-    bool isExistFileImpl_(const SafeString& path) const override;
+    bool openDirectoryImpl_(HandleBuffer* handle,
+                            const SafeString& path) SEAD_ARCHIVERES_CONST_TOKEN override;
+    bool closeDirectoryImpl_(HandleBuffer* handle) SEAD_ARCHIVERES_CONST_TOKEN override;
+    u32 readDirectoryImpl_(HandleBuffer* handle, DirectoryEntry* entry,
+                           u32 num) SEAD_ARCHIVERES_CONST_TOKEN override;
+#if SEAD_ARCHIVERES_ISEXISTFILEIMPL
+    bool isExistFileImpl_(const SafeString& path) SEAD_ARCHIVERES_CONST_TOKEN override;
+#endif
     bool prepareArchive_(const void* archive) override;
 
 protected:
-    struct HandleInner;
-    HandleInner* getHandleInner_(HandleBuffer* handle, bool create = false) const;
-
     static const u32 cArchiveVersion = 0x100;
     static const u32 cArchiveEntryMax = 0x3fff;
     static const u32 cFileNameTableAlign = 4;
