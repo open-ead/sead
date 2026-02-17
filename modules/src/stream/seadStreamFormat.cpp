@@ -68,6 +68,7 @@ f32 BinaryStreamFormat::readF32(StreamSrc* src, Endian::Types endian)
     return Endian::toHostF32(endian, &rawValue);
 }
 
+// NOTE: Leaves higher bits of last byte of data at their previous value
 void BinaryStreamFormat::readBit(StreamSrc* src, void* data, u32 bits)
 {
     u8* dataU8 = static_cast<u8*>(data);
@@ -87,6 +88,8 @@ void BinaryStreamFormat::readBit(StreamSrc* src, void* data, u32 bits)
     dataU8[size] |= lastByte & ~mask;
 }
 
+// NOTE: If size > str->getBufferSize(), it wraps around and starts reading to the start again.
+// if size > str->getBufferSize()*2, the second iteration continues writing out-of-bounds.
 void BinaryStreamFormat::readString(StreamSrc* src, BufferedSafeString* str, u32 size)
 {
     u32 remainingSize = 0;
@@ -104,10 +107,7 @@ void BinaryStreamFormat::readString(StreamSrc* src, BufferedSafeString* str, u32
         str->trim(str->getBufferSize() - 1);
 
     if (remainingSize != 0)
-    {
-        // Note: what happens if remaining size is bigger than the buffer?
         src->read(str->getBuffer(), remainingSize);
-    }
 }
 
 u32 BinaryStreamFormat::readMemBlock(StreamSrc* src, void* buffer, u32 size)
@@ -169,6 +169,7 @@ void BinaryStreamFormat::writeF32(StreamSrc* src, Endian::Types endian, f32 valu
     src->write(&rawValue, sizeof(f32));
 }
 
+// NOTE: Writes extra bits in last byte into stream normally
 void BinaryStreamFormat::writeBit(StreamSrc* src, const void* data, u32 bits)
 {
     const u8* dataU8 = static_cast<const u8*>(data);
