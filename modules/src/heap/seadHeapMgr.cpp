@@ -15,6 +15,8 @@ Arena HeapMgr::sDefaultArena;
 HeapMgr::RootHeaps HeapMgr::sRootHeaps;
 HeapMgr::IndependentHeaps HeapMgr::sIndependentHeaps;
 CriticalSection HeapMgr::sHeapTreeLockCS;
+Atomic<u32> HeapMgr::sHeapCheckTag;
+TickSpan HeapMgr::sSleepSpanAtRemoveCacheFailure;
 
 HeapMgr::HeapMgr() = default;
 HeapMgr::~HeapMgr() = default;
