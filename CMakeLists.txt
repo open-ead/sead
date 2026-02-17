@@ -222,6 +222,7 @@ add_library(sead OBJECT
   include/stream/seadStreamSrc.h
   modules/src/stream/seadRamStream.cpp
   modules/src/stream/seadStream.cpp
+  modules/src/stream/seadStreamFormat.cpp
 
   include/thread/seadAtomic.h
   include/thread/seadCriticalSection.h
