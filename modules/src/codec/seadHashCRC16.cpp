@@ -41,7 +41,6 @@ u32 HashCRC16::calcHashWithContext(Context* context, const void* ptr, u32 size)
 
 #else
 
-// NON_MATCHING: duplicates `mov w0, w8` (https://decomp.me/scratch/ITtEi)
 u32 HashCRC16::calcHash(const void* ptr, u32 size)
 {
     if (!sInitialized)
@@ -49,8 +48,8 @@ u32 HashCRC16::calcHash(const void* ptr, u32 size)
 
     u32 hash = 0;
     const u8* data = static_cast<const u8*>(ptr);
-    while (size--)
-        hash = sTable[*data++ ^ (hash & 0xFF)] ^ (hash >> 8);
+    for (u32 i = 0; i < size; i++)
+        hash = sTable[data[i] ^ (hash & 0xFF)] ^ (hash >> 8);
     return hash;
 }
 #endif

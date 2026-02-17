@@ -48,8 +48,8 @@ u32 HashCRC32::calcHash(const void* ptr, u32 size)
 
     u32 hash = -1;
     const u8* data = static_cast<const u8*>(ptr);
-    while (size--)
-        hash = sTable[*data++ ^ (hash & 0xFF)] ^ (hash >> 8);
+    for (u32 i = 0; i < size; i++)
+        hash = sTable[data[i] ^ (hash & 0xFF)] ^ (hash >> 8);
     return ~hash;
 }
 #endif
