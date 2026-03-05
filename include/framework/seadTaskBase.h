@@ -20,7 +20,7 @@ class TaskEvent;
 class TaskMgr;
 class TaskParameter;
 
-class TaskBase : public TTreeNode<TaskBase*>, public IDisposer, public INamable
+class TaskBase : public IDisposer, public TTreeNode<TaskBase*>, public INamable
 {
     SEAD_RTTI_BASE(TaskBase)
 
