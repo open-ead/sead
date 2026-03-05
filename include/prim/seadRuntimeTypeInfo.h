@@ -172,11 +172,14 @@ public:                                                                         
         return checkDerivedRuntimeTypeInfoStatic(typeInfo) ? this : nullptr;                       \
     }
 
-#define SEAD_RTTI_CHECKDERIVEDRUNTIMETYPEINFO_OVERRIDE_CUSTOM(CLASS)                               \
+#define SEAD_RTTI_CHECKDERIVEDRUNTIMETYPEINFO_OVERRIDE_CUSTOM(CLASS, BASE)                         \
     const CLASS* checkDerivedRuntimeTypeInfo(const sead::RuntimeTypeInfo::Interface* typeInfo)     \
         const override                                                                             \
     {                                                                                              \
-        return checkDerivedRuntimeTypeInfoStatic(typeInfo) ? this : nullptr;                       \
+        return (checkDerivedRuntimeTypeInfoStatic(typeInfo) ||                                     \
+                this->BASE::checkDerivedRuntimeTypeInfo(typeInfo)) ?                               \
+                   this :                                                                          \
+                   nullptr;                                                                        \
     }
 
 #else
@@ -196,11 +199,12 @@ public:                                                                         
         return checkDerivedRuntimeTypeInfoStatic(typeInfo);                                        \
     }
 
-#define SEAD_RTTI_CHECKDERIVEDRUNTIMETYPEINFO_OVERRIDE_CUSTOM(CLASS)                               \
+#define SEAD_RTTI_CHECKDERIVEDRUNTIMETYPEINFO_OVERRIDE_CUSTOM(CLASS, BASE)                         \
     bool checkDerivedRuntimeTypeInfo(const sead::RuntimeTypeInfo::Interface* typeInfo)             \
         const override                                                                             \
     {                                                                                              \
-        return checkDerivedRuntimeTypeInfoStatic(typeInfo);                                        \
+        return checkDerivedRuntimeTypeInfoStatic(typeInfo) ||                                      \
+               this->BASE::checkDerivedRuntimeTypeInfo(typeInfo);                                  \
     }
 
 #endif
@@ -255,13 +259,10 @@ public:                                                                         
                                                                                                    \
     {                                                                                              \
         const sead::RuntimeTypeInfo::Interface* clsTypeInfo = CLASS::getRuntimeTypeInfoStatic();   \
-        if (typeInfo == clsTypeInfo)                                                               \
-            return true;                                                                           \
-                                                                                                   \
-        return BASE::checkDerivedRuntimeTypeInfoStatic(typeInfo);                                  \
+        return typeInfo == clsTypeInfo;                                                            \
     }                                                                                              \
                                                                                                    \
-    SEAD_RTTI_CHECKDERIVEDRUNTIMETYPEINFO_OVERRIDE_CUSTOM(CLASS)                                   \
+    SEAD_RTTI_CHECKDERIVEDRUNTIMETYPEINFO_OVERRIDE_CUSTOM(CLASS, BASE)                             \
                                                                                                    \
     const sead::RuntimeTypeInfo::Interface* getRuntimeTypeInfo() const override                    \
     {                                                                                              \
