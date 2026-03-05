@@ -50,7 +50,7 @@ inline bool IsDerivedFrom(const Type* obj)
 }
 
 /// If the object is a DerivedType or any type that derives from (i.e. inherits) DerivedType,
-/// this returns obj casted to DerivedType* -- otherwise this returns nullptr.
+/// this returns obj cast to DerivedType* -- otherwise this returns nullptr.
 ///
 /// @note This is similar to C++'s dynamic_cast or LLVM's dyn_cast but only works with types
 /// that use the sead RTTI mechanism.
@@ -65,32 +65,39 @@ inline DerivedType* DynamicCast(Type* obj)
 
 }  // namespace sead
 
+#if SEAD_TARGET == SEAD_TARGET_DECOMP
 #if SEAD_RTTI_CHECKDERIVEDRUNTIMETYPEINFO_RETURNS_INSTANCE
+
 #define SEAD_RTTI_CHECKDERIVEDRUNTIMETYPEINFO_BASE(CLASS)                                          \
     virtual const CLASS* checkDerivedRuntimeTypeInfo(                                              \
         const sead::RuntimeTypeInfo::Interface* typeInfo) const                                    \
     {                                                                                              \
         return checkDerivedRuntimeTypeInfoStatic(typeInfo) ? this : nullptr;                       \
     }
+
 #define SEAD_RTTI_CHECKDERIVEDRUNTIMETYPEINFO_OVERRIDE(CLASS)                                      \
     const CLASS* checkDerivedRuntimeTypeInfo(const sead::RuntimeTypeInfo::Interface* typeInfo)     \
         const override                                                                             \
     {                                                                                              \
         return checkDerivedRuntimeTypeInfoStatic(typeInfo) ? this : nullptr;                       \
     }
+
 #else
+
 #define SEAD_RTTI_CHECKDERIVEDRUNTIMETYPEINFO_BASE(CLASS)                                          \
     virtual bool checkDerivedRuntimeTypeInfo(const sead::RuntimeTypeInfo::Interface* typeInfo)     \
         const                                                                                      \
     {                                                                                              \
         return checkDerivedRuntimeTypeInfoStatic(typeInfo);                                        \
     }
+
 #define SEAD_RTTI_CHECKDERIVEDRUNTIMETYPEINFO_OVERRIDE(CLASS)                                      \
     bool checkDerivedRuntimeTypeInfo(const sead::RuntimeTypeInfo::Interface* typeInfo)             \
         const override                                                                             \
     {                                                                                              \
         return checkDerivedRuntimeTypeInfoStatic(typeInfo);                                        \
     }
+
 #endif
 
 /// Use this macro to declare sead RTTI machinery for a base class.
@@ -146,5 +153,121 @@ public:                                                                         
     {                                                                                              \
         return getRuntimeTypeInfoStatic();                                                         \
     }
+
+#elif SEAD_TARGET == SEAD_TARGET_MOD
+#if SEAD_RTTI_CHECKDERIVEDRUNTIMETYPEINFO_RETURNS_INSTANCE
+
+#define SEAD_RTTI_CHECKDERIVEDRUNTIMETYPEINFO_BASE(CLASS)                                          \
+    virtual const CLASS* checkDerivedRuntimeTypeInfo(                                              \
+        const sead::RuntimeTypeInfo::Interface* typeInfo) const;
+
+#define SEAD_RTTI_CHECKDERIVEDRUNTIMETYPEINFO_OVERRIDE(CLASS)                                      \
+    const CLASS* checkDerivedRuntimeTypeInfo(const sead::RuntimeTypeInfo::Interface* typeInfo)     \
+        const override;
+
+#define SEAD_RTTI_CHECKDERIVEDRUNTIMETYPEINFO_BASE_CUSTOM(CLASS)                                   \
+    virtual const CLASS* checkDerivedRuntimeTypeInfo(                                              \
+        const sead::RuntimeTypeInfo::Interface* typeInfo) const                                    \
+    {                                                                                              \
+        return checkDerivedRuntimeTypeInfoStatic(typeInfo) ? this : nullptr;                       \
+    }
+
+#define SEAD_RTTI_CHECKDERIVEDRUNTIMETYPEINFO_OVERRIDE_CUSTOM(CLASS)                               \
+    const CLASS* checkDerivedRuntimeTypeInfo(const sead::RuntimeTypeInfo::Interface* typeInfo)     \
+        const override                                                                             \
+    {                                                                                              \
+        return checkDerivedRuntimeTypeInfoStatic(typeInfo) ? this : nullptr;                       \
+    }
+
+#else
+
+#define SEAD_RTTI_CHECKDERIVEDRUNTIMETYPEINFO_BASE(CLASS)                                          \
+    virtual bool checkDerivedRuntimeTypeInfo(const sead::RuntimeTypeInfo::Interface* typeInfo)     \
+        const;
+
+#define SEAD_RTTI_CHECKDERIVEDRUNTIMETYPEINFO_OVERRIDE(CLASS)                                      \
+    bool checkDerivedRuntimeTypeInfo(const sead::RuntimeTypeInfo::Interface* typeInfo)             \
+        const override;
+
+#define SEAD_RTTI_CHECKDERIVEDRUNTIMETYPEINFO_BASE_CUSTOM(CLASS)                                   \
+    virtual bool checkDerivedRuntimeTypeInfo(const sead::RuntimeTypeInfo::Interface* typeInfo)     \
+        const                                                                                      \
+    {                                                                                              \
+        return checkDerivedRuntimeTypeInfoStatic(typeInfo);                                        \
+    }
+
+#define SEAD_RTTI_CHECKDERIVEDRUNTIMETYPEINFO_OVERRIDE_CUSTOM(CLASS)                               \
+    bool checkDerivedRuntimeTypeInfo(const sead::RuntimeTypeInfo::Interface* typeInfo)             \
+        const override                                                                             \
+    {                                                                                              \
+        return checkDerivedRuntimeTypeInfoStatic(typeInfo);                                        \
+    }
+
+#endif
+
+#define SEAD_RTTI_BASE(CLASS)                                                                      \
+public:                                                                                            \
+    SEAD_RTTI_CHECKDERIVEDRUNTIMETYPEINFO_BASE(CLASS)                                              \
+                                                                                                   \
+    virtual const sead::RuntimeTypeInfo::Interface* getRuntimeTypeInfo() const;
+
+#define SEAD_RTTI_OVERRIDE(CLASS, BASE)                                                            \
+public:                                                                                            \
+    SEAD_RTTI_CHECKDERIVEDRUNTIMETYPEINFO_OVERRIDE(CLASS)                                          \
+                                                                                                   \
+    const sead::RuntimeTypeInfo::Interface* getRuntimeTypeInfo() const override;
+
+#define SEAD_RTTI_BASE_CUSTOM(CLASS)                                                               \
+public:                                                                                            \
+    static const sead::RuntimeTypeInfo::Interface* getRuntimeTypeInfoStatic()                      \
+    {                                                                                              \
+        static const sead::RuntimeTypeInfo::Root typeInfo;                                         \
+        return &typeInfo;                                                                          \
+    }                                                                                              \
+                                                                                                   \
+    static bool checkDerivedRuntimeTypeInfoStatic(                                                 \
+        const sead::RuntimeTypeInfo::Interface* typeInfo)                                          \
+    {                                                                                              \
+        const sead::RuntimeTypeInfo::Interface* clsTypeInfo = CLASS::getRuntimeTypeInfoStatic();   \
+        return typeInfo == clsTypeInfo;                                                            \
+    }                                                                                              \
+                                                                                                   \
+    SEAD_RTTI_CHECKDERIVEDRUNTIMETYPEINFO_BASE_CUSTOM(CLASS)                                       \
+                                                                                                   \
+    virtual const sead::RuntimeTypeInfo::Interface* getRuntimeTypeInfo() const                     \
+    {                                                                                              \
+        return getRuntimeTypeInfoStatic();                                                         \
+    }
+
+/// Use this macro to declare sead RTTI machinery for a derived class.
+/// @param CLASS The name of the class.
+/// @param BASE The name of the base class of CLASS.
+#define SEAD_RTTI_OVERRIDE_CUSTOM(CLASS, BASE)                                                     \
+public:                                                                                            \
+    static const sead::RuntimeTypeInfo::Interface* getRuntimeTypeInfoStatic()                      \
+    {                                                                                              \
+        static const sead::RuntimeTypeInfo::Derive<BASE> typeInfo;                                 \
+        return &typeInfo;                                                                          \
+    }                                                                                              \
+                                                                                                   \
+    static bool checkDerivedRuntimeTypeInfoStatic(                                                 \
+        const sead::RuntimeTypeInfo::Interface* typeInfo)                                          \
+                                                                                                   \
+    {                                                                                              \
+        const sead::RuntimeTypeInfo::Interface* clsTypeInfo = CLASS::getRuntimeTypeInfoStatic();   \
+        if (typeInfo == clsTypeInfo)                                                               \
+            return true;                                                                           \
+                                                                                                   \
+        return BASE::checkDerivedRuntimeTypeInfoStatic(typeInfo);                                  \
+    }                                                                                              \
+                                                                                                   \
+    SEAD_RTTI_CHECKDERIVEDRUNTIMETYPEINFO_OVERRIDE_CUSTOM(CLASS)                                   \
+                                                                                                   \
+    const sead::RuntimeTypeInfo::Interface* getRuntimeTypeInfo() const override                    \
+    {                                                                                              \
+        return getRuntimeTypeInfoStatic();                                                         \
+    }
+
+#endif
 
 #endif  // SEAD_RUNTIMETYPEINFO_H_
