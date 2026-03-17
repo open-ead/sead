@@ -316,7 +316,6 @@ f32 TextStreamFormat::readF32(StreamSrc* src, [[maybe_unused]] Endian::Types end
     return value;
 }
 
-// NON_MATCHING: https://decomp.me/scratch/PKNGF
 void TextStreamFormat::readBit(StreamSrc* src, void* data, u32 bits)
 {
     ScopedLock<Mutex> lock(&sMutex);
@@ -327,13 +326,13 @@ void TextStreamFormat::readBit(StreamSrc* src, void* data, u32 bits)
     if (!bitStr.comparen("0b", 2))
         bitStr = bitStr.getPart(2);
 
-    u32 bitCount = 0;
     u8 currentByte = 0;
-    u32 length = bitStr.calcLength();
-    for (u32 i = 0; bitCount < bits && i < length + 1; i++)
+    u32 bitCount = 0;
+    const auto& end = bitStr.end();
+    for (auto it = bitStr.begin(); end != it && bitCount < bits; ++it)
     {
         currentByte <<= 1;
-        if (bitStr.at(i) == '1')
+        if (*it == '1')
             currentByte |= 1;
 
         if ((++bitCount & 7) == 0)
