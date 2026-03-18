@@ -79,6 +79,8 @@ public:
 class TextStreamFormat : public StreamFormat
 {
 public:
+    TextStreamFormat();
+
     u8 readU8(StreamSrc* src, Endian::Types endian) override;
     u16 readU16(StreamSrc* src, Endian::Types endian) override;
     u32 readU32(StreamSrc* src, Endian::Types endian) override;
@@ -108,6 +110,11 @@ public:
     void skip(StreamSrc* src, u32 offset) override;
     void flush(StreamSrc* src) override;
     void rewind(StreamSrc* src) override;
+
+private:
+    void getNextData_(sead::StreamSrc* src);
+
+    FixedSafeString<128> mEntryTerminator;
 };
 
 }  // namespace sead
