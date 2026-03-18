@@ -517,9 +517,9 @@ void TextStreamFormat::writeString(StreamSrc* src, const SafeString& str, u32 si
     src->write(&quotes, 1);
 }
 
-inline s32 toBase64Size(u32 size)
+inline u32 toBase64Size(u32 size)
 {
-    s32 bytes = size / 3;
+    u32 bytes = size / 3;
     if (size % 3 != 0)
         bytes++;
     return bytes * 4;
@@ -531,11 +531,11 @@ void TextStreamFormat::writeMemBlock(StreamSrc* src, const void* buffer, u32 siz
     ScopedLock<Mutex> lock(&sMutex);
     sTextData.clear();
 
-    if (toBase64Size(size) + 1 < sTextData.getBufferSize())
+    if (toBase64Size(size) + 1 < (u32)sTextData.getBufferSize())
     {
         char* textBuffer = sTextData.getBuffer();
 
-        textBuffer[toBase64Size(size)] = SafeString::cNullChar;
+        textBuffer[toBase64Size(size)] = '\0';
         Base64::encode(textBuffer, buffer, size, false);
         u32 length = sTextData.calcLength();
 
