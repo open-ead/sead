@@ -37,16 +37,17 @@ inline void FreeList::setWork(void* work, s32 elem_size, s32 num)
     SEAD_ASSERT(elem_size > 0 && elem_size % cPtrSize == 0);
     SEAD_ASSERT(num > 0);
 
-    const s32 idx_multiplier = elem_size / cPtrSize;
-    void** const ptrs = new (work) void*[num * idx_multiplier];
+    const s32 nodeSize = elem_size / cPtrSize;
+    FreeList::Node* nodes = reinterpret_cast<FreeList::Node*>(work);
 
-    mFree = new (work) Node;
+    mFree = &nodes[0];
 
     // Create the linked list.
     for (s32 i = 0; i < num - 1; ++i)
-        new (&ptrs[i * idx_multiplier]) Node{new (&ptrs[(i + 1) * idx_multiplier]) Node};
+        nodes[i * nodeSize].nextFree = &nodes[(i + 1) * nodeSize];
 
-    new (&ptrs[(num - 1) * idx_multiplier]) Node{nullptr};
+    // TODO: Check why casting is necessary
+    nodes[(s32)((u32)(num - 1) * nodeSize)].nextFree = nullptr;
 
     mWork = work;
 }
