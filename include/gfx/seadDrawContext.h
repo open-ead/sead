@@ -12,7 +12,7 @@ class DrawContext
     SEAD_RTTI_BASE(DrawContext)
 public:
     DrawContext();
-    virtual ~DrawContext() = default;
+    virtual ~DrawContext();
 
     nn::gfx::CommandBuffer* getCommandBuffer() { return &mCommandBuffer; }
 

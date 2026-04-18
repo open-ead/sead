@@ -113,7 +113,6 @@ add_library(sead OBJECT
   modules/src/gfx/nvn/seadDebugFontMgrNvn.cpp
   modules/src/gfx/seadCamera.cpp
   modules/src/gfx/seadColor.cpp
-  modules/src/gfx/seadDrawContext.cpp
   modules/src/gfx/seadDrawLockContext.cpp
   modules/src/gfx/seadFrameBuffer.cpp
   modules/src/gfx/seadGraphics.cpp
@@ -138,7 +137,6 @@ add_library(sead OBJECT
 
   include/math/seadBoundBox.h
   include/math/seadBoundBox.hpp
-  include/math/seadGeometry.h
   include/math/seadMathBase.h
   include/math/seadMathCalcCommon.h
   include/math/seadMathCalcCommon.hpp
@@ -158,11 +156,12 @@ add_library(sead OBJECT
   include/math/seadVectorCalcCommon.hpp
   include/math/seadVectorFwd.h
   modules/src/math/seadBoundBox.cpp
-  modules/src/math/seadGeometry.cpp
   modules/src/math/seadMathCalcCommon.cpp
   modules/src/math/seadMatrix.cpp
   modules/src/math/seadQuat.cpp
   modules/src/math/seadVector.cpp
+
+  include/geom/seadLine.h
 
   include/mc/seadCoreInfo.h
   include/mc/seadJob.h
