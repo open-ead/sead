@@ -14,9 +14,30 @@ inline Quat<T>::Quat(T w_, T x_, T y_, T z_)
 }
 
 template <typename T>
-inline Quat<T>& Quat<T>::operator*=(const Quat<T>& t)
+inline Quat<T>& Quat<T>::operator+=(const Quat& other)
 {
-    QuatCalcCommon<T>::setMul(*this, *this, t);
+    QuatCalcCommon<T>::add(*this, *this, other);
+    return *this;
+}
+
+template <typename T>
+inline Quat<T>& Quat<T>::operator-=(const Quat& other)
+{
+    QuatCalcCommon<T>::sub(*this, *this, other);
+    return *this;
+}
+
+template <typename T>
+inline Quat<T>& Quat<T>::operator*=(const Quat& other)
+{
+    QuatCalcCommon<T>::setMul(*this, *this, other);
+    return *this;
+}
+
+template <typename T>
+inline Quat<T>& Quat<T>::operator*=(T t)
+{
+    QuatCalcCommon<T>::setMulScalar(*this, *this, t);
     return *this;
 }
 
@@ -27,38 +48,27 @@ inline T Quat<T>::length() const
 }
 
 template <typename T>
+inline T Quat<T>::squaredLength() const
+{
+    return QuatCalcCommon<T>::squaredLength(*this);
+}
+
+template <typename T>
 inline T Quat<T>::normalize()
 {
     return QuatCalcCommon<T>::normalize(*this);
 }
 
 template <typename T>
-inline T Quat<T>::dot(const Self& q)
+inline T Quat<T>::dot(const Quat& q) const
 {
     return QuatCalcCommon<T>::dot(*this, q);
 }
 
-// reference?
-// conjugate(q) / dot(q)?
 template <typename T>
-inline void Quat<T>::inverse(Self* q)
+inline void Quat<T>::inverse()
 {
-    T prod = dot(*this);
-    if (prod > std::numeric_limits<T>::epsilon())
-    {
-        T inv = T(1) / prod;
-        q->w = inv * this->w;
-        q->x = inv * -this->x;
-        q->y = inv * -this->y;
-        q->z = inv * -this->z;
-    }
-    else
-    {
-        q->w = this->w;
-        q->x = -this->x;
-        q->y = -this->y;
-        q->z = -this->z;
-    }
+    QuatCalcCommon<T>::setInverse(*this, *this);
 }
 
 template <typename T>
@@ -74,7 +84,7 @@ inline bool Quat<T>::makeVectorRotation(const Vec3& from, const Vec3& to)
 }
 
 template <typename T>
-inline void Quat<T>::set(const Self& other)
+inline void Quat<T>::set(const Quat& other)
 {
     QuatCalcCommon<T>::set(*this, other);
 }
@@ -92,9 +102,51 @@ inline void Quat<T>::setRPY(T roll, T pitch, T yaw)
 }
 
 template <typename T>
+inline void Quat<T>::setAxisAngle(const Vec3& axis, T angle)
+{
+    QuatCalcCommon<T>::setAxisAngle(*this, axis, angle);
+}
+
+template <typename T>
+inline void Quat<T>::setAxisRadian(const Vec3& axis, T radian)
+{
+    QuatCalcCommon<T>::setAxisRadian(*this, axis, radian);
+}
+
+template <typename T>
+inline void Quat<T>::setAdd(const Quat& a, const Quat& b)
+{
+    QuatCalcCommon<T>::add(*this, a, b);
+}
+
+template <typename T>
+inline void Quat<T>::setSub(const Quat& a, const Quat& b)
+{
+    QuatCalcCommon<T>::sub(*this, a, b);
+}
+
+template <typename T>
+inline void Quat<T>::setMul(const Quat& a, const Quat& b)
+{
+    QuatCalcCommon<T>::setMul(*this, a, b);
+}
+
+template <typename T>
+inline void Quat<T>::setInverse(const Quat& q)
+{
+    QuatCalcCommon<T>::setInverse(*this, q);
+}
+
+template <typename T>
 inline void Quat<T>::calcRPY(Vec3& vec) const
 {
     QuatCalcCommon<T>::calcRPY(vec, *this);
+}
+
+template <typename T>
+inline void Quat<T>::slerpTo(const Quat& q1, const Quat& q2, f32 t)
+{
+    QuatCalcCommon<T>::slerpTo(*this, q1, q2, t);
 }
 
 }  // namespace sead

@@ -765,8 +765,6 @@ inline s32 BufferedSafeStringBase<T>::rstripUnprintableAsciiChars()
 template <typename T>
 inline s32 BufferedSafeStringBase<T>::trim(s32 trim_length)
 {
-    T* mutableString = getMutableStringTop_();
-
     if (trim_length >= mBufferSize)
     {
         SEAD_ASSERT_MSG(false, "trim_length(%d) out of bounds.  [0, %d)", trim_length, mBufferSize);
@@ -779,6 +777,7 @@ inline s32 BufferedSafeStringBase<T>::trim(s32 trim_length)
         trim_length = 0;
     }
 
+    T* mutableString = getMutableStringTop_();
     mutableString[trim_length] = SafeStringBase<T>::cNullChar;
     return trim_length;
 }

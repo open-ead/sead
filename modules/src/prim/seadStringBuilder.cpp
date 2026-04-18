@@ -335,7 +335,7 @@ s32 StringBuilder::formatImpl_(char* s, s32 n, const char* format, va_list args)
 template <>
 s32 WStringBuilder::formatImpl_(char16* s, s32 n, const char16* format, va_list args)
 {
-    const s32 ret = StringUtil::vsnw16printf(s, n, format, args);
+    const s32 ret = StringUtil::vsw16printf(s, n, format, args);
     if (ret >= 0 && ret < n)
         return ret;
     s[n - 1] = WSafeString::cNullChar;

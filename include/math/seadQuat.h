@@ -12,7 +12,6 @@ template <typename T>
 struct Quat : public Policies<T>::QuatBase
 {
 private:
-    typedef Quat<T> Self;
     typedef Vector3<T> Vec3;
 
 public:
@@ -29,32 +28,41 @@ public:
         return *this;
     }
 
-    friend Quat operator*(const Quat& a, T t)
+    Quat& operator+=(const Quat& other);
+    friend Quat operator+(const Quat& a, const Quat& b)
     {
-        auto result = a;
-        result *= t;
-        return result;
+        Quat o;
+        QuatCalcCommon<T>::add(o, a, b);
+        return o;
+    }
+
+    Quat& operator-=(const Quat& other);
+    friend Quat operator-(const Quat& a, const Quat& b)
+    {
+        Quat o;
+        QuatCalcCommon<T>::sub(o, a, b);
+        return o;
+    }
+
+    friend Quat operator*(const Quat& q, T t)
+    {
+        Quat o;
+        QuatCalcCommon<T>::setMulScalar(o, q, t);
+        return o;
     }
 
     friend Quat operator*(const Quat& a, const Quat& b)
     {
-        auto result = a;
-        result *= b;
-        return result;
+        Quat o;
+        QuatCalcCommon<T>::setMul(o, a, b);
+        return o;
     }
 
-    friend Quat operator*(T t, const Quat& a) { return operator*(a, t); }
+    friend Quat operator*(T t, const Quat& q) { return operator*(q, t); }
 
     Quat& operator*=(const Quat& t);
 
-    Quat& operator*=(T t)
-    {
-        this->w *= t;
-        this->x *= t;
-        this->y *= t;
-        this->z *= t;
-        return *this;
-    }
+    Quat& operator*=(T t);
 
     bool operator==(const Quat& rhs) const
     {
@@ -62,16 +70,24 @@ public:
     }
 
     T length() const;
+    T squaredLength() const;
     T normalize();
-    T dot(const Self& q);
-    void inverse(Self* q);
+    T dot(const Quat& q) const;
+    void inverse();
 
     void makeUnit();
     bool makeVectorRotation(const Vec3& from, const Vec3& to);
-    void set(const Self& other);
+    void set(const Quat& other);
     void set(T w, T x, T y, T z);
     void setRPY(T roll, T pitch, T yaw);
+    void setAxisAngle(const Vec3& axis, T angle);
+    void setAxisRadian(const Vec3& axis, T radian);
+    void setAdd(const Quat& a, const Quat& b);
+    void setSub(const Quat& a, const Quat& b);
+    void setMul(const Quat& a, const Quat& b);
+    void setInverse(const Quat& q);
     void calcRPY(Vec3& rpy) const;
+    void slerpTo(const Quat& q1, const Quat& q2, f32 t);
 
     static const Quat unit;
 };

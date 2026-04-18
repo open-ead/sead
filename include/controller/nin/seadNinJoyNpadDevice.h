@@ -33,15 +33,19 @@ public:
 
     static_assert(sizeof(VibrationThread) == 0x298);
 
+    struct SixAxisState
+    {
+        nn::hid::SixAxisSensorState state[16];
+    };
+    static_assert(sizeof(SixAxisState) == 0x600);
+
     struct NpadState
     {
-        nn::hid::NpadBaseState mState;
-        u8 _28[0x258];
+        SafeArray<nn::hid::NpadBaseState, 16> mStates;
         s32 mSixAxisDeviceNum;
         s32 mVibrationDeviceNum;
         SafeArray<nn::hid::SixAxisSensorHandle, 2> mSixAxisSensorHandles;
-        SafeArray<nn::hid::SixAxisSensorState, 2> mSixAxisSensorStates;
-        u8 _288[0xb40];
+        SafeArray<SixAxisState, 2> mSixAxisSensorStates;
         SafeArray<nn::hid::VibrationDeviceHandle, 2> mVibrationDeviceHandles;
     };
 
@@ -62,6 +66,8 @@ public:
     void swapNpadAssignment(s32, s32);
     void disconnectNpad(s32);
     void sendVibrationValue(s32, s32, const nn::hid::VibrationValue&);
+
+    nn::hid::NpadJoyHoldType getNpadJoyHoldType() const { return mNpadJoyHoldType; }
 
     const NpadState& getNpadState(s32 idx) { return mNpadStates[idx]; }
 

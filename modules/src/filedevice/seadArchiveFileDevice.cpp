@@ -117,7 +117,11 @@ bool ArchiveFileDevice::doIsExistFile_(bool* exists, const SafeString& path)
         return false;
     }
 
+#if SEAD_ARCHIVERES_ISEXISTFILEIMPL
     *exists = mArchive->isExistFile(path);
+#else
+    *exists = mArchive->getFile(path) != nullptr;
+#endif
     return true;
 }
 

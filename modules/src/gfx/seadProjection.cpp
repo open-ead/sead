@@ -7,10 +7,18 @@
 namespace sead
 {
 Projection::Projection()
-    : mDirty(true), mDeviceDirty(true), mDevicePosture(Graphics::getDefaultDevicePosture()),
-      mDeviceZScale(Graphics::getDefaultDeviceZScale()),
-      mDeviceZOffset(Graphics::getDefaultDeviceZOffset())
 {
+    mDevicePosture = Graphics::sDefaultDevicePosture;
+    mDeviceZScale = Graphics::sDefaultDeviceZScale;
+    mDeviceZOffset = Graphics::sDefaultDeviceZOffset;
+}
+
+void Projection::updateAttributesForDirectProjection() {}
+
+const Matrix44f& Projection::getProjectionMatrix() const
+{
+    updateMatrixImpl_();
+    return mMatrix;
 }
 
 void Projection::updateMatrixImpl_() const
@@ -29,10 +37,10 @@ void Projection::updateMatrixImpl_() const
     }
 }
 
-const Matrix44f& Projection::getProjectionMatrix() const
+Matrix44f* Projection::getProjectionMatrixMutable()
 {
     updateMatrixImpl_();
-    return mMatrix;
+    return &mMatrix;
 }
 
 const Matrix44f& Projection::getDeviceProjectionMatrix() const
@@ -41,28 +49,42 @@ const Matrix44f& Projection::getDeviceProjectionMatrix() const
     return mDeviceMatrix;
 }
 
-void Projection::project(Vector2f* dst, const Vector3f& camera_pos, const Viewport& viewport) const
+void Projection::cameraPosToScreenPos(Vector3f* screen_pos, const Vector3f& camera_pos) const
 {
-    Vector3f temp;
-    doScreenPosToCameraPosTo(&temp, camera_pos);
-    viewport.project(dst, temp);
+    screen_pos->setMul(getProjectionMatrix(), camera_pos);
 }
 
-void Projection::unproject(Vector3f* dst, const Vector3f& screenPos, const Camera& camera) const
+void Projection::screenPosToCameraPos(Vector3f* camera_pos, const Vector3f& screen_pos) const
 {
-    doScreenPosToCameraPosTo(dst, screenPos);
-    camera.cameraPosToWorldPosByMatrix(dst, screenPos);
+    doScreenPosToCameraPosTo(camera_pos, screen_pos);
+}
+
+void Projection::screenPosToCameraPos(Vector3f* camera_pos, const Vector2f& screen_pos) const
+{
+    screenPosToCameraPos(camera_pos, {screen_pos.x, screen_pos.y, 0.0f});
+}
+
+void Projection::project(Vector2f* dst, const Vector3f& camera_pos, const Viewport& viewport) const
+{
+    Vector3f screen_pos;
+    cameraPosToScreenPos(&screen_pos, camera_pos);
+    viewport.project(dst, screen_pos);
+}
+
+void Projection::unproject(Vector3f* worldPos, const Vector3f& screenPos,
+                           const Camera& camera) const
+{
+    doScreenPosToCameraPosTo(worldPos, screenPos);
+    camera.cameraPosToWorldPosByMatrix(worldPos, screenPos);
 }
 
 void Projection::unprojectRay(Ray<Vector3f>* dst, const Vector3f& screenPos,
                               const Camera& camera) const
 {
-    Vector3f newVec;
-    doScreenPosToCameraPosTo(&dst->position, screenPos);
-    camera.unprojectRayByMatrix(dst, newVec);
+    Vector3f cameraPos;
+    screenPosToCameraPos(&cameraPos, screenPos);
+    camera.unprojectRayByMatrix(dst, cameraPos);
 }
-
-void Projection::updateAttributesForDirectProjection() {}
 
 void Projection::doScreenPosToCameraPosTo(Vector3f* dst, const Vector3f& screen_pos) const
 {

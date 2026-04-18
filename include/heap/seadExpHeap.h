@@ -28,13 +28,19 @@ public:
     {
     };
 
-    static ExpHeap* create(size_t size, const SafeString& name, Heap* parent, s32 alignment,
-                           HeapDirection direction, bool);
-    static ExpHeap* create(void* address, size_t size, const SafeString& name, bool);
+    static ExpHeap* create(size_t size, const SafeString& name, Heap* parent,
+                           s32 alignment = sizeof(void*),
+                           HeapDirection direction = cHeapDirection_Forward,
+                           bool enable_lock = false);
+    static ExpHeap* create(void* address, size_t size, const SafeString& name,
+                           bool enable_lock = false);
 
-    static ExpHeap* tryCreate(size_t size, const SafeString& name, Heap* parent, s32 alignment,
-                              HeapDirection direction, bool);
-    static ExpHeap* tryCreate(void* address, size_t size, const SafeString& name, bool);
+    static ExpHeap* tryCreate(size_t size, const SafeString& name, Heap* parent,
+                              s32 alignment = sizeof(void*),
+                              HeapDirection direction = cHeapDirection_Forward,
+                              bool enable_lock = false);
+    static ExpHeap* tryCreate(void* address, size_t size, const SafeString& name,
+                              bool enable_lock = false);
 
     static size_t getManagementAreaSize(s32);
 

@@ -245,6 +245,8 @@ public:
 
     void lockDrawContext();
     void unlockDrawContext();
+    void initHostIO();
+    void initializeDrawLockContext(Heap*);
 
 protected:
     Thread* mContextHolderThread;
@@ -252,7 +254,6 @@ protected:
     CriticalSection mContextCriticalSection;
 
     static Graphics* sInstance;
-
     static DevicePosture sDefaultDevicePosture;
     static f32 sDefaultDeviceZScale;
     static f32 sDefaultDeviceZOffset;

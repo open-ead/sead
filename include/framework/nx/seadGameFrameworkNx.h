@@ -50,6 +50,8 @@ public:
 
     static_assert(sizeof(CreateArg) == 0x48);
 
+    static void initialize(const Framework::InitializeArg&);
+
     GameFrameworkNx(const CreateArg&);
     ~GameFrameworkNx() override;
 

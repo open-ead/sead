@@ -33,6 +33,7 @@ public:
     using Base = typename Policies<T>::Vec3Base;
     using Mtx33 = typename Policies<T>::Mtx33Base;
     using Mtx34 = typename Policies<T>::Mtx34Base;
+    using Mtx44 = typename Policies<T>::Mtx44Base;
     using Quat = typename Policies<T>::QuatBase;
 
     static void add(Base& o, const Base& a, const Base& b);
@@ -41,6 +42,8 @@ public:
     static void mul(Base& o, const Mtx33& m, const Base& a);
     /// Apply a transformation `m` (rotation then translation) to the vector `a`.
     static void mul(Base& o, const Mtx34& m, const Base& a);
+    /// Apply a transformation `m` (rotation, translation, homogenous coord) to the vector `a`.
+    static void mul(Base& o, const Mtx44& m, const Base& a);
 
     /// Apply a rotation `m` to the vector `a`.
     static void rotate(Base& o, const Mtx33& m, const Base& a);
