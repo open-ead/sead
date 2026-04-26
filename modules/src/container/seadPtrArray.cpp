@@ -96,7 +96,7 @@ void PtrArrayImpl::erase(s32 pos, s32 count)
 void PtrArrayImpl::reverse()
 {
     s32 size = mPtrNum / 2;
-    for (s32 i = 0; i < size; ++i)
+    for (s32 i = 0; i < size; i++)
         swap(mPtrNum - i - 1, i);
 }
 
@@ -104,7 +104,7 @@ void PtrArrayImpl::reverse()
 void PtrArrayImpl::shuffle(Random* random)
 {
     SEAD_ASSERT(random);
-    for (s32 i = mPtrNum - 1; i > 0; --i)
+    for (s32 i = mPtrNum - 1; i > 0; i--)
         swap(i, random->getS32Range(0, i + 1));
 }
 
@@ -149,7 +149,7 @@ void PtrArrayImpl::insertArray(s32 idx, void* array, s32 arrayLength, s32 elemen
 
     createVacancy(idx, arrayLength);
 
-    for (s32 i = 0; i < arrayLength; ++i)
+    for (s32 i = 0; i < arrayLength; i++)
         mPtrs[idx + i] = (u8*)array + (elementSize * i);
 
     mPtrNum += arrayLength;
@@ -168,7 +168,7 @@ void PtrArrayImpl::sort(CompareCallbackImpl cmp)
     do
     {
         s32 lastSwapForward = left;
-        for (s32 i = left; i < right; ++i)
+        for (s32 i = left; i < right; i++)
         {
             if (cmp(ptrs[i], ptrs[i + 1]) > 0)
             {
@@ -184,7 +184,7 @@ void PtrArrayImpl::sort(CompareCallbackImpl cmp)
             break;
 
         s32 lastSwapBackward = right;
-        for (s32 i = right; i > left; --i)
+        for (s32 i = right; i > left; i--)
         {
             if (cmp(ptrs[i], ptrs[i - 1]) < 0)
             {
