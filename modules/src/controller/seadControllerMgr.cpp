@@ -84,7 +84,6 @@ void ControllerMgr::finalizeDefault()
     finalize();
 }
 
-// NON_MATCHING: swapped ldr / ldrsw on second loop check
 void ControllerMgr::calc()
 {
     for (auto it = mDevices.begin(); it != mDevices.end(); ++it)
