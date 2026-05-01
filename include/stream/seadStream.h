@@ -72,7 +72,7 @@ private:
     f64 readF64BitImpl_(u32 integerBits, u32 fractionalBits);
 };
 
-class WriteStream : public ReadStream
+class WriteStream : public Stream
 {
 public:
     ~WriteStream() override
