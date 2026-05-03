@@ -53,4 +53,84 @@ void FileDeviceStreamSrc::setFileHandle(sead::FileHandle* fileHandle)
     }
 }
 
+FileDeviceWriteStream::FileDeviceWriteStream(Stream::Modes mode)
+{
+    setSrc(&src);
+    setMode(mode);
+}
+
+FileDeviceWriteStream::FileDeviceWriteStream(StreamFormat* format)
+{
+    setSrc(&src);
+    setUserFormat(format);
+}
+
+FileDeviceWriteStream::FileDeviceWriteStream(FileHandle* fileHandle, Stream::Modes mode)
+    : src(fileHandle)
+{
+    setSrc(&src);
+    setMode(mode);
+}
+
+FileDeviceWriteStream::FileDeviceWriteStream(FileHandle* fileHandle, StreamFormat* format)
+    : src(fileHandle)
+{
+    setSrc(&src);
+    setUserFormat(format);
+}
+
+FileDeviceWriteStream::~FileDeviceWriteStream()
+{
+    flush();
+    mSrc = nullptr;
+}
+
+void FileDeviceWriteStream::setFileHandle(sead::FileHandle* fileHandle)
+{
+    if (src.getFileHandle())
+    {
+        flush();
+        rewind();
+    }
+    src.setFileHandle(fileHandle);
+}
+
+FileDeviceReadStream::FileDeviceReadStream(Stream::Modes mode)
+{
+    setSrc(&src);
+    setMode(mode);
+}
+
+FileDeviceReadStream::FileDeviceReadStream(StreamFormat* format)
+{
+    setSrc(&src);
+    setUserFormat(format);
+}
+
+FileDeviceReadStream::FileDeviceReadStream(FileHandle* fileHandle, Stream::Modes mode)
+    : src(fileHandle)
+{
+    setSrc(&src);
+    setMode(mode);
+}
+
+FileDeviceReadStream::FileDeviceReadStream(FileHandle* fileHandle, StreamFormat* format)
+    : src(fileHandle)
+{
+    setSrc(&src);
+    setUserFormat(format);
+}
+
+FileDeviceReadStream::~FileDeviceReadStream()
+{
+    mSrc = nullptr;
+}
+
+void FileDeviceReadStream::setFileHandle(sead::FileHandle* fileHandle)
+{
+    if (src.getFileHandle())
+        rewind();
+
+    src.setFileHandle(fileHandle);
+}
 }  // namespace sead
