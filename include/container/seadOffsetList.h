@@ -171,6 +171,7 @@ public:
         {
             mPtr = static_cast<T*>(PtrUtil::addOffset(mNextNode, -mOffset));
             mNextNode = mNextNode->next();
+
             return *this;
         }
 
