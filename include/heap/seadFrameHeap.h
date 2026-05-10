@@ -14,10 +14,14 @@ public:
         void* mTailPtr;
     };
 
-    static FrameHeap* tryCreate(size_t size, const SafeString& name, Heap* parent, s32,
-                                HeapDirection direction, bool);
-    static FrameHeap* create(size_t size, const SafeString& name, Heap* parent, s32,
-                             HeapDirection direction, bool);
+    static FrameHeap* tryCreate(size_t size, const SafeString& name, Heap* parent,
+                                s32 alignment = sizeof(void*),
+                                HeapDirection direction = cHeapDirection_Forward,
+                                bool enable_lock = false);
+    static FrameHeap* create(size_t size, const SafeString& name, Heap* parent,
+                             s32 alignment = sizeof(void*),
+                             HeapDirection direction = cHeapDirection_Forward,
+                             bool enable_lock = false);
 
     static size_t getManagementAreaSize(s32);
 
