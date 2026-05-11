@@ -69,10 +69,13 @@ public:
     void writeBit(StreamSrc* src, const void* data, u32 bits) override;
     void writeString(StreamSrc* src, const SafeString& str, u32 size) override;
     void writeMemBlock(StreamSrc* src, const void* buffer, u32 size) override;
-    void writeDecorationText(StreamSrc* src, const SafeString& text) override;
-    void writeNullChar(StreamSrc* src) override;
+    void writeDecorationText([[maybe_unused]] StreamSrc* src,
+                             [[maybe_unused]] const SafeString& text) override
+    {
+    }
+    void writeNullChar([[maybe_unused]] StreamSrc* src) override {}
     void skip(StreamSrc* src, u32 offset) override;
-    void flush(StreamSrc* src) override;
+    void flush([[maybe_unused]] StreamSrc* src) override {}
     void rewind(StreamSrc* src) override;
 };
 

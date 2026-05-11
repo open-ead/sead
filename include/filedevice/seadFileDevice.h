@@ -301,10 +301,16 @@ public:
 
     s32 getLastRawError() const;
 
-    virtual void traceFilePath(const SafeString& path) const;
-    virtual void traceDirectoryPath(const SafeString& path) const;
-    virtual void resolveFilePath(BufferedSafeString* out, const SafeString& path) const;
-    virtual void resolveDirectoryPath(BufferedSafeString* out, const SafeString& path) const;
+    virtual void traceFilePath(const SafeString& path) const { doTracePath_(path); }
+    virtual void traceDirectoryPath(const SafeString& path) const { doTracePath_(path); }
+    virtual void resolveFilePath(BufferedSafeString* out, const SafeString& path) const
+    {
+        doResolvePath_(out, path);
+    }
+    virtual void resolveDirectoryPath(BufferedSafeString* out, const SafeString& path) const
+    {
+        doResolvePath_(out, path);
+    }
     virtual bool isMatchDevice_(const HandleBase* handle) const;
 
 #ifdef SWITCH

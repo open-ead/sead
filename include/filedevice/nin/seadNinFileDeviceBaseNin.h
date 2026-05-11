@@ -17,7 +17,7 @@ protected:
     struct FileHandleInner;
     struct DirectoryHandleInner;
 
-    bool doIsAvailable_() const override;
+    bool doIsAvailable_() const override { return true; }
     FileDevice* doOpen_(FileHandle* handle, const SafeString& path, FileOpenFlag flag) override;
     bool doClose_(FileHandle* handle) override;
     bool doFlush_(FileHandle* handle) override;

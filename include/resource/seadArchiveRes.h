@@ -26,7 +26,7 @@ public:
     ArchiveRes() : DirectResource(), mEnable(false) {}
     ~ArchiveRes() override = default;
 
-    s32 getLoadDataAlignment() const override;
+    s32 getLoadDataAlignment() const override { return 0x80; }
     void doCreate_(u8* buf, u32, Heap*) override;
 
     const void* getFile(const SafeString& file_path,
