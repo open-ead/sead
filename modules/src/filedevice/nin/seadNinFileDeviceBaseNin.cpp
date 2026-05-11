@@ -24,11 +24,6 @@ NinFileDeviceBase::NinFileDeviceBase(const SafeString& name, const SafeString& m
 {
 }
 
-bool NinFileDeviceBase::doIsAvailable_() const
-{
-    return true;
-}
-
 // NON_MATCHING: inverted branching for should_set_size
 FileDevice* NinFileDeviceBase::doOpen_(FileHandle* handle, const SafeString& path,
                                        FileDevice::FileOpenFlag flag)

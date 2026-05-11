@@ -22,8 +22,6 @@ ControllerMgr::ControllerMgr(const TaskConstructArg& arg)
     mDevices.initOffset(offsetof(ControlDevice, mListNode));
 }
 
-ControllerMgr::~ControllerMgr() = default;
-
 void ControllerMgr::prepare()
 {
     auto* parameter = DynamicCast<Parameter>(mParameter);
