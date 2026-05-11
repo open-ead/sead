@@ -14,7 +14,7 @@ public:
     float getHeight() const override;
     float getWidth() const override;
     float getCharWidth(char16_t c) const override;
-    u32 getEncoding() const override;
+    u32 getEncoding() const override { return 2; }
     u32 getMaxDrawNum() const override;
     void begin(DrawContext* ctx) const override;
     void end(DrawContext* ctx) const override;
@@ -53,7 +53,7 @@ public:
     float getHeight() const override;
     float getWidth() const override;
     float getCharWidth(char16_t c) const override;
-    u32 getEncoding() const override;
+    u32 getEncoding() const override { return 2; }
     u32 getMaxDrawNum() const override;
     void begin(DrawContext* ctx) const override;
     void end(DrawContext* ctx) const override;

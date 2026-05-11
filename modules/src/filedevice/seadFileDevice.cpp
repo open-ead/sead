@@ -194,26 +194,6 @@ FileDevice::~FileDevice()
         FileDeviceMgr::instance()->unmount(this);
 }
 
-void FileDevice::traceFilePath(const SafeString& path) const
-{
-    doTracePath_(path);
-}
-
-void FileDevice::traceDirectoryPath(const SafeString& path) const
-{
-    doTracePath_(path);
-}
-
-void FileDevice::resolveFilePath(BufferedSafeString* out, const SafeString& path) const
-{
-    doResolvePath_(out, path);
-}
-
-void FileDevice::resolveDirectoryPath(BufferedSafeString* out, const SafeString& path) const
-{
-    doResolvePath_(out, path);
-}
-
 bool FileDevice::isMatchDevice_(const HandleBase* handle) const
 {
     return handle->mDevice == this;

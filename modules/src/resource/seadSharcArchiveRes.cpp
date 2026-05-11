@@ -189,10 +189,6 @@ bool SharcArchiveRes::openDirectoryImpl_(HandleBuffer* handle,
     return false;
 }
 
-bool SharcArchiveRes::closeDirectoryImpl_(HandleBuffer*) SEAD_ARCHIVERES_CONST_TOKEN
-{
-    return true;
-}
 
 u32 SharcArchiveRes::readDirectoryImpl_(HandleBuffer* handle_, DirectoryEntry* entry,
                                         u32 num) SEAD_ARCHIVERES_CONST_TOKEN

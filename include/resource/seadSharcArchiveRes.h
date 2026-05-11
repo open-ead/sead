@@ -67,7 +67,11 @@ public:
     bool setCurrentDirectoryImpl_(const SafeString&) override;
     bool openDirectoryImpl_(HandleBuffer* handle,
                             const SafeString& path) SEAD_ARCHIVERES_CONST_TOKEN override;
-    bool closeDirectoryImpl_(HandleBuffer* handle) SEAD_ARCHIVERES_CONST_TOKEN override;
+    bool
+    closeDirectoryImpl_([[maybe_unused]] HandleBuffer* handle) SEAD_ARCHIVERES_CONST_TOKEN override
+    {
+        return true;
+    }
     u32 readDirectoryImpl_(HandleBuffer* handle, DirectoryEntry* entry,
                            u32 num) SEAD_ARCHIVERES_CONST_TOKEN override;
 #if SEAD_ARCHIVERES_ISEXISTFILEIMPL

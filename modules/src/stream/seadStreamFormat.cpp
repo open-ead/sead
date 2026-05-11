@@ -202,19 +202,10 @@ void BinaryStreamFormat::writeMemBlock(StreamSrc* src, const void* buffer, u32 s
     src->write(buffer, size);
 }
 
-void BinaryStreamFormat::writeDecorationText([[maybe_unused]] StreamSrc* src,
-                                             [[maybe_unused]] const SafeString& text)
-{
-}
-
-void BinaryStreamFormat::writeNullChar([[maybe_unused]] StreamSrc* src) {}
-
 void BinaryStreamFormat::skip(StreamSrc* src, u32 offset)
 {
     src->skip(offset);
 }
-
-void BinaryStreamFormat::flush([[maybe_unused]] StreamSrc* src) {}
 
 void BinaryStreamFormat::rewind(StreamSrc* src)
 {

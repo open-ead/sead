@@ -50,10 +50,10 @@ public:
     };
 
     explicit Controller(ControllerMgr* mgr);
-    virtual ~Controller();
+    virtual ~Controller() = default;
 
     virtual void calc();
-    virtual bool isConnected() const;
+    virtual bool isConnected() const { return true; }
     ControllerAddon* getAddonByOrder(ControllerDefine::AddonId id, int index) const;
     ControllerAddon* getAddon(ControllerDefine::AddonId id) const;
     ControllerMgr* getMgr() const { return mMgr; }

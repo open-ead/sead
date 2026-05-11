@@ -13,8 +13,6 @@ struct ArchiveFileDevice::ArchiveFileHandle
     u32 mPos;
 };
 
-ArchiveFileDevice::ArchiveFileDevice(ArchiveRes* res) : FileDevice("arc"), mArchive(res) {}
-
 u8* ArchiveFileDevice::tryLoadWithEntryID(s32 id, FileDevice::LoadArg& arg)
 {
     SEAD_ASSERT_MSG(mPermission, "Device permission error.");

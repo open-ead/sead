@@ -43,7 +43,7 @@ public:
 public:
     ControllerMgr();
     explicit ControllerMgr(const TaskConstructArg& arg);
-    ~ControllerMgr() override;
+    ~ControllerMgr() override = default;
 
     void prepare() override;
     void calc() override;

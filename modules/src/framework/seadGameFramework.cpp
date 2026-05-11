@@ -145,11 +145,4 @@ void GameFramework::unlockFrameDrawContext()
 
 void GameFramework::initHostIO_() {}
 
-void GameFramework::saveScreenShot(const SafeString&) {}
-
-bool GameFramework::isScreenShotBusy() const
-{
-    return false;
-}
-
 }  // namespace sead

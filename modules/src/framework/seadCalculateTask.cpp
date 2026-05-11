@@ -13,4 +13,6 @@ CalculateTask::CalculateTask(const TaskConstructArg& arg, const char* name) : Ta
 }
 
 CalculateTask::~CalculateTask() = default;
+
+void CalculateTask::calc() {}
 }  // namespace sead
