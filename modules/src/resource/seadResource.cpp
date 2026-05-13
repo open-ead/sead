@@ -1,7 +1,9 @@
 #include <filedevice/seadFileDeviceMgr.h>
+#include <filedevice/seadFileDeviceStreamSrc.h>
 #include <math/seadMathCalcCommon.h>
 #include <prim/seadPtrUtil.h>
 #include <resource/seadResource.h>
+#include <stream/seadRamStream.h>
 
 namespace sead
 {
@@ -32,6 +34,15 @@ void DirectResource::create(u8* buffer, u32 bufferSize, u32 allocSize, bool allo
     mSettingFlag.changeBit(0, allocated);
 
     doCreate_(buffer, bufferSize, heap);
+}
+
+IndirectResource::IndirectResource() = default;
+
+IndirectResource::~IndirectResource() = default;
+
+void IndirectResource::create(sead::ReadStream* stream, u32 size, sead::Heap* heap)
+{
+    doCreate_(stream, size, heap);
 }
 
 ResourceFactory::~ResourceFactory()
@@ -90,15 +101,15 @@ Resource* DirectResourceFactoryBase::tryCreate(const ResourceMgr::LoadArg& loadA
         fileLoadArg.alignment =
             Mathi::sign(loadArg.instance_alignment) * resource->getLoadDataAlignment();
 
-    if (loadArg.device != NULL)
+    if (loadArg.device != nullptr)
         data = loadArg.device->tryLoad(fileLoadArg);
     else
         data = FileDeviceMgr::instance()->tryLoad(fileLoadArg);
 
-    if (data == NULL)
+    if (data == nullptr)
     {
         delete resource;
-        return NULL;
+        return nullptr;
     }
 
     resource->create(data, fileLoadArg.read_size, fileLoadArg.roundup_size, fileLoadArg.need_unload,
@@ -110,8 +121,8 @@ Resource* DirectResourceFactoryBase::tryCreateWithDecomp(const ResourceMgr::Load
                                                          Decompressor* decompressor)
 {
     DirectResource* resource = newResource_(loadArg.instance_heap, loadArg.instance_alignment);
-    if (resource == NULL)
-        return NULL;
+    if (resource == nullptr)
+        return nullptr;
 
     u32 outSize = 0;
     u32 outAllocSize = 0;
@@ -127,6 +138,78 @@ Resource* DirectResourceFactoryBase::tryCreateWithDecomp(const ResourceMgr::Load
     }
 
     resource->create(data, outSize, outAllocSize, outAllocated, loadArg.instance_heap);
+    return resource;
+}
+
+Resource* IndirectResourceFactoryBase::create(const ResourceMgr::CreateArg& createArg)
+{
+    IndirectResource* resource = newResource_(createArg.heap, createArg.alignment);
+    if (resource == nullptr)
+        return nullptr;
+
+    RamReadStream stream(createArg.buffer, createArg.file_size, Stream::Modes::Binary);
+    resource->create(&stream, createArg.file_size, createArg.heap);
+
+    return resource;
+}
+
+Resource* IndirectResourceFactoryBase::tryCreate(const ResourceMgr::LoadArg& loadArg)
+{
+    IndirectResource* resource = newResource_(loadArg.instance_heap, loadArg.instance_alignment);
+    if (resource == nullptr)
+        return nullptr;
+
+    FileHandle handle;
+
+    bool isOpen;
+    if (loadArg.device)
+        isOpen =
+            loadArg.device->tryOpen(&handle, loadArg.path, FileDevice::cFileOpenFlag_ReadOnly, 0);
+    else
+        isOpen = FileDeviceMgr::instance()->tryOpen(&handle, loadArg.path,
+                                                    FileDevice::cFileOpenFlag_ReadOnly, 0);
+    if (!isOpen)
+    {
+        delete resource;
+        return nullptr;
+    }
+
+    BufferFileDeviceReadStream stream(&handle, Stream::Modes::Binary);
+    resource->create(&stream, handle.getFileSize(), loadArg.instance_heap);
+
+    if (!handle.tryClose())
+    {
+        delete resource;
+        return nullptr;
+    }
+
+    return resource;
+}
+
+Resource* IndirectResourceFactoryBase::tryCreateWithDecomp(const ResourceMgr::LoadArg& loadArg,
+                                                           Decompressor* decompressor)
+{
+    IndirectResource* resource = newResource_(loadArg.instance_heap, loadArg.instance_alignment);
+    if (resource == nullptr)
+        return nullptr;
+
+    u32 outSize = 0;
+    u32 outAllocSize = 0;
+    bool outAllocated = false;
+
+    u8* data = decompressor->tryDecompFromDevice(loadArg, resource, &outSize, &outAllocSize,
+                                                 &outAllocated);
+
+    if (!data)
+    {
+        delete resource;
+        return nullptr;
+    }
+
+    RamReadStream stream(data, outSize, Stream::Modes::Binary);
+    resource->create(&stream, outSize, loadArg.instance_heap);
+    delete[] data;
+
     return resource;
 }
 
