@@ -66,13 +66,11 @@ add_library(sead OBJECT
   include/filedevice/seadArchiveFileDevice.h
   include/filedevice/seadFileDevice.h
   include/filedevice/seadFileDeviceMgr.h
-  include/filedevice/seadFileDeviceStreamSrc.h
   include/filedevice/seadMainFileDevice.h
   include/filedevice/seadPath.h
   modules/src/filedevice/seadArchiveFileDevice.cpp
   modules/src/filedevice/seadFileDevice.cpp
   modules/src/filedevice/seadFileDeviceMgr.cpp
-  modules/src/filedevice/seadFileDeviceStreamSrc.cpp
   modules/src/filedevice/seadMainFileDevice.cpp
   modules/src/filedevice/seadPath.cpp
 
@@ -218,11 +216,13 @@ add_library(sead OBJECT
   modules/src/resource/seadSZSDecompressor.cpp
 
   include/stream/seadBufferStream.h
+  include/stream/seadFileDeviceStream.h
   include/stream/seadRamStream.h
   include/stream/seadStream.h
   include/stream/seadStreamFormat.h
   include/stream/seadStreamSrc.h
   modules/src/stream/seadBufferStream.cpp
+  modules/src/stream/seadFileDeviceStream.cpp
   modules/src/stream/seadRamStream.cpp
   modules/src/stream/seadStream.cpp
   modules/src/stream/seadStreamFormat.cpp

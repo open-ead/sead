@@ -1,4 +1,4 @@
-#include <filedevice/seadFileDeviceStreamSrc.h>
+#include <stream/seadFileDeviceStream.h>
 
 namespace sead
 {
