@@ -1,8 +1,9 @@
+#include <resource/seadResource.h>
+
 #include <filedevice/seadFileDeviceMgr.h>
-#include <filedevice/seadFileDeviceStreamSrc.h>
 #include <math/seadMathCalcCommon.h>
 #include <prim/seadPtrUtil.h>
-#include <resource/seadResource.h>
+#include <stream/seadFileDeviceStream.h>
 #include <stream/seadRamStream.h>
 
 namespace sead
