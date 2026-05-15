@@ -129,9 +129,9 @@ bool BufferWriteStreamSrc::flush()
     if (mCurrentPos == 0)
         return true;
 
-    bool isDone = mSrc->write(mBuffer, mCurrentPos) >= mCurrentPos;
+    bool success = mSrc->write(mBuffer, mCurrentPos) >= mCurrentPos;
     mCurrentPos = 0;
-    return isDone;
+    return success;
 }
 
 BufferWriteStream::BufferWriteStream(WriteStream* stream, void* buffer, u32 buffer_size)
