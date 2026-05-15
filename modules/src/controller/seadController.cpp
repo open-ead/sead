@@ -15,8 +15,6 @@ Controller::Controller(ControllerMgr* mgr)
     mWrappers.initOffset(offsetof(ControllerWrapperBase, mListNode));
 }
 
-Controller::~Controller() = default;
-
 void Controller::calc()
 {
     u32 prev_hold = getHoldMask();
@@ -41,11 +39,6 @@ void Controller::calc()
 
     for (auto it = mWrappers.begin(); it != mWrappers.end(); ++it)
         it->calc(prev_hold, prev_pointer_on);
-}
-
-bool Controller::isConnected() const
-{
-    return true;
 }
 
 ControllerAddon* Controller::getAddon(ControllerDefine::AddonId id) const

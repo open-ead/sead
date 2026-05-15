@@ -16,12 +16,6 @@ JobQueue::JobQueue()
     mGranularity.fill(8);
 }
 
-bool JobQueue::run(u32, u32* finished_jobs, Worker*)
-{
-    *finished_jobs = 0;
-    return true;
-}
-
 void JobQueue::runAll(u32* finished_jobs)
 {
     const u32 size = getNumJobs();
@@ -106,11 +100,6 @@ void JobQueue::wait()
     }
     if (!isDone_())
         mFinishEvent.wait();
-}
-
-bool JobQueue::isDone_()
-{
-    return mNumDoneJobs == getNumJobs();
 }
 
 // NON_MATCHING: stack
@@ -281,11 +270,6 @@ bool FixedSizeJQ::run(u32 size, u32* finished_jobs, Worker* worker)
 
     *finished_jobs = num_finished;
     return ret;
-}
-
-u32 FixedSizeJQ::getNumJobs() const
-{
-    return mNumJobs;
 }
 
 void FixedSizeJQ::initialize(u32 size, Heap* heap)

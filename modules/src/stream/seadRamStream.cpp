@@ -49,16 +49,6 @@ u32 RamStreamSrc::skip(s32 offset)
     return offset;
 }
 
-void RamStreamSrc::rewind()
-{
-    mCurrentPos = 0;
-}
-
-bool RamStreamSrc::isEOF()
-{
-    return mCurrentPos >= mBufferSize;
-}
-
 RamReadStream::RamReadStream(const void* buffer, u32 buffer_size, Stream::Modes mode)
     : mSrc(const_cast<void*>(buffer), buffer_size)
 {

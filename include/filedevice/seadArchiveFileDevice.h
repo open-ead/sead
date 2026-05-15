@@ -10,7 +10,9 @@ class ArchiveFileDevice : public FileDevice
 {
     SEAD_RTTI_OVERRIDE(ArchiveFileDevice, FileDevice)
 public:
-    explicit ArchiveFileDevice(ArchiveRes* archive_res);
+    explicit ArchiveFileDevice(ArchiveRes* archive_res) : FileDevice("arc"), mArchive(archive_res)
+    {
+    }
     ~ArchiveFileDevice() override = default;
 
     u8* tryLoadWithEntryID(s32 id, LoadArg& arg);

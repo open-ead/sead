@@ -167,11 +167,6 @@ void DebugFontMgrJis1Nvn::end(DrawContext*) const {}
 
 // missing print and searchCharIndexFormCharCode_
 
-u32 DebugFontMgrJis1Nvn::getEncoding() const
-{
-    return 2;
-}
-
 SEAD_SINGLETON_DISPOSER_IMPL(DebugFontMgrNvn)
 DebugFontMgrNvn::~DebugFontMgrNvn() = default;
 
@@ -232,8 +227,4 @@ void DebugFontMgrNvn::end(DrawContext*) const {}
 
 // missing print and searchCharIndexFormCharCode_
 
-u32 DebugFontMgrNvn::getEncoding() const
-{
-    return 2;
-}
 }  // namespace sead
