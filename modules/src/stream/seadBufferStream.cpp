@@ -11,6 +11,7 @@ BufferReadStreamSrc::BufferReadStreamSrc(StreamSrc* src, void* buffer, u32 buffe
 
 BufferReadStreamSrc::~BufferReadStreamSrc() = default;
 
+// NOTE: cannot take negative `offset`, but expects `mSrc->skip(X)` to work with negatives
 u32 BufferReadStreamSrc::read(void* data, u32 size)
 {
     u32 totalBytesRead = 0;

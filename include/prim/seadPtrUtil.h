@@ -36,7 +36,7 @@ public:
 
     static void* align(const void* ptr, u64 n)
     {
-        const uintptr_t result = (uintptr_t(ptr) + n - 1) & -n;
+        const uintptr_t result = (uintptr_t(ptr) + n - 1) & (~n + 1);
         return reinterpret_cast<void*>(result);
     }
 

@@ -32,10 +32,6 @@ public:
     ~DirectResource() override;
 
     virtual s32 getLoadDataAlignment() const { return 4; }
-    virtual void doCreate_([[maybe_unused]] u8* buffer, [[maybe_unused]] u32 bufferSize,
-                           [[maybe_unused]] Heap* heap)
-    {
-    }
 
     void create(u8* buffer, u32 bufferSize, u32 allocSize, bool allocated, Heap* heap);
 
@@ -62,7 +58,6 @@ class IndirectResource : public Resource
 
 public:
     IndirectResource();
-    ~IndirectResource() override;
 
     void create(sead::ReadStream* stream, u32 size, sead::Heap* heap);
 
