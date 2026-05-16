@@ -1,4 +1,4 @@
-#include <filedevice/seadFileDeviceStreamSrc.h>
+#include <stream/seadFileDeviceStream.h>
 
 namespace sead
 {
@@ -133,4 +133,58 @@ void FileDeviceReadStream::setFileHandle(sead::FileHandle* fileHandle)
 
     src.setFileHandle(fileHandle);
 }
+
+BufferFileDeviceWriteStream::BufferFileDeviceWriteStream(Stream::Modes mode)
+    : FileDeviceWriteStream(mode), mBufferSrc(getSrc(), PtrUtil::align(mBuffer, 0x20), 0x100)
+{
+    setSrc(&mBufferSrc);
+}
+
+BufferFileDeviceWriteStream::BufferFileDeviceWriteStream(StreamFormat* format)
+    : FileDeviceWriteStream(format), mBufferSrc(getSrc(), PtrUtil::align(mBuffer, 0x20), 0x100)
+{
+    setSrc(&mBufferSrc);
+}
+
+BufferFileDeviceWriteStream::BufferFileDeviceWriteStream(FileHandle* fileHandle, Stream::Modes mode)
+    : FileDeviceWriteStream(fileHandle, mode),
+      mBufferSrc(getSrc(), PtrUtil::align(mBuffer, 0x20), 0x100)
+{
+    setSrc(&mBufferSrc);
+}
+
+BufferFileDeviceWriteStream::BufferFileDeviceWriteStream(FileHandle* fileHandle,
+                                                         StreamFormat* format)
+    : FileDeviceWriteStream(fileHandle, format),
+      mBufferSrc(getSrc(), PtrUtil::align(mBuffer, 0x20), 0x100)
+{
+    setSrc(&mBufferSrc);
+}
+
+BufferFileDeviceReadStream::BufferFileDeviceReadStream(Stream::Modes mode)
+    : FileDeviceReadStream(mode), mBufferSrc(getSrc(), PtrUtil::align(mBuffer, 0x20), 0x100)
+{
+    setSrc(&mBufferSrc);
+}
+
+BufferFileDeviceReadStream::BufferFileDeviceReadStream(StreamFormat* format)
+    : FileDeviceReadStream(format), mBufferSrc(getSrc(), PtrUtil::align(mBuffer, 0x20), 0x100)
+{
+    setSrc(&mBufferSrc);
+}
+
+BufferFileDeviceReadStream::BufferFileDeviceReadStream(FileHandle* fileHandle, Stream::Modes mode)
+    : FileDeviceReadStream(fileHandle, mode),
+      mBufferSrc(getSrc(), PtrUtil::align(mBuffer, 0x20), 0x100)
+{
+    setSrc(&mBufferSrc);
+}
+
+BufferFileDeviceReadStream::BufferFileDeviceReadStream(FileHandle* fileHandle, StreamFormat* format)
+    : FileDeviceReadStream(fileHandle, format),
+      mBufferSrc(getSrc(), PtrUtil::align(mBuffer, 0x20), 0x100)
+{
+    setSrc(&mBufferSrc);
+}
+
 }  // namespace sead
