@@ -7,8 +7,9 @@ namespace
 class EnumParseTextCriticalSection
 {
 public:
-    EnumParseTextCriticalSection() {
-        (void) getObject();  // force initialization of sObject
+    EnumParseTextCriticalSection()
+    {
+        (void)getObject();  // force initialization of sObject
     }
     sead::CriticalSection* getObject()
     {
@@ -21,8 +22,9 @@ static EnumParseTextCriticalSection sEnumParseTextCriticalSection;
 class EnumInitValueArrayCriticalSection
 {
 public:
-    EnumInitValueArrayCriticalSection() {
-        (void) getObject();  // force initialization of sObject
+    EnumInitValueArrayCriticalSection()
+    {
+        (void)getObject();  // force initialization of sObject
     }
     sead::CriticalSection* getObject()
     {
