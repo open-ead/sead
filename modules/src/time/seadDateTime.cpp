@@ -126,6 +126,26 @@ DateTime::DateTime(const CalendarTime::Year& year, const CalendarTime::Month& mo
     setUnixTime(year, month, day, hour, minute, second);
 }
 
+DateTime::DateTime(const DateTimeUtc& unused)
+{
+#ifdef NNSDK
+    initializeSystemTimeModule();
+
+    nn::time::CalendarTime ctime;
+    // BUG: uses uninitialized `mUnixTime` instead of parameter `time`.
+    nn::time::PosixTime time = {mUnixTime};
+    nn::time::ToCalendarTime(&ctime, nullptr, time);
+
+    const auto year = CalendarTime::Year(ctime.year);
+    const auto month = CalendarTime::Month::makeFromValueOneOrigin(ctime.month);
+    const auto day = CalendarTime::Day(ctime.day);
+    const auto hour = CalendarTime::Hour(ctime.hour);
+    const auto minute = CalendarTime::Minute(ctime.minute);
+    const auto second = CalendarTime::Second(ctime.second);
+    setUnixTime(year, month, day, hour, minute, second);
+#endif
+}
+
 u64 DateTime::setNow()
 {
 #ifdef NNSDK
