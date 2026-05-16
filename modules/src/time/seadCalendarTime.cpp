@@ -19,7 +19,7 @@ const CalendarTime::Month CalendarTime::cMonth_Nov = 11;
 const CalendarTime::Month CalendarTime::cMonth_Dec = 12;
 
 const CalendarTime::Year CalendarTime::cDefaultYear = 1970;
-const CalendarTime::Month CalendarTime::cDefaultMonth = 1;
+const CalendarTime::Month CalendarTime::cDefaultMonth = CalendarTime::cMonth_Jan;
 const CalendarTime::Day CalendarTime::cDefaultDay = 1;
 const CalendarTime::Hour CalendarTime::cDefaultHour = 0;
 const CalendarTime::Minute CalendarTime::cDefaultMinute = 0;
