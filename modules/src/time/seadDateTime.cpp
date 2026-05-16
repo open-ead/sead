@@ -126,7 +126,7 @@ DateTime::DateTime(const CalendarTime::Year& year, const CalendarTime::Month& mo
     setUnixTime(year, month, day, hour, minute, second);
 }
 
-DateTime::DateTime(const DateTimeUtc& unused)
+DateTime::DateTime([[maybe_unused]] const DateTimeUtc& unused)
 {
 #ifdef NNSDK
     initializeSystemTimeModule();
