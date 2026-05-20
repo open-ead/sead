@@ -275,8 +275,10 @@ typedef Matrix22<f32> Matrix22f;
 typedef Matrix33<f32> Matrix33f;
 typedef Matrix34<f32> Matrix34f;
 typedef Matrix44<f32> Matrix44f;
-
-typedef Matrix34<f32> Matrixf;
+typedef Matrix22<f64> Matrix22d;
+typedef Matrix33<f64> Matrix33d;
+typedef Matrix34<f64> Matrix34d;
+typedef Matrix44<f64> Matrix44d;
 
 template <>
 const Matrix22f Matrix22f::zero;
@@ -303,28 +305,28 @@ template <>
 const Matrix44f Matrix44f::ident;
 
 template <>
-const Matrix22<f64> Matrix22<f64>::zero;
+const Matrix22d Matrix22d::zero;
 
 template <>
-const Matrix22<f64> Matrix22<f64>::ident;
+const Matrix22d Matrix22d::ident;
 
 template <>
-const Matrix33<f64> Matrix33<f64>::zero;
+const Matrix33d Matrix33d::zero;
 
 template <>
-const Matrix33<f64> Matrix33<f64>::ident;
+const Matrix33d Matrix33d::ident;
 
 template <>
-const Matrix34<f64> Matrix34<f64>::zero;
+const Matrix34d Matrix34d::zero;
 
 template <>
-const Matrix34<f64> Matrix34<f64>::ident;
+const Matrix34d Matrix34d::ident;
 
 template <>
-const Matrix44<f64> Matrix44<f64>::zero;
+const Matrix44d Matrix44d::zero;
 
 template <>
-const Matrix44<f64> Matrix44<f64>::ident;
+const Matrix44d Matrix44d::ident;
 
 template <typename T>
 bool operator==(const Matrix34<T>& lhs, const Matrix34<T>& rhs);
