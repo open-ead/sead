@@ -16,6 +16,10 @@ struct Vector2 : public Policies<T>::Vec2Base
     Vector2() {}
     Vector2(const Vector2& other) = default;
     Vector2(T x, T y);
+    template <typename U>
+    Vector2(const Vector2<U>& other) : Vector2((T)other.x, (T)other.y)
+    {
+    }
 
     Vector2& operator=(const Vector2& other);
 
@@ -88,6 +92,10 @@ struct Vector3 : public Policies<T>::Vec3Base
     Vector3() {}
     Vector3(const Vector3& other) = default;
     Vector3(T x, T y, T z);
+    template <typename U>
+    Vector3(const Vector3<U>& other) : Vector3((T)other.x, (T)other.y, (T)other.z)
+    {
+    }
 
     Vector3& operator=(const Vector3& other);
     bool operator==(const Vector3& rhs) const;
@@ -143,6 +151,7 @@ struct Vector3 : public Policies<T>::Vec3Base
     friend Vector3 operator/(const Vector3& a, T t) { return {a.x / t, a.y / t, a.z / t}; }
 
     Vector3 operator-() const { return {-this->x, -this->y, -this->z}; }
+    Vector3 operator~() const { return {~this->x, ~this->y, ~this->z}; }
 
     Vector3 cross(const Vector3& t) const
     {
@@ -204,6 +213,10 @@ struct Vector4 : public Policies<T>::Vec4Base
     Vector4() {}
     Vector4(const Vector4& other) = default;
     Vector4(T x, T y, T z, T w);
+    template <typename U>
+    Vector4(const Vector4<U>& other) : Vector4((T)other.x, (T)other.y, (T)other.z, (T)other.w)
+    {
+    }
 
     Vector4& operator=(const Vector4& other);
 
