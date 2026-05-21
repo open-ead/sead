@@ -2,5 +2,4 @@
 
 namespace sead
 {
-FontBase::~FontBase() = default;
 }  // namespace sead

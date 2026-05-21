@@ -2,8 +2,6 @@
 
 namespace sead
 {
-LogicalFrameBuffer::~LogicalFrameBuffer() = default;
-
 FrameBuffer::~FrameBuffer() = default;
 
 void FrameBuffer::clearMRT(DrawContext*, u32, const Color4f&) const {}
