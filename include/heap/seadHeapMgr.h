@@ -13,7 +13,7 @@
 
 namespace sead
 {
-class HeapMgr : hostio::Node
+class HeapMgr : public hostio::Node
 {
     struct AllocCallbackArg;
     struct CreateCallbackArg;
