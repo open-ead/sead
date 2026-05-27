@@ -13,7 +13,7 @@ class Framework;
 class Heap;
 class NullFaderTask;
 
-class TaskMgr final : sead::hostio::Node
+class TaskMgr final : public sead::hostio::Node
 {
 public:
     struct InitializeArg
