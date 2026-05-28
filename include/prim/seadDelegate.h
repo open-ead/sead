@@ -358,8 +358,8 @@ class LambdaDelegate : public IDelegate
 {
 public:
     explicit LambdaDelegate(Lambda l) : mLambda(std::move(l)) {}
-    auto invoke() override { return mLambda(); }
-    auto operator()() const { return mLambda(); }
+    void invoke() override { mLambda(); }
+    void operator()() const { mLambda(); }
     LambdaDelegate* clone(Heap* heap) const override { return new (heap) LambdaDelegate(*this); }
 
 protected:
@@ -384,8 +384,8 @@ class LambdaDelegate1 : public IDelegate1<A1>
 {
 public:
     explicit LambdaDelegate1(Lambda l) : mLambda(std::move(l)) {}
-    auto invoke(A1 a1) override { return mLambda(a1); }
-    auto operator()(A1 a1) const { return mLambda(a1); }
+    void invoke(A1 a1) override { mLambda(a1); }
+    void operator()(A1 a1) const { mLambda(a1); }
     LambdaDelegate1* clone(Heap* heap) const override { return new (heap) LambdaDelegate1(*this); }
 
 protected:
@@ -413,8 +413,8 @@ class LambdaDelegate2 : public IDelegate2<A1, A2>
 {
 public:
     explicit LambdaDelegate2(Lambda l) : mLambda(std::move(l)) {}
-    auto invoke(A1 a1, A2 a2) override { return mLambda(a1, a2); }
-    auto operator()(A1 a1, A2 a2) const { return mLambda(a1, a2); }
+    void invoke(A1 a1, A2 a2) override { mLambda(a1, a2); }
+    void operator()(A1 a1, A2 a2) const { mLambda(a1, a2); }
     LambdaDelegate2* clone(Heap* heap) const override { return new (heap) LambdaDelegate2(*this); }
 
 protected:
@@ -428,7 +428,10 @@ public:
     explicit LambdaDelegate2R(Lambda l) : mLambda(std::move(l)) {}
     R invoke(A1 a1, A2 a2) override { return mLambda(a1, a2); }
     R operator()(A1 a1, A2 a2) const { return mLambda(a1, a2); }
-    LambdaDelegate2R clone(Heap* heap) const override { return new (heap) LambdaDelegate2R(*this); }
+    LambdaDelegate2R* clone(Heap* heap) const override
+    {
+        return new (heap) LambdaDelegate2R(*this);
+    }
 
 protected:
     Lambda mLambda;
