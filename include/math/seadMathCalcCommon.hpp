@@ -529,6 +529,12 @@ inline T MathCalcCommon<T>::clamp(T value, T low, T high)
 }
 
 template <typename T>
+inline bool MathCalcCommon<T>::isNan(T value)
+{
+    return std::isnan(value);
+}
+
+template <typename T>
 inline bool MathCalcCommon<T>::chase(T* value, T target, T step)
 {
     const T current = *value;
