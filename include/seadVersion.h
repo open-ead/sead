@@ -100,19 +100,19 @@
 #define SEAD_FINDCONTAINHEAPCACHE_FIXED 0
 #define SEAD_THREAD_SETAFFINITY_RELOAD 1
 #elif SEAD_VERSION == SEAD_VERSION_SMM2
-#define SEAD_SAFESTRING_NONVIRTUAL 0  // TODO: figure this out
+#define SEAD_SAFESTRING_NONVIRTUAL 0                  // TODO: figure this out
 #define SEAD_RESOURCEMGR_TRYCREATE_NO_FACTORY_NAME 0  // TODO: figure this out
 #define SEAD_CRITICALSECTION_PURE 0
-#define SEAD_THREADMGR_MOVED_SINGLETON_DISPOSER 0  // TODO: figure this out
-#define SEAD_HEAP_FREEANDGETALLOCATABLESIZE_VIRTUAL 0  // TODO: figure this out
+#define SEAD_THREADMGR_MOVED_SINGLETON_DISPOSER 0                 // TODO: figure this out
+#define SEAD_HEAP_FREEANDGETALLOCATABLESIZE_VIRTUAL 0             // TODO: figure this out
 #define SEAD_RTTI_CHECKDERIVEDRUNTIMETYPEINFO_RETURNS_INSTANCE 0  // TODO: figure this out
-#define SEAD_THREAD_GETFIBER 0  // TODO: figure this out
-#define SEAD_DELEGATE_ISNODUMMY 1  // TODO: figure this out
-#define SEAD_FRAMEBUFFER_BINDCLEAR_UNBIND 0  // TODO: figure this out
-#define SEAD_ARCHIVERES_TRYGETFILEPATH 0  // TODO: figure this out
-#define SEAD_ARCHIVERES_ISEXISTFILEIMPL 1  // TODO: figure this out
-#define SEAD_ARCHIVERES_ISCONST 1  // TODO: figure this out
-#define SEAD_HASHCRC_WITHCONTEXT 1  // TODO: figure this out
+#define SEAD_THREAD_GETFIBER 0                                    // TODO: figure this out
+#define SEAD_DELEGATE_ISNODUMMY 1                                 // TODO: figure this out
+#define SEAD_FRAMEBUFFER_BINDCLEAR_UNBIND 0                       // TODO: figure this out
+#define SEAD_ARCHIVERES_TRYGETFILEPATH 0                          // TODO: figure this out
+#define SEAD_ARCHIVERES_ISEXISTFILEIMPL 1                         // TODO: figure this out
+#define SEAD_ARCHIVERES_ISCONST 1                                 // TODO: figure this out
+#define SEAD_HASHCRC_WITHCONTEXT 1                                // TODO: figure this out
 #define SEAD_HOSTIO_NONVIRTUAL 1
 #define SEAD_FINDCONTAINHEAPCACHE_FIXED 1
 #define SEAD_THREAD_SETAFFINITY_RELOAD 0
