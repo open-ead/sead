@@ -195,6 +195,10 @@ bool FindContainHeapCache::tryRemoveHeap(Heap* heap)
     uintptr_t original;
     if (mHeap.compareExchange(uintptr_t(heap), 0, &original))
         return true;
+#if SEAD_FINDCONTAINHEAPCACHE_FIXED
+    return (original & ~1ul) != uintptr_t(heap);
+#else
     return (original & ~1u) != uintptr_t(heap);
+#endif
 }
 }  // namespace sead
