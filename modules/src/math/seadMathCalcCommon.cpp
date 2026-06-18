@@ -608,6 +608,8 @@ const MathCalcCommon<f32>::LogSample MathCalcCommon<f32>::cLogTbl[256 + 1]{
     {0.6911921501159668, 0.0019550349097698927},
     {0.6931471824645996, 0.0019512200960889459},
 };
+
+// NON_MATCHING: Reg swap https://decomp.me/scratch/dTo1i
 template <typename T>
 T gcdImpl_(T x, T y)
 {
