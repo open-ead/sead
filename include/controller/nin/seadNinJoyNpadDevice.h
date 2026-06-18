@@ -31,7 +31,11 @@ public:
         CriticalSection mCS;
     };
 
+#if SEAD_HOSTIO_NONVIRTUAL
+    static_assert(sizeof(VibrationThread) == 0x290);
+#else
     static_assert(sizeof(VibrationThread) == 0x298);
+#endif
 
     struct SixAxisState
     {
