@@ -69,6 +69,7 @@ struct Vector2 : public Policies<T>::Vec2Base
     T normalize();
 
     bool isZero() const { return *this == zero; }
+    bool isNan() const { return sead::Mathf::isNan(this->x) || sead::Mathf::isNan(this->y); }
 
     static const Vector2 zero;
     static const Vector2 ex;
@@ -190,6 +191,12 @@ struct Vector3 : public Policies<T>::Vec3Base
     void setRotated(const Quat& q, const Vector3& a);
     void setSub(const Vector3& a, const Vector3& b);
 
+    bool isNan() const
+    {
+        return sead::Mathf::isNan(this->x) || sead::Mathf::isNan(this->y) ||
+               sead::Mathf::isNan(this->z);
+    }
+
     static const Vector3 zero;
     static const Vector3 ex;
     static const Vector3 ey;
@@ -243,6 +250,12 @@ struct Vector4 : public Policies<T>::Vec4Base
     T squaredLength() const;
     void set(const Vector4& v);
     void set(T x_, T y_, T z_, T w_);
+
+    bool isNan() const
+    {
+        return sead::Mathf::isNan(this->x) || sead::Mathf::isNan(this->y) ||
+               sead::Mathf::isNan(this->z) || sead::Mathf::isNan(this->w);
+    }
 
     static const Vector4 zero;
     static const Vector4 ex;
