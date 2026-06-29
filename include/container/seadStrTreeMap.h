@@ -62,7 +62,7 @@ public:
 
     bool isEmpty() const { return mSize == 0; }
 
-    bool put(const SafeString& key, const Value& value);
+    bool replace(const SafeString& key, const Value& value);
     Value* insert(const SafeString& key, const Value& value);
     void clear();
 
@@ -128,15 +128,14 @@ inline void StrTreeMap<N, Value>::freeBuffer()
 }
 
 template <s32 N, typename Value>
-inline bool StrTreeMap<N, Value>::put(const SafeString& key, const Value& value)
+inline bool StrTreeMap<N, Value>::replace(const SafeString& key, const Value& value)
 {
     Node* node = find(key);
-    if (node)
-    {
-        node->value() = value;
-        return true;
-    }
-    return false;
+    if (!node)
+        return false;
+
+    node->value() = value;
+    return true;
 }
 
 template <s32 N, typename Value>
