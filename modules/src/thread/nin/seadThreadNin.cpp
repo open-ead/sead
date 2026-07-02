@@ -112,8 +112,13 @@ s32 Thread::getPriority() const
 
 void Thread::setAffinity(const CoreIdMask& affinity)
 {
+#if SEAD_THREAD_SETAFFINITY_RELOAD
     mAffinity = affinity;
     u64 mask = mAffinity;
+#else
+    u64 mask = affinity;
+    mAffinity = affinity;
+#endif
     const auto available_mask = nn::os::GetThreadAvailableCoreMask();
     SEAD_ASSERT_MSG((~u32(available_mask) & mask) == 0, "invalid core mask. ( mask = %ld )", mask);
     nn::os::SetThreadCoreMask(mThreadInner, -1, mask);

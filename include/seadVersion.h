@@ -5,6 +5,7 @@
 #define SEAD_VERSION_SPL3 3
 #define SEAD_VERSION_TOTK 4
 #define SEAD_VERSION_SMBW 5
+#define SEAD_VERSION_SMM2 6
 #define SEAD_VERSION_CUSTOM 0
 
 #ifndef SEAD_VERSION
@@ -39,6 +40,12 @@
 ///     Make most functions in sead::ArchiveRes const
 /// SEAD_HASHCRC_WITHCONTEXT:
 ///     Add calcHashWithContext and calcStringHashWithContext to HashCRC16/32
+/// SEAD_HOSTIO_NONVIRTUAL:
+///     Removes getNodeClassType() and the vtable from hostio::Reflexible and ::Node
+/// SEAD_FINDCONTAINHEAPCACHE_FIXED:
+///     Fixes two bugs on FindContainHeapCache (incomplete locks and 64-bit pointers)
+/// SEAD_THREAD_SETAFFINITY_RELOAD:
+///     Store new affinity into member, then reload instead of reusing parameter
 
 #if SEAD_VERSION == SEAD_VERSION_BOTW
 #define SEAD_SAFESTRING_NONVIRTUAL 0
@@ -54,6 +61,9 @@
 #define SEAD_ARCHIVERES_ISEXISTFILEIMPL 1
 #define SEAD_ARCHIVERES_ISCONST 1
 #define SEAD_HASHCRC_WITHCONTEXT 1
+#define SEAD_HOSTIO_NONVIRTUAL 0
+#define SEAD_FINDCONTAINHEAPCACHE_FIXED 0
+#define SEAD_THREAD_SETAFFINITY_RELOAD 1
 #elif SEAD_VERSION == SEAD_VERSION_SMO
 #define SEAD_SAFESTRING_NONVIRTUAL 0
 #define SEAD_RESOURCEMGR_TRYCREATE_NO_FACTORY_NAME 0
@@ -68,6 +78,9 @@
 #define SEAD_ARCHIVERES_ISEXISTFILEIMPL 0
 #define SEAD_ARCHIVERES_ISCONST 0
 #define SEAD_HASHCRC_WITHCONTEXT 0
+#define SEAD_HOSTIO_NONVIRTUAL 0
+#define SEAD_FINDCONTAINHEAPCACHE_FIXED 0
+#define SEAD_THREAD_SETAFFINITY_RELOAD 1
 #elif SEAD_VERSION == SEAD_VERSION_SPL3 or SEAD_VERSION == SEAD_VERSION_TOTK or                    \
     SEAD_VERSION == SEAD_VERSION_SMBW
 #define SEAD_SAFESTRING_NONVIRTUAL 1
@@ -83,6 +96,26 @@
 #define SEAD_ARCHIVERES_ISEXISTFILEIMPL 1
 #define SEAD_ARCHIVERES_ISCONST 1
 #define SEAD_HASHCRC_WITHCONTEXT 1
+#define SEAD_HOSTIO_NONVIRTUAL 0
+#define SEAD_FINDCONTAINHEAPCACHE_FIXED 0
+#define SEAD_THREAD_SETAFFINITY_RELOAD 1
+#elif SEAD_VERSION == SEAD_VERSION_SMM2
+#define SEAD_SAFESTRING_NONVIRTUAL 0                  // TODO: figure this out
+#define SEAD_RESOURCEMGR_TRYCREATE_NO_FACTORY_NAME 0  // TODO: figure this out
+#define SEAD_CRITICALSECTION_PURE 0
+#define SEAD_THREADMGR_MOVED_SINGLETON_DISPOSER 0                 // TODO: figure this out
+#define SEAD_HEAP_FREEANDGETALLOCATABLESIZE_VIRTUAL 0             // TODO: figure this out
+#define SEAD_RTTI_CHECKDERIVEDRUNTIMETYPEINFO_RETURNS_INSTANCE 0  // TODO: figure this out
+#define SEAD_THREAD_GETFIBER 0                                    // TODO: figure this out
+#define SEAD_DELEGATE_ISNODUMMY 1                                 // TODO: figure this out
+#define SEAD_FRAMEBUFFER_BINDCLEAR_UNBIND 0                       // TODO: figure this out
+#define SEAD_ARCHIVERES_TRYGETFILEPATH 0                          // TODO: figure this out
+#define SEAD_ARCHIVERES_ISEXISTFILEIMPL 1                         // TODO: figure this out
+#define SEAD_ARCHIVERES_ISCONST 1                                 // TODO: figure this out
+#define SEAD_HASHCRC_WITHCONTEXT 1                                // TODO: figure this out
+#define SEAD_HOSTIO_NONVIRTUAL 1
+#define SEAD_FINDCONTAINHEAPCACHE_FIXED 1
+#define SEAD_THREAD_SETAFFINITY_RELOAD 0
 #endif
 
 /// feature-specific macros
