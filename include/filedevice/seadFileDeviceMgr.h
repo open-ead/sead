@@ -72,7 +72,7 @@ private:
 #elif defined(NNSDK)
     u8* mRomCache = nullptr;
     bool mMountedHost = false;
-    bool mMountedSd = false;
+    bool mMountedSd;
 #endif
 };
 

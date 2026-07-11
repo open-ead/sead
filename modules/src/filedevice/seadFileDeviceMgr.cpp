@@ -339,19 +339,9 @@ bool FileDeviceMgr::trySave(FileDevice::SaveArg& arg)
 }
 
 #ifdef NNSDK
-void FileDeviceMgr::mountSaveDataForDebug(Heap*)
-{
-    const auto result = nn::fs::MountSaveDataForDebug("save");
-    SEAD_ASSERT_MSG(
-        result.IsSuccess(),
-        "nn::fs::MountSaveDataForDebug() failed. module = %d desc = %d innervalue = 0x%08x",
-        result.GetModule(), result.GetDescription(), result.GetInnerValueForDebug());
-}
+void FileDeviceMgr::mountSaveDataForDebug(Heap*) {}
 
-void FileDeviceMgr::unmountSaveDataForDebug()
-{
-    nn::fs::Unmount("save");
-}
+void FileDeviceMgr::unmountSaveDataForDebug() {}
 #endif
 
 #ifdef cafe

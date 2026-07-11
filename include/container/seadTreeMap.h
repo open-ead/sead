@@ -452,7 +452,7 @@ inline TreeMapNode<Key>* TreeMapImpl<Key>::findMin(Node* node)
     return node;
 }
 
-// NON_MATCHING: this version matches the LLRB tree implementation and is better optimized
+// The compiler barrier preserves the original recursive-result store schedule.
 template <typename Key>
 inline TreeMapNode<Key>* TreeMapImpl<Key>::eraseMin(Node* node)
 {
@@ -462,10 +462,11 @@ inline TreeMapNode<Key>* TreeMapImpl<Key>::eraseMin(Node* node)
     if (!isRed(node->mLeft) && !isRed(node->mLeft->mLeft))
         node = moveRedLeft(node);
 
-    node->mLeft = eraseMin(node->mLeft);
+    Node* newLeft = eraseMin(node->mLeft);
 #ifdef MATCHING_HACK_NX_CLANG
     asm("");
 #endif
+    node->mLeft = newLeft;
     return fixUp(node);
 }
 

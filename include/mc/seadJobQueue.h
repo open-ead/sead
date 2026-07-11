@@ -36,9 +36,9 @@ public:
     void detachProcessMeter();
 
 private:
-    Buffer<MultiProcessMeterBar<512>> mBars;
+    Buffer<SafeString> mBars;
     Buffer<u32> mInts;
-    MultiProcessMeterBar<1> mProcessMeterBar;
+    SafeString mProcessMeterBar;
 };
 
 class JobQueueLock
@@ -112,15 +112,13 @@ protected:
     CoreIdMask mMask;
     Event mFinishEvent{true};
     SafeArray<u32, 3> mGranularity;
-    SafeArray<u32, 3> mCoreEnabled;
+    SafeArray<volatile u32, 3> mCoreEnabled;
     Atomic<u32> mNumDoneJobs = 0;
 
     Atomic<Status> mStatus = Status::_0;
     const char* mDescription = "NoName";
 
-#ifdef SEAD_DEBUG
     PerfJobQueue mPerf;
-#endif
 };
 
 class FixedSizeJQ : public JobQueue
@@ -155,4 +153,7 @@ protected:
     u32 mNumProcessedJobs;
     bool _230;
 };
+static_assert(sizeof(PerfJobQueue) == 0x30);
+static_assert(sizeof(JobQueue) == 0xB0);
+static_assert(sizeof(FixedSizeJQ) == 0xD0);
 }  // namespace sead

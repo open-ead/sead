@@ -24,7 +24,9 @@ NinFileDeviceBase::NinFileDeviceBase(const SafeString& name, const SafeString& m
 {
 }
 
-// NON_MATCHING: inverted branching for should_set_size
+// NON_MATCHING: every instruction matches except retail uses CBZ w8 for the is-file test while LLVM
+// selects TBZ w8,#0. Signedness and source-branch inversion emitted identical code and were reverted;
+// next hypothesis is the original integer/range-producing helper that prevents bit-test folding.
 FileDevice* NinFileDeviceBase::doOpen_(FileHandle* handle, const SafeString& path,
                                        FileDevice::FileOpenFlag flag)
 {
@@ -64,14 +66,14 @@ FileDevice* NinFileDeviceBase::doOpen_(FileHandle* handle, const SafeString& pat
             return nullptr;
         }
 
-        should_set_size = flag == cFileOpenFlag_Create || !is_file;
-        if (flag == cFileOpenFlag_Create || !is_file)
+        if (flag == cFileOpenFlag_Create)
         {
             if (is_file)
             {
                 mLastError = nn::fs::ResultPathAlreadyExists();
                 return nullptr;
             }
+
             const auto create_result = nn::fs::CreateFile(fs_path.cstr(), 0);
             if (create_result.IsFailure())
             {
@@ -81,6 +83,27 @@ FileDevice* NinFileDeviceBase::doOpen_(FileHandle* handle, const SafeString& pat
                           create_result.GetInnerValueForDebug(), fs_path.cstr());
                 mLastError = create_result;
                 return nullptr;
+            }
+        }
+        else
+        {
+            if (is_file)
+            {
+                should_set_size = false;
+            }
+            else
+            {
+                const auto create_result = nn::fs::CreateFile(fs_path.cstr(), 0);
+                if (create_result.IsFailure())
+                {
+                    SEAD_WARN(
+                        "nn::fs::CreateFile failed. module = %d desc = %d inner_value = 0x%08x "
+                        "path = %s",
+                        create_result.GetModule(), create_result.GetDescription(),
+                        create_result.GetInnerValueForDebug(), fs_path.cstr());
+                    mLastError = create_result;
+                    return nullptr;
+                }
             }
         }
     }

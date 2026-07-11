@@ -10,6 +10,7 @@
 #include <heap/seadHeapMgr.h>
 #include <resource/seadResourceMgr.h>
 #include <time/seadTickSpan.h>
+#include <thread/seadThread.h>
 
 namespace sead
 {
@@ -23,10 +24,13 @@ GameFramework::GameFramework()
     };
 }
 
-// NON_MATCHING: missing body
 GameFramework::~GameFramework()
 {
-    // required for RTTI functions to generate
+    if (mUnk4)
+    {
+        mUnk4->quitAndDestroySingleThread(false);
+        delete mUnk4;
+    }
 }
 
 void GameFramework::startDisplay()

@@ -24,7 +24,7 @@ private:
     class ConstructArg : public TaskConstructArg
     {
     public:
-        ConstructArg() : TaskConstructArg(), mHeapArray() { heap_array = &mHeapArray; }
+        ConstructArg() : TaskConstructArg() { heap_array = &mHeapArray; }
 
     private:
         HeapArray mHeapArray;

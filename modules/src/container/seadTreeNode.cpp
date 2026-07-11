@@ -78,34 +78,18 @@ void TreeNode::detachSubTree()
 
 TreeNode* TreeNode::findRoot()
 {
-    if (!mParent)
-        return this;
-
-    TreeNode* p = mParent;
-    TreeNode* root;
-    do
-    {
-        root = p;
-        SEAD_ASSERT(p != this);
-        p = p->mParent;
-    } while (p);
-    return root;
+    TreeNode* node = this;
+    while (node->mParent)
+        node = node->mParent;
+    return node;
 }
 
 const TreeNode* TreeNode::findRoot() const
 {
-    if (!mParent)
-        return this;
-
-    TreeNode* p = mParent;
-    TreeNode* root;
-    do
-    {
-        root = p;
-        SEAD_ASSERT(p != this);
-        p = p->mParent;
-    } while (p);
-    return root;
+    const TreeNode* node = this;
+    while (node->mParent)
+        node = node->mParent;
+    return node;
 }
 
 void TreeNode::insertAfterSelf(TreeNode* node)

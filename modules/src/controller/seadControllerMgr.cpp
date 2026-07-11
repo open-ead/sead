@@ -10,7 +10,6 @@ namespace sead
 {
 SEAD_TASK_SINGLETON_IMPL(ControllerMgr)
 
-// NON_MATCHING: storing too much 00s into stack (for ConstructArg)
 ControllerMgr::ControllerMgr() : CalculateTask(ConstructArg(), "sead::ControllerMgr")
 {
     mDevices.initOffset(offsetof(ControlDevice, mListNode));
@@ -67,15 +66,11 @@ void ControllerMgr::initializeDefault(Heap* heap)
 void ControllerMgr::finalizeDefault()
 {
 #ifdef NNSDK
-    // NON_MATCHING: missing cbz instruction within loop
-    for (auto& device : mDevices)
+    ControlDevice* device = getControlDevice(ControllerDefine::DeviceId(13));
+    if (device)
     {
-        if (device.getId() == 13)
-        {
-            mDevices.erase(&device);
-            delete &device;
-            break;
-        }
+        mDevices.erase(device);
+        delete device;
     }
 #endif  // cafe
 

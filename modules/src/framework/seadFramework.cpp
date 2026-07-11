@@ -8,7 +8,7 @@
 namespace sead
 {
 Framework::CreateSystemTaskArg::CreateSystemTaskArg()
-    : hostio_parameter(NULL), infloop_detection_span()
+    : hostio_parameter(nullptr), heap(nullptr), infloop_detection_span(), infloop_unk(0x1000)
 {
 }
 
