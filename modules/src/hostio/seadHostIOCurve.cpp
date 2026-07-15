@@ -127,7 +127,7 @@ T curveSinPow2_(f32 t_, const CurveDataInfo*, const T* f)
     return y * y * f[1];
 }
 
-// NON_MATCHING: Exact target size and endpoint pre-indexed load now match; only the compare-side address differs (SUB+indexed LDR instead of ADD pointer+LDUR). Next hypothesis: recover the original count/index wrapper that keeps the doubled index while materializing the compare pointer.
+// NON_MATCHING: something is causing a difference between signed and unsigned
 template <typename T>
 T curveLinear2D_(f32 t_, const CurveDataInfo* info, const T* f)
 {
@@ -207,7 +207,7 @@ T curveHermit2D_(f32 t_, const CurveDataInfo* info, const T* f)
     return 0;
 }
 
-// NON_MATCHING: Exact-size endpoint form recovered; compare-side address still uses a subtracted index rather than the retail pointer-plus-LDUR shape. Next hypothesis: recover the original count/index wrapper shared with curveLinear2D_.
+// NON_MATCHING: signed vs. unsigned, can probably be solved in the same way as curveLinear2D_
 template <typename T>
 T curveStep2D_(f32 t_, const CurveDataInfo* info, const T* f)
 {

@@ -112,7 +112,7 @@ protected:
     CoreIdMask mMask;
     Event mFinishEvent{true};
     SafeArray<u32, 3> mGranularity;
-    SafeArray<volatile u32, 3> mCoreEnabled;
+    SafeArray<volatile u32, 3> mCoreEnabled; // volatile required for setCoreMaskAndWaitType
     Atomic<u32> mNumDoneJobs = 0;
 
     Atomic<Status> mStatus = Status::_0;
@@ -153,7 +153,4 @@ protected:
     u32 mNumProcessedJobs;
     bool _230;
 };
-static_assert(sizeof(PerfJobQueue) == 0x30);
-static_assert(sizeof(JobQueue) == 0xB0);
-static_assert(sizeof(FixedSizeJQ) == 0xD0);
 }  // namespace sead

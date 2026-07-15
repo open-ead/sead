@@ -452,7 +452,6 @@ inline TreeMapNode<Key>* TreeMapImpl<Key>::findMin(Node* node)
     return node;
 }
 
-// The compiler barrier preserves the original recursive-result store schedule.
 template <typename Key>
 inline TreeMapNode<Key>* TreeMapImpl<Key>::eraseMin(Node* node)
 {

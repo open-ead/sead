@@ -333,7 +333,7 @@ u32 SZSDecompressor::getDecompSize(const void* src)
     return Endian::toHostU32(Endian::cBig, BitUtil::bitCastPtr<u32>(src, 4));
 }
 
-// NON_MATCHING: The retail loop carries both the raw decremented header count and a byte-masked copy; current codegen adds two redundant masks.
+// NON_MATCHING
 s32 SZSDecompressor::readHeader_(DecompContext* context, const u8* src, u32 srcSize)
 {
     s32 len = 0;

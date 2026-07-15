@@ -49,16 +49,15 @@ char getLastChar(const SafeString& str)
 }
 }  // namespace
 
-// NON_MATCHING: Exact size and repeated getPart guards are restored with an unsigned index.
-// Search-loop register lifetimes and final slice formation still differ.
+// NON_MATCHING: search-loop register lifetimes and final slice formation differ
 bool Path::getExt(BufferedSafeString* ext, const SafeString& path)
 {
     SEAD_ASSERT_MSG(ext, "destination buffer is null");
 
     ext->trim(0);
 
-    const u32 dot_index = rfindCharIndex(path, '.');
-    if (dot_index == u32(-1))
+    u32 dot_index = rfindCharIndex(path, '.');
+    if (dot_index == 0xFFFFFFFF)
         return false;
 
     if (path.getPart(dot_index).include('/') || path.getPart(dot_index).include('\\'))

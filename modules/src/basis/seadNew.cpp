@@ -26,7 +26,17 @@ void* NewImpl(Heap* heap, size_t size, s32 alignment, bool abortOnFailure)
         }
     }
 
-    return heap->tryAlloc(size, alignment);
+    void* result = heap->tryAlloc(size, alignment);
+    #ifdef SEAD_DEBUG
+    if (!result && abortOnFailure)
+    {
+        SEAD_ASSERT_MSG(
+            false, "alloc failed. size: %zu, allocatable size: %zu, alignment: %d, heap: %s", size,
+            heap->getMaxAllocatableSize(alignment), alignment, heap->getName().cstr());
+        return nullptr;
+    }
+    #endif
+    return result;
 }
 
 void DeleteImpl(void* ptr)

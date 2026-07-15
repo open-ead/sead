@@ -8,7 +8,7 @@
 
 namespace sead
 {
-// NON_MATCHING: Retail keeps the original this base and emits three positive-offset flag stores; Clang rebases this through a writeback store and uses negative offsets. Layout and initialized values match.
+// NON_MATCHING
 JobQueue::JobQueue()
 {
     mCoreEnabled[0] = 0;
@@ -94,7 +94,7 @@ void JobQueue::wait_AT_WORKER()
     }
 }
 
-// NON_MATCHING: Retail preserves separate B.LO and B.NE enum tests sharing one compare; Clang folds the equivalent switch cases into a single range branch.
+// NON_MATCHING: b.hi vs. b.lo and b.ne
 void JobQueue::wait()
 {
     switch (mSyncType)
@@ -113,7 +113,7 @@ void JobQueue::wait()
         mFinishEvent.wait();
 }
 
-// NON_MATCHING: Instruction count and behavior match, but Clang assigns the queue/name live ranges to x19/x20 opposite retail. Next hypothesis is the original SafeString temporary lifetime/order.
+// NON_MATCHING: the original creates a bunch of empty strings somehow
 void PerfJobQueue::initialize(const char* name, Heap* heap)
 {
     mBars.allocBufferAssert(CoreInfo::getNumCores(), heap);
@@ -146,42 +146,42 @@ void PerfJobQueue::reset()
 
 void PerfJobQueue::measureBeginDeque()
 {
+    // placing CoreId in a union prevents the sead enum initialization 
     union UninitializedCoreId
     {
-        CoreId value;
         UninitializedCoreId() {}
-        ~UninitializedCoreId() {}
+        CoreId value;
     } core;
 
-    static_cast<void>(mBars[CoreInfo::getCurrentCoreId()]);
+    mBars[CoreInfo::getCurrentCoreId()];
     core.value = CoreInfo::getCurrentCoreId();
-    static_cast<void>(mInts[core.value]);
+    mInts[core.value];
 }
 
 void PerfJobQueue::measureEndDeque()
 {
-    static_cast<void>(mBars[CoreInfo::getCurrentCoreId()]);
+    mBars[CoreInfo::getCurrentCoreId()];
 }
 
 void PerfJobQueue::measureBeginRun()
 {
+    // placing CoreId in a union prevents the sead enum initialization 
     union UninitializedCoreId
     {
-        CoreId value;
         UninitializedCoreId() {}
-        ~UninitializedCoreId() {}
+        CoreId value;
     } core;
 
-    static_cast<void>(mBars[CoreInfo::getCurrentCoreId()]);
+    mBars[CoreInfo::getCurrentCoreId()];
     core.value = CoreInfo::getCurrentCoreId();
     auto& idx = mInts[core.value];
-    static_cast<void>(getBarColor(idx));
+    getBarColor(idx);
     idx = (idx + 1) % 9;
 }
 
 void PerfJobQueue::measureEndRun()
 {
-    static_cast<void>(mBars[CoreInfo::getCurrentCoreId()]);
+    mBars[CoreInfo::getCurrentCoreId()];
 }
 
 const Color4f& PerfJobQueue::getBarColor(u32 idx) const
@@ -204,7 +204,7 @@ void PerfJobQueue::attachProcessMeter() {}
 
 void PerfJobQueue::detachProcessMeter() {}
 
-// NON_MATCHING: Base JobQueue values and derived fields are correct; the remaining diff inherits the base-constructor this-rebasing/addressing-mode choice.
+// NON_MATCHING:
 FixedSizeJQ::FixedSizeJQ()
 {
     mStatus = Status::_0;
@@ -214,9 +214,8 @@ FixedSizeJQ::FixedSizeJQ()
 
 void FixedSizeJQ::begin() {}
 
-// TODO: Splatoon 2 and BotW sead have a different implementation which checks _230 and the current
+// NON_MATCHING: TODO: Splatoon 2 and BotW sead have a different implementation which checks _230 and the current
 // core number...
-// NON_MATCHING: Retail materializes ret/end/begin before the size tests and assigns different whole-function registers; equivalent nested/source-order rewrites are flattened by Clang. Next hypothesis is the exact original branch nesting around size and mNumJobs.
 bool FixedSizeJQ::run(u32 size, u32* finished_jobs, Worker* worker)
 {
     *finished_jobs = 0;

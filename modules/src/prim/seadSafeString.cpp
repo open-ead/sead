@@ -169,7 +169,7 @@ s32 BufferedSafeStringBase<char16>::appendWithFormat(const char16* format, ...)
     return ret;
 }
 
-// NON_MATCHING: Retail nested forward/backward overlap scans and byte-scaled memory operations are reconstructed. char16 is exact-size (1312 bytes); char is 16 bytes short. Remaining differences are stack/register lifetimes, especially the backward scan spill set and char-only source-pointer lifetime.
+// NON_MATCHING: stack
 template <typename T>
 s32 replaceStringImpl_(T* dst, s32* length, s32 dst_size, const T* src, s32 src_size,
                        const SafeStringBase<T>& old_str, const SafeStringBase<T>& new_str,

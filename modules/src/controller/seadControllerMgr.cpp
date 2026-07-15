@@ -66,7 +66,7 @@ void ControllerMgr::initializeDefault(Heap* heap)
 void ControllerMgr::finalizeDefault()
 {
 #ifdef NNSDK
-    ControlDevice* device = getControlDevice(ControllerDefine::DeviceId(13));
+    ControlDevice* device = getControlDevice(ControllerDefine::DeviceId::cDevice_NinJoyNpad);
     if (device)
     {
         mDevices.erase(device);

@@ -547,7 +547,7 @@ s32 StringBuilderBase<T>::rstrip(const T* characters)
 template s32 StringBuilder::rstrip(const char* characters);
 template s32 WStringBuilder::rstrip(const char16* characters);
 
-// NON_MATCHING: Retail schedules the packed-length ADD before the speculative index SUB; Clang emits the same independent recurrence updates in reverse order. Next hypothesis is the original loop form that keeps the packed length as the primary induction variable.
+// NON_MATCHING: equivalent, two instruction reorders
 template <typename T>
 s32 StringBuilderBase<T>::rstripUnprintableAsciiChars()
 {
