@@ -9,11 +9,15 @@
 
 namespace sead
 {
+// BOTW
+// NON_MATCHING
 SEAD_SINGLETON_DISPOSER_IMPL(DebugFontMgrJis1Nvn)
 DebugFontMgrJis1Nvn::~DebugFontMgrJis1Nvn() {}
 
 DebugFontMgrJis1Nvn::DebugFontMgrJis1Nvn() = default;
 
+// BOTW
+// NON_MATCHING
 void DebugFontMgrJis1Nvn::initialize(Heap* heap, const char* shader_path, const char* font_path,
                                      const char* table_path, u32 unk)
 {
@@ -37,6 +41,8 @@ void DebugFontMgrJis1Nvn::initialize(Heap* heap, const char* shader_path, const 
                          unk);
 }
 
+// BOTW
+// NON_MATCHING: Stack
 void DebugFontMgrJis1Nvn::initializeFromBinary(Heap* heap, void* shader_binary, u64 shader_size,
                                                void* font_binary, u64 font_size,
                                                const void* table_binary, u32 unk3)

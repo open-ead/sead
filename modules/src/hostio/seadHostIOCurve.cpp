@@ -2,6 +2,7 @@
 #include <cmath>
 #include "math/seadMathCalcCommon.h"
 #include "math/seadMathNumbers.h"
+#include "seadVersion.h"
 
 namespace sead::hostio
 {
@@ -207,6 +208,7 @@ T curveHermit2D_(f32 t_, const CurveDataInfo* info, const T* f)
     return 0;
 }
 
+// SMO
 // NON_MATCHING: signed vs. unsigned, can probably be solved in the same way as curveLinear2D_
 template <typename T>
 T curveStep2D_(f32 t_, const CurveDataInfo* info, const T* f)
@@ -215,6 +217,7 @@ T curveStep2D_(f32 t_, const CurveDataInfo* info, const T* f)
     if (t <= f[0])
         return f[1];
 
+#if SEAD_VERSION == SEAD_VERSION_SMO
     const s32 n = info->numUse / 2;
     const u32 end = 2 * n;
     if (t >= f[end - 2])
@@ -229,6 +232,17 @@ T curveStep2D_(f32 t_, const CurveDataInfo* info, const T* f)
         if (t < f[j + 2])
             return f[j + 1];
     }
+#else
+    const s8 n = info->numUse / 2;
+    if (t >= f[2 * (n - 1)])
+        return f[2 * (n - 1) + 1];
+
+    for (s32 i = 0; i < n; ++i)
+    {
+        if (t < f[2 * i + 2])
+            return f[2 * i + 1];
+    }
+#endif
     return 0;
 }
 
@@ -287,6 +301,8 @@ Vector2<T> curveHermit2DVec2_(f32 t, const CurveDataInfo* info, const T* f)
     return {t, curveHermit2D_(t, info, f)};
 }
 
+// SMO
+// NON_MATCHING: curveStep2D_ is inlined here
 template <typename T>
 Vector2<T> curveStep2DVec2_(f32 t, const CurveDataInfo* info, const T* f)
 {

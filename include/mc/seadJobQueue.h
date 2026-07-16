@@ -9,6 +9,7 @@
 #include "mc/seadJob.h"
 #include "prim/seadEnum.h"
 #include "prim/seadNamable.h"
+#include "seadVersion.h"
 #include "thread/seadAtomic.h"
 #include "thread/seadEvent.h"
 
@@ -36,9 +37,15 @@ public:
     void detachProcessMeter();
 
 private:
+#ifdef SEAD_DEBUG
+    Buffer<MultiProcessMeterBar<512>> mBars;
+    Buffer<u32> mInts;
+    MultiProcessMeterBar<1> mProcessMeterBar;
+#else
     Buffer<SafeString> mBars;
     Buffer<u32> mInts;
     SafeString mProcessMeterBar;
+#endif
 };
 
 class JobQueueLock
@@ -118,7 +125,9 @@ protected:
     Atomic<Status> mStatus = Status::_0;
     const char* mDescription = "NoName";
 
+#if defined(SEAD_DEBUG) || SEAD_VERSION == SEAD_VERSION_SMO
     PerfJobQueue mPerf;
+#endif
 };
 
 class FixedSizeJQ : public JobQueue
