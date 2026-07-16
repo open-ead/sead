@@ -8,7 +8,7 @@ namespace sead
 {
 namespace system
 {
-void* NewImpl(Heap* heap, size_t size, s32 alignment, bool abortOnFailure)
+void* NewImpl(Heap* heap, size_t size, s32 alignment, bool abortOnFailure [[maybe_unused]])
 {
     if (!HeapMgr::sInstancePtr)
     {
