@@ -31,7 +31,7 @@ public:
 
     using PauseEventDelegate = IDelegate2<MethodTreeNode*, PauseFlag>;
 
-    explicit MethodTreeNode(CriticalSection* cs) : TTreeNode(this), INamable("")
+    explicit MethodTreeNode(CriticalSection* cs) : TTreeNode(this)
     {
         mPauseEventDelegate = nullptr;
         mCriticalSection = cs;
@@ -78,7 +78,7 @@ private:
     StorageFor<sead::AnyDelegate> mDelegateHolder;
     mutable CriticalSection* mCriticalSection;
     [[maybe_unused]] u32 mPriority;
-    u32 mPauseFlag;
+    BitFlag32 mPauseFlag;
     PauseEventDelegate* mPauseEventDelegate;
     void* mUserID;
 };

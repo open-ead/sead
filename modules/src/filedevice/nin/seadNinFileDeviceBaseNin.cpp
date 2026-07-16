@@ -24,7 +24,6 @@ NinFileDeviceBase::NinFileDeviceBase(const SafeString& name, const SafeString& m
 {
 }
 
-// NON_MATCHING: CBZ vs TBZ
 FileDevice* NinFileDeviceBase::doOpen_(FileHandle* handle, const SafeString& path,
                                        FileDevice::FileOpenFlag flag)
 {
@@ -47,7 +46,7 @@ FileDevice* NinFileDeviceBase::doOpen_(FileHandle* handle, const SafeString& pat
     bool should_set_size = true;
     if ((flag | cFileOpenFlag_ReadWrite) == cFileOpenFlag_Create)
     {
-        bool is_file = false;
+        u32 is_file = false;
         nn::fs::DirectoryEntryType type;
         const auto result = nn::fs::GetEntryType(&type, fs_path.cstr());
         if (result.IsSuccess())
@@ -56,13 +55,17 @@ FileDevice* NinFileDeviceBase::doOpen_(FileHandle* handle, const SafeString& pat
         }
         else if (!nn::fs::ResultPathNotFound().Includes(result))
         {
+            SEAD_WARN("nn::fs::GetEntryType failed. module = %d desc = %d inner_value = 0x%08x "
+                      "path = %s",
+                      result.GetModule(), result.GetDescription(), result.GetInnerValueForDebug(),
+                      fs_path.cstr());
             mLastError = result;
             return nullptr;
         }
 
         if (flag == cFileOpenFlag_Create)
         {
-            if (is_file)
+            if (is_file != 0)
             {
                 mLastError = nn::fs::ResultPathAlreadyExists();
                 return nullptr;
@@ -71,13 +74,17 @@ FileDevice* NinFileDeviceBase::doOpen_(FileHandle* handle, const SafeString& pat
             const auto create_result = nn::fs::CreateFile(fs_path.cstr(), 0);
             if (create_result.IsFailure())
             {
+                SEAD_WARN("nn::fs::CreateFile failed. module = %d desc = %d inner_value = 0x%08x "
+                          "path = %s",
+                          create_result.GetModule(), create_result.GetDescription(),
+                          create_result.GetInnerValueForDebug(), fs_path.cstr());
                 mLastError = create_result;
                 return nullptr;
             }
         }
         else
         {
-            if (is_file)
+            if (is_file == 1)
             {
                 should_set_size = false;
             }
