@@ -58,7 +58,7 @@ public:
         }
 
         mFreeList.setWork(buf, ElementSize, max_num);
-        PtrArrayImpl::setBuffer(max_num, reinterpret_cast<u8*>(buf) + ElementSize * max_num);
+        PtrArrayImpl::setBuffer(max_num, PtrUtil::addOffset(buf, ElementSize * max_num));
     }
 
     void freeBuffer()
