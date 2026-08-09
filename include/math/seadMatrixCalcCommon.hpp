@@ -1991,6 +1991,19 @@ void Matrix44CalcCommon<T>::copy(Base& o, const Base& n)
     o.m[3][3] = n.m[3][3];
 }
 
+#ifdef NNSDK
+
+template <>
+inline void Matrix44CalcCommon<f32>::copy(Base& o, const Base& n)
+{
+    for (int i = 0; i < 4; ++i)
+    {
+        vst1q_f32(o.m[i], vld1q_f32(n.m[i]));
+    }
+}
+
+#endif
+
 #ifdef cafe
 
 template <>
