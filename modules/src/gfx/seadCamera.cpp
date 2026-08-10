@@ -68,18 +68,18 @@ void Camera::projectByMatrix(Vector2f* dst, const Vector3f& world_pos, const Pro
 
 void Camera::unprojectRayByMatrix(Ray<Vector3f>* dst, const Vector3f& camera_pos) const
 {
-    dst->direction.x = mMatrix.getBase(0).dot(camera_pos);
-    dst->direction.y = mMatrix.getBase(1).dot(camera_pos);
-    dst->direction.z = mMatrix.getBase(2).dot(camera_pos);
-    dst->direction.normalize();
+    dst->mD.x = mMatrix.getBase(0).dot(camera_pos);
+    dst->mD.y = mMatrix.getBase(1).dot(camera_pos);
+    dst->mD.z = mMatrix.getBase(2).dot(camera_pos);
+    dst->mD.normalize();
 
-    dst->position.x = ((-mMatrix(0, 0) * mMatrix(0, 3)) - mMatrix(1, 0) * mMatrix(1, 3)) -
-                      mMatrix(2, 0) * mMatrix(2, 3);
-    dst->position.y = ((-mMatrix(0, 1) * mMatrix(0, 3)) - mMatrix(1, 1) * mMatrix(1, 3)) -
-                      mMatrix(2, 1) * mMatrix(2, 3);
-    dst->position.z = ((-mMatrix(0, 2) * mMatrix(0, 3)) - mMatrix(1, 2) * mMatrix(1, 3)) -
-                      mMatrix(2, 2) * mMatrix(2, 3);
-    dst->position *= -1.0f;
+    dst->mP.x = ((-mMatrix(0, 0) * mMatrix(0, 3)) - mMatrix(1, 0) * mMatrix(1, 3)) -
+                mMatrix(2, 0) * mMatrix(2, 3);
+    dst->mP.y = ((-mMatrix(0, 1) * mMatrix(0, 3)) - mMatrix(1, 1) * mMatrix(1, 3)) -
+                mMatrix(2, 1) * mMatrix(2, 3);
+    dst->mP.z = ((-mMatrix(0, 2) * mMatrix(0, 3)) - mMatrix(1, 2) * mMatrix(1, 3)) -
+                mMatrix(2, 2) * mMatrix(2, 3);
+    dst->mP *= -1.0f;
 }
 
 LookAtCamera::~LookAtCamera() = default;

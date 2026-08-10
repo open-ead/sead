@@ -7,7 +7,7 @@ namespace sead
 {
 namespace Geometry
 {
-float calcSquaredDistancePointToRay(Vector2f* point, Ray2f* ray, float* scalar);
+float calcSquaredDistancePointToRay(Vector2f* point, Ray2f* ray, f32* closestRayPos);
 // float calcSquaredDistancePointToLine(Vector2f* const, Line2f* const, float*);
 // float calcSquaredDistancePointToSegment(Vector3f* const, Segment3f* const, float*);
 // float calcSquaredDistancePointToSegment();

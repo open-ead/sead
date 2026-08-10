@@ -5,25 +5,22 @@
 namespace sead
 {
 
-template <typename VectorType>
+template <typename T>
 class Segment
 {
 public:
-    using T = typename VectorType::ValueType;
+    Segment() = default;
+    Segment(const T& p0, const T& p1) : mP0(p0), mP1(p1) {}
 
-public:
-    Segment() : mP0(VectorType::zero), mP1(VectorType::ex) {}
-    Segment(const VectorType& p0, const VectorType& p1) : mP0(p0), mP1(p1) {}
+    const T& getPos0() const { return mP0; }
+    void setPos0(const T& p0) { mP0 = p0; }
 
-    const VectorType& getPos0() const { return mP0; }
-    void setPos0(const VectorType& p0) { mP0 = p0; }
-
-    const VectorType& getPos1() const { return mP1; }
-    void setPos1(const VectorType& p1) { mP1 = p1; }
+    const T& getPos1() const { return mP1; }
+    void setPos1(const T& p1) { mP1 = p1; }
 
 private:
-    VectorType mP0;
-    VectorType mP1;
+    T mP0 = T::zero;
+    T mP1 = T::ex;
 };
 
 using Segment2f = Segment<Vector2f>;
@@ -38,8 +35,8 @@ template <typename T>
 class Ray
 {
 public:
-    T position;
-    T direction;
+    T mP;
+    T mD;
 };
 
 using Ray2f = Ray<Vector2f>;

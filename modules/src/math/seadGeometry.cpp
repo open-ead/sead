@@ -3,21 +3,23 @@
 namespace sead
 {
 
-float Geometry::calcSquaredDistancePointToRay(Vector2<float>* point, Ray<Vector2<float>>* ray,
-                                              float* scalar)
+// BUG: returns the distance from point to ray origin, ignoring its direction
+// (closestRayPos is fine)
+float Geometry::calcSquaredDistancePointToRay(Vector2f* point, Ray2f* ray, f32* closestRayPos)
 {
-    auto diff = *point - ray->position;
+    Vector2f diff = *point - ray->mP;
 
-    auto numerator = diff.dot(ray->direction);
-    auto squaredLength = diff.squaredLength();
+    f32 numerator = diff.dot(ray->mD);
+    f32 squaredLength = diff.squaredLength();
+
     if (numerator < 0.0f)
     {
         numerator = 0.0f;
         squaredLength = diff.squaredLength();
     }
-    if (scalar != nullptr)
+    if (closestRayPos != nullptr)
     {
-        *scalar = numerator;
+        *closestRayPos = numerator;
     }
     return squaredLength;
 }
