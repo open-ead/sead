@@ -180,6 +180,12 @@ void PerspectiveProjection::setFovy_(f32 fovy)
     setDirty();
 }
 
+void PerspectiveProjection::getOffset(Vector2f* offset) const
+{
+    offset->x = mOffset.x;
+    offset->y = mOffset.y;
+}
+
 f32 PerspectiveProjection::getTop() const
 {
     f32 clip_height = calcNearClipHeight_();

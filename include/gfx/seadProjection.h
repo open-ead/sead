@@ -113,7 +113,7 @@ public:
     f32 getFar() const override { return mFar; }
     f32 getFovy() const override { return mAngle; }
     f32 getAspect() const override { return mAspect; }
-    void getOffset(Vector2f* offset) const override { offset->set(mOffset); }
+    void getOffset(Vector2f* offset) const override;
 
     f32 getTop() const;
     f32 getBottom() const;
