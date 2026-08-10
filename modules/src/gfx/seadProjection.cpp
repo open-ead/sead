@@ -96,20 +96,20 @@ void Projection::doScreenPosToCameraPosTo(Vector3f* dst, const Vector3f& screen_
     *dst *= scale;
 }
 
-namespace
+static void swapMatrixXY(Matrix44f* mtx)
 {
-
-void swapMatrixXY(Matrix44f* tgt)
-{
-    Vector4f x;
-    Vector4f y;
-    tgt->getRow(x, 0);
-    tgt->getRow(y, 1);
-    tgt->setRow(0, y);
-    tgt->setRow(1, x);
+    Vector4f x = mtx->getRow(0);
+    mtx->setRow(0, mtx->getRow(1));
+    mtx->setRow(1, x);
 }
 
-}  // namespace
+static void negateRow(Matrix44f* mtx, s32 row)
+{
+    (*mtx)(row, 0) *= -1;
+    (*mtx)(row, 1) *= -1;
+    (*mtx)(row, 2) *= -1;
+    (*mtx)(row, 3) *= -1;
+}
 
 void Projection::doUpdateDeviceMatrix(Matrix44f* dst, const Matrix44f& src,
                                       Graphics::DevicePosture pose) const
@@ -120,49 +120,31 @@ void Projection::doUpdateDeviceMatrix(Matrix44f* dst, const Matrix44f& src,
     {
     case Graphics::cDevicePosture_Same:
         break;
-    case Graphics::cDevicePosture_RotateRight:
-        (*dst)(0, 0) *= -1;
-        (*dst)(0, 1) *= -1;
-        (*dst)(0, 2) *= -1;
-        (*dst)(0, 3) *= -1;
+    case Graphics::cDevicePosture_RotateLeft:
+        negateRow(dst, 1);
         swapMatrixXY(dst);
         break;
-    case Graphics::cDevicePosture_RotateLeft:
-        (*dst)(1, 0) *= -1;
-        (*dst)(1, 1) *= -1;
-        (*dst)(1, 2) *= -1;
-        (*dst)(1, 3) *= -1;
+    case Graphics::cDevicePosture_RotateRight:
+        negateRow(dst, 0);
         swapMatrixXY(dst);
         break;
     case Graphics::cDevicePosture_RotateHalfAround:
-        (*dst)(0, 0) *= -1;
-        (*dst)(0, 1) *= -1;
-        (*dst)(0, 2) *= -1;
-        (*dst)(0, 3) *= -1;
-        (*dst)(1, 0) *= -1;
-        (*dst)(1, 1) *= -1;
-        (*dst)(1, 2) *= -1;
-        (*dst)(1, 3) *= -1;
+        negateRow(dst, 0);
+        negateRow(dst, 1);
         break;
     case Graphics::cDevicePosture_FlipX:
-        (*dst)(0, 0) *= -1;
-        (*dst)(0, 1) *= -1;
-        (*dst)(0, 2) *= -1;
-        (*dst)(0, 3) *= -1;
+        negateRow(dst, 0);
         break;
     case Graphics::cDevicePosture_FlipY:
-        (*dst)(1, 0) *= -1;
-        (*dst)(1, 1) *= -1;
-        (*dst)(1, 2) *= -1;
-        (*dst)(1, 3) *= -1;
+        for (s32 i = 0; i < 4; ++i)
+            (*dst)(1, i) *= -1;
         break;
-    default:;
-        // SEAD_ASSERTMSG(false, "Invalid DevicePosture(%d).", s32(pose));
+    default:
+        break;
     }
 
     (*dst)(2, 0) = (*dst)(2, 0) * mDeviceZScale;
     (*dst)(2, 1) = (*dst)(2, 1) * mDeviceZScale;
-
     (*dst)(2, 2) = ((*dst)(2, 2) + (*dst)(3, 2) * mDeviceZOffset) * mDeviceZScale;
     (*dst)(2, 3) = (*dst)(2, 3) * mDeviceZScale + (*dst)(3, 3) * mDeviceZOffset;
 }
