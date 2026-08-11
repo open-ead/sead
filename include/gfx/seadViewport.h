@@ -34,6 +34,8 @@ public:
     void unproject(Vector3f*, const Vector2f&, const Projection&, const Camera&) const;
     void unprojectRay(Ray3f*, const Vector2f&, const Projection&, const Camera&) const;
 
+    Graphics::DevicePosture getDevicePosture() const { return mDevicePosture; }
+
 private:
     Graphics::DevicePosture mDevicePosture = Graphics::getDefaultDevicePosture();
     Vector2f mDepthBounds = Vector2f(0.0f, 1.0f);

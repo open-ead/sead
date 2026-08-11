@@ -93,7 +93,8 @@ public:
         mFar = far;
         setDirty();
     }
-    void setFovx(f32 fovx);
+    void setFovx(f32 fovx);  // Unused, potentially setFovy_(2 * Mathf::atan2(Mathf::tan(fovx *
+                             // 0.5f), mAspect));
     void setFovy(f32 fovy) { setFovy_(fovy); }
     void setAspect(f32 aspect)
     {
@@ -134,7 +135,7 @@ private:
 
     f32 mNear = 1.0f;
     f32 mFar = 10000.0f;
-    f32 mAngle = numbers::pi / 2.0f;
+    f32 mAngle;
     f32 mFovySin;
     f32 mFovyCos;
     f32 mFovyTan;
@@ -252,14 +253,14 @@ class DirectProjection : public Projection
 
 public:
     DirectProjection();
-    DirectProjection(const Matrix44f* mtx, Graphics::DevicePosture posture);
+    DirectProjection(const Matrix44f& mtx, Graphics::DevicePosture posture);
     ~DirectProjection() override = default;
 
     void updateAttributesForDirectProjection() override;
     Type getProjectionType() const override { return cType_Undefined; }
     void doUpdateMatrix(Matrix44f* dst) const override;
 
-    void setDirectProjectionMatrix(const Matrix44f* mtx, Graphics::DevicePosture posture);
+    void setProjectionMatrix(const Matrix44f& mtx, Graphics::DevicePosture posture);
 
     f32 getNear() const override { return mNear; }
     f32 getFar() const override { return mFar; }
@@ -271,13 +272,13 @@ public:
     void doScreenPosToCameraPosTo(Vector3f* dst, const Vector3f& screen_pos) const override;
 
 private:
-    Matrix44f mDirectMatrix = Matrix44f::ident;
+    Matrix44f mDirectMatrix;
     f32 mNear = 0.0;
     f32 mFar = 0.0;
     f32 mFovy = 0.0;
     f32 mAspect = 0.0;
-    Vector2f mOffset = Vector2f::zero;
-    bool someBool = true;
+    Vector2f mOffset = {0.0f, 0.0f};
+    bool mAttributesDirty = true;
 };
 #ifdef cafe
 static_assert(sizeof(FrustumProjection) == 0xAC, "sead::FrustumProjection size mismatch");

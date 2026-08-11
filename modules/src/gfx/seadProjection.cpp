@@ -111,6 +111,14 @@ static void negateRow(Matrix44f* mtx, s32 row)
     (*mtx)(row, 3) *= -1;
 }
 
+static void negateMatrixRow(Matrix44f* mtx, s32 row)
+{
+    Vector4f* p = reinterpret_cast<Vector4f*>(mtx) + row;
+    Vector4f v = *p;
+    v.negate();
+    *p = v;
+}
+
 void Projection::doUpdateDeviceMatrix(Matrix44f* dst, const Matrix44f& src,
                                       Graphics::DevicePosture pose) const
 {
@@ -151,7 +159,7 @@ void Projection::doUpdateDeviceMatrix(Matrix44f* dst, const Matrix44f& src,
 
 PerspectiveProjection::PerspectiveProjection()
 {
-    setFovy_(mAngle);  // 45 degrees
+    setFovy_(numbers::pi / 4.0f);  // 45 degrees
 }
 
 PerspectiveProjection::PerspectiveProjection(f32 near, f32 far, f32 fovy_rad, f32 aspect)
@@ -270,6 +278,7 @@ void PerspectiveProjection::doScreenPosToCameraPosTo(Vector3f* dst,
 OrthoProjection::OrthoProjection()
     : mNear(0.0), mFar(1.0), mTop(0.5), mBottom(-0.5), mLeft(-0.5), mRight(0.5)
 {
+    setDirty();
 }
 
 OrthoProjection::OrthoProjection(f32 _near, f32 _far, f32 top, f32 bottom, f32 left, f32 right)
@@ -280,7 +289,11 @@ OrthoProjection::OrthoProjection(f32 _near, f32 _far, f32 top, f32 bottom, f32 l
 
 OrthoProjection::OrthoProjection(f32 _near, f32 _far, const Viewport& vp) : mNear(_near), mFar(_far)
 {
-    setByViewport(vp);
+    mTop = 0.5f * vp.getSizeY();
+    mBottom = -0.5f * vp.getSizeY();
+    mLeft = -0.5f * vp.getSizeX();
+    mRight = 0.5f * vp.getSizeX();
+    setDevicePosture(vp.getDevicePosture());
     setDirty();
 }
 
@@ -343,50 +356,53 @@ void OrthoProjection::setTBLR(float top, float bottom, float left, float right)
 
 void OrthoProjection::doUpdateMatrix(Matrix44f* dst) const
 {
+    f32 sum_x = mLeft + mRight;
+    f32 sum_y = mTop + mBottom;
     f32 inv_size = (mRight - mLeft) * 0.5f;
 
     (*dst)(0, 0) = 1.0f / inv_size;
     (*dst)(0, 1) = 0.0f;
     (*dst)(0, 2) = 0.0f;
-    (*dst)(0, 3) = -0.5f * (mLeft + mRight) / inv_size;
+    (*dst)(0, 3) = sum_x * -0.5f / inv_size;
 
-    inv_size = 0.5f * (mTop - mBottom);
+    inv_size = (mTop - mBottom) * 0.5f;
 
     (*dst)(1, 0) = 0;
     (*dst)(1, 1) = 1.0f / inv_size;
     (*dst)(1, 2) = 0;
-    (*dst)(1, 3) = -0.5f * (mTop + mBottom) / inv_size;
+    (*dst)(1, 3) = sum_y * -0.5f / inv_size;
 
-    inv_size = 0.5f * (mFar - mNear);
+    f32 inv_depth = 1.0f / (mFar - mNear);
 
     (*dst)(2, 0) = 0;
     (*dst)(2, 1) = 0;
-    (*dst)(2, 2) = -1.0f / inv_size;
-    (*dst)(2, 3) = -0.5f * (mNear * mFar) / inv_size;
+    (*dst)(2, 2) = inv_depth * -2.0f;
+    (*dst)(2, 3) = -(inv_depth * (mNear + mFar));
 
     (*dst)(3, 0) = 0;
     (*dst)(3, 1) = 0;
     (*dst)(3, 2) = 0;
-    (*dst)(3, 3) = -1.0f;
+    (*dst)(3, 3) = 1.0f;
 }
 
-// NON-MATCHING: Adds an additional register for a multiplication
 void OrthoProjection::setByViewport(const Viewport& vp)
 {
-    f32 halfY = vp.getHalfSizeY();
-    f32 halfX = vp.getHalfSizeX();
-    mTop = halfY;
-    mBottom = -halfY;
-    mLeft = -halfX;
-    mRight = halfX;
+    f32 top = 0.5f * vp.getSizeY();
+    f32 bottom = -0.5f * vp.getSizeY();
+    f32 right = 0.5f * vp.getSizeX();
+    f32 left = -0.5f * vp.getSizeX();
+    mTop = top;
+    mBottom = bottom;
+    mLeft = left;
+    mRight = right;
     setDirty();
 }
 
 void OrthoProjection::doScreenPosToCameraPosTo(Vector3f* dst, const Vector3f& screen_pos) const
 {
-    dst->x = 0.5f * ((mRight + mLeft) + screen_pos.x * (mRight - mLeft));
-    dst->y = 0.5f * ((mTop + mBottom) + (screen_pos.y * (mTop - mBottom)));
-    dst->z = mNear;
+    dst->x = screen_pos.x * (mRight - mLeft) * 0.5f + (mRight + mLeft) * 0.5f;
+    dst->y = screen_pos.y * (mTop - mBottom) * 0.5f + (mTop + mBottom) * 0.5f;
+    dst->z = -mNear;
 }
 
 FrustumProjection::FrustumProjection(f32 _near, f32 _far, f32 top, f32 bottom, f32 left, f32 right)
@@ -427,6 +443,13 @@ void FrustumProjection::doUpdateMatrix(Matrix44f* dst) const
     (*dst)(3, 1) = 0.0f;
     (*dst)(3, 2) = -1.0f;
     (*dst)(3, 3) = 0.0f;
+}
+
+void FrustumProjection::doScreenPosToCameraPosTo(Vector3f* dst, const Vector3f& screen_pos) const
+{
+    dst->z = -mNear;
+    dst->x = (mRight - mLeft) * screen_pos.x * 0.5f + (mRight + mLeft) * 0.5f;
+    dst->y = (mTop - mBottom) * screen_pos.y * 0.5f + (mTop + mBottom) * 0.5f;
 }
 
 void FrustumProjection::setNear(f32 near)
@@ -484,20 +507,72 @@ void FrustumProjection::getOffset(Vector2f* dst) const
     dst->y = (float)0.5 * (mTop + mBottom) / denom;
 }
 
-DirectProjection::DirectProjection()
+DirectProjection::DirectProjection() : mDirectMatrix(Matrix44f::ident)
 {
     setDirty();
 }
 
-DirectProjection::DirectProjection(const Matrix44f* mtx, Graphics::DevicePosture posture)
+DirectProjection::DirectProjection(const Matrix44f& mtx, Graphics::DevicePosture posture)
 {
-    setDirectProjectionMatrix(mtx, posture);
+    setProjectionMatrix(mtx, posture);
+}
+
+static bool isXShifted(const Vector3f& near_corner, const Vector3f& far_corner)
+{
+    const f32 d = near_corner.x - far_corner.x;
+    return (d > 0.0f ? d : -d) > 0.0001f;
 }
 
 void DirectProjection::updateAttributesForDirectProjection()
 {
-    Matrix44f newMatrix;
-    newMatrix.setInverse(mDirectMatrix);
+    if (!mAttributesDirty)
+    {
+        return;
+    }
+
+    Matrix44f inv;
+    inv.setInverse(mDirectMatrix);
+
+    // Corners 0-3 are near plane quad, 4-7 are far-plane quad (Z sign indicates)
+    const Vector4f corners[8] = {
+        {-1, -1, -1, 1}, {-1, 1, -1, 1}, {1, 1, -1, 1}, {1, -1, -1, 1},
+        {-1, -1, 1, 1},  {-1, 1, 1, 1},  {1, 1, 1, 1},  {1, -1, 1, 1},
+    };
+
+    Vector3f cameraSpaceCorners[8];
+    for (s32 i = 0; i < 8; ++i)
+    {
+        const Vector4f& c = corners[i];
+        Vector3f p;
+        p.x = c.x * inv(0, 0) + c.y * inv(0, 1) + c.z * inv(0, 2) + c.w * inv(0, 3);
+        p.y = c.x * inv(1, 0) + c.y * inv(1, 1) + c.z * inv(1, 2) + c.w * inv(1, 3);
+        p.z = c.x * inv(2, 0) + c.y * inv(2, 1) + c.z * inv(2, 2) + c.w * inv(2, 3);
+        const f32 inv_w =
+            1.0f / (c.x * inv(3, 0) + c.y * inv(3, 1) + c.z * inv(3, 2) + c.w * inv(3, 3));
+        cameraSpaceCorners[i] = p * inv_w;
+    }
+
+    mNear = -cameraSpaceCorners[0].z;
+    mFar = -cameraSpaceCorners[4].z;
+    f32 height = cameraSpaceCorners[1].y - cameraSpaceCorners[0].y;
+    mAspect = (cameraSpaceCorners[2].x - cameraSpaceCorners[0].x) / height;
+    mOffset.x = (cameraSpaceCorners[0].x + cameraSpaceCorners[2].x) * 0.5f /
+                (cameraSpaceCorners[2].x - cameraSpaceCorners[0].x);
+    mOffset.y = (cameraSpaceCorners[1].y + cameraSpaceCorners[0].y) * 0.5f / height;
+
+    if (isXShifted(cameraSpaceCorners[0], cameraSpaceCorners[4]) ||
+        isXShifted(cameraSpaceCorners[1], cameraSpaceCorners[5]) ||
+        isXShifted(cameraSpaceCorners[2], cameraSpaceCorners[6]) ||
+        isXShifted(cameraSpaceCorners[3], cameraSpaceCorners[7]))
+    {
+        mFovy = 2 * Mathf::atan2(height * 0.5f, mNear);
+    }
+    else
+    {
+        mFovy = 0.0f;
+    }
+
+    mAttributesDirty = false;
 }
 
 void DirectProjection::doUpdateMatrix(Matrix44f* dst) const
@@ -505,24 +580,62 @@ void DirectProjection::doUpdateMatrix(Matrix44f* dst) const
     *dst = mDirectMatrix;
 }
 
-void DirectProjection::setDirectProjectionMatrix(const Matrix44f* mtx,
-                                                 Graphics::DevicePosture posture)
+void DirectProjection::setProjectionMatrix(const Matrix44f& mtx, Graphics::DevicePosture posture)
 {
-    mDirectMatrix = (*mtx);
+    mDirectMatrix = mtx;
+
+    s32 negate_row = -1;
+
+    switch (posture)
+    {
+    case Graphics::cDevicePosture_Same:
+        break;
+    case Graphics::cDevicePosture_RotateLeft:
+        negate_row = 1;
+        swapMatrixXY(&mDirectMatrix);
+        break;
+    case Graphics::cDevicePosture_RotateRight:
+        negate_row = 0;
+        swapMatrixXY(&mDirectMatrix);
+        break;
+    case Graphics::cDevicePosture_RotateHalfAround:
+        negateMatrixRow(&mDirectMatrix, 0);
+        negate_row = 1;
+        break;
+    case Graphics::cDevicePosture_FlipX:
+        negate_row = 0;
+        break;
+    case Graphics::cDevicePosture_FlipY:
+        negate_row = 1;
+        break;
+    default:
+        break;
+    }
+
+    if (negate_row >= 0)
+    {
+        negateMatrixRow(&mDirectMatrix, negate_row);
+    }
+
+    setDirty();
+    mAttributesDirty = true;
 }
 
 void DirectProjection::doScreenPosToCameraPosTo(Vector3f* dst, const Vector3f& screen_pos) const
 {
     Matrix44f inverseDirect;
     inverseDirect.setInverse(mDirectMatrix);
-    f32 scale = 1.0f / (inverseDirect(3, 3) + screen_pos.x * inverseDirect(3, 0) +
-                        screen_pos.y * inverseDirect(3, 1) + screen_pos.z * inverseDirect(3, 2));
-    dst->x = scale * (inverseDirect(0, 3) + screen_pos.x * inverseDirect(0, 0) +
-                      screen_pos.y * inverseDirect(0, 1) + screen_pos.z * inverseDirect(0, 2));
-    dst->y = scale * (inverseDirect(1, 3) + screen_pos.x * inverseDirect(1, 0) +
-                      screen_pos.y * inverseDirect(1, 1) + screen_pos.z * inverseDirect(1, 2));
-    dst->z = scale * (inverseDirect(2, 3) + screen_pos.x * inverseDirect(2, 0) +
-                      screen_pos.y * inverseDirect(2, 1) + screen_pos.z * inverseDirect(2, 2));
+    const f32 x = screen_pos.x;
+    const f32 y = screen_pos.y;
+    const f32 z = screen_pos.z;
+    f32 scale = 1.0f / (x * inverseDirect(3, 0) + y * inverseDirect(3, 1) +
+                        z * inverseDirect(3, 2) + inverseDirect(3, 3));
+    dst->x = scale * (x * inverseDirect(0, 0) + y * inverseDirect(0, 1) + z * inverseDirect(0, 2) +
+                      inverseDirect(0, 3));
+    dst->y = scale * (x * inverseDirect(1, 0) + y * inverseDirect(1, 1) + z * inverseDirect(1, 2) +
+                      inverseDirect(1, 3));
+    dst->z = scale * (x * inverseDirect(2, 0) + y * inverseDirect(2, 1) + z * inverseDirect(2, 2) +
+                      inverseDirect(2, 3));
 }
 
 }  // namespace sead
