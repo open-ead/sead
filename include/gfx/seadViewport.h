@@ -15,7 +15,7 @@ class Viewport : public BoundBox2f
     SEAD_RTTI_BASE(Viewport)
 public:
     Viewport();
-    Viewport(float left, float top, float right, float bottom);
+    Viewport(f32 left, f32 top, f32 size_x, f32 size_y);
     explicit Viewport(const BoundBox2f& parent);
     explicit Viewport(const LogicalFrameBuffer& buffer);
     virtual ~Viewport() = default;

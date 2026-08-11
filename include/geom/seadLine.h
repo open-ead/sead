@@ -35,6 +35,16 @@ template <typename T>
 class Ray
 {
 public:
+    Ray() = default;
+    Ray(const T& p, const T& d) : mP(p), mD(d) {}
+
+    const T& getPos() const { return mP; }
+    void setPos(const T& p) { mP = p; }
+
+    const T& getDir() const { return mD; }
+    void setDir(const T& d) { mD = d; }
+
+private:
     T mP;
     T mD;
 };

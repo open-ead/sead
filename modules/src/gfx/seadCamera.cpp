@@ -24,21 +24,21 @@ void Camera::getWorldPosByMatrix(Vector3f* dst) const
 void Camera::getLookVectorByMatrix(Vector3f* dst) const
 {
     // Also known as the forward vector
-    auto vec = mMatrix.getRow(2);
+    const Vector4f vec = mMatrix.getRow(2);
     dst->set(vec.x, vec.y, vec.z);
-};
+}
 
 void Camera::getRightVectorByMatrix(Vector3f* dst) const
 {
-    auto vec = mMatrix.getRow(0);
+    const Vector4f vec = mMatrix.getRow(0);
     dst->set(vec.x, vec.y, vec.z);
 }
 
 void Camera::getUpVectorByMatrix(Vector3f* dst) const
 {
-    auto vec = mMatrix.getRow(1);
+    const Vector4f vec = mMatrix.getRow(1);
     dst->set(vec.x, vec.y, vec.z);
-};
+}
 
 void Camera::worldPosToCameraPosByMatrix(Vector3f* dst, const Vector3f& world_pos) const
 {
@@ -61,25 +61,29 @@ void Camera::cameraPosToWorldPosByMatrix(Vector3f* dst, const Vector3f& camera_p
 void Camera::projectByMatrix(Vector2f* dst, const Vector3f& world_pos, const Projection& projection,
                              const Viewport& viewport) const
 {
-    auto temp = mMatrix * world_pos;
+    Vector3f temp = mMatrix * world_pos;
     temp += mMatrix.getBase(3);
     projection.project(dst, temp, viewport);
 }
 
 void Camera::unprojectRayByMatrix(Ray<Vector3f>* dst, const Vector3f& camera_pos) const
 {
-    dst->mD.x = mMatrix.getBase(0).dot(camera_pos);
-    dst->mD.y = mMatrix.getBase(1).dot(camera_pos);
-    dst->mD.z = mMatrix.getBase(2).dot(camera_pos);
-    dst->mD.normalize();
+    Vector3f dir;
+    dir.x = mMatrix.getBase(0).dot(camera_pos);
+    dir.y = mMatrix.getBase(1).dot(camera_pos);
+    dir.z = mMatrix.getBase(2).dot(camera_pos);
+    dir.normalize();
+    dst->setDir(dir);
 
-    dst->mP.x = ((-mMatrix(0, 0) * mMatrix(0, 3)) - mMatrix(1, 0) * mMatrix(1, 3)) -
-                mMatrix(2, 0) * mMatrix(2, 3);
-    dst->mP.y = ((-mMatrix(0, 1) * mMatrix(0, 3)) - mMatrix(1, 1) * mMatrix(1, 3)) -
-                mMatrix(2, 1) * mMatrix(2, 3);
-    dst->mP.z = ((-mMatrix(0, 2) * mMatrix(0, 3)) - mMatrix(1, 2) * mMatrix(1, 3)) -
-                mMatrix(2, 2) * mMatrix(2, 3);
-    dst->mP *= -1.0f;
+    Vector3f pos;
+    pos.x = ((-mMatrix(0, 0) * mMatrix(0, 3)) - mMatrix(1, 0) * mMatrix(1, 3)) -
+            mMatrix(2, 0) * mMatrix(2, 3);
+    pos.y = ((-mMatrix(0, 1) * mMatrix(0, 3)) - mMatrix(1, 1) * mMatrix(1, 3)) -
+            mMatrix(2, 1) * mMatrix(2, 3);
+    pos.z = ((-mMatrix(0, 2) * mMatrix(0, 3)) - mMatrix(1, 2) * mMatrix(1, 3)) -
+            mMatrix(2, 2) * mMatrix(2, 3);
+    pos *= -1.0f;
+    dst->setPos(pos);
 }
 
 LookAtCamera::~LookAtCamera() = default;

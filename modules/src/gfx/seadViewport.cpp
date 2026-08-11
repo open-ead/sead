@@ -13,10 +13,11 @@ Viewport::Viewport()
     setUndef();
 }
 
-Viewport::Viewport(f32 left, f32 top, f32 sizeX, f32 sizeY)
-    : BoundBox2f(left, top, left + sizeX, top + sizeY)
+Viewport::Viewport(f32 left, f32 top, f32 size_x, f32 size_y)
+    : BoundBox2f(left, top, left + size_x, top + size_y)
 {
 }
+
 Viewport::Viewport(const LogicalFrameBuffer& frame_buffer)
 {
     setByFrameBuffer(frame_buffer);

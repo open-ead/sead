@@ -304,8 +304,8 @@ f32 OrthoProjection::getAspect() const
 
 void OrthoProjection::getOffset(Vector2f* offset) const
 {
-    offset->x = ((float)0.5 * (mLeft + mRight)) / (mRight - mLeft);
-    offset->y = ((float)0.5 * (mTop + mBottom)) / (mTop - mBottom);
+    offset->x = (0.5f * (mLeft + mRight)) / (mRight - mLeft);
+    offset->y = (0.5f * (mTop + mBottom)) / (mTop - mBottom);
 }
 
 void OrthoProjection::setNear(f32 near)
@@ -351,7 +351,6 @@ void OrthoProjection::setTBLR(float top, float bottom, float left, float right)
     mLeft = left;
     mRight = right;
     setDirty();
-    // this->projectionType = ProjectionType::cOrthoProjection;
 }
 
 void OrthoProjection::doUpdateMatrix(Matrix44f* dst) const
@@ -500,11 +499,11 @@ f32 FrustumProjection::getAspect() const
 
 void FrustumProjection::getOffset(Vector2f* dst) const
 {
-    float denom = mRight - mLeft;
-    dst->x = (float)0.5 * (mRight + mLeft) / denom;
+    f32 denom = mRight - mLeft;
+    dst->x = 0.5f * (mRight + mLeft) / denom;
 
     denom = mTop - mBottom;
-    dst->y = (float)0.5 * (mTop + mBottom) / denom;
+    dst->y = 0.5f * (mTop + mBottom) / denom;
 }
 
 DirectProjection::DirectProjection() : mDirectMatrix(Matrix44f::ident)
