@@ -157,12 +157,36 @@ public:
     OrthoProjection(f32 _near, f32 _far, const Viewport& vp);
     ~OrthoProjection() override = default;
 
-    void setNear(f32 near);
-    void setFar(f32 far);
-    void setTop(f32 top);
-    void setBottom(f32 bottom);
-    void setLeft(f32 left);
-    void setRight(f32 right);
+    void setNear(f32 near)
+    {
+        mNear = near;
+        setDirty();
+    }
+    void setFar(f32 far)
+    {
+        mFar = far;
+        setDirty();
+    }
+    void setTop(f32 top)
+    {
+        mTop = top;
+        setDirty();
+    }
+    void setBottom(f32 bottom)
+    {
+        mBottom = bottom;
+        setDirty();
+    }
+    void setLeft(f32 left)
+    {
+        mLeft = left;
+        setDirty();
+    }
+    void setRight(f32 right)
+    {
+        mRight = right;
+        setDirty();
+    }
     void setTBLR(f32 top, f32 bottom, f32 left, f32 right);
     void setByViewport(const Viewport& vp);
     void setBoundBox(const BoundBox2f& box);
@@ -211,12 +235,36 @@ public:
     void doUpdateMatrix(Matrix44f* dst) const override;
     void doScreenPosToCameraPosTo(Vector3f* dst, const Vector3f& screen_pos) const override;
 
-    void setNear(f32 near);
-    void setFar(f32 far);
-    void setTop(f32 top);
-    void setBottom(f32 bottom);
-    void setLeft(f32 left);
-    void setRight(f32 right);
+    void setNear(f32 near)
+    {
+        mNear = near;
+        setDirty();
+    }
+    void setFar(f32 far)
+    {
+        mFar = far;
+        setDirty();
+    }
+    void setTop(f32 top)
+    {
+        mTop = top;
+        setDirty();
+    }
+    void setBottom(f32 bottom)
+    {
+        mBottom = bottom;
+        setDirty();
+    }
+    void setLeft(f32 left)
+    {
+        mLeft = left;
+        setDirty();
+    }
+    void setRight(f32 right)
+    {
+        mRight = right;
+        setDirty();
+    }
 
     void setTBLR(f32 top, f32 bottom, f32 left, f32 right);
 

@@ -336,42 +336,6 @@ void OrthoProjection::getOffset(Vector2f* offset) const
     offset->y = (0.5f * (mTop + mBottom)) / (mTop - mBottom);
 }
 
-void OrthoProjection::setNear(f32 near)
-{
-    mNear = near;
-    setDirty();
-}
-
-void OrthoProjection::setFar(f32 far)
-{
-    mFar = far;
-    setDirty();
-}
-
-void OrthoProjection::setTop(f32 top)
-{
-    mTop = top;
-    setDirty();
-}
-
-void OrthoProjection::setBottom(f32 bottom)
-{
-    mBottom = bottom;
-    setDirty();
-}
-
-void OrthoProjection::setLeft(f32 left)
-{
-    mLeft = left;
-    setDirty();
-}
-
-void OrthoProjection::setRight(f32 right)
-{
-    mRight = right;
-    setDirty();
-}
-
 void OrthoProjection::setTBLR(float top, float bottom, float left, float right)
 {
     mTop = top;
@@ -487,42 +451,6 @@ void FrustumProjection::doScreenPosToCameraPosTo(Vector3f* dst, const Vector3f& 
     dst->z = -mNear;
     dst->x = (mRight - mLeft) * screen_pos.x * 0.5f + (mRight + mLeft) * 0.5f;
     dst->y = (mTop - mBottom) * screen_pos.y * 0.5f + (mTop + mBottom) * 0.5f;
-}
-
-void FrustumProjection::setNear(f32 near)
-{
-    mNear = near;
-    setDirty();
-}
-
-void FrustumProjection::setFar(f32 far)
-{
-    mFar = far;
-    setDirty();
-}
-
-void FrustumProjection::setTop(f32 top)
-{
-    mTop = top;
-    setDirty();
-}
-
-void FrustumProjection::setBottom(f32 bottom)
-{
-    mBottom = bottom;
-    setDirty();
-}
-
-void FrustumProjection::setLeft(f32 left)
-{
-    mLeft = left;
-    setDirty();
-}
-
-void FrustumProjection::setRight(f32 right)
-{
-    mRight = right;
-    setDirty();
 }
 
 f32 FrustumProjection::getFovy() const
