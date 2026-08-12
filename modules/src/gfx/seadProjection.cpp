@@ -553,12 +553,16 @@ void FrustumProjection::getOffset(Vector2f* dst) const
 
 f32 FrustumProjection::getOffsetX() const
 {
-    return 0.5f * (mLeft + mBottom) / (mLeft - mBottom);
+    f32 den = mRight - mLeft;
+    f32 num = mRight + mLeft;
+    return 0.5f * num / den;
 }
 
 f32 FrustumProjection::getOffsetY() const
 {
-    return 0.5f * (mFar + mTop) / (mFar - mTop);
+    f32 den = mTop - mBottom;
+    f32 num = mTop + mBottom;
+    return 0.5f * num / den;
 }
 
 DirectProjection::DirectProjection() : mDirectMatrix(Matrix44f::ident)
