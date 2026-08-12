@@ -58,9 +58,12 @@ public:
 
     void setPos(const Vector3f& pos) { mPos = pos; }
     void setAt(const Vector3f& at) { mAt = at; }
-    void setUp(const Vector3f& up) { mUp = up; }
+    void setUp(const Vector3f& up)
+    {
+        mUp = up;
+        mUp.normalize();
+    }
 
-    void normalizeUp() { mUp.normalize(); }
     void addPos(const Vector3f& pos) { mPos += pos; }
     void addAt(const Vector3f& at) { mAt += at; }
 
