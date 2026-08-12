@@ -317,6 +317,21 @@ OrthoProjection::OrthoProjection(f32 _near, f32 _far, const Viewport& vp) : mNea
     setDirty();
 }
 
+f32 OrthoProjection::getNear() const
+{
+    return mNear;
+}
+
+f32 OrthoProjection::getFar() const
+{
+    return mFar;
+}
+
+f32 OrthoProjection::getFovy() const
+{
+    return 0;
+}
+
 f32 OrthoProjection::getAspect() const
 {
     return (mRight - mLeft) / (mTop - mBottom);
@@ -435,6 +450,16 @@ FrustumProjection::FrustumProjection(f32 _near, f32 _far, const BoundBox2f& box)
 {
 }
 
+f32 FrustumProjection::getNear() const
+{
+    return mNear;
+}
+
+f32 FrustumProjection::getFar() const
+{
+    return mFar;
+}
+
 void FrustumProjection::doUpdateMatrix(Matrix44f* dst) const
 {
     f32 inv_size = 1.0f / (mRight - mLeft);
@@ -524,6 +549,16 @@ void FrustumProjection::getOffset(Vector2f* dst) const
 
     denom = mTop - mBottom;
     dst->y = 0.5f * (mTop + mBottom) / denom;
+}
+
+f32 FrustumProjection::getOffsetX() const
+{
+    return 0.5f * (mLeft + mBottom) / (mLeft - mBottom);
+}
+
+f32 FrustumProjection::getOffsetY() const
+{
+    return 0.5f * (mFar + mTop) / (mFar - mTop);
 }
 
 DirectProjection::DirectProjection() : mDirectMatrix(Matrix44f::ident)
@@ -638,6 +673,31 @@ void DirectProjection::setProjectionMatrix(const Matrix44f& mtx, Graphics::Devic
 
     setDirty();
     mAttributesDirty = true;
+}
+
+f32 DirectProjection::getNear() const
+{
+    return mNear;
+}
+
+f32 DirectProjection::getFar() const
+{
+    return mFar;
+}
+
+f32 DirectProjection::getFovy() const
+{
+    return mFovy;
+}
+
+f32 DirectProjection::getAspect() const
+{
+    return mAspect;
+}
+
+void DirectProjection::getOffset(Vector2f* offset) const
+{
+    *offset = mOffset;
 }
 
 void DirectProjection::doScreenPosToCameraPosTo(Vector3f* dst, const Vector3f& screen_pos) const

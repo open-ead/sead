@@ -170,9 +170,9 @@ public:
     void createDividedProjection(OrthoProjection* dst, s32 partno_x, s32 partno_y, s32 divnum_x,
                                  s32 divnum_y) const;
 
-    f32 getNear() const override { return mNear; }
-    f32 getFar() const override { return mFar; }
-    f32 getFovy() const override { return 0; }
+    f32 getNear() const override;
+    f32 getFar() const override;
+    f32 getFovy() const override;
     f32 getTop() const { return mTop; }
     f32 getBottom() const { return mBottom; }
     f32 getLeft() const { return mLeft; }
@@ -225,8 +225,8 @@ public:
     void createDividedProjection(FrustumProjection* dst, s32 partno_x, s32 partno_y, s32 divnum_x,
                                  s32 divnum_y) const;
 
-    f32 getNear() const override { return mNear; }
-    f32 getFar() const override { return mFar; }
+    f32 getNear() const override;
+    f32 getFar() const override;
     f32 getTop() const { return mTop; }
     f32 getBottom() const { return mBottom; }
     f32 getLeft() const { return mLeft; }
@@ -235,6 +235,8 @@ public:
     f32 getFovy() const override;
     f32 getAspect() const override;
     void getOffset(Vector2f* dst) const override;
+    f32 getOffsetX() const;
+    f32 getOffsetY() const;
 
     void setFovyAspectOffset(f32 fovy, f32 aspect, const Vector2f& offset);
 
@@ -262,12 +264,12 @@ public:
 
     void setProjectionMatrix(const Matrix44f& mtx, Graphics::DevicePosture posture);
 
-    f32 getNear() const override { return mNear; }
-    f32 getFar() const override { return mFar; }
-    f32 getFovy() const override { return mFovy; }
+    f32 getNear() const override;
+    f32 getFar() const override;
+    f32 getFovy() const override;
 
-    f32 getAspect() const override { return mAspect; }
-    void getOffset(Vector2f* offset) const override { *offset = mOffset; }
+    f32 getAspect() const override;
+    void getOffset(Vector2f* offset) const override;
 
     void doScreenPosToCameraPosTo(Vector3f* dst, const Vector3f& screen_pos) const override;
 
