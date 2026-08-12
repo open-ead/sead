@@ -12,7 +12,6 @@ class Projection;
 
 class Viewport : public BoundBox2f
 {
-    SEAD_RTTI_BASE(Viewport)
 public:
     Viewport();
     Viewport(f32 left, f32 top, f32 size_x, f32 size_y);
@@ -38,7 +37,9 @@ public:
 
 private:
     Graphics::DevicePosture mDevicePosture = Graphics::getDefaultDevicePosture();
+#if SEAD_VIEWPORT_DEPTH_RANGE
     Vector2f mDepthRange = Vector2f(0.0f, 1.0f);
+#endif
 };
 #ifdef cafe
 static_assert(sizeof(Viewport) == 0x18, "sead::Viewport size mismatch");

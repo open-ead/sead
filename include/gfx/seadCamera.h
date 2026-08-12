@@ -65,7 +65,7 @@ public:
     void addAt(const Vector3f& at) { mAt += at; }
 
 private:
-    Vector3f mPos = {0.0f, 0.0f, 1.0f};
+    Vector3f mPos = {0.0f, 0.0f, 10.0f};
     Vector3f mAt = {0.0f, 0.0f, 0.0f};
     Vector3f mUp = {0.0f, 1.0f, 0.0f};
 };

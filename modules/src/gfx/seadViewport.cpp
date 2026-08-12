@@ -138,7 +138,9 @@ void Viewport::apply(DrawContext* context, const LogicalFrameBuffer& buffer) con
                                u32(real_size.y));
     nvnCommandBufferSetViewport(cb, s32(real_pos.x), s32(real_pos.y), u32(real_size.x),
                                 u32(real_size.y));
+#if SEAD_VIEWPORT_DEPTH_RANGE
     nvnCommandBufferSetDepthRange(cb, mDepthRange.x, mDepthRange.y);
+#endif
 }
 
 void Viewport::applyViewport(DrawContext* context, const LogicalFrameBuffer& buffer) const
@@ -157,7 +159,9 @@ void Viewport::applyViewport(DrawContext* context, const LogicalFrameBuffer& buf
     NVNcommandBuffer* cb = context->getCommandBuffer()->ToData()->pNvnCommandBuffer;
     nvnCommandBufferSetViewport(cb, s32(real_pos.x), s32(real_pos.y), u32(real_size.x),
                                 u32(real_size.y));
+#if SEAD_VIEWPORT_DEPTH_RANGE
     nvnCommandBufferSetDepthRange(cb, mDepthRange.x, mDepthRange.y);
+#endif
 }
 
 void Viewport::applyScissor(DrawContext* context, const LogicalFrameBuffer& buffer) const
