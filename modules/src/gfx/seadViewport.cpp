@@ -4,6 +4,8 @@
 #include <gfx/seadViewport.h>
 #include "math/seadBoundBox.h"
 #include "nn/gfx/gfx_StateInfo.h"
+#include "nvn/nvn.h"
+#include "nvn/nvn_FuncPtrInline.h"
 
 namespace sead
 {
@@ -131,11 +133,12 @@ void Viewport::apply(DrawContext* context, const LogicalFrameBuffer& buffer) con
 
     real_pos.y = (buffer.getPhysicalArea().getSizeY() - real_size.y) - real_pos.y;
 
-    sead::Graphics::instance()->setViewportRealPosition(real_pos.x, real_pos.y, real_size.x,
-                                                        real_size.y);
-    sead::Graphics::instance()->setScissorRealPosition(real_pos.x, real_pos.y, real_size.x,
-                                                       real_size.y);
-    context->getCommandBuffer()->SetDepthBounds(mDepthBounds.x, mDepthBounds.y);
+    NVNcommandBuffer* cb = context->getCommandBuffer()->ToData()->pNvnCommandBuffer;
+    nvnCommandBufferSetScissor(cb, s32(real_pos.x), s32(real_pos.y), u32(real_size.x),
+                               u32(real_size.y));
+    nvnCommandBufferSetViewport(cb, s32(real_pos.x), s32(real_pos.y), u32(real_size.x),
+                                u32(real_size.y));
+    nvnCommandBufferSetDepthRange(cb, mDepthRange.x, mDepthRange.y);
 }
 
 void Viewport::applyViewport(DrawContext* context, const LogicalFrameBuffer& buffer) const
@@ -150,10 +153,11 @@ void Viewport::applyViewport(DrawContext* context, const LogicalFrameBuffer& buf
                 buffer.getPhysicalArea().isInside(real_pos + real_size));
 
     real_pos.y = (buffer.getPhysicalArea().getSizeY() - real_size.y) - real_pos.y;
-    // real_pos.x = (buffer.getPhysicalArea().getSizeX() - real_size.x) - real_pos.x;
 
-    sead::Graphics::instance()->setViewportRealPosition(real_pos.x, real_pos.y, real_size.x,
-                                                        real_size.y);
+    NVNcommandBuffer* cb = context->getCommandBuffer()->ToData()->pNvnCommandBuffer;
+    nvnCommandBufferSetViewport(cb, s32(real_pos.x), s32(real_pos.y), u32(real_size.x),
+                                u32(real_size.y));
+    nvnCommandBufferSetDepthRange(cb, mDepthRange.x, mDepthRange.y);
 }
 
 void Viewport::applyScissor(DrawContext* context, const LogicalFrameBuffer& buffer) const
@@ -169,8 +173,9 @@ void Viewport::applyScissor(DrawContext* context, const LogicalFrameBuffer& buff
 
     real_pos.y = (buffer.getPhysicalArea().getSizeY() - real_size.y) - real_pos.y;
 
-    sead::Graphics::instance()->setScissorRealPosition(real_pos.x, real_pos.y, real_size.x,
-                                                       real_size.y);
+    NVNcommandBuffer* cb = context->getCommandBuffer()->ToData()->pNvnCommandBuffer;
+    nvnCommandBufferSetScissor(cb, s32(real_pos.x), s32(real_pos.y), u32(real_size.x),
+                               u32(real_size.y));
 }
 
 void Viewport::project(Vector2f* aVec, const Vector3f& bVec) const

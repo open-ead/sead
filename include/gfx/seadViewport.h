@@ -38,7 +38,7 @@ public:
 
 private:
     Graphics::DevicePosture mDevicePosture = Graphics::getDefaultDevicePosture();
-    Vector2f mDepthBounds = Vector2f(0.0f, 1.0f);
+    Vector2f mDepthRange = Vector2f(0.0f, 1.0f);
 };
 #ifdef cafe
 static_assert(sizeof(Viewport) == 0x18, "sead::Viewport size mismatch");
