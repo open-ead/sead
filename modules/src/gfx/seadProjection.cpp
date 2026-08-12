@@ -87,15 +87,6 @@ void Projection::unprojectRay(Ray<Vector3f>* dst, const Vector3f& screen_pos,
     camera.unprojectRayByMatrix(dst, camera_pos);
 }
 
-void Projection::doScreenPosToCameraPosTo(Vector3f* dst, const Vector3f& screen_pos) const
-{
-    updateMatrixImpl_();
-    f32 scale = 1.0f / (mMatrix(3, 3) + screen_pos.x * mMatrix(3, 0) +
-                        screen_pos.y * mMatrix(3, 1) + screen_pos.z * mMatrix(3, 2));
-    *dst = static_cast<Matrix34f>(mMatrix) * screen_pos;
-    *dst *= scale;
-}
-
 static void swapMatrixXY(Matrix44f* mtx)
 {
     Vector4f x = mtx->getRow(0);
@@ -167,6 +158,8 @@ PerspectiveProjection::PerspectiveProjection(f32 near, f32 far, f32 fovy_rad, f3
 {
     setFovy_(fovy_rad);
 }
+
+PerspectiveProjection::~PerspectiveProjection() = default;
 
 void PerspectiveProjection::set(f32 _near, f32 _far, f32 fovy_rad, f32 aspect)
 {

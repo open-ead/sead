@@ -79,7 +79,7 @@ class PerspectiveProjection : public Projection
 public:
     PerspectiveProjection();
     PerspectiveProjection(f32 near, f32 far, f32 fovy_rad, f32 aspect);
-    ~PerspectiveProjection() override = default;
+    ~PerspectiveProjection() override;
 
     void set(f32 _near, f32 _far, f32 fovy_rad, f32 aspect);
 
