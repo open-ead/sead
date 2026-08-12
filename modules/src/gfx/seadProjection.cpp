@@ -188,6 +188,26 @@ void PerspectiveProjection::setFovy_(f32 fovy)
     setDirty();
 }
 
+f32 PerspectiveProjection::getNear() const
+{
+    return mNear;
+}
+
+f32 PerspectiveProjection::getFar() const
+{
+    return mFar;
+}
+
+f32 PerspectiveProjection::getFovy() const
+{
+    return mAngle;
+}
+
+f32 PerspectiveProjection::getAspect() const
+{
+    return mAspect;
+}
+
 void PerspectiveProjection::getOffset(Vector2f* offset) const
 {
     offset->x = mOffset.x;

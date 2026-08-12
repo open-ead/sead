@@ -110,10 +110,10 @@ public:
     void createDividedProjection(PerspectiveProjection* dst, s32 partno_x, s32 partno_y,
                                  s32 divnum_x, s32 divnum_y) const;
 
-    f32 getNear() const override { return mNear; }
-    f32 getFar() const override { return mFar; }
-    f32 getFovy() const override { return mAngle; }
-    f32 getAspect() const override { return mAspect; }
+    f32 getNear() const override;
+    f32 getFar() const override;
+    f32 getFovy() const override;
+    f32 getAspect() const override;
     void getOffset(Vector2f* offset) const override;
 
     f32 getTop() const;
