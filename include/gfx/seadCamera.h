@@ -63,6 +63,7 @@ public:
         mUp = up;
         mUp.normalize();
     }
+    void normalizeUp() { mUp.normalize(); }
 
     void addPos(const Vector3f& pos) { mPos += pos; }
     void addAt(const Vector3f& at) { mAt += at; }
