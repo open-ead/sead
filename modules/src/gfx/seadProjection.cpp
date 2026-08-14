@@ -402,11 +402,6 @@ FrustumProjection::FrustumProjection(f32 _near, f32 _far, f32 top, f32 bottom, f
     setDirty();
 }
 
-FrustumProjection::FrustumProjection(f32 _near, f32 _far, const BoundBox2f& box)
-    : mNear(_near), mFar(_far)
-{
-}
-
 f32 FrustumProjection::getNear() const
 {
     return mNear;

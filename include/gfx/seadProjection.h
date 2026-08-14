@@ -228,7 +228,6 @@ class FrustumProjection : public Projection
 public:
     FrustumProjection() = default;
     FrustumProjection(f32 _near, f32 _far, f32 top, f32 bottom, f32 left, f32 right);
-    FrustumProjection(f32 _near, f32 _far, const BoundBox2f& box);
     ~FrustumProjection() override = default;
 
     Type getProjectionType() const override { return Projection::cType_Perspective; }
