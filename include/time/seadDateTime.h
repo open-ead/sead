@@ -16,6 +16,7 @@ public:
     DateTime(const CalendarTime::Year& year, const CalendarTime::Month& month,
              const CalendarTime::Day& day, const CalendarTime::Hour& hour,
              const CalendarTime::Minute& minute, const CalendarTime::Second& second);
+    DateTime(const DateTimeUtc& unused);
 
     DateTime& operator+=(DateSpan span)
     {
