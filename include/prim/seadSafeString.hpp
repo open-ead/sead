@@ -795,7 +795,6 @@ template <typename T>
 inline s32 BufferedSafeStringBase<T>::trimMatchedString(const SafeStringBase<T>& suffix)
 {
     const s32 length = this->calcLength();
-    T* buffer = getMutableStringTop_();
 
     const s32 suffix_length = suffix.calcLength();
     const s32 new_length = length - suffix_length;
@@ -803,10 +802,10 @@ inline s32 BufferedSafeStringBase<T>::trimMatchedString(const SafeStringBase<T>&
     if (length < suffix_length)
         return length;
 
-    if (SafeStringBase<T>(&buffer[new_length]).comparen(suffix, suffix_length) != 0)
+    if (SafeStringBase<T>(&getMutableStringTop_()[new_length]).comparen(suffix, suffix_length) != 0)
         return length;
 
-    buffer[new_length] = SafeStringBase<T>::cNullChar;
+    getMutableStringTop_()[new_length] = SafeStringBase<T>::cNullChar;
     return new_length;
 }
 
