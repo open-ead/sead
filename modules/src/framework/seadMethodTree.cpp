@@ -84,11 +84,11 @@ void MethodTreeNode::call()
 
 void MethodTreeNode::callRec_()
 {
-    if (!mPauseFlag.isOn(cPause_Self))
+    if (mPauseFlag.isOff(cPause_Self))
         (*mDelegateHolder.data())();
 
     auto* node = child();
-    if (node && !mPauseFlag.isOn(cPause_Child))
+    if (node && mPauseFlag.isOff(cPause_Child))
     {
         while (node)
         {

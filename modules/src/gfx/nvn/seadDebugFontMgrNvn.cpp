@@ -9,11 +9,15 @@
 
 namespace sead
 {
+// BOTW
+// NON_MATCHING
 SEAD_SINGLETON_DISPOSER_IMPL(DebugFontMgrJis1Nvn)
-DebugFontMgrJis1Nvn::~DebugFontMgrJis1Nvn() = default;
+DebugFontMgrJis1Nvn::~DebugFontMgrJis1Nvn() {}
 
 DebugFontMgrJis1Nvn::DebugFontMgrJis1Nvn() = default;
 
+// BOTW
+// NON_MATCHING
 void DebugFontMgrJis1Nvn::initialize(Heap* heap, const char* shader_path, const char* font_path,
                                      const char* table_path, u32 unk)
 {
@@ -37,7 +41,7 @@ void DebugFontMgrJis1Nvn::initialize(Heap* heap, const char* shader_path, const 
                          unk);
 }
 
-// SMO
+// BOTW
 // NON_MATCHING: Stack
 void DebugFontMgrJis1Nvn::initializeFromBinary(Heap* heap, void* shader_binary, u64 shader_size,
                                                void* font_binary, u64 font_size,
@@ -58,47 +62,55 @@ void DebugFontMgrJis1Nvn::initializeFromBinary(Heap* heap, void* shader_binary, 
 
     nvnProgramInitialize(&mNvnProgram, device);
 
-    NVNmemoryPoolBuilder poolBuilder;
-    nvnMemoryPoolBuilderSetDefaults(&poolBuilder);
-    nvnMemoryPoolBuilderSetDevice(&poolBuilder, device);
-    nvnMemoryPoolBuilderSetFlags(&poolBuilder, NVN_MEMORY_POOL_FLAGS_CPU_UNCACHED |
-                                                   NVN_MEMORY_POOL_FLAGS_GPU_CACHED |
-                                                   NVN_MEMORY_POOL_FLAGS_SHADER_CODE);
+    union PoolBufferBuilder
+    {
+        NVNmemoryPoolBuilder pool;
+        NVNbufferBuilder buffer;
+    };
 
-    size_t paddedShaderSize = (shader_size + 0xFFF) & ~0xFFF;
+    {
+        PoolBufferBuilder builder1;
+        PoolBufferBuilder builder2;
+        nvnMemoryPoolBuilderSetDefaults(&builder1.pool);
+        nvnMemoryPoolBuilderSetDevice(&builder1.pool, device);
+        nvnMemoryPoolBuilderSetFlags(&builder1.pool, NVN_MEMORY_POOL_FLAGS_CPU_UNCACHED |
+                                                         NVN_MEMORY_POOL_FLAGS_GPU_CACHED |
+                                                         NVN_MEMORY_POOL_FLAGS_SHADER_CODE);
 
-    nvnMemoryPoolBuilderSetStorage(&poolBuilder, shader_binary, paddedShaderSize);
-    nvnMemoryPoolInitialize(&mPool2, &poolBuilder);
+        size_t paddedShaderSize = (shader_size + 0xFFF) & ~0xFFF;
 
-    NVNbufferBuilder bufferBuilder;
-    nvnBufferBuilderSetDevice(&bufferBuilder, device);
-    nvnBufferBuilderSetDefaults(&bufferBuilder);
-    nvnBufferBuilderSetStorage(&bufferBuilder, &mPool2, 0, paddedShaderSize);
-    nvnBufferInitialize(&mBuffer1, &bufferBuilder);
+        nvnMemoryPoolBuilderSetStorage(&builder1.pool, shader_binary, paddedShaderSize);
+        nvnMemoryPoolInitialize(&mPool2, &builder1.pool);
 
-    NVNbufferAddress bufferAddress = nvnBufferGetAddress(&mBuffer1);
+        nvnBufferBuilderSetDevice(&builder2.buffer, device);
+        nvnBufferBuilderSetDefaults(&builder2.buffer);
+        nvnBufferBuilderSetStorage(&builder2.buffer, &mPool2, 0, paddedShaderSize);
+        nvnBufferInitialize(&mBuffer1, &builder2.buffer);
 
-    ShaderBinaryHeader* header = reinterpret_cast<ShaderBinaryHeader*>(shader_binary);
-    NVNshaderData data[2]{
-        {bufferAddress + header->shaderDataOffset,
-         reinterpret_cast<void*>(uintptr_t(shader_binary) + ptrdiff_t(header->offset1))},
-        {bufferAddress + header->offset4,
-         reinterpret_cast<void*>(uintptr_t(shader_binary) + ptrdiff_t(header->offset2))}};
-    nvnProgramSetShaders(&mNvnProgram, sizeof(data) / sizeof(NVNshaderData), data);
-    static size_t sPaddedBuffer1Size = (size_t(mBuffer1Size + 0x200) + 0xFFF) & ~0xFFF;
+        NVNbufferAddress bufferAddress = nvnBufferGetAddress(&mBuffer1);
 
-    nvnMemoryPoolBuilderSetDefaults(&poolBuilder);
-    nvnMemoryPoolBuilderSetDevice(&poolBuilder, device);
-    nvnMemoryPoolBuilderSetFlags(&poolBuilder, NVN_MEMORY_POOL_FLAGS_CPU_UNCACHED |
-                                                   NVN_MEMORY_POOL_FLAGS_GPU_CACHED);
-    void* storage = new (heap) char[sPaddedBuffer1Size];
-    nvnMemoryPoolBuilderSetStorage(&poolBuilder, storage, sPaddedBuffer1Size);
-    nvnMemoryPoolInitialize(&mPool3, &poolBuilder);
+        ShaderBinaryHeader* header = reinterpret_cast<ShaderBinaryHeader*>(shader_binary);
+        NVNshaderData data[2]{
+            {bufferAddress + header->shaderDataOffset,
+             reinterpret_cast<void*>(uintptr_t(shader_binary) + ptrdiff_t(header->offset1))},
+            {bufferAddress + header->offset4,
+             reinterpret_cast<void*>(uintptr_t(shader_binary) + ptrdiff_t(header->offset2))}};
+        nvnProgramSetShaders(&mNvnProgram, sizeof(data) / sizeof(NVNshaderData), data);
+        static size_t sPaddedBuffer1Size = (size_t(mBuffer1Size + 0x200) + 0xFFF) & ~0xFFF;
 
-    nvnBufferBuilderSetDefaults(&bufferBuilder);
-    nvnBufferBuilderSetDevice(&bufferBuilder, device);
-    nvnBufferBuilderSetStorage(&bufferBuilder, &mPool3, 0, mBuffer1Size);
-    nvnBufferInitialize(&mBuffer2, &bufferBuilder);
+        nvnMemoryPoolBuilderSetDefaults(&builder1.pool);
+        nvnMemoryPoolBuilderSetDevice(&builder1.pool, device);
+        nvnMemoryPoolBuilderSetFlags(&builder1.pool, NVN_MEMORY_POOL_FLAGS_CPU_UNCACHED |
+                                                         NVN_MEMORY_POOL_FLAGS_GPU_CACHED);
+        void* storage = new (heap, 0x1000) char[sPaddedBuffer1Size];
+        nvnMemoryPoolBuilderSetStorage(&builder1.pool, storage, sPaddedBuffer1Size);
+        nvnMemoryPoolInitialize(&mPool3, &builder1.pool);
+
+        nvnBufferBuilderSetDefaults(&builder1.buffer);
+        nvnBufferBuilderSetDevice(&builder1.buffer, device);
+        nvnBufferBuilderSetStorage(&builder1.buffer, &mPool3, 0, mBuffer1Size);
+        nvnBufferInitialize(&mBuffer2, &builder1.buffer);
+    }
     mBuffer2Map = nvnBufferMap(&mBuffer2);
 
     NVNtextureBuilder texBuilder;
@@ -110,12 +122,15 @@ void DebugFontMgrJis1Nvn::initializeFromBinary(Heap* heap, void* shader_binary, 
     nvnTextureBuilderSetPackagedTextureData(
         &texBuilder, reinterpret_cast<void*>(uintptr_t(font_binary) + 0x200));
 
-    nvnMemoryPoolBuilderSetDefaults(&poolBuilder);
-    nvnMemoryPoolBuilderSetDevice(&poolBuilder, device);
-    nvnMemoryPoolBuilderSetFlags(&poolBuilder, NVN_MEMORY_POOL_FLAGS_CPU_NO_ACCESS |
-                                                   NVN_MEMORY_POOL_FLAGS_GPU_CACHED);
-    nvnMemoryPoolBuilderSetStorage(&poolBuilder, font_binary, (font_size + 0xFFF) & ~0xFFF);
-    nvnMemoryPoolInitialize(&mPool1, &poolBuilder);
+    {
+        NVNmemoryPoolBuilder poolBuilder;
+        nvnMemoryPoolBuilderSetDefaults(&poolBuilder);
+        nvnMemoryPoolBuilderSetDevice(&poolBuilder, device);
+        nvnMemoryPoolBuilderSetFlags(&poolBuilder, NVN_MEMORY_POOL_FLAGS_CPU_NO_ACCESS |
+                                                       NVN_MEMORY_POOL_FLAGS_GPU_CACHED);
+        nvnMemoryPoolBuilderSetStorage(&poolBuilder, font_binary, (font_size + 0xFFF) & ~0xFFF);
+        nvnMemoryPoolInitialize(&mPool1, &poolBuilder);
+    }
 
     nvnTextureBuilderSetStorage(&texBuilder, &mPool1, 0x200);
     nvnTextureInitialize(&mNvnTexture, &texBuilder);
@@ -168,7 +183,7 @@ void DebugFontMgrJis1Nvn::end(DrawContext*) const {}
 // missing print and searchCharIndexFormCharCode_
 
 SEAD_SINGLETON_DISPOSER_IMPL(DebugFontMgrNvn)
-DebugFontMgrNvn::~DebugFontMgrNvn() = default;
+DebugFontMgrNvn::~DebugFontMgrNvn() {}
 
 DebugFontMgrNvn::DebugFontMgrNvn() = default;
 

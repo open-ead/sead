@@ -341,16 +341,20 @@ bool FileDeviceMgr::trySave(FileDevice::SaveArg& arg)
 #ifdef NNSDK
 void FileDeviceMgr::mountSaveDataForDebug(Heap*)
 {
+#ifdef SEAD_DEBUG
     const auto result = nn::fs::MountSaveDataForDebug("save");
     SEAD_ASSERT_MSG(
         result.IsSuccess(),
         "nn::fs::MountSaveDataForDebug() failed. module = %d desc = %d innervalue = 0x%08x",
         result.GetModule(), result.GetDescription(), result.GetInnerValueForDebug());
+#endif
 }
 
 void FileDeviceMgr::unmountSaveDataForDebug()
 {
+#ifdef SEAD_DEBUG
     nn::fs::Unmount("save");
+#endif
 }
 #endif
 

@@ -388,9 +388,8 @@ s32 StringBuilderBase<T>::append(const T* str, s32 append_length)
 template s32 StringBuilder::append(const char* str, s32 append_length);
 template s32 WStringBuilder::append(const char16* str, s32 append_length);
 
-// NON_MATCHING: regalloc differences
 template <typename T>
-s32 appendImpl_(T* buffer_, s32* length_, const s32 buffer_size_, T c, s32 num)
+s32 appendImpl_(T* volatile* buffer_, s32* length_, const s32 buffer_size_, T c, s32 num)
 {
     const s32 length = *length_;
 
@@ -401,10 +400,14 @@ s32 appendImpl_(T* buffer_, s32* length_, const s32 buffer_size_, T c, s32 num)
         num = buffer_size_ - length - 1;
     }
 
-    for (s32 i = 0; i < num; ++i)
-        buffer_[length + i] = c;
+    if (num < 1)
+        return 0;
 
-    buffer_[length + num] = SafeStringBase<T>::cNullChar;
+    T* buffer = *buffer_;
+    for (s32 i = 0; i < num; ++i)
+        buffer[length + i] = c;
+
+    buffer[length + num] = SafeStringBase<T>::cNullChar;
     *length_ = length + num;
     return num;
 }
@@ -421,7 +424,7 @@ s32 StringBuilderBase<T>::append(T c, s32 num)
     if (num == 0)
         return 0;
 
-    return appendImpl_(mBuffer, &mLength, mBufferSize, c, num);
+    return appendImpl_(&mBuffer, &mLength, mBufferSize, c, num);
 }
 
 template s32 StringBuilder::append(char c, s32 n);
@@ -430,24 +433,13 @@ template s32 WStringBuilder::append(char16 c, s32 n);
 template <typename T>
 s32 StringBuilderBase<T>::chop(s32 chop_num)
 {
-    s32 length = this->calcLength();
-    T* buffer = getMutableStringTop_();
-    const auto fail = [=] {
-        SEAD_ASSERT_MSG(false, "chop_num(%d) out of range[0, %d]", chop_num, length);
-    };
-
     if (chop_num < 0)
-    {
-        fail();
         return 0;
-    }
 
-    if (chop_num > length)
-    {
-        fail();
-        length = mLength;
-        chop_num = mLength;
-    }
+    T* buffer = mBuffer;
+    const s32 length = mLength;
+    if (length < chop_num)
+        chop_num = length;
 
     const s32 new_length = length - chop_num;
     buffer[new_length] = SafeStringBase<T>::cNullChar;
@@ -636,19 +628,45 @@ template s32 WStringBuilder::trimMatchedString(const char16* str);
 template <typename T>
 s32 StringBuilderBase<T>::replaceChar(T old_char, T new_char)
 {
-    const s32 length = this->calcLength();
-    T* buffer = getMutableStringTop_();
-
-    s32 replaced_count = 0;
-    for (s32 i = 0; i < length; ++i)
+    if constexpr (sizeof(T) == 1)
     {
-        if (buffer[i] == old_char)
+        const s32 length = this->calcLength();
+        T* buffer = getMutableStringTop_();
+
+        s32 replaced_count = 0;
+        for (s32 i = 0; i < length; ++i)
         {
-            ++replaced_count;
-            buffer[i] = new_char;
+            if (buffer[i] == old_char)
+            {
+                ++replaced_count;
+                buffer[i] = new_char;
+            }
         }
+        return replaced_count;
     }
-    return replaced_count;
+    else
+    {
+        s32 remaining = this->calcLength();
+        if (remaining < 1)
+            return 0;
+
+        T* buffer = getMutableStringTop_();
+        s32 replaced_count = 0;
+#pragma clang loop unroll(disable)
+        do
+        {
+            if (*buffer == old_char)
+            {
+                ++replaced_count;
+                *buffer = new_char;
+            }
+
+            --remaining;
+            ++buffer;
+        } while (remaining != 0);
+
+        return replaced_count;
+    }
 }
 
 template s32 StringBuilder::replaceChar(char old_char, char new_char);

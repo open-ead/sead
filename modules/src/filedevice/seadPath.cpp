@@ -49,7 +49,6 @@ char getLastChar(const SafeString& str)
 }
 }  // namespace
 
-// NON_MATCHING: redundant checks for dot_index < 0 in SafeString::getPart() are optimized out
 bool Path::getExt(BufferedSafeString* ext, const SafeString& path)
 {
     SEAD_ASSERT_MSG(ext, "destination buffer is null");
@@ -57,14 +56,15 @@ bool Path::getExt(BufferedSafeString* ext, const SafeString& path)
     ext->trim(0);
 
     const s32 dot_index = rfindCharIndex(path, '.');
-    if (dot_index < 0)
-        return false;
+    if (dot_index >= 0)
+    {
+        if (path.getPart(dot_index).include('/') || path.getPart(dot_index).include('\\'))
+            return false;
 
-    if (path.getPart(dot_index).include('/') || path.getPart(dot_index).include('\\'))
-        return false;
-
-    ext->copy(path.getPart(dot_index + 1));
-    return true;
+        ext->copy(path.getPart(dot_index + 1));
+        return true;
+    }
+    return false;
 }
 
 bool Path::getFileName(BufferedSafeString* name, const SafeString& path)
