@@ -154,12 +154,12 @@ protected:
         if (mPtrNum <= pos)
             return;
 
-        MemUtil::copyOverlap(mPtrs + pos + count, mPtrs + pos,
+        MemUtil::copyOverlap(&mPtrs[pos + count], &mPtrs[pos],
                              s32(sizeof(void*)) * (mPtrNum - pos));
     }
 
     void insert(s32 idx, void* ptr);
-    void insertArray(s32 idx, void* array, s32 array_length, s32 elem_size);
+    void insertArray(s32 idx, void* array, s32 arrayLength, s32 elementSize);
     bool checkInsert(s32 idx, s32 num);
 
     template <typename T>
@@ -188,30 +188,7 @@ protected:
     s32 compare(const PtrArrayImpl& other, CompareCallbackImpl cmp) const;
     void uniq(CompareCallbackImpl cmp);
 
-    s32 binarySearch(const void* ptr, CompareCallbackImpl cmp) const
-    {
-        if (mPtrNum == 0)
-            return -1;
-
-        s32 a = 0;
-        s32 b = mPtrNum - 1;
-        while (a < b)
-        {
-            const s32 m = (a + b) / 2;
-            const s32 c = cmp(mPtrs[m], ptr);
-            if (c == 0)
-                return m;
-            if (c < 0)
-                a = m + 1;
-            else
-                b = m;
-        }
-
-        if (cmp(mPtrs[a], ptr) == 0)
-            return a;
-
-        return -1;
-    }
+    s32 binarySearch(const void* ptr, CompareCallbackImpl cmp) const;
 
     s32 mPtrNum = 0;
     s32 mPtrNumMax = 0;
