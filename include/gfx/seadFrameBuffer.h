@@ -31,7 +31,7 @@ public:
           mPhysicalArea(physical_x, physical_y, physical_x + physical_w, physical_y + physical_h)
     {
     }
-    virtual ~LogicalFrameBuffer();
+    virtual ~LogicalFrameBuffer() = default;
 
     const Vector2f& getVirtualSize() const { return mVirtualSize; }
     const BoundBox2f& getPhysicalArea() const { return mPhysicalArea; }
