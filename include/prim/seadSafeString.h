@@ -88,7 +88,7 @@ public:
     bool operator!=(const SafeStringBase& rhs) const { return !(*this == rhs); }
 
     iterator begin() const { return iterator(this, 0); }
-    iterator end() const { return iterator(this, calcLength()); }
+    iterator end() const { return iterator(this, calcLength() + 1); }
 
     token_iterator tokenBegin(const SafeStringBase& delimiter) const
     {
