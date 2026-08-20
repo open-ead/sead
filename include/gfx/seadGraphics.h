@@ -71,6 +71,14 @@ public:
     virtual void setPolygonOffsetEnableImpl(bool, bool, bool) = 0;
 
     static Graphics* instance() { return sInstance; }
+
+    static DevicePosture getDefaultDevicePosture() { return sDefaultDevicePosture; }
+    static f32 getDefaultDeviceZScale() { return sDefaultDeviceZScale; }
+    static f32 getDefaultDeviceZOffset() { return sDefaultDeviceZOffset; }
+
+    void setViewportRealPosition(f32 x, f32 y, f32 w, f32 h) { setViewportImpl(x, y, w, h); }
+    void setScissorRealPosition(f32 x, f32 y, f32 w, f32 h) { setScissorImpl(x, y, w, h); }
+
     static DevicePosture sDefaultDevicePosture;
     static f32 sDefaultDeviceZScale;
     static f32 sDefaultDeviceZOffset;
