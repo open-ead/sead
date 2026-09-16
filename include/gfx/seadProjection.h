@@ -1,7 +1,7 @@
-#ifndef SEAD_PROJECTION_H_
-#define SEAD_PROJECTION_H_
+#pragma once
 
 #include <basis/seadTypes.h>
+#include <geom/seadLine.h>
 #include <gfx/seadGraphics.h>
 #include <math/seadBoundBox.h>
 #include <math/seadMatrix.h>
@@ -20,6 +20,12 @@ class Projection
     SEAD_RTTI_BASE(Projection)
 
 public:
+    enum Type
+    {
+        cType_Perspective = 0,
+        cType_Ortho = 1,
+        cType_Undefined = 2
+    };
     Projection();
     virtual ~Projection() = default;
 
@@ -29,14 +35,13 @@ public:
     virtual f32 getAspect() const = 0;
     virtual void getOffset(Vector2f* offset) const = 0;
     virtual void updateAttributesForDirectProjection();
-    virtual u32 getProjectionType() const = 0;
+    virtual Type getProjectionType() const = 0;
     virtual void doUpdateMatrix(Matrix44f* mtx) const = 0;
     virtual void doUpdateDeviceMatrix(Matrix44f*, const Matrix44f&, Graphics::DevicePosture) const;
     virtual void doScreenPosToCameraPosTo(Vector3f* camera_pos,
                                           const Vector3f& screen_pos) const = 0;
 
     const Matrix44f& getProjectionMatrix() const;
-    void updateMatrixImpl_() const;
     Matrix44f* getProjectionMatrixMutable();
     const Matrix44f& getDeviceProjectionMatrix() const;
     void cameraPosToScreenPos(Vector3f* screen_pos, const Vector3f& camera_pos) const;
@@ -56,6 +61,8 @@ public:
     }
 
 private:
+    void updateMatrixImpl_() const;
+
     mutable bool mDirty = true;
     mutable bool mDeviceDirty = true;
     Matrix44f mMatrix;
@@ -74,23 +81,7 @@ public:
     PerspectiveProjection(f32 near, f32 far, f32 fovy_rad, f32 aspect);
     ~PerspectiveProjection() override;
 
-    f32 getNear() const override;
-    f32 getFar() const override;
-    f32 getFovy() const override;
-    f32 getAspect() const override;
-    void getOffset(Vector2f* offset) const override;
-    void doScreenPosToCameraPosTo(Vector3f* cameraPos, const Vector3f& screenPos) const override;
-    u32 getProjectionType() const override;
-
-    void set(f32 near, f32 far, f32 fovy_rad, f32 aspect);
-    void doUpdateMatrix(Matrix44f* mtx) const override;
-    void setFovx(f32);
-    void createDividedProjection(PerspectiveProjection* projection, s32, s32, s32, s32);
-    f32 getTop() const;
-    f32 getBottom() const;
-    f32 getLeft() const;
-    f32 getRight() const;
-    void setTBLR(f32 top, f32 bottom, f32 left, f32 right);
+    void set(f32 _near, f32 _far, f32 fovy_rad, f32 aspect);
 
     void setNear(f32 near)
     {
@@ -102,6 +93,9 @@ public:
         mFar = far;
         setDirty();
     }
+    void setFovx(f32 fovx);  // Unused, potentially setFovy_(2 * Mathf::atan2(Mathf::tan(fovx *
+                             // 0.5f), mAspect));
+    void setFovy(f32 fovy) { setFovy_(fovy); }
     void setAspect(f32 aspect)
     {
         mAspect = aspect;
@@ -113,41 +107,106 @@ public:
         setDirty();
     }
 
-private:
-    f32 mNear;
-    f32 mFar;
-    f32 mFovyRad;
-    f32 mFovySin;
-    f32 mFovyCos;
-    f32 mFovyTan;
-    f32 mAspect;
-    Vector2f mOffset;
-};
-
-class OrthoProjection : public Projection
-{
-    SEAD_RTTI_OVERRIDE(OrthoProjection, Projection);
-
-public:
-    OrthoProjection();
-    OrthoProjection(f32 near, f32 far, f32 top, f32 bottom, f32 left, f32 right);
-    OrthoProjection(f32 near, f32 far, const BoundBox2f& boundBox);
-    OrthoProjection(f32 near, f32 far, const Viewport& viewport);
-    ~OrthoProjection() override;
+    void createDividedProjection(PerspectiveProjection* dst, s32 partno_x, s32 partno_y,
+                                 s32 divnum_x, s32 divnum_y) const;
 
     f32 getNear() const override;
     f32 getFar() const override;
     f32 getFovy() const override;
     f32 getAspect() const override;
     void getOffset(Vector2f* offset) const override;
-    u32 getProjectionType() const override;
-    void doUpdateMatrix(Matrix44f* mtx) const override;
-    void doScreenPosToCameraPosTo(Vector3f* cameraPos, const Vector3f& screenPos) const override;
 
-    void createDividedProjection(OrthoProjection*, s32, s32, s32, s32) const;
-    void setBoundBox(const BoundBox2f& boundBox);
-    void setByViewport(const Viewport& viewport);
+    f32 getTop() const;
+    f32 getBottom() const;
+    f32 getLeft() const;
+    f32 getRight() const;
+
     void setTBLR(f32 top, f32 bottom, f32 left, f32 right);
+
+    Type getProjectionType() const override { return Projection::cType_Perspective; }
+    void doUpdateMatrix(Matrix44f* dst) const override;
+    void doScreenPosToCameraPosTo(Vector3f* dst, const Vector3f& screen_pos) const override;
+
+private:
+    void setFovy_(f32 fovy);
+
+    f32 calcNearClipHeight_() const { return mNear * 2 * mFovyTan; }
+    f32 calcNearClipWidth_() const { return calcNearClipHeight_() * mAspect; }
+
+    f32 mNear = 1.0f;
+    f32 mFar = 10000.0f;
+    f32 mAngle;
+    f32 mFovySin;
+    f32 mFovyCos;
+    f32 mFovyTan;
+    f32 mAspect = 4.0f / 3.0f;
+    Vector2f mOffset = Vector2f::zero;
+};
+#ifdef cafe
+static_assert(sizeof(PerspectiveProjection) == 0xB8, "sead::PerspectiveProjection size mismatch");
+#endif  // cafe
+
+class OrthoProjection : public Projection
+{
+    SEAD_RTTI_OVERRIDE(OrthoProjection, Projection)
+
+public:
+    OrthoProjection();
+    OrthoProjection(f32 _near, f32 _far, f32 top, f32 bottom, f32 left, f32 right);
+    OrthoProjection(f32 _near, f32 _far, const BoundBox2f& box);
+    OrthoProjection(f32 _near, f32 _far, const Viewport& vp);
+    ~OrthoProjection() override = default;
+
+    void setNear(f32 near)
+    {
+        mNear = near;
+        setDirty();
+    }
+    void setFar(f32 far)
+    {
+        mFar = far;
+        setDirty();
+    }
+    void setTop(f32 top)
+    {
+        mTop = top;
+        setDirty();
+    }
+    void setBottom(f32 bottom)
+    {
+        mBottom = bottom;
+        setDirty();
+    }
+    void setLeft(f32 left)
+    {
+        mLeft = left;
+        setDirty();
+    }
+    void setRight(f32 right)
+    {
+        mRight = right;
+        setDirty();
+    }
+    void setTBLR(f32 top, f32 bottom, f32 left, f32 right);
+    void setByViewport(const Viewport& vp);
+    void setBoundBox(const BoundBox2f& box);
+
+    void createDividedProjection(OrthoProjection* dst, s32 partno_x, s32 partno_y, s32 divnum_x,
+                                 s32 divnum_y) const;
+
+    f32 getNear() const override;
+    f32 getFar() const override;
+    f32 getFovy() const override;
+    f32 getTop() const { return mTop; }
+    f32 getBottom() const { return mBottom; }
+    f32 getLeft() const { return mLeft; }
+    f32 getRight() const { return mRight; }
+    f32 getAspect() const override;
+    void getOffset(Vector2f* offset) const override;
+
+    Type getProjectionType() const override { return Projection::cType_Ortho; }
+    void doUpdateMatrix(Matrix44f* dst) const override;
+    void doScreenPosToCameraPosTo(Vector3f* dst, const Vector3f& screen_pos) const override;
 
 private:
     f32 mNear;
@@ -156,32 +215,76 @@ private:
     f32 mBottom;
     f32 mLeft;
     f32 mRight;
+    Vector2f mOffset;
 };
+#ifdef cafe
+static_assert(sizeof(OrthoProjection) == 0xAC, "sead::OrthoProjection size mismatch");
+#endif  // cafe
 
 class FrustumProjection : public Projection
 {
     SEAD_RTTI_OVERRIDE(FrustumProjection, Projection)
 
 public:
-    FrustumProjection();
-    FrustumProjection(f32 near, f32 far, f32 top, f32 bottom, f32 left, f32 right);
-    FrustumProjection(f32 near, f32 far, const BoundBox2f& boundBox);
-    ~FrustumProjection() override;
+    FrustumProjection() = default;
+    FrustumProjection(f32 _near, f32 _far, f32 top, f32 bottom, f32 left, f32 right);
+    ~FrustumProjection() override = default;
+
+    Type getProjectionType() const override { return Projection::cType_Perspective; }
+    void doUpdateMatrix(Matrix44f* dst) const override;
+    void doScreenPosToCameraPosTo(Vector3f* dst, const Vector3f& screen_pos) const override;
+
+    void setNear(f32 near)
+    {
+        mNear = near;
+        setDirty();
+    }
+    void setFar(f32 far)
+    {
+        mFar = far;
+        setDirty();
+    }
+    void setTop(f32 top)
+    {
+        mTop = top;
+        setDirty();
+    }
+    void setBottom(f32 bottom)
+    {
+        mBottom = bottom;
+        setDirty();
+    }
+    void setLeft(f32 left)
+    {
+        mLeft = left;
+        setDirty();
+    }
+    void setRight(f32 right)
+    {
+        mRight = right;
+        setDirty();
+    }
+
+    void setTBLR(f32 top, f32 bottom, f32 left, f32 right);
+
+    void setBoundBox(const BoundBox2f& box);
+
+    void createDividedProjection(FrustumProjection* dst, s32 partno_x, s32 partno_y, s32 divnum_x,
+                                 s32 divnum_y) const;
 
     f32 getNear() const override;
     f32 getFar() const override;
+    f32 getTop() const { return mTop; }
+    f32 getBottom() const { return mBottom; }
+    f32 getLeft() const { return mLeft; }
+    f32 getRight() const { return mRight; }
+
     f32 getFovy() const override;
     f32 getAspect() const override;
-    void getOffset(Vector2f* offset) const override;
+    void getOffset(Vector2f* dst) const override;
     f32 getOffsetX() const;
     f32 getOffsetY() const;
-    u32 getProjectionType() const override;
 
-    void doUpdateMatrix(Matrix44f* mtx) const override;
-    void doScreenPosToCameraPosTo(Vector3f* cameraPos, const Vector3f& screenPos) const override;
-    void setTBLR(f32 top, f32 bottom, f32 left, f32 right);
-    void setBoundBox(BoundBox2f& boundBox);
-    void createDividedProjection(FrustumProjection* out, s32, s32, s32, s32) const;
     void setFovyAspectOffset(f32 fovy, f32 aspect, const Vector2f& offset);
 
 private:
@@ -200,29 +303,34 @@ class DirectProjection : public Projection
 public:
     DirectProjection();
     DirectProjection(const Matrix44f& mtx, Graphics::DevicePosture posture);
-    ~DirectProjection() override;
+    ~DirectProjection() override = default;
+
+    void updateAttributesForDirectProjection() override;
+    Type getProjectionType() const override { return cType_Undefined; }
+    void doUpdateMatrix(Matrix44f* dst) const override;
 
     void setProjectionMatrix(const Matrix44f& mtx, Graphics::DevicePosture posture);
+
     f32 getNear() const override;
     f32 getFar() const override;
     f32 getFovy() const override;
+
     f32 getAspect() const override;
     void getOffset(Vector2f* offset) const override;
-    void updateAttributesForDirectProjection() override;
-    void doUpdateMatrix(Matrix44f* mtx) const override;
-    void doScreenPosToCameraPosTo(Vector3f* cameraPos, const Vector3f& screenPos) const override;
-    u32 getProjectionType() const override;
+
+    void doScreenPosToCameraPosTo(Vector3f* dst, const Vector3f& screen_pos) const override;
 
 private:
-    Matrix44f mProjectionMatrix;
-    f32 mNear;
-    f32 mFar;
-    f32 mFovy;
-    f32 mAspect;
-    Vector2f mOffset;
-    bool _f0;
+    Matrix44f mDirectMatrix;
+    f32 mNear = 0.0;
+    f32 mFar = 0.0;
+    f32 mFovy = 0.0;
+    f32 mAspect = 0.0;
+    Vector2f mOffset = {0.0f, 0.0f};
+    bool mAttributesDirty = true;
 };
+#ifdef cafe
+static_assert(sizeof(FrustumProjection) == 0xAC, "sead::FrustumProjection size mismatch");
+#endif  // cafe
 
 }  // namespace sead
-
-#endif  // SEAD_PROJECTION_H_
