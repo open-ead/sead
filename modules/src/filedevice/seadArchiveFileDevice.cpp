@@ -183,7 +183,7 @@ u8* ArchiveFileDevice::doLoadWithEntryID_(s32 entry_id, LoadArg& arg)
         if (!buffer)
         {
             const s32 aligment_sign = Mathi::sign(arg.alignment);
-            const s32 alignment = std::max(Mathi::abs(arg.alignment), 32);
+            const s32 alignment = Mathi::abs(arg.alignment) > 32 ? Mathi::abs(arg.alignment) : 32;
             buffer = new (arg.heap, alignment * aligment_sign) u8[buffer_size];
             buffer_allocated = true;
         }
@@ -198,8 +198,8 @@ u8* ArchiveFileDevice::doLoadWithEntryID_(s32 entry_id, LoadArg& arg)
         }
 
         arg.read_size = bytes_read;
-        arg.need_unload = buffer_allocated;
         arg.roundup_size = buffer_size;
+        arg.need_unload = buffer_allocated;
         return buffer;
     }
 

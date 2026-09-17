@@ -8,7 +8,7 @@ namespace sead
 {
 namespace system
 {
-void* NewImpl(Heap* heap, size_t size, s32 alignment, bool abortOnFailure)
+void* NewImpl(Heap* heap, size_t size, s32 alignment, bool abortOnFailure [[maybe_unused]])
 {
     if (!HeapMgr::sInstancePtr)
     {
@@ -27,6 +27,7 @@ void* NewImpl(Heap* heap, size_t size, s32 alignment, bool abortOnFailure)
     }
 
     void* result = heap->tryAlloc(size, alignment);
+    #ifdef SEAD_DEBUG
     if (!result && abortOnFailure)
     {
         SEAD_ASSERT_MSG(
@@ -34,6 +35,7 @@ void* NewImpl(Heap* heap, size_t size, s32 alignment, bool abortOnFailure)
             heap->getMaxAllocatableSize(alignment), alignment, heap->getName().cstr());
         return nullptr;
     }
+    #endif
     return result;
 }
 

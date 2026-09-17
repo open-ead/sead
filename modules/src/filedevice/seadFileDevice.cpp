@@ -268,7 +268,7 @@ u8* FileDevice::doLoad_(LoadArg& arg)
     {
         const s32 sign = (arg.alignment < 0) ? -1 : 1;
         s32 alignment = Mathi::abs(arg.alignment);
-        alignment = sign * ((alignment < cBufferMinAlignment) ? cBufferMinAlignment : alignment);
+        alignment = sign * ((alignment > cBufferMinAlignment) ? alignment : cBufferMinAlignment);
 
         Heap* heap = arg.heap;
         if (!heap)

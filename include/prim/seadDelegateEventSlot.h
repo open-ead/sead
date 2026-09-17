@@ -61,6 +61,8 @@ public:
         bool mConnectedToDelegateEvent = false;
     };
 
+    DelegateEvent() {}
+
     virtual ~DelegateEvent()
     {
         auto it = mList.begin();
