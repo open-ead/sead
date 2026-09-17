@@ -49,7 +49,7 @@ protected:
     virtual s32 doConvertPathToEntryID_(const SafeString& path);
     virtual bool doSetCurrentDirectory_(const SafeString& path);
 
-    ArchiveFileHandle* getArchiveFileHandle_(FileHandle* handle) const;
+    ArchiveFileHandle* getArchiveFileHandle_(FileHandle* handle);
     ArchiveFileHandle* constructArchiveFileHandle_(FileHandle* handle) const;
 
     ArchiveRes* mArchive;

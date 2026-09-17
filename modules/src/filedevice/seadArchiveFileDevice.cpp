@@ -89,8 +89,7 @@ bool ArchiveFileDevice::doGetFileSize_(u32* fileSize, FileHandle* handle)
     return true;
 }
 
-ArchiveFileDevice::ArchiveFileHandle*
-ArchiveFileDevice::getArchiveFileHandle_(FileHandle* handle) const
+ArchiveFileDevice::ArchiveFileHandle* ArchiveFileDevice::getArchiveFileHandle_(FileHandle* handle)
 {
     return reinterpret_cast<ArchiveFileHandle*>(getHandleBaseHandleBuffer_(handle).getBufferPtr());
 }
