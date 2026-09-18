@@ -2,7 +2,6 @@
 #define SEAD_OFFSET_LIST_H_
 
 #include <basis/seadRawPrint.h>
-#include <basis/seadTypes.h>
 #include <container/seadListImpl.h>
 #include <prim/seadPtrUtil.h>
 
@@ -54,16 +53,20 @@ public:
     T* prev(const T* obj) const
     {
         ListNode* prev_node = objToListNode(obj)->prev();
+
         if (prev_node == &mStartEnd)
             return nullptr;
+
         return listNodeToObj(prev_node);
     }
 
     T* next(const T* obj) const
     {
         ListNode* next_node = objToListNode(obj)->next();
+
         if (next_node == &mStartEnd)
             return nullptr;
+
         return listNodeToObj(next_node);
     }
 
@@ -74,45 +77,68 @@ public:
     bool isNodeLinked(const T* obj) const { return objToListNode(obj)->isLinked(); }
 
     void swap(T* obj1, T* obj2) { ListImpl::swap(objToListNode(obj1), objToListNode(obj2)); }
+
     void moveAfter(T* basis, T* obj)
     {
         ListImpl::moveAfter(objToListNode(basis), objToListNode(obj));
     }
+
     void moveBefore(T* basis, T* obj)
     {
         ListImpl::moveBefore(objToListNode(basis), objToListNode(obj));
     }
 
-    using CompareCallback = int (*)(const T*, const T*);
+    using CompareCallback = s32 (*)(const T*, const T*);
 
     void sort() { sort(compareT); }
+
     void sort(CompareCallback cmp) { ListImpl::sort<T>(mOffset, cmp); }
+
     void mergeSort() { mergeSort(compareT); }
+
     void mergeSort(CompareCallback cmp) { ListImpl::mergeSort<T>(mOffset, cmp); }
 
     T* find(const T* obj) const { return find(obj, compareT); }
+
     T* find(const T* obj, CompareCallback cmp) const
     {
         return listNodeToObj(ListImpl::find(obj, mOffset, cmp));
     }
 
     void uniq() { uniq(compareT); }
+
     void uniq(CompareCallback cmp) { ListImpl::uniq(mOffset, cmp); }
 
     class iterator
     {
     public:
         iterator(T* ptr, s32 offset) : mPtr{ptr}, mOffset{offset} {}
+
         bool operator==(const iterator& other) const { return mPtr == other.mPtr; }
+
         bool operator!=(const iterator& other) const { return !(*this == other); }
+
         iterator& operator++()
         {
             ListNode* node = static_cast<ListNode*>(PtrUtil::addOffset(mPtr, mOffset))->next();
             mPtr = static_cast<T*>(PtrUtil::addOffset(node, -mOffset));
+
             return *this;
         }
+
+        iterator& operator--()
+        {
+            ListNode* node = static_cast<ListNode*>(PtrUtil::addOffset(mPtr, mOffset))->prev();
+            mPtr = static_cast<T*>(PtrUtil::addOffset(node, -mOffset));
+
+            return *this;
+        }
+
         T& operator*() const { return *mPtr; }
+
         T* operator->() const { return mPtr; }
+
+        operator T*() const { return mPtr; }
 
     private:
         T* mPtr;
@@ -120,10 +146,12 @@ public:
     };
 
     iterator begin() const { return iterator(listNodeToObj(mStartEnd.next()), mOffset); }
+
     iterator end() const
     {
         return iterator(listNodeToObj(const_cast<ListNode*>(&mStartEnd)), mOffset);
     }
+
     iterator begin(T* ptr) const { return iterator(ptr, mOffset); }
 
     class robustIterator
@@ -134,16 +162,24 @@ public:
               mOffset{offset}
         {
         }
+
         bool operator==(const robustIterator& other) const { return mPtr == other.mPtr; }
+
         bool operator!=(const robustIterator& other) const { return !operator==(other); }
+
         robustIterator& operator++()
         {
             mPtr = static_cast<T*>(PtrUtil::addOffset(mNextNode, -mOffset));
             mNextNode = mNextNode->next();
+
             return *this;
         }
+
         T& operator*() const { return *mPtr; }
+
         T* operator->() const { return mPtr; }
+
+        operator T*() const { return mPtr; }
 
     private:
         T* mPtr;
@@ -165,19 +201,24 @@ public:
 
     struct RobustRange
     {
-        auto begin() const { return mList.robustBegin(); }
-        auto end() const { return mList.robustEnd(); }
+        robustIterator begin() const { return mList.robustBegin(); }
+
+        robustIterator end() const { return mList.robustEnd(); }
+
         const OffsetList& mList;
     };
+
     RobustRange robustRange() const { return {*this}; }
 
 protected:
-    static int compareT(const T* lhs, const T* rhs)
+    static s32 compareT(const T* lhs, const T* rhs)
     {
         if (lhs < rhs)
             return -1;
+
         if (lhs > rhs)
             return 1;
+
         return 0;
     }
 
