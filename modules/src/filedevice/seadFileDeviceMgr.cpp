@@ -4,9 +4,15 @@
 #endif  // cafe
 
 #ifdef NNSDK
+#ifdef SEAD_USE_OLD_NNHEADERS_REPO
 #include <nn/fs/fs_mount.h>
 #include <nn/fs/fs_rom.h>
 #include <nn/fs/fs_save.h>
+#else
+#include <nn/fs/fs_Mount.h>
+#include <nn/fs/fs_Rom.h>
+#include <nn/fs/fs_Save.h>
+#endif
 #endif
 
 #include <basis/seadNew.h>

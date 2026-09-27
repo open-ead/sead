@@ -18,7 +18,11 @@ public:
     u64 toTicks() const { return mTick; }
 
 #ifdef NNSDK
+#ifdef SEAD_USE_OLD_NNHEADERS_REPO
     void setNow() { mTick = nn::os::GetSystemTick().value; }
+#else
+    void setNow() { mTick = nn::os::GetSystemTick().GetInt64Value(); }
+#endif
 #else
     void setNow();
 #endif
