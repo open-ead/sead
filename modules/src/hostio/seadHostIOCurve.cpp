@@ -2,6 +2,7 @@
 #include <cmath>
 #include "math/seadMathCalcCommon.h"
 #include "math/seadMathNumbers.h"
+#include "seadVersion.h"
 
 namespace sead::hostio
 {
@@ -63,10 +64,12 @@ T curveLinear_(f32 t, const CurveDataInfo* info, const T* f)
     const int i = n * t;
     if (i >= n)
         return f[n];
-    return f[i] + (fracPart(n * t) * (f[i + 1] - f[i]));
+    const f32 fraction = fracPart(n * t);
+    const T value = f[i];
+    const T next_value = f[i + 1];
+    return value + (next_value - value) * T(fraction);
 }
 
-// NON_MATCHING: instruction ordering
 template <typename T>
 T curveHermit_(f32 t, const CurveDataInfo* info, const T* f)
 {
@@ -84,11 +87,16 @@ T curveHermit_(f32 t, const CurveDataInfo* info, const T* f)
     const auto x = fracPart(n * t);
     const auto coeff = &f[j];
 
-    return ((2 * x * x * x) - (3 * x * x) + 1) * coeff[0]  // (2t^3 - 3t^2 + 1)p0
-           + ((-2 * x * x * x) + (3 * x * x)) * coeff[2]   // (-2t^3 + 2t^2)p1
-           + ((x * x * x) - (x * x)) * coeff[3]            // (t^3 - t^2)m1
-           + ((x * x * x) - (2 * x * x) + x) * f[j | 1]    // (t^3 - 2t^2 + t)m0
-        ;
+    const auto h00 = (2 * x * x * x) - (3 * x * x) + 1;
+    const auto h01 = (-2 * x * x * x) + (3 * x * x);
+    const auto h10 = (x * x * x) - (2 * x * x) + x;
+    const auto h11 = (x * x * x) - (x * x);
+
+    const T h00_t = h00;
+    const T h01_t = h01;
+    const T h10_t = h10;
+    const T h11_t = h11;
+    return coeff[0] * h00_t + coeff[2] * h01_t + f[j | 1] * h10_t + coeff[3] * h11_t;
 }
 
 template <typename T>
@@ -120,64 +128,112 @@ T curveSinPow2_(f32 t_, const CurveDataInfo*, const T* f)
     return y * y * f[1];
 }
 
-// NON_MATCHING: instruction reordering (which results in localized regalloc differences)
+// NON_MATCHING: something is causing a difference between signed and unsigned
 template <typename T>
 T curveLinear2D_(f32 t_, const CurveDataInfo* info, const T* f)
 {
     const T t = t_;
-    if (f[0] >= t)
+    if (t <= f[0])
         return f[1];
 
-    const auto n = info->numUse / 2;
-    if (f[2 * (n - 1)] <= t)
-        return f[2 * (n - 1) + 1];
+    const s32 n = info->numUse / 2;
+    const u32 end = 2 * n;
+    if (t >= f[end - 2])
+    {
+        const T* end_ptr = f + end;
+        return *--end_ptr;
+    }
 
     for (s32 i = 0; i < n; ++i)
     {
         const auto j = 2 * i;
-        if (f[j + 2] > t)
-            return f[j + 1] + ((t - f[j]) / (f[j + 2] - f[j])) * (f[j + 3] - f[j + 1]);
+        if (t < f[j + 2])
+        {
+            const T x0 = f[j];
+            const T ratio = (t - x0) / (f[j + 2] - x0);
+            const T y0 = f[j | 1];
+            return y0 + ratio * (f[j + 3] - y0);
+        }
     }
     return 0;
 }
 
-// NON_MATCHING: same as curveHermit_<T>
 template <typename T>
 T curveHermit2D_(f32 t_, const CurveDataInfo* info, const T* f)
 {
-    const T t = t_;
     const s8 n = info->numUse / 3;
-    if (f[0] >= t)
+    const s32 end = 3 * n;
+    const T t = t_;
+    if constexpr (sizeof(T) == sizeof(f64))
+    {
+        if (t <= f[0])
+            return f[1];
+    }
+    else if (f[0] >= t)
         return f[1];
 
-    if (f[3 * (n - 1)] <= t)
-        return f[3 * (n - 1) + 1];
+    if constexpr (sizeof(T) == sizeof(f64))
+    {
+        if (t >= f[end - 3])
+            return f[end - 2];
+    }
+    else if (f[end - 3] <= t)
+        return f[end - 2];
 
     for (s32 i = 0; i < n; ++i)
     {
         const auto j = 3 * i;
-        if (f[j + 3] > t)
+        bool in_segment;
+        if constexpr (sizeof(T) == sizeof(f64))
+            in_segment = t < f[j + 3];
+        else
+            in_segment = f[j + 3] > t;
+        if (in_segment)
         {
             const auto x = (t - f[j]) / (f[j + 3] - f[j]);
-            return ((2 * x * x * x) - (3 * x * x) + 1) * f[j + 1]  // (2t^3 - 3t^2 + 1)p0
-                   + ((-2 * x * x * x) + (3 * x * x)) * f[j + 4]   // (-2t^3 + 2t^2)p1
-                   + ((x * x * x) - (x * x)) * f[j + 5]            // (t^3 - t^2)m1
-                   + ((x * x * x) - (2 * x * x) + x) * f[j + 2]    // (t^3 - 2t^2 + t)m0
-                ;
+            const auto h00 = (2 * x * x * x) - (3 * x * x) + 1;
+            const auto h01 = (-2 * x * x * x) + (3 * x * x);
+            const auto h10 = (x * x * x) - (2 * x * x) + x;
+            const auto h11 = (x * x * x) - (x * x);
+
+            const T h00_t = h00;
+            const T h01_t = h01;
+            const T h10_t = h10;
+            const T h11_t = h11;
+            return f[j + 1] * h00_t + f[j + 4] * h01_t + f[j + 2] * h10_t +
+                   f[j + 5] * h11_t;
         }
     }
 
     return 0;
 }
 
+// SMO
+// NON_MATCHING: signed vs. unsigned, can probably be solved in the same way as curveLinear2D_
 template <typename T>
 T curveStep2D_(f32 t_, const CurveDataInfo* info, const T* f)
 {
     const T t = t_;
-    const s8 n = info->numUse / 2;
     if (t <= f[0])
         return f[1];
 
+#if SEAD_VERSION == SEAD_VERSION_SMO
+    const s32 n = info->numUse / 2;
+    const u32 end = 2 * n;
+    if (t >= f[end - 2])
+    {
+        const T* end_ptr = f + end;
+        return *--end_ptr;
+    }
+
+    for (s32 i = 0; i < n; ++i)
+    {
+        const s32 j = 2 * i;
+        if (t < f[j + 2])
+            return f[j + 1];
+    }
+#else
+    const s8 n = info->numUse / 2;
     if (t >= f[2 * (n - 1)])
         return f[2 * (n - 1) + 1];
 
@@ -186,6 +242,7 @@ T curveStep2D_(f32 t_, const CurveDataInfo* info, const T* f)
         if (t < f[2 * i + 2])
             return f[2 * i + 1];
     }
+#endif
     return 0;
 }
 
@@ -244,6 +301,8 @@ Vector2<T> curveHermit2DVec2_(f32 t, const CurveDataInfo* info, const T* f)
     return {t, curveHermit2D_(t, info, f)};
 }
 
+// SMO
+// NON_MATCHING: curveStep2D_ is inlined here
 template <typename T>
 Vector2<T> curveStep2DVec2_(f32 t, const CurveDataInfo* info, const T* f)
 {

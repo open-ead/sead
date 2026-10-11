@@ -16,7 +16,7 @@ class CriticalSection;
 template <typename T, typename U>
 class IDelegate2;
 
-class MethodTreeNode : public IDisposer, public TTreeNode<MethodTreeNode*>, public INamable
+class MethodTreeNode : public TTreeNode<MethodTreeNode*>, public INamable, public IDisposer
 {
     SEAD_RTTI_BASE(MethodTreeNode)
 
@@ -31,13 +31,13 @@ public:
 
     using PauseEventDelegate = IDelegate2<MethodTreeNode*, PauseFlag>;
 
-    // NON_MATCHING: stores for mPauseFlag, mPauseEventDelegate, mUserID
     explicit MethodTreeNode(CriticalSection* cs) : TTreeNode(this)
     {
-        mCriticalSection = cs;
         mPauseEventDelegate = nullptr;
-        mUserID = nullptr;
+        mCriticalSection = cs;
         mDelegateHolder.construct(sead::Delegate<MethodTreeNode>());
+        mUserID = nullptr;
+        mPauseFlag = cPause_None;
         setPauseFlag(cPause_Both);
     }
 

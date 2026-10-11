@@ -6,15 +6,22 @@ namespace sead
 {
 namespace DateUtil
 {
+static inline bool orBool_(bool lhs, bool rhs)
+{
+    return lhs | rhs;
+}
+
 bool isLeapYear(u32 year)
 {
-#ifdef MATCHING_HACK_NX_CLANG
-    bool div100, div4;
-    return (div100 = year % 100 == 0, div4 = year % 4 == 0, !div100 & div4) | (year % 400 == 0);
-#else
-    return (year % 4 == 0 && year % 100 != 0) || year % 400 == 0;
-#endif
+    const auto remainder_100 = year % 100;
+    const auto remainder_4 = year & 3;
+    const bool divisible_by_4 = remainder_4 == 0;
+    const bool not_divisible_by_100 = remainder_100 != 0;
+    const bool leap_non_century = not_divisible_by_100 & divisible_by_4;
+    const bool divisible_by_400 = year % 400 == 0;
+    return orBool_(divisible_by_400, leap_non_century);
 }
+
 
 CalendarTime::Week calcWeekDay(const CalendarTime::Year& year, const CalendarTime::Month& month,
                                const CalendarTime::Day& day)
@@ -87,8 +94,8 @@ static bool parseW3CDTFStringImpl(u32* year, u32* month, u32* day, u32* hour, u3
                                   const SafeString& string)
 {
     s32 len = string.calcLength();
-    bool ok = true;
     SafeString substr = string;
+    bool ok = true;
     char separator;
 
     if (parseW3CDTFSubString(&ok, year, &substr, &len, &separator, 4, "-", true, 0, 0xFFFFFFFF))
@@ -109,8 +116,13 @@ static bool parseW3CDTFStringImpl(u32* year, u32* month, u32* day, u32* hour, u3
 
         if (separator == '.')
         {
-            if (len == 0)
-                return false;
+            bool has_fraction = len != 0;
+            if (!has_fraction)
+            {
+                *tz_hour = 0;
+                *tz_minute = 0;
+                return has_fraction;
+            }
 
             auto it = substr.tokenBegin("+-Z");
             ++it;

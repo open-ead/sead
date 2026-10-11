@@ -93,10 +93,10 @@ void PtrArrayImpl::erase(s32 pos, s32 count)
     mPtrNum -= count;
 }
 
-// NON_MATCHING: semantically equivalent
 void PtrArrayImpl::reverse()
 {
-    for (s32 i = 0; i < mPtrNum / 2; ++i)
+    const s32 half = mPtrNum / 2;
+    for (s32 i = 0; i < half; ++i)
         swap(mPtrNum - i - 1, i);
 }
 
@@ -145,8 +145,43 @@ bool PtrArrayImpl::checkInsert(s32 pos, s32 num)
 
 void PtrArrayImpl::sort(CompareCallbackImpl cmp)
 {
-    // Note: Nintendo did not use <algorithm>
-    std::sort(mPtrs, mPtrs + size(), [&](const void* a, const void* b) { return cmp(a, b) < 0; });
+    if (mPtrNum < 2)
+        return;
+
+    void** ptrs = mPtrs;
+    s32 begin = 0;
+    s32 end = mPtrNum - 1;
+    do
+    {
+        s32 last = begin;
+        for (s32 i = begin; i < end; ++i)
+        {
+            if (cmp(ptrs[i], ptrs[i + 1]) > 0)
+            {
+                void* tmp = ptrs[i + 1];
+                ptrs[i + 1] = ptrs[i];
+                ptrs[i] = tmp;
+                last = i;
+            }
+        }
+
+        end = last;
+        if (begin == end)
+            break;
+
+        last = end;
+        for (s32 i = end; i > begin; --i)
+        {
+            if (cmp(ptrs[i], ptrs[i - 1]) < 0)
+            {
+                void* tmp = ptrs[i - 1];
+                ptrs[i - 1] = ptrs[i];
+                ptrs[i] = tmp;
+                last = i;
+            }
+        }
+        begin = last;
+    } while (begin != end);
 }
 
 // TODO: PtrArrayImpl::heapSort

@@ -11,7 +11,9 @@ namespace sead
 // NON_MATCHING
 JobQueue::JobQueue()
 {
-    mCoreEnabled.fill(0);
+    mCoreEnabled[0] = 0;
+    mCoreEnabled[1] = 0;
+    mCoreEnabled[2] = 0;
     mNumDoneJobs = 0;
     mGranularity.fill(8);
 }
@@ -33,15 +35,15 @@ void JobQueue::runAll(u32* finished_jobs)
 
 bool JobQueue::isAllParticipantThrough() const
 {
-    for (auto value : mCoreEnabled.mBuffer)
-        if (value)
+    for (s32 i = 0; i < mCoreEnabled.size(); ++i)
+        if (mCoreEnabled[i])
             return false;
     return true;
 }
 
 void JobQueue::setGranularity(CoreId core, u32 x)
 {
-    mGranularity[core] = x ? x : 1;
+    mGranularity[core] = x == 0 ? 1 : x;
 }
 
 void JobQueue::setGranularity(u32 x)
@@ -50,14 +52,16 @@ void JobQueue::setGranularity(u32 x)
         setGranularity(i, x);
 }
 
-// NON_MATCHING: CMP (AND x y), #0 gets optimized into a TST
 void JobQueue::setCoreMaskAndWaitType(CoreIdMask mask, SyncType type)
 {
     mStatus = Status::_6;
     mMask = mask;
     for (u32 i = 0; i < CoreInfo::getNumCores(); ++i)
     {
-        mCoreEnabled[i] = mask.isOn(i);
+        if (mask.isOn(i))
+            mCoreEnabled[i] = 1;
+        else
+            mCoreEnabled[i] = 0;
         mNumDoneJobs = 0;
     }
     mSyncType = type;
@@ -90,18 +94,26 @@ void JobQueue::wait_AT_WORKER()
     }
 }
 
+// NON_MATCHING: b.hi vs. b.lo and b.ne
 void JobQueue::wait()
 {
-    if (u32(mSyncType) >= 2)
+    switch (mSyncType)
     {
-        if (mSyncType != SyncType::cThread)
-            return;
+    case SyncType::cNoSync:
+    case SyncType::cCore:
+        break;
+    case SyncType::cThread:
         SEAD_ASSERT_MSG(false, "NOT IMPLEMENTED.\n");
+        break;
+    default:
+        return;
     }
+
     if (!isDone_())
         mFinishEvent.wait();
 }
 
+#ifdef SEAD_DEBUG
 // NON_MATCHING: stack
 void PerfJobQueue::initialize(const char* name, Heap* heap)
 {
@@ -195,9 +207,103 @@ void PerfJobQueue::detachProcessMeter()
     ProcessMeter::instance()->detachProcessMeterBar(&mProcessMeterBar);
 }
 
+#else
+// NON_MATCHING: the original creates a bunch of empty strings somehow
+void PerfJobQueue::initialize(const char* name, Heap* heap)
+{
+    mBars.allocBufferAssert(CoreInfo::getNumCores(), heap);
+    mInts.allocBufferAssert(CoreInfo::getNumCores(), heap);
+
+    for (s32 i = 0; i < mInts.size(); ++i)
+    {
+        CoreId core(i);
+        mInts[core] = 0;
+    }
+
+    for (s32 i = 0; i < mBars.size(); ++i)
+        mBars[i].SafeStringBase<char>::operator=(SafeString("?"));
+
+    SafeString queue_name(name);
+    mProcessMeterBar.SafeStringBase<char>::operator=(queue_name);
+}
+
+void PerfJobQueue::finalize()
+{
+    mInts.freeBuffer();
+    mBars.freeBuffer();
+}
+
+void PerfJobQueue::reset()
+{
+    for (s32 i = 0; i < mInts.size(); ++i)
+        mInts[CoreId(i)] = 0;
+}
+
+void PerfJobQueue::measureBeginDeque()
+{
+    // placing CoreId in a union prevents the sead enum initialization 
+    union UninitializedCoreId
+    {
+        UninitializedCoreId() {}
+        CoreId value;
+    } core;
+
+    mBars[CoreInfo::getCurrentCoreId()];
+    core.value = CoreInfo::getCurrentCoreId();
+    mInts[core.value];
+}
+
+void PerfJobQueue::measureEndDeque()
+{
+    mBars[CoreInfo::getCurrentCoreId()];
+}
+
+void PerfJobQueue::measureBeginRun()
+{
+    // placing CoreId in a union prevents the sead enum initialization 
+    union UninitializedCoreId
+    {
+        UninitializedCoreId() {}
+        CoreId value;
+    } core;
+
+    mBars[CoreInfo::getCurrentCoreId()];
+    core.value = CoreInfo::getCurrentCoreId();
+    auto& idx = mInts[core.value];
+    getBarColor(idx);
+    idx = (idx + 1) % 9;
+}
+
+void PerfJobQueue::measureEndRun()
+{
+    mBars[CoreInfo::getCurrentCoreId()];
+}
+
+const Color4f& PerfJobQueue::getBarColor(u32 idx) const
+{
+    alignas(16) static const Color4f sColors[9] = {
+        {0.2078431397676468, 0.8313725590705872, 0.6274510025978088, 1.0},
+        {0.0, 0.6666666865348816, 0.4470588266849518, 1.0},
+        {0.125490203499794, 0.49803921580314636, 0.3764705955982208, 1.0},
+        {0.7490196228027344, 0.5254902243614197, 0.1882352977991104, 1.0},
+        {1.0, 0.6000000238418579, 0.0, 1.0},
+        {1.0, 0.6980392336845398, 0.250980406999588, 1.0},
+        {0.6901960968971252, 0.1725490242242813, 0.29411765933036804, 1.0},
+        {0.9176470637321472, 0.0, 0.21568627655506134, 1.0},
+        {0.9607843160629272, 0.239215686917305, 0.40784314274787903, 1.0},
+    };
+    return sColors[idx];
+}
+
+void PerfJobQueue::attachProcessMeter() {}
+
+void PerfJobQueue::detachProcessMeter() {}
+
+#endif
+
+// NON_MATCHING:
 FixedSizeJQ::FixedSizeJQ()
 {
-    _230 = true;
     mStatus = Status::_0;
     mNumJobs = 0;
     mNumProcessedJobs = 0;
@@ -205,17 +311,16 @@ FixedSizeJQ::FixedSizeJQ()
 
 void FixedSizeJQ::begin() {}
 
-// TODO: Splatoon 2 and BotW sead have a different implementation which checks _230 and the current
+// NON_MATCHING: TODO: Splatoon 2 and BotW sead have a different implementation which checks _230 and the current
 // core number...
 bool FixedSizeJQ::run(u32 size, u32* finished_jobs, Worker* worker)
 {
     *finished_jobs = 0;
 
-#ifdef SEAD_DEBUG
+#if defined(SEAD_DEBUG) || SEAD_VERSION == SEAD_VERSION_SMO
     mPerf.measureBeginDeque();
 #endif
     u32 num_finished = 0;
-    // NON_MATCHING: Clang refuses to materialize these variables here...
     bool ret = true;
     s32 begin = 0;
     s32 end = -1;
@@ -238,11 +343,9 @@ bool FixedSizeJQ::run(u32 size, u32* finished_jobs, Worker* worker)
         end = num_finished + begin - 1;
         ret = num_finished + begin >= num_jobs;
     }
-#ifdef SEAD_DEBUG
+#if defined(SEAD_DEBUG) || SEAD_VERSION == SEAD_VERSION_SMO
     mPerf.measureEndDeque();
-#endif
 
-#ifdef SEAD_DEBUG
     mPerf.measureBeginRun();
 #endif
     if (worker)
@@ -253,7 +356,7 @@ bool FixedSizeJQ::run(u32 size, u32* finished_jobs, Worker* worker)
 
     if (worker)
         worker->setState(Worker::State::cRunning_AfterRun);
-#ifdef SEAD_DEBUG
+#if defined(SEAD_DEBUG) || SEAD_VERSION == SEAD_VERSION_SMO
     mPerf.measureEndRun();
 #endif
 
@@ -274,7 +377,7 @@ bool FixedSizeJQ::run(u32 size, u32* finished_jobs, Worker* worker)
 
 void FixedSizeJQ::initialize(u32 size, Heap* heap)
 {
-#ifdef SEAD_DEBUG
+#if defined(SEAD_DEBUG) || SEAD_VERSION == SEAD_VERSION_SMO
     mPerf.initialize(getName().cstr(), heap);
 #endif
 
@@ -287,7 +390,7 @@ void FixedSizeJQ::initialize(u32 size, Heap* heap)
 
 void FixedSizeJQ::finalize()
 {
-#ifdef SEAD_DEBUG
+#if defined(SEAD_DEBUG) || SEAD_VERSION == SEAD_VERSION_SMO
     mPerf.finalize();
 #endif
     mJobs.freeBuffer();
@@ -341,7 +444,7 @@ u32 FixedSizeJQ::deque(Job** jobs, u32 count)
 
 bool FixedSizeJQ::rewind()
 {
-#ifdef SEAD_DEBUG
+#if defined(SEAD_DEBUG) || SEAD_VERSION == SEAD_VERSION_SMO
     mPerf.reset();
 #endif
     mNumProcessedJobs = 0;
@@ -351,7 +454,7 @@ bool FixedSizeJQ::rewind()
 void FixedSizeJQ::clear()
 {
     mStatus = Status::_5;
-#ifdef SEAD_DEBUG
+#if defined(SEAD_DEBUG) || SEAD_VERSION == SEAD_VERSION_SMO
     mPerf.reset();
 #endif
     mNumJobs = 0;
