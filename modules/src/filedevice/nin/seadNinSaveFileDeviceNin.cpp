@@ -1,6 +1,10 @@
 #include "filedevice/nin/seadNinSaveFileDeviceNin.h"
 
+#ifdef SEAD_USE_OLD_NNHEADERS_REPO
 #include <nn/fs/fs_save.h>
+#else
+#include <nn/fs/fs_Save.h>
+#endif
 
 namespace sead
 {

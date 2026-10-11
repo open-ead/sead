@@ -1,6 +1,11 @@
 #pragma once
 
+#ifdef SEAD_USE_OLD_NNHEADERS_REPO
 #include <nn/fs/fs_types.h>
+#else
+#include <nn/fs/fs_Types.h>
+#endif
+
 #include "filedevice/seadFileDevice.h"
 #include "prim/seadSafeString.h"
 

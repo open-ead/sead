@@ -10,7 +10,11 @@
 namespace sead
 {
 #ifdef NNSDK
+#ifdef SEAD_USE_OLD_NNHEADERS_REPO
 const s64 TickSpan::cFrequency = nn::os::GetSystemTickFrequency().value;
+#else
+const s64 TickSpan::cFrequency = nn::os::GetSystemTickFrequency().GetInt64Value();
+#endif
 #else
 #error "Unknown platform"
 #endif

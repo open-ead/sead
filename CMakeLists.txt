@@ -1,5 +1,8 @@
 project(sead CXX ASM)
 
+# see https://github.com/open-ead/nnheaders/blob/master/MIGRATE.md#phase-2-compatibility-gate-of-open-ead-libraries-sead-and-nintendosdk-nex
+option(SEAD_USE_OLD_NNHEADERS_REPO "Migration setting for the nnsdk and nnware repo split" ON)
+
 option(SEAD_DEBUG "Enable debug assertions and warnings" OFF)
 set(SEAD_PLATFORM "nin" CACHE STRING "Target platform (default: nin)")
 set_property(
@@ -279,10 +282,17 @@ if(SEAD_DEBUG)
 endif()
 
 if(SEAD_PLATFORM STREQUAL "nin")
-  if(NOT TARGET NintendoSDK)
-    add_subdirectory(../NintendoSDK)
+  if(SEAD_USE_OLD_NNHEADERS_REPO)
+    target_link_libraries(sead PUBLIC NintendoSDK)
+    target_compile_definitions(sead PUBLIC SEAD_USE_OLD_NNHEADERS_REPO)
+  else()
+    message(STATUS "Using new nnsdk repo! Please see https://github.com/open-ead/nnheaders/blob/master/MIGRATE.md")
+      message(STATUS "If you do not wish to migrate at this time, put `set(SEAD_USE_OLD_NNHEADERS_REPO ON CACHE BOOL \"Disable nnsdk migration\") in your CMakeLists.txt, or pass -DSEAD_USE_OLD_NNHEADERS_REPO=ON to cmake command")
+    if(NOT TARGET nnSdk)
+      message(FATAL_ERROR "Cannot find NintendoSDK. You need to add open-ead/nnsdk to your project, and put `add_subdirectory(path/to/nnsdk)` somewhere in your CMakeLists.txt")
+    endif()
+    target_link_libraries(sead PUBLIC nnSdk nn_gfx)
   endif()
-  target_link_libraries(sead PUBLIC NintendoSDK)
 
   target_sources(sead PRIVATE
     include/controller/nin/seadNinJoyNpadDevice.h

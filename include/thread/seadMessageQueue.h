@@ -1,5 +1,7 @@
 #pragma once
 
+#include <basis/seadTypes.h>
+
 #ifdef NNSDK
 #include <nn/os.h>
 #endif

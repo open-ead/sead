@@ -1,6 +1,7 @@
 #pragma once
 
 #include <utility>
+
 #ifdef NNSDK
 #include <nn/os.h>
 #endif

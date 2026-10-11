@@ -1,8 +1,13 @@
 #include "filedevice/nin/seadNinFileDeviceBaseNin.h"
 #include "filedevice/seadPath.h"
 
+#ifdef SEAD_USE_OLD_NNHEADERS_REPO
 #include <nn/fs/fs_directories.h>
 #include <nn/fs/fs_files.h>
+#else
+#include <nn/fs/fs_Directories.h>
+#include <nn/fs/fs_Files.h>
+#endif
 
 namespace sead
 {
