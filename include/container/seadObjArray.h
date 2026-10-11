@@ -152,7 +152,11 @@ public:
         return PtrArrayImpl::compare(other, cmp);
     }
 
-    s32 binarySearch(const T* ptr) const { return PtrArrayImpl::binarySearch(ptr, compareT); }
+    __attribute__((noinline)) s32 binarySearch(const T* ptr) const
+    {
+        return PtrArrayImpl::binarySearch(ptr, compareT);
+    }
+
     s32 binarySearch(const T* ptr, CompareCallback cmp) const
     {
         return PtrArrayImpl::binarySearch(ptr, cmp);
