@@ -3,55 +3,57 @@
 namespace sead
 {
 template <>
-const Matrix22<f32> Matrix22<f32>::zero(0.0f, 0.0f, 0.0f, 0.0f);
+const Matrix22f Matrix22f::zero(0.0f, 0.0f, 0.0f, 0.0f);
 
 template <>
-const Matrix22<f32> Matrix22<f32>::ident(1.0f, 0.0f, 0.0f, 1.0f);
+const Matrix22f Matrix22f::ident(1.0f, 0.0f, 0.0f, 1.0f);
 
 template <>
-const Matrix33<f32> Matrix33<f32>::zero(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+const Matrix33f Matrix33f::zero(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
 
 template <>
-const Matrix33<f32> Matrix33<f32>::ident(1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+const Matrix33f Matrix33f::ident(1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
 
 template <>
-const Matrix34<f32> Matrix34<f32>::zero(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-                                        0.0f, 0.0f);
+const Matrix34f Matrix34f::zero(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+                                0.0f);
 
 template <>
-const Matrix34<f32> Matrix34<f32>::ident(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-                                         1.0f, 0.0f);
+const Matrix34f Matrix34f::ident(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+                                 0.0f);
 
 template <>
-const Matrix44<f32> Matrix44<f32>::zero(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-                                        0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+const Matrix44f Matrix44f::zero(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+                                0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
 
 template <>
-const Matrix44<f32> Matrix44<f32>::ident(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-                                         1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+const Matrix44f Matrix44f::ident(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+                                 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
 
 template <>
-const Matrix22<f64> Matrix22<f64>::zero(0, 0, 0, 0);
+const Matrix22d Matrix22d::zero(0.0, 0.0, 0.0, 0.0);
 
 template <>
-const Matrix22<f64> Matrix22<f64>::ident(1, 0, 0, 1);
+const Matrix22d Matrix22d::ident(1.0, 0.0, 0.0, 1.0);
 
 template <>
-const Matrix33<f64> Matrix33<f64>::zero(0, 0, 0, 0, 0, 0, 0, 0, 0);
+const Matrix33d Matrix33d::zero(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
 template <>
-const Matrix33<f64> Matrix33<f64>::ident(1, 0, 0, 0, 1, 0, 0, 0, 1);
+const Matrix33d Matrix33d::ident(1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0);
 
 template <>
-const Matrix34<f64> Matrix34<f64>::zero(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+const Matrix34d Matrix34d::zero(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
 template <>
-const Matrix34<f64> Matrix34<f64>::ident(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0);
+const Matrix34d Matrix34d::ident(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
 template <>
-const Matrix44<f64> Matrix44<f64>::zero(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+const Matrix44d Matrix44d::zero(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                                0.0, 0.0, 0.0);
 
 template <>
-const Matrix44<f64> Matrix44<f64>::ident(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+const Matrix44d Matrix44d::ident(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0,
+                                 0.0, 0.0, 1.0);
 
 }  // namespace sead

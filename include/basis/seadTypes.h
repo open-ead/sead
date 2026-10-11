@@ -24,6 +24,7 @@ using f64 = double;
 
 using char16 = char16_t;
 using size_t = std::size_t;
+using uintptr = std::uintptr_t;
 #endif
 
 #endif  // SEAD_NEW_H_
