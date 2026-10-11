@@ -113,6 +113,8 @@ public:
     static void toQuat(Quat& q, const Base& n);
 
     static void getBase(Vec3& v, const Base& n, s32 axis);
+    template <s32 Axis>
+    static void getBase(Vec3& v, const Base& n);
     static void getRow(Vec4& v, const Base& n, s32 row);
     static void getTranslation(Vec3& v, const Base& n);
     static void getRotation(Vec3& v, const Base& n);

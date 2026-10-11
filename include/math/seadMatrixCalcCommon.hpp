@@ -6,6 +6,7 @@
 
 #ifdef __aarch64__
 #include <arm_neon.h>
+#include <prim/seadMemUtil.h>
 #endif
 
 #include <cmath>
@@ -1806,6 +1807,38 @@ void Matrix34CalcCommon<T>::getBase(Vec3& v, const Base& n, s32 axis)
     v.y = n.m[1][axis];
     v.z = n.m[2][axis];
 }
+
+template <typename T>
+template <s32 Axis>
+void Matrix34CalcCommon<T>::getBase(Vec3& v, const Base& n)
+{
+    v.x = n.m[0][Axis];
+    v.y = n.m[1][Axis];
+    v.z = n.m[2][Axis];
+}
+
+#ifdef __aarch64__
+template <>
+template <s32 Axis>
+void Matrix34CalcCommon<f32>::getBase(Vec3& v, const Base& n)
+{
+    const f32* next_row;
+    if (Axis == 0)
+        next_row = &n.m[1][Axis];
+
+    f32 first;
+    __atomic_load(&n.m[0][Axis], &first, __ATOMIC_RELAXED);
+    float32x2_t xy = {first, 0.0f};
+
+    if (Axis != 0)
+        next_row = &n.m[1][Axis];
+
+    xy[1] = *next_row;
+    const f32 z = n.m[2][Axis];
+    MemUtil::copy(&v.x, &xy, sizeof(xy));
+    v.z = z;
+}
+#endif
 
 template <typename T>
 void Matrix34CalcCommon<T>::getRow(Vec4& v, const Base& n, s32 row)

@@ -564,6 +564,13 @@ inline void Matrix34<T>::getBase(Vec3& o, s32 axis) const
 }
 
 template <typename T>
+template <s32 Axis>
+inline void Matrix34<T>::getBase(Vec3& o) const
+{
+    Matrix34CalcCommon<T>::template getBase<Axis>(o, *this);
+}
+
+template <typename T>
 inline void Matrix34<T>::getRow(Vec4& o, s32 row) const
 {
     Matrix34CalcCommon<T>::getRow(o, *this, row);
