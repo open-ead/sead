@@ -1,5 +1,12 @@
 #pragma once
 
+#define SEAD_TARGET_DECOMP 1
+#define SEAD_TARGET_MOD 2
+
+#ifndef SEAD_TARGET
+#define SEAD_TARGET SEAD_TARGET_DECOMP
+#endif
+
 #define SEAD_VERSION_BOTW 1
 #define SEAD_VERSION_SMO 2
 #define SEAD_VERSION_SPL3 3
