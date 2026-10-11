@@ -58,6 +58,7 @@ class IndirectResource : public Resource
 
 public:
     IndirectResource();
+    ~IndirectResource() override;
 
     void create(sead::ReadStream* stream, u32 size, sead::Heap* heap);
 

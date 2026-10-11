@@ -6,84 +6,8 @@
 
 namespace sead
 {
-template <>
-StringBuilder* StringBuilder::create(s32 buffer_size, Heap* heap, s32 alignment)
-{
-    return createImpl_(buffer_size, heap, alignment);
-}
-
-template <>
-WStringBuilder* WStringBuilder::create(s32 buffer_size, Heap* heap, s32 alignment)
-{
-    return createImpl_(buffer_size, heap, alignment);
-}
-
 template <typename T>
-StringBuilderBase<T>* StringBuilderBase<T>::create(const T* str, Heap* heap, s32 alignment)
-{
-    const s32 len = calcStrLength_(str);
-    auto* builder = createImpl_(len + 1, heap, alignment);
-    builder->copy(str, len);
-    return builder;
-}
-
-template StringBuilder* StringBuilder::create(const char* str, Heap* heap, s32 alignment);
-template WStringBuilder* WStringBuilder::create(const char16* str, Heap* heap, s32 alignment);
-
-template <typename T>
-StringBuilderBase<T>* StringBuilderBase<T>::createImpl_(s32 buffer_size, Heap* heap, s32 alignment)
-{
-    if (buffer_size <= 0)
-    {
-        SEAD_ASSERT_MSG(false, "buffer_size[%d] must be larger than 0", buffer_size);
-        return nullptr;
-    }
-
-    if (!heap)
-        heap = HeapMgr::instance()->getCurrentHeap();
-
-    if (alignment > s32(alignof(StringBuilderBase<T>)))
-    {
-        const s32 buffer_offset = Mathi::roundUpPow2(sizeof(StringBuilderBase<T>), alignment);
-        void* buffer = heap->alloc(buffer_offset + buffer_size * sizeof(T), alignment);
-        return new (buffer) StringBuilderBase<T>(
-            static_cast<T*>(PtrUtil::addOffset(buffer, buffer_offset)), buffer_size);
-    }
-    else
-    {
-        void* buffer = heap->alloc(buffer_size * sizeof(T) + sizeof(StringBuilderBase<T>),
-                                   alignof(StringBuilderBase<T>));
-        return new (buffer) StringBuilderBase<T>(
-            static_cast<T*>(PtrUtil::addOffset(buffer, sizeof(StringBuilderBase<T>))), buffer_size);
-    }
-}
-
-template <typename T>
-bool StringBuilderBase<T>::endsWith(const T* suffix) const
-{
-    const s32 sub_str_len = calcStrLength_(suffix);
-    if (sub_str_len == 0)
-        return true;
-
-    const T* strc = mBuffer;
-
-    const s32 len = calcLength();
-    if (len < sub_str_len)
-        return false;
-
-    for (s32 i = 0; i < sub_str_len; ++i)
-    {
-        if (strc[len - sub_str_len + i] != suffix[i])
-            return false;
-    }
-    return true;
-}
-
-template bool StringBuilder::endsWith(const char* suffix) const;
-template bool WStringBuilder::endsWith(const char16* suffix) const;
-
-template <typename T>
-s32 StringBuilderBase<T>::copy(const T* src, s32 copy_length)
+s32 StringBuilderBase<T>::copyImpl_(const T* src, s32 copy_length)
 {
     T* dst = mBuffer;
     const s32 buffer_size = mBufferSize;
@@ -116,11 +40,111 @@ s32 StringBuilderBase<T>::copy(const T* src, s32 copy_length)
     return copy_length;
 }
 
-template s32 StringBuilder::copy(const char* src, s32 copy_length);
-template s32 WStringBuilder::copy(const char16* src, s32 copy_length);
+template <>
+s32 StringBuilder::copy(const char* src, s32 copy_length)
+{
+    return copyImpl_(src, copy_length);
+}
+
+template <>
+s32 WStringBuilder::copy(const char16* src, s32 copy_length)
+{
+    return copyImpl_(src, copy_length);
+}
+
+template <>
+StringBuilder* StringBuilder::create(s32 buffer_size, Heap* heap, s32 alignment)
+{
+    return createImpl_(buffer_size, heap, alignment);
+}
+
+template <>
+WStringBuilder* WStringBuilder::create(s32 buffer_size, Heap* heap, s32 alignment)
+{
+    return createImpl_(buffer_size, heap, alignment);
+}
+
+template <>
+StringBuilder* StringBuilder::create(const char* str, Heap* heap, s32 alignment)
+{
+    const s32 len = calcStrLength_(str);
+    auto* builder = createImpl_(len + 1, heap, alignment);
+    builder->copy(str, len);
+    return builder;
+}
+
+template <>
+WStringBuilder* WStringBuilder::create(const char16* str, Heap* heap, s32 alignment)
+{
+    const s32 len = calcStrLength_(str);
+    auto* builder = createImpl_(len + 1, heap, alignment);
+    builder->copy(str, len);
+    return builder;
+}
 
 template <typename T>
-s32 StringBuilderBase<T>::copyAt(s32 at_, const T* src, s32 copy_length)
+StringBuilderBase<T>* StringBuilderBase<T>::createImpl_(s32 buffer_size, Heap* heap, s32 alignment)
+{
+    if (buffer_size <= 0)
+    {
+        SEAD_ASSERT_MSG(false, "buffer_size[%d] must be larger than 0", buffer_size);
+        return nullptr;
+    }
+
+    if (!heap)
+        heap = HeapMgr::instance()->getCurrentHeap();
+
+    if (alignment > s32(alignof(StringBuilderBase<T>)))
+    {
+        const s32 buffer_offset = Mathi::roundUpPow2(sizeof(StringBuilderBase<T>), alignment);
+        void* buffer = heap->alloc(buffer_offset + buffer_size * sizeof(T), alignment);
+        return new (buffer) StringBuilderBase<T>(
+            static_cast<T*>(PtrUtil::addOffset(buffer, buffer_offset)), buffer_size);
+    }
+    else
+    {
+        void* buffer = heap->alloc(buffer_size * sizeof(T) + sizeof(StringBuilderBase<T>),
+                                   alignof(StringBuilderBase<T>));
+        return new (buffer) StringBuilderBase<T>(
+            static_cast<T*>(PtrUtil::addOffset(buffer, sizeof(StringBuilderBase<T>))), buffer_size);
+    }
+}
+
+template <typename T>
+bool StringBuilderBase<T>::endsWithImpl_(const T* suffix) const
+{
+    const s32 sub_str_len = calcStrLength_(suffix);
+    if (sub_str_len == 0)
+        return true;
+
+    const T* strc = mBuffer;
+
+    const s32 len = calcLength();
+    if (len < sub_str_len)
+        return false;
+
+    for (s32 i = 0; i < sub_str_len; ++i)
+    {
+        if (strc[len - sub_str_len + i] != suffix[i])
+            return false;
+    }
+    return true;
+}
+
+template <>
+bool StringBuilder::endsWith(const char* suffix) const
+{
+    return endsWithImpl_(suffix);
+}
+
+template <>
+bool WStringBuilder::endsWith(const char16* suffix) const
+{
+    return endsWithImpl_(suffix);
+}
+
+template <typename T>
+s32 StringBuilderBase<T>::copyAtImpl_(s32 at, const T* src, s32 copy_length)
 {
     T* dst = getMutableStringTop_();
     const s32 buffer_size = mBufferSize;
@@ -131,13 +155,12 @@ s32 StringBuilderBase<T>::copyAt(s32 at_, const T* src, s32 copy_length)
         copy_length = calcStrLength_(src);
 
     s32 len = this->calcLength();
-    s32 at = at_;
-    if (at_ < 0)
+    if (at < 0)
     {
-        const s32 at_new = len + at_ + 1;
+        const s32 at_new = len + at + 1;
         if (at_new < 0)
         {
-            SEAD_ASSERT_MSG(false, "at(%d) out of range[%d, %d]", at_, -len - 1, len);
+            SEAD_ASSERT_MSG(false, "at(%d) out of range[%d, %d]", at, -len - 1, len);
             at = 0;
             goto check_buffer_overflow;
         }
@@ -146,7 +169,7 @@ s32 StringBuilderBase<T>::copyAt(s32 at_, const T* src, s32 copy_length)
 
     if (len < at)
     {
-        SEAD_ASSERT_MSG(false, "at(%d) out of range[%d, %d]", at_, -len - 1, len);
+        SEAD_ASSERT_MSG(false, "at(%d) out of range[%d, %d]", at, -len - 1, len);
         copy_length = 0;
         return copy_length;
     }
@@ -171,11 +194,20 @@ check_buffer_overflow:
     return copy_length;
 }
 
-template s32 StringBuilder::copyAt(s32 at, const char* src, s32 copy_length);
-template s32 WStringBuilder::copyAt(s32 at, const char16* src, s32 copy_length);
+template <>
+s32 StringBuilder::copyAt(s32 at, const char* src, s32 copy_length)
+{
+    return copyAtImpl_(at, src, copy_length);
+}
+
+template <>
+s32 WStringBuilder::copyAt(s32 at, const char16* src, s32 copy_length)
+{
+    return copyAtImpl_(at, src, copy_length);
+}
 
 template <typename T>
-s32 StringBuilderBase<T>::cutOffCopy(const T* src, s32 copy_length)
+s32 StringBuilderBase<T>::cutOffCopyImpl_(const T* src, s32 copy_length)
 {
     T* dst = mBuffer;
     const s32 buffer_size = mBufferSize;
@@ -204,11 +236,20 @@ s32 StringBuilderBase<T>::cutOffCopy(const T* src, s32 copy_length)
     return copy_length;
 }
 
-template s32 StringBuilder::cutOffCopy(const char* src, s32 copy_length);
-template s32 WStringBuilder::cutOffCopy(const char16* src, s32 copy_length);
+template <>
+s32 StringBuilder::cutOffCopy(const char* src, s32 copy_length)
+{
+    return cutOffCopyImpl_(src, copy_length);
+}
+
+template <>
+s32 WStringBuilder::cutOffCopy(const char16* src, s32 copy_length)
+{
+    return cutOffCopyImpl_(src, copy_length);
+}
 
 template <typename T>
-s32 StringBuilderBase<T>::cutOffCopyAt(s32 at_, const T* src, s32 copy_length)
+s32 StringBuilderBase<T>::cutOffCopyAtImpl_(s32 at, const T* src, s32 copy_length)
 {
     T* dst = getMutableStringTop_();
     const s32 buffer_size = mBufferSize;
@@ -219,13 +260,12 @@ s32 StringBuilderBase<T>::cutOffCopyAt(s32 at_, const T* src, s32 copy_length)
         copy_length = calcStrLength_(src);
 
     s32 len = this->calcLength();
-    s32 at = at_;
-    if (at_ < 0)
+    if (at < 0)
     {
-        const s32 at_new = len + at_ + 1;
+        const s32 at_new = len + at + 1;
         if (at_new < 0)
         {
-            SEAD_ASSERT_MSG(false, "at(%d) out of range[%d, %d]", at_, -len - 1, len);
+            SEAD_ASSERT_MSG(false, "at(%d) out of range[%d, %d]", at, -len - 1, len);
             at = 0;
             goto check_buffer_overflow;
         }
@@ -234,7 +274,7 @@ s32 StringBuilderBase<T>::cutOffCopyAt(s32 at_, const T* src, s32 copy_length)
 
     if (len < at)
     {
-        SEAD_ASSERT_MSG(false, "at(%d) out of range[%d, %d]", at_, -len - 1, len);
+        SEAD_ASSERT_MSG(false, "at(%d) out of range[%d, %d]", at, -len - 1, len);
         copy_length = 0;
         return copy_length;
     }
@@ -255,11 +295,20 @@ check_buffer_overflow:
     return copy_length;
 }
 
-template s32 StringBuilder::cutOffCopyAt(s32 at, const char* src, s32 copy_length);
-template s32 WStringBuilder::cutOffCopyAt(s32 at, const char16* src, s32 copy_length);
+template <>
+s32 StringBuilder::cutOffCopyAt(s32 at, const char* src, s32 copy_length)
+{
+    return cutOffCopyAtImpl_(at, src, copy_length);
+}
+
+template <>
+s32 WStringBuilder::cutOffCopyAt(s32 at, const char16* src, s32 copy_length)
+{
+    return cutOffCopyAtImpl_(at, src, copy_length);
+}
 
 template <typename T>
-s32 StringBuilderBase<T>::copyAtWithTerminate(s32 at_, const T* src, s32 copy_length)
+s32 StringBuilderBase<T>::copyAtWithTerminateImpl_(s32 at, const T* src, s32 copy_length)
 {
     T* dst = getMutableStringTop_();
     const s32 buffer_size = mBufferSize;
@@ -270,13 +319,12 @@ s32 StringBuilderBase<T>::copyAtWithTerminate(s32 at_, const T* src, s32 copy_le
         copy_length = calcStrLength_(src);
 
     s32 len = this->calcLength();
-    s32 at = at_;
-    if (at_ < 0)
+    if (at < 0)
     {
-        const s32 at_new = len + at_ + 1;
+        const s32 at_new = len + at + 1;
         if (at_new < 0)
         {
-            SEAD_ASSERT_MSG(false, "at(%d) out of range[%d, %d]", at_, -len - 1, len);
+            SEAD_ASSERT_MSG(false, "at(%d) out of range[%d, %d]", at, -len - 1, len);
             at = 0;
             goto check_buffer_overflow;
         }
@@ -285,7 +333,7 @@ s32 StringBuilderBase<T>::copyAtWithTerminate(s32 at_, const T* src, s32 copy_le
 
     if (len < at)
     {
-        SEAD_ASSERT_MSG(false, "at(%d) out of range[%d, %d]", at_, -len - 1, len);
+        SEAD_ASSERT_MSG(false, "at(%d) out of range[%d, %d]", at, -len - 1, len);
         copy_length = 0;
         return copy_length;
     }
@@ -309,11 +357,20 @@ check_buffer_overflow:
     return copy_length;
 }
 
-template s32 StringBuilder::copyAtWithTerminate(s32 at, const char* src, s32 copy_length);
-template s32 WStringBuilder::copyAtWithTerminate(s32 at, const char16* src, s32 copy_length);
+template <>
+s32 StringBuilder::copyAtWithTerminate(s32 at, const char* src, s32 copy_length)
+{
+    return copyAtWithTerminateImpl_(at, src, copy_length);
+}
 
-template <typename T>
-s32 StringBuilderBase<T>::format(const T* format, ...)
+template <>
+s32 WStringBuilder::copyAtWithTerminate(s32 at, const char16* src, s32 copy_length)
+{
+    return copyAtWithTerminateImpl_(at, src, copy_length);
+}
+
+template <>
+s32 StringBuilder::format(const char* format, ...)
 {
     std::va_list args;
     va_start(args, format);
@@ -322,8 +379,15 @@ s32 StringBuilderBase<T>::format(const T* format, ...)
     return ret;
 }
 
-template s32 StringBuilder::format(const char* format, ...);
-template s32 WStringBuilder::format(const char16* format, ...);
+template <>
+s32 WStringBuilder::format(const char16* format, ...)
+{
+    std::va_list args;
+    va_start(args, format);
+    s32 ret = formatV(format, args);
+    va_end(args);
+    return ret;
+}
 
 template <>
 s32 StringBuilder::formatImpl_(char* s, s32 n, const char* format, va_list args)
@@ -342,8 +406,8 @@ s32 WStringBuilder::formatImpl_(char16* s, s32 n, const char16* format, va_list 
     return n - 1;
 }
 
-template <typename T>
-s32 StringBuilderBase<T>::appendWithFormat(const T* format, ...)
+template <>
+s32 StringBuilder::appendWithFormat(const char* format, ...)
 {
     std::va_list args;
     va_start(args, format);
@@ -352,11 +416,18 @@ s32 StringBuilderBase<T>::appendWithFormat(const T* format, ...)
     return ret;
 }
 
-template s32 StringBuilder::appendWithFormat(const char* format, ...);
-template s32 WStringBuilder::appendWithFormat(const char16* format, ...);
+template <>
+s32 WStringBuilder::appendWithFormat(const char16* format, ...)
+{
+    std::va_list args;
+    va_start(args, format);
+    const s32 ret = appendWithFormatV(format, args);
+    va_end(args);
+    return ret;
+}
 
 template <typename T>
-s32 StringBuilderBase<T>::append(const T* str, s32 append_length)
+s32 StringBuilderBase<T>::appendImpl_(const T* str, s32 append_length)
 {
     T* dst = getMutableStringTop_();
     const s32 buffer_size = mBufferSize;
@@ -385,32 +456,21 @@ s32 StringBuilderBase<T>::append(const T* str, s32 append_length)
     return append_length;
 }
 
-template s32 StringBuilder::append(const char* str, s32 append_length);
-template s32 WStringBuilder::append(const char16* str, s32 append_length);
+template <>
+s32 StringBuilder::append(const char* str, s32 append_length)
+{
+    return appendImpl_(str, append_length);
+}
+
+template <>
+s32 WStringBuilder::append(const char16* str, s32 append_length)
+{
+    return appendImpl_(str, append_length);
+}
 
 // NON_MATCHING: regalloc differences
 template <typename T>
-s32 appendImpl_(T* buffer_, s32* length_, const s32 buffer_size_, T c, s32 num)
-{
-    const s32 length = *length_;
-
-    if (buffer_size_ <= num + length)
-    {
-        SEAD_ASSERT_MSG(false, "Buffer overflow. (Buffer Size: %d, Length: %d, Num: %d)",
-                        buffer_size_, length, num);
-        num = buffer_size_ - length - 1;
-    }
-
-    for (s32 i = 0; i < num; ++i)
-        buffer_[length + i] = c;
-
-    buffer_[length + num] = SafeStringBase<T>::cNullChar;
-    *length_ = length + num;
-    return num;
-}
-
-template <typename T>
-s32 StringBuilderBase<T>::append(T c, s32 num)
+s32 StringBuilderBase<T>::appendImpl_(T* buffer, s32* length_, const s32 buffer_size, T c, s32 num)
 {
     if (num < 0)
     {
@@ -421,14 +481,37 @@ s32 StringBuilderBase<T>::append(T c, s32 num)
     if (num == 0)
         return 0;
 
+    const s32 length = *length_;
+
+    if (buffer_size <= num + length)
+    {
+        SEAD_ASSERT_MSG(false, "Buffer overflow. (Buffer Size: %d, Length: %d, Num: %d)",
+                        buffer_size, length, num);
+        num = buffer_size - length - 1;
+    }
+
+    for (s32 i = 0; i < num; ++i)
+        buffer[length + i] = c;
+
+    buffer[length + num] = SafeStringBase<T>::cNullChar;
+    *length_ = length + num;
+    return num;
+}
+
+template <>
+s32 StringBuilder::append(char c, s32 num)
+{
     return appendImpl_(mBuffer, &mLength, mBufferSize, c, num);
 }
 
-template s32 StringBuilder::append(char c, s32 n);
-template s32 WStringBuilder::append(char16 c, s32 n);
+template <>
+s32 WStringBuilder::append(char16 c, s32 num)
+{
+    return appendImpl_(mBuffer, &mLength, mBufferSize, c, num);
+}
 
 template <typename T>
-s32 StringBuilderBase<T>::chop(s32 chop_num)
+s32 StringBuilderBase<T>::chopImpl_(s32 chop_num)
 {
     s32 length = this->calcLength();
     T* buffer = getMutableStringTop_();
@@ -455,11 +538,20 @@ s32 StringBuilderBase<T>::chop(s32 chop_num)
     return chop_num;
 }
 
-template s32 StringBuilder::chop(s32 chop_num);
-template s32 WStringBuilder::chop(s32 chop_num);
+template <>
+s32 StringBuilder::chop(s32 chop_num)
+{
+    return chopImpl_(chop_num);
+}
+
+template <>
+s32 WStringBuilder::chop(s32 chop_num)
+{
+    return chopImpl_(chop_num);
+}
 
 template <typename T>
-s32 StringBuilderBase<T>::chopMatchedChar(T c)
+s32 StringBuilderBase<T>::chopMatchedCharImpl_(T c)
 {
     const s32 length = this->calcLength();
     if (length < 1)
@@ -476,11 +568,20 @@ s32 StringBuilderBase<T>::chopMatchedChar(T c)
     return 0;
 }
 
-template s32 StringBuilder::chopMatchedChar(char c);
-template s32 WStringBuilder::chopMatchedChar(char16 c);
+template <>
+s32 StringBuilder::chopMatchedChar(char c)
+{
+    return chopMatchedCharImpl_(c);
+}
+
+template <>
+s32 WStringBuilder::chopMatchedChar(char16 c)
+{
+    return chopMatchedCharImpl_(c);
+}
 
 template <typename T>
-s32 StringBuilderBase<T>::chopMatchedChar(const T* characters)
+s32 StringBuilderBase<T>::chopMatchedCharImpl_(const T* characters)
 {
     const s32 length = this->calcLength();
     if (length < 1)
@@ -500,11 +601,20 @@ s32 StringBuilderBase<T>::chopMatchedChar(const T* characters)
     return 0;
 }
 
-template s32 StringBuilder::chopMatchedChar(const char* characters);
-template s32 WStringBuilder::chopMatchedChar(const char16* characters);
+template <>
+s32 StringBuilder::chopMatchedChar(const char* characters)
+{
+    return chopMatchedCharImpl_(characters);
+}
+
+template <>
+s32 WStringBuilder::chopMatchedChar(const char16* characters)
+{
+    return chopMatchedCharImpl_(characters);
+}
 
 template <typename T>
-s32 StringBuilderBase<T>::chopUnprintableAsciiChar()
+s32 StringBuilderBase<T>::chopUnprintableAsciiCharImpl_()
 {
     const s32 length = this->calcLength();
     if (length < 1)
@@ -521,11 +631,20 @@ s32 StringBuilderBase<T>::chopUnprintableAsciiChar()
     return 0;
 }
 
-template s32 StringBuilder::chopUnprintableAsciiChar();
-template s32 WStringBuilder::chopUnprintableAsciiChar();
+template <>
+s32 StringBuilder::chopUnprintableAsciiChar()
+{
+    return chopUnprintableAsciiCharImpl_();
+}
+
+template <>
+s32 WStringBuilder::chopUnprintableAsciiChar()
+{
+    return chopUnprintableAsciiCharImpl_();
+}
 
 template <typename T>
-s32 StringBuilderBase<T>::rstrip(const T* characters)
+s32 StringBuilderBase<T>::rstripImpl_(const T* characters)
 {
     const s32 length = this->calcLength();
     if (length <= 0)
@@ -552,12 +671,20 @@ s32 StringBuilderBase<T>::rstrip(const T* characters)
     return length - new_length;
 }
 
-template s32 StringBuilder::rstrip(const char* characters);
-template s32 WStringBuilder::rstrip(const char16* characters);
+template <>
+s32 StringBuilder::rstrip(const char* characters)
+{
+    return rstripImpl_(characters);
+}
 
-// NON_MATCHING: equivalent, two instruction reorders
+template <>
+s32 WStringBuilder::rstrip(const char16* characters)
+{
+    return rstripImpl_(characters);
+}
+
 template <typename T>
-s32 StringBuilderBase<T>::rstripUnprintableAsciiChars()
+s32 StringBuilderBase<T>::rstripUnprintableAsciiCharsImpl_()
 {
     const s32 length = this->calcLength();
     if (length <= 0)
@@ -577,11 +704,19 @@ s32 StringBuilderBase<T>::rstripUnprintableAsciiChars()
     return ret;
 }
 
-template s32 StringBuilder::rstripUnprintableAsciiChars();
-template s32 WStringBuilder::rstripUnprintableAsciiChars();
+template <>
+s32 StringBuilder::rstripUnprintableAsciiChars()
+{
+    return rstripUnprintableAsciiCharsImpl_();
+}
+template <>
+s32 WStringBuilder::rstripUnprintableAsciiChars()
+{
+    return rstripUnprintableAsciiCharsImpl_();
+}
 
 template <typename T>
-s32 StringBuilderBase<T>::trim(s32 trim_length)
+s32 StringBuilderBase<T>::trimImpl_(s32 trim_length)
 {
     T* mutableString = getMutableStringTop_();
 
@@ -603,11 +738,20 @@ s32 StringBuilderBase<T>::trim(s32 trim_length)
     return trim_length;
 }
 
-template s32 StringBuilder::trim(s32 trim_length);
-template s32 WStringBuilder::trim(s32 trim_length);
+template <>
+s32 StringBuilder::trim(s32 trim_length)
+{
+    return trimImpl_(trim_length);
+}
+
+template <>
+s32 WStringBuilder::trim(s32 trim_length)
+{
+    return trimImpl_(trim_length);
+}
 
 template <typename T>
-s32 StringBuilderBase<T>::trimMatchedString(const T* str)
+s32 StringBuilderBase<T>::trimMatchedStringImpl_(const T* str)
 {
     T* buffer = getMutableStringTop_();
     const s32 length = this->calcLength();
@@ -630,11 +774,20 @@ s32 StringBuilderBase<T>::trimMatchedString(const T* str)
     return new_length;
 }
 
-template s32 StringBuilder::trimMatchedString(const char* str);
-template s32 WStringBuilder::trimMatchedString(const char16* str);
+template <>
+s32 StringBuilder::trimMatchedString(const char* str)
+{
+    return trimMatchedStringImpl_(str);
+}
+
+template <>
+s32 WStringBuilder::trimMatchedString(const char16* str)
+{
+    return trimMatchedStringImpl_(str);
+}
 
 template <typename T>
-s32 StringBuilderBase<T>::replaceChar(T old_char, T new_char)
+s32 StringBuilderBase<T>::replaceCharImpl_(T old_char, T new_char)
 {
     const s32 length = this->calcLength();
     T* buffer = getMutableStringTop_();
@@ -651,12 +804,21 @@ s32 StringBuilderBase<T>::replaceChar(T old_char, T new_char)
     return replaced_count;
 }
 
-template s32 StringBuilder::replaceChar(char old_char, char new_char);
-template s32 WStringBuilder::replaceChar(char16 old_char, char16 new_char);
+template <>
+s32 StringBuilder::replaceChar(char old_char, char new_char)
+{
+    return replaceCharImpl_(old_char, new_char);
+}
+
+template <>
+s32 WStringBuilder::replaceChar(char16 old_char, char16 new_char)
+{
+    return replaceCharImpl_(old_char, new_char);
+}
 
 template <typename T>
-s32 StringBuilderBase<T>::replaceCharList(const SafeStringBase<T>& old_chars,
-                                          const SafeStringBase<T>& new_chars)
+s32 StringBuilderBase<T>::replaceCharListImpl_(const SafeStringBase<T>& old_chars,
+                                               const SafeStringBase<T>& new_chars)
 {
     T* buffer = getMutableStringTop_();
     const s32 length = this->calcLength();
@@ -705,10 +867,17 @@ s32 StringBuilderBase<T>::replaceCharList(const SafeStringBase<T>& old_chars,
     return replaced_count;
 }
 
-template s32 StringBuilder::replaceCharList(const SafeString& old_chars,
-                                            const SafeString& new_chars);
-template s32 WStringBuilder::replaceCharList(const WSafeString& old_chars,
-                                             const WSafeString& new_chars);
+template <>
+s32 StringBuilder::replaceCharList(const SafeString& old_chars, const SafeString& new_chars)
+{
+    return replaceCharListImpl_(old_chars, new_chars);
+}
+
+template <>
+s32 WStringBuilder::replaceCharList(const WSafeString& old_chars, const WSafeString& new_chars)
+{
+    return replaceCharListImpl_(old_chars, new_chars);
+}
 
 template <typename T>
 template <typename OtherType>
@@ -745,7 +914,7 @@ s32 StringBuilderBase<T>::convertFromOtherType_(const OtherType* src, s32 src_si
 }
 
 template <typename T>
-s32 StringBuilderBase<T>::convertFromMultiByteString(const char* str, s32 str_length)
+s32 StringBuilderBase<T>::convertFromMultiByteStringImpl_(const char* str, s32 str_length)
 {
     if constexpr (std::is_same<char, T>())
         return copy(str, str_length);
@@ -754,7 +923,7 @@ s32 StringBuilderBase<T>::convertFromMultiByteString(const char* str, s32 str_le
 }
 
 template <typename T>
-s32 StringBuilderBase<T>::convertFromWideCharString(const char16* str, s32 str_length)
+s32 StringBuilderBase<T>::convertFromWideCharStringImpl_(const char16* str, s32 str_length)
 {
     if constexpr (std::is_same<char16, T>())
         return copy(str, str_length);
@@ -762,13 +931,29 @@ s32 StringBuilderBase<T>::convertFromWideCharString(const char16* str, s32 str_l
         return convertFromOtherType_(str, str_length);
 }
 
-template s32 StringBuilder::convertFromMultiByteString(const char* str, s32 str_length);
-template s32 StringBuilder::convertFromWideCharString(const char16* str, s32 str_length);
-template s32 WStringBuilder::convertFromMultiByteString(const char* str, s32 str_length);
-template s32 WStringBuilder::convertFromWideCharString(const char16* str, s32 str_length);
+template <>
+s32 StringBuilder::convertFromMultiByteString(const char* str, s32 str_length)
+{
+    return convertFromMultiByteStringImpl_(str, str_length);
+}
+template <>
+s32 StringBuilder::convertFromWideCharString(const char16* str, s32 str_length)
+{
+    return convertFromWideCharStringImpl_(str, str_length);
+}
+template <>
+s32 WStringBuilder::convertFromMultiByteString(const char* str, s32 str_length)
+{
+    return convertFromMultiByteStringImpl_(str, str_length);
+}
+template <>
+s32 WStringBuilder::convertFromWideCharString(const char16* str, s32 str_length)
+{
+    return convertFromWideCharStringImpl_(str, str_length);
+}
 
 template <typename T>
-s32 StringBuilderBase<T>::cutOffAppend(const T* str, s32 append_length)
+s32 StringBuilderBase<T>::cutOffAppendImpl_(const T* str, s32 append_length)
 {
     T* dst = getMutableStringTop_();
     const s32 buffer_size = mBufferSize;
@@ -793,11 +978,20 @@ s32 StringBuilderBase<T>::cutOffAppend(const T* str, s32 append_length)
     return append_length;
 }
 
-template s32 StringBuilder::cutOffAppend(const char* str, s32 append_length);
-template s32 WStringBuilder::cutOffAppend(const char16* str, s32 append_length);
+template <>
+s32 StringBuilder::cutOffAppend(const char* str, s32 append_length)
+{
+    return cutOffAppendImpl_(str, append_length);
+}
+
+template <>
+s32 WStringBuilder::cutOffAppend(const char16* str, s32 append_length)
+{
+    return cutOffAppendImpl_(str, append_length);
+}
 
 template <typename T>
-s32 StringBuilderBase<T>::cutOffAppend(T c, s32 num)
+s32 StringBuilderBase<T>::cutOffAppendImpl_(T c, s32 num)
 {
     if (num < 0)
     {
@@ -826,12 +1020,21 @@ s32 StringBuilderBase<T>::cutOffAppend(T c, s32 num)
     return num;
 }
 
-template s32 StringBuilder::cutOffAppend(char c, s32 num);
-template s32 WStringBuilder::cutOffAppend(char16 c, s32 num);
+template <>
+s32 StringBuilder::cutOffAppend(char c, s32 num)
+{
+    return cutOffAppendImpl_(c, num);
+}
+
+template <>
+s32 WStringBuilder::cutOffAppend(char16 c, s32 num)
+{
+    return cutOffAppendImpl_(c, num);
+}
 
 // NON_MATCHING: operands to some `add` instructions are swapped
 template <typename T>
-s32 StringBuilderBase<T>::prepend(const T* str, s32 prepend_length)
+s32 StringBuilderBase<T>::prependImpl_(const T* str, s32 prepend_length)
 {
     T* buffer = getMutableStringTop_();
     const s32 buffer_size = mBufferSize;
@@ -867,12 +1070,21 @@ s32 StringBuilderBase<T>::prepend(const T* str, s32 prepend_length)
     return move_length + prepend_length - length;
 }
 
-template s32 StringBuilder::prepend(const char* str, s32 prepend_length);
-template s32 WStringBuilder::prepend(const char16* str, s32 prepend_length);
+template <>
+s32 StringBuilder::prepend(const char* str, s32 prepend_length)
+{
+    return prependImpl_(str, prepend_length);
+}
+
+template <>
+s32 WStringBuilder::prepend(const char16* str, s32 prepend_length)
+{
+    return prependImpl_(str, prepend_length);
+}
 
 // NON_MATCHING: same regalloc issue as append()
 template <typename T>
-s32 StringBuilderBase<T>::prepend(T c, s32 num)
+s32 StringBuilderBase<T>::prependImpl_(T c, s32 num)
 {
     if (num < 0)
     {
@@ -907,6 +1119,15 @@ s32 StringBuilderBase<T>::prepend(T c, s32 num)
     return num + move_length - length;
 }
 
-template s32 StringBuilder::prepend(char c, s32 length);
-template s32 WStringBuilder::prepend(char16_t c, s32 length);
+template <>
+s32 StringBuilder::prepend(char c, s32 length)
+{
+    return prependImpl_(c, length);
+}
+
+template <>
+s32 WStringBuilder::prepend(char16_t c, s32 length)
+{
+    return prependImpl_(c, length);
+}
 }  // namespace sead

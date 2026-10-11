@@ -180,6 +180,32 @@ protected:
     template <typename OtherType>
     s32 convertFromOtherType_(const OtherType* src, s32 src_size);
 
+    s32 copyImpl_(const T* src, s32 copy_length);
+    bool endsWithImpl_(const T* suffix) const;
+    s32 copyAtImpl_(s32 at, const T* src, s32 copy_length);
+    s32 cutOffCopyImpl_(const T* src, s32 copy_length);
+    s32 cutOffCopyAtImpl_(s32 at, const T* src, s32 copy_length);
+    s32 copyAtWithTerminateImpl_(s32 at, const T* src, s32 copy_length);
+    s32 appendImpl_(const T* str, s32 append_length);
+    s32 appendImpl_(T* buffer, s32* length_, const s32 buffer_size, T c, s32 num);
+    s32 chopImpl_(s32 chop_num);
+    s32 chopMatchedCharImpl_(T c);
+    s32 chopMatchedCharImpl_(const T* characters);
+    s32 chopUnprintableAsciiCharImpl_();
+    s32 rstripImpl_(const T* characters);
+    s32 rstripUnprintableAsciiCharsImpl_();
+    s32 trimImpl_(s32 trim_length);
+    s32 trimMatchedStringImpl_(const T* str);
+    s32 replaceCharImpl_(T old_char, T new_char);
+    inline s32 replaceCharListImpl_(const SafeStringBase<T>& old_chars,
+                                    const SafeStringBase<T>& new_chars);
+    s32 convertFromMultiByteStringImpl_(const char* str, s32 str_length);
+    s32 convertFromWideCharStringImpl_(const char16* str, s32 str_length);
+    s32 cutOffAppendImpl_(const T* str, s32 append_length);
+    s32 cutOffAppendImpl_(T c, s32 num);
+    s32 prependImpl_(const T* str, s32 prepend_length);
+    s32 prependImpl_(T c, s32 num);
+
     T* getMutableStringTop_() const { return mBuffer; }
 
     T* mBuffer;
