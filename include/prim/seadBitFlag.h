@@ -30,6 +30,8 @@ template <typename T>
 class BitFlag
 {
 public:
+    static constexpr u32 cBitNum = sizeof(T) * 8;
+
     BitFlag() : mBits(0) {}
     BitFlag(T bits) : mBits(bits) {}
 
@@ -73,7 +75,11 @@ public:
     //       because it is present in debug info for pead in Super Mario Run.)
     T getMask(T v) const;
 
-    static T makeMask(int bit) { return T(1) << bit; }
+    static T makeMask(int bit)
+    {
+        SEAD_ASSERT(static_cast<u32>(bit) < cBitNum);
+        return T(1) << bit;
+    }
 
     void setBit(int bit) { set(makeMask(bit)); }
     void resetBit(int bit) { reset(makeMask(bit)); }
