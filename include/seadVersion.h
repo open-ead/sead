@@ -46,6 +46,8 @@
 ///     Fixes two bugs on FindContainHeapCache (incomplete locks and 64-bit pointers)
 /// SEAD_THREAD_SETAFFINITY_RELOAD:
 ///     Store new affinity into member, then reload instead of reusing parameter
+/// SEAD_VIEWPORT_DEPTH_RANGE:
+///     Adds mDepthRange to Viewport, and a SetDepthRange call to apply and applyViewport
 
 #if SEAD_VERSION == SEAD_VERSION_BOTW
 #define SEAD_SAFESTRING_NONVIRTUAL 0
@@ -64,6 +66,7 @@
 #define SEAD_HOSTIO_NONVIRTUAL 0
 #define SEAD_FINDCONTAINHEAPCACHE_FIXED 0
 #define SEAD_THREAD_SETAFFINITY_RELOAD 1
+#define SEAD_VIEWPORT_DEPTH_RANGE 1
 #elif SEAD_VERSION == SEAD_VERSION_SMO
 #define SEAD_SAFESTRING_NONVIRTUAL 0
 #define SEAD_RESOURCEMGR_TRYCREATE_NO_FACTORY_NAME 0
@@ -81,6 +84,7 @@
 #define SEAD_HOSTIO_NONVIRTUAL 0
 #define SEAD_FINDCONTAINHEAPCACHE_FIXED 0
 #define SEAD_THREAD_SETAFFINITY_RELOAD 1
+#define SEAD_VIEWPORT_DEPTH_RANGE 0
 #elif SEAD_VERSION == SEAD_VERSION_SPL3 or SEAD_VERSION == SEAD_VERSION_TOTK or                    \
     SEAD_VERSION == SEAD_VERSION_SMBW
 #define SEAD_SAFESTRING_NONVIRTUAL 1
@@ -99,6 +103,7 @@
 #define SEAD_HOSTIO_NONVIRTUAL 0
 #define SEAD_FINDCONTAINHEAPCACHE_FIXED 0
 #define SEAD_THREAD_SETAFFINITY_RELOAD 1
+#define SEAD_VIEWPORT_DEPTH_RANGE 0  // TODO: figure this out
 #elif SEAD_VERSION == SEAD_VERSION_SMM2
 #define SEAD_SAFESTRING_NONVIRTUAL 0                  // TODO: figure this out
 #define SEAD_RESOURCEMGR_TRYCREATE_NO_FACTORY_NAME 0  // TODO: figure this out
@@ -116,6 +121,7 @@
 #define SEAD_HOSTIO_NONVIRTUAL 1
 #define SEAD_FINDCONTAINHEAPCACHE_FIXED 1
 #define SEAD_THREAD_SETAFFINITY_RELOAD 0
+#define SEAD_VIEWPORT_DEPTH_RANGE 0  // TODO: figure this out
 #endif
 
 /// feature-specific macros
