@@ -174,6 +174,12 @@ inline void Matrix33<T>::transpose()
 }
 
 template <typename T>
+inline void Matrix33<T>::slerpTo(const Self& m1, const Self& m2, f32 t)
+{
+    Matrix33CalcCommon<T>::slerpTo(*this, m1, m2, t);
+}
+
+template <typename T>
 inline void Matrix33<T>::fromQuat(const Quat<T>& q)
 {
     Matrix33CalcCommon<T>::makeQ(*this, q);
@@ -395,6 +401,12 @@ template <typename T>
 inline void Matrix34<T>::transpose()
 {
     Matrix34CalcCommon<T>::transpose(*this);
+}
+
+template <typename T>
+inline void Matrix34<T>::slerpTo(const Self& m1, const Self& m2, f32 t)
+{
+    Matrix34CalcCommon<T>::slerpTo(*this, m1, m2, t);
 }
 
 template <typename T>
@@ -720,6 +732,12 @@ template <typename T>
 inline void Matrix44<T>::transpose()
 {
     Matrix44CalcCommon<T>::transpose(*this);
+}
+
+template <typename T>
+inline void Matrix44<T>::slerpTo(const Self& m1, const Self& m2, f32 t)
+{
+    Matrix44CalcCommon<T>::slerpTo(*this, m1, m2, t);
 }
 
 template <typename T>
