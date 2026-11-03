@@ -46,6 +46,7 @@ public:
     static void multiply(Base& o, const Base& a, const Mtx34& b);
     static void transpose(Base& o);
     static void transposeTo(Base& o, const Base& n);
+    static void slerpTo(Base& o, const Base& m1, const Base& m2, f32 t);
 
     static void makeQ(Base& o, const Quat& q);
     static void makeR(Base& o, const Vec3& r);
@@ -91,6 +92,7 @@ public:
     static void multiply(Base& o, const Base& a, const Mtx33& b);
     static void transpose(Base& o);
     static void transposeTo(Base& o, const Base& n);
+    static void slerpTo(Base& o, const Base& m1, const Base& m2, f32 t);
 
     static void makeQ(Base& o, const Quat& q);
     static void makeQT(Base& o, const Quat& q, const Vec3& t);
@@ -150,6 +152,7 @@ public:
     static void multiply(Base& o, const Base& a, const Mtx34& b);
     static void transpose(Base& o);
     static void transposeTo(Base& o, const Base& n);
+    static void slerpTo(Base& o, const Base& m1, const Base& m2, f32 t);
 
     static void makeQ(Base& o, const Quat& q);
     static void makeR(Base& o, const Vec3& r);

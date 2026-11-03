@@ -11,6 +11,7 @@
 #include <cmath>
 
 #include <math/seadMathCalcCommon.h>
+#include <math/seadQuatCalcCommon.h>
 #ifndef SEAD_MATH_MATRIX_CALC_COMMON_H_
 #include <math/seadMatrixCalcCommon.h>
 #endif
@@ -429,6 +430,19 @@ void Matrix33CalcCommon<T>::transposeTo(Base& o, const Base& n)
     o.m[2][0] = n.m[0][2];
     o.m[2][1] = n.m[1][2];
     o.m[2][2] = n.m[2][2];
+}
+
+template <typename T>
+void Matrix33CalcCommon<T>::slerpTo(Base& o, const Base& m1, const Base& m2, f32 t)
+{
+    Quat q1, q2;
+    toQuat(q1, m1);
+    toQuat(q2, m2);
+
+    Quat qT;
+    QuatCalcCommon<T>::slerpTo(qT, q1, q2, t);
+
+    makeQ(o, qT);
 }
 
 template <typename T>
@@ -1223,6 +1237,19 @@ void Matrix34CalcCommon<T>::transposeTo(Base& o, const Base& n)
 //}
 
 #endif  // cafe
+
+template <typename T>
+void Matrix34CalcCommon<T>::slerpTo(Base& o, const Base& m1, const Base& m2, f32 t)
+{
+    Quat q1, q2;
+    toQuat(q1, m1);
+    toQuat(q2, m2);
+
+    Quat qT;
+    QuatCalcCommon<T>::slerpTo(qT, q1, q2, t);
+
+    makeQ(o, qT);
+}
 
 template <typename T>
 void Matrix34CalcCommon<T>::makeQ(Base& o, const Quat& q)
@@ -2473,6 +2500,19 @@ void Matrix44CalcCommon<T>::transposeTo(Base& o, const Base& n)
     o.m[3][1] = n.m[1][3];
     o.m[3][2] = n.m[2][3];
     o.m[3][3] = n.m[3][3];
+}
+
+template <typename T>
+void Matrix44CalcCommon<T>::slerpTo(Base& o, const Base& m1, const Base& m2, f32 t)
+{
+    Quat q1, q2;
+    toQuat(q1, m1);
+    toQuat(q2, m2);
+
+    Quat qT;
+    QuatCalcCommon<T>::slerpTo(qT, q1, q2, t);
+
+    makeQ(o, qT);
 }
 
 template <typename T>

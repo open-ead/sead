@@ -81,6 +81,7 @@ public:
     void setMul(const Self& a, const Mtx34& b);
     void setTranspose(const Self& n);
     void transpose();
+    void slerpTo(const Self& m1, const Self& m2, f32 t);
 
     void fromQuat(const Quat<T>& q);
     void makeR(const Vec3& r);
@@ -169,6 +170,7 @@ public:
 
     void setTranspose(const Self& n);
     void transpose();
+    void slerpTo(const Self& m1, const Self& m2, f32 t);
 
     void fromQuat(const QuatT& q);
     void makeQT(const QuatT& q, const Vec3& t);
@@ -249,6 +251,7 @@ public:
     void setMul(const Self& a, const Mtx34& b);
     void setTranspose(const Self& n);
     void transpose();
+    void slerpTo(const Self& m1, const Self& m2, f32 t);
 
     void fromQuat(const Quat<T>& q);
     void makeR(const Vec3& r);
