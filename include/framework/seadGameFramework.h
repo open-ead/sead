@@ -7,6 +7,8 @@
 
 namespace sead
 {
+class Thread;
+
 class GameFramework : public Framework
 {
     SEAD_RTTI_OVERRIDE(GameFramework, Framework);
@@ -42,7 +44,7 @@ private:
     sead::SafeString mUnk1 = "";
     sead::SafeString mUnk2 = "";
     sead::SafeString mUnk3 = "";
-    [[maybe_unused]] void* mUnk4 = nullptr;  // TODO: remove [[maybe_unused]] once mUnk4 is used
+    Thread* mUnk4 = nullptr;
     void (*mUnk5)(bool) = nullptr;
     void (*mUnk6)(bool);
 };

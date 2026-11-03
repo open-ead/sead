@@ -68,15 +68,15 @@ HeapSafeStringBase<char16>::operator=(const SafeStringBase<char16>& other)
 template <>
 void BufferedSafeStringBase<char>::assureTerminationImpl_() const
 {
-    auto* mutableSafeString = const_cast<BufferedSafeStringBase<char>*>(this);
-    mutableSafeString->getMutableStringTop_()[mBufferSize - 1] = cNullChar;
+    char* string_top = const_cast<char*>(this->mStringTop);
+    string_top[mBufferSize - 1] = cNullChar;
 }
 
 template <>
 void BufferedSafeStringBase<char16>::assureTerminationImpl_() const
 {
-    auto* mutableSafeString = const_cast<BufferedSafeStringBase<char16>*>(this);
-    mutableSafeString->getMutableStringTop_()[mBufferSize - 1] = cNullChar;
+    char16* string_top = const_cast<char16*>(this->mStringTop);
+    string_top[mBufferSize - 1] = cNullChar;
 }
 
 template <>
@@ -169,7 +169,7 @@ s32 BufferedSafeStringBase<char16>::appendWithFormat(const char16* format, ...)
     return ret;
 }
 
-// NON_MATCHING
+// NON_MATCHING: stack
 template <typename T>
 s32 replaceStringImpl_(T* dst, s32* length, s32 dst_size, const T* src, s32 src_size,
                        const SafeStringBase<T>& old_str, const SafeStringBase<T>& new_str,
@@ -190,14 +190,14 @@ s32 replaceStringImpl_(T* dst, s32* length, s32 dst_size, const T* src, s32 src_
         *is_buffer_overflow = src_size >= dst_size;
         if (src_size >= dst_size)
         {
-            MemUtil::copy(dst, src, dst_max_idx);
+            MemUtil::copy(dst, src, sizeof(T) * dst_max_idx);
             dst[dst_max_idx] = SafeStringBase<T>::cNullChar;
             if (length)
                 *length = dst_max_idx;
         }
         else
         {
-            MemUtil::copy(dst, src, src_size + 1);
+            MemUtil::copy(dst, src, sizeof(T) * (src_size + 1));
             if (length)
                 *length = src_size;
         }
@@ -215,7 +215,7 @@ s32 replaceStringImpl_(T* dst, s32* length, s32 dst_size, const T* src, s32 src_
         // First, terminate the string and check for buffer overflow.
         while (src_final_size < src_size)
         {
-            const s32 cmp = MemUtil::compare(&dst[src_final_size], old_cstr, old_str_len);
+            const s32 cmp = MemUtil::compare(&dst[src_final_size], old_cstr, sizeof(T) * old_str_len);
             src_final_size += cmp == 0 ? old_str_len : 1;
             dst_final_size += cmp == 0 ? new_str_len : 1;
             if (dst_final_size >= dst_size)
@@ -238,37 +238,31 @@ s32 replaceStringImpl_(T* dst, s32* length, s32 dst_size, const T* src, s32 src_
                 *length = dst_final_size;
         }
 
-        s32 dst_i = dst_final_size - 1;
+        u32 dst_i = dst_final_size - 1;
         s32 src_i = src_final_size - 1;
         while (src_i >= 0)
         {
-            const s32 cmp = MemUtil::compare(&dst[src_i + 1 - old_str_len], old_cstr, old_str_len);
-            if (cmp == 0)
+            s64 offset = 0;
+            while (MemUtil::compare(&dst[src_i + offset + 1 - old_str_len], old_cstr,
+                                    sizeof(T) * old_str_len) != 0)
             {
-                dst_i -= new_str_len;
-                const s32 copy_size = std::min(new_str_len, dst_size - 2 - dst_i);
-                if (copy_size > 0)
-                {
-                    MemUtil::copy(&dst[dst_i + 1], new_cstr, copy_size);
-                    ret += 1;
-                }
-                src_i -= old_str_len;
+                if (static_cast<s32>(dst_i) + offset < dst_max_idx)
+                    dst[static_cast<s32>(dst_i) + offset] = dst[src_i + offset];
+                --offset;
+                if (src_i + offset + 1 <= 0)
+                    return ret;
             }
-            else
-            {
-                if (dst_i < dst_max_idx)
-                    dst[dst_i] = dst[src_i];
-                if (src_i < 1)
-                {
-                    --src_i;
-                    --dst_i;
-                    break;
-                }
-            }
-        }
 
-        SEAD_ASSERT(dst_i == -1);
-        SEAD_ASSERT(src_i == -1);
+            dst_i = static_cast<u32>(static_cast<s32>(dst_i) + offset - new_str_len);
+            const s32 copy_size =
+                std::min(new_str_len, dst_size - 2 - static_cast<s32>(dst_i));
+            if (copy_size > 0)
+            {
+                MemUtil::copy(&dst[static_cast<s32>(dst_i) + 1], new_cstr, sizeof(T) * copy_size);
+                ++ret;
+            }
+            src_i += offset - old_str_len;
+        }
     }
     // Simpler case.
     else
@@ -277,41 +271,46 @@ s32 replaceStringImpl_(T* dst, s32* length, s32 dst_size, const T* src, s32 src_
         s32 buffer_i = 0;
         while (target_i < src_size)
         {
-            const s32 cmp = MemUtil::compare(&src[target_i], old_cstr, old_str_len);
-            // Not old_str, copy one character to the buffer.
-            if (cmp != 0)
+            s32 offset = 0;
+            while (MemUtil::compare(&src[target_i + offset], old_cstr, sizeof(T) * old_str_len) != 0)
             {
-                if (buffer_i < dst_max_idx)
+                if (buffer_i + offset >= dst_max_idx)
                 {
-                    dst[buffer_i++] = src[target_i++];
-                    continue;
+                    *is_buffer_overflow = true;
+                    dst[dst_max_idx] = SafeStringBase<T>::cNullChar;
+                    if (length)
+                        *length = dst_max_idx;
+                    return ret;
                 }
-            }
-            // Found old_str, copy new_str to the buffer.
-            else
-            {
-                const s32 copy_size = std::min(new_str_len, dst_max_idx - buffer_i);
-                if (copy_size >= 1)
-                    MemUtil::copy(&dst[buffer_i], new_cstr, copy_size);
-                ret += new_str_len == 0 || copy_size > 0;
-                if (copy_size >= new_str_len)
+
+                dst[buffer_i + offset] = src[target_i + offset];
+                ++offset;
+                if (target_i + offset >= src_size)
                 {
-                    buffer_i += new_str_len;
-                    target_i += old_str_len;
-                    continue;
+                    buffer_i += offset;
+                    dst[buffer_i] = SafeStringBase<T>::cNullChar;
+                    if (length)
+                        *length = buffer_i;
+                    return ret;
                 }
             }
 
-            // Buffer overflow.
-            *is_buffer_overflow = true;
-            dst[dst_max_idx] = SafeStringBase<T>::cNullChar;
-            if (length)
-                *length = dst_max_idx;
-            return ret;
+            const s32 copy_size = std::min(new_str_len, dst_max_idx - buffer_i - offset);
+            if (copy_size >= 1)
+                MemUtil::copy(&dst[buffer_i + offset], new_cstr, sizeof(T) * copy_size);
+            ret += new_str_len == 0 || copy_size > 0;
+            if (copy_size < new_str_len)
+            {
+                *is_buffer_overflow = true;
+                dst[dst_max_idx] = SafeStringBase<T>::cNullChar;
+                if (length)
+                    *length = dst_max_idx;
+                return ret;
+            }
+
+            buffer_i += offset + new_str_len;
+            target_i += offset + old_str_len;
         }
-
-        SEAD_ASSERT(buffer_i <= dst_size);
-        SEAD_ASSERT(target_i == src_size);
 
         dst[buffer_i] = SafeStringBase<T>::cNullChar;
         if (length)

@@ -119,10 +119,10 @@ __attribute__((aligned(0x20))) s32 decodeSZSCafeAsm_(void* dst, const void* src)
 }  // namespace
 
 #ifdef SWITCH
-s32 decodeSZSNxAsm64_(void* dst, const void* src)
+__attribute__((noinline, not_tail_called)) s32 decodeSZSNxAsm64_(void* dst, const void* src)
 {
     register s32 error asm("w2");
-    asm("ldr w5, [%[src],#4]\n"
+    asm volatile("ldr w5, [%[src],#4]\n"
         "rev w4, w5\n"
         "mov %w[error], w4\n"
         "add %[src], %[src], #0x10\n"
@@ -187,12 +187,12 @@ void SZSDecompressor::DecompContext::initialize(void* dst)
     destp = static_cast<u8*>(dst);
     destCount = 0;
     forceDestCount = 0;
-    flagMask = 0;
-    flags = 0;
-    packHigh = 0;
+    headerSize = 0x10;
     step = SZSDecompressor::cStepNormal;
     lzOffset = 0;
-    headerSize = 0x10;
+    packHigh = 0;
+    flags = 0;
+    flagMask = 0;
 }
 
 SZSDecompressor::SZSDecompressor(u32 workSize, u8* workBuffer) : Decompressor("szs")
@@ -333,54 +333,49 @@ u32 SZSDecompressor::getDecompSize(const void* src)
     return Endian::toHostU32(Endian::cBig, BitUtil::bitCastPtr<u32>(src, 4));
 }
 
+// NON_MATCHING
 s32 SZSDecompressor::readHeader_(DecompContext* context, const u8* src, u32 srcSize)
 {
     s32 len = 0;
 
     while (context->headerSize != 0)
     {
-        context->headerSize -= 1;
+        const u8 header_size = context->headerSize;
+        context->headerSize = header_size - 1;
 
-        if (context->headerSize == 0xF)
+        switch (header_size)
         {
+        case 0x10:
             if (*src != 0x59)
                 return -1;
-        }
-
-        else if (context->headerSize == 0xE)
-        {
+            break;
+        case 0xF:
             if (*src != 0x61)
                 return -1;
-        }
-
-        else if (context->headerSize == 0xD)
-        {
+            break;
+        case 0xE:
             if (*src != 0x7A)
                 return -1;
-        }
-
-        else if (context->headerSize == 0xC)
-        {
+            break;
+        case 0xD:
             if (*src != 0x30)
                 return -1;
+            break;
+        default:
+            if (context->headerSize >= 8)
+                context->destCount |= static_cast<u32>(*src) << (context->headerSize * 8 - 0x40);
+            break;
         }
 
-        else if (7 < context->headerSize)
-            context->destCount |= static_cast<u32>(*src) << (context->headerSize - 8) * 8;
-
-        src++;
-        len += 1;
+        ++src;
+        ++len;
         if (--srcSize == 0 && context->headerSize != 0)
-            return len;
+            return -1;
     }
 
-    if (context->forceDestCount < 1)
-        return len;
+    if (context->forceDestCount >= 1 && context->forceDestCount < context->destCount)
+        context->destCount = context->forceDestCount;
 
-    if (context->destCount <= context->forceDestCount)
-        return len;
-
-    context->destCount = context->forceDestCount;
     return len;
 }
 
@@ -476,20 +471,19 @@ s32 SZSDecompressor::decomp(void* dst, u32 dstSize, const void* src, u32)
     if (magic != 0x59617A30)
         return -1;
 
-    u32 decompSize = getDecompSize(src);
-    s32 error = -2;
-    if (dstSize >= decompSize)
-    {
-#ifdef cafe
-        error = decodeSZSCafeAsm_(dst, src);
-#elif defined(SWITCH)
-        error = decodeSZSNxAsm64_(dst, src);
-#else
-        SEAD_ASSERT_MSG(false, "SZSDecompressor::decomp not implemented");
-#endif  // cafe
-    }
+    const u32 decompSize = getDecompSize(src);
+    if (dstSize < decompSize)
+        return -2;
 
-    return error;
+#ifdef cafe
+    decodeSZSCafeAsm_(dst, src);
+#elif defined(SWITCH)
+    decodeSZSNxAsm64_(dst, src);
+#else
+    SEAD_ASSERT_MSG(false, "SZSDecompressor::decomp not implemented");
+#endif  // cafe
+
+    return decompSize;
 }
 
 }  // namespace sead

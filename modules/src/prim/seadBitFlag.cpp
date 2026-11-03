@@ -25,13 +25,17 @@ int BitFlagUtil::findOnBitFromRight(u32 x, int num)
     if (!x)
         return -1;
 
-    while (--num > 0)
+    s32 i = num;
+    const s32 result = -1;
+    while (true)
     {
+        --i;
+        if (i <= 0)
+            return countContinuousOffBitFromRight(x);
         x &= x - 1;
         if (!x)
-            return -1;
+            return result;
     }
-    return countContinuousOffBitFromRight(x);
 }
 
 int BitFlagUtil::countRightOnBit64(u64 x, int bit)
@@ -47,13 +51,18 @@ int BitFlagUtil::findOnBitFromRight64(u64 x, int num)
     if (!x)
         return -1;
 
-    while (--num > 0)
+    s32 i = num;
+    const s32 result = -1;
+    while (true)
     {
+        --i;
+        if (i <= 0)
+            return countContinuousOffBitFromRight64(x);
         x &= x - 1;
         if (!x)
-            return -1;
+            return result;
     }
-    return countContinuousOffBitFromRight64(x);
 }
+
 
 }  // namespace sead

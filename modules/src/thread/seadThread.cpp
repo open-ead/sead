@@ -62,12 +62,14 @@ void Thread::quitAndWaitDoneSingleThread(bool is_jam)
     waitDone();
 }
 
+#ifdef SEAD_DEBUG
 constexpr u32 cStackCanaryMagic = 0x5EAD5CEC;
 
 static bool checkStackMagic(uintptr_t addr)
 {
     return BitUtil::bitCastPtr<u32>(reinterpret_cast<const void*>(addr)) == cStackCanaryMagic;
 }
+#endif
 
 s32 Thread::calcStackUsedSizePeak() const
 {
@@ -79,6 +81,7 @@ s32 Thread::calcStackUsedSizePeak() const
 #endif
 }
 
+#ifdef SEAD_DEBUG
 void Thread::checkStackOverFlow(const char* source_file, s32 source_line) const
 {
     checkStackPointerOverFlow(source_file, source_line);
@@ -130,6 +133,13 @@ void Thread::checkStackPointerOverFlow(const char* source_file, s32 source_line)
         ThreadMgr::instance()->getCurrentThread();
     }
 }
+#else
+void Thread::checkStackOverFlow(const char*, s32) const {}
+
+void Thread::checkStackEndCorruption(const char*, s32) const {}
+
+void Thread::checkStackPointerOverFlow(const char*, s32) const {}
+#endif
 
 void Thread::setStackOverflowExceptionEnable(bool)
 {
@@ -152,6 +162,7 @@ void Thread::run_()
     }
 }
 
+#ifdef SEAD_DEBUG
 // NON_MATCHING: the first loop gets unrolled and the loop counter is not negated
 void Thread::initStackCheck_()
 {
@@ -201,6 +212,11 @@ void Thread::initStackCheckWithCurrentStackPointer_()
         } while (addr < end);
     }
 }
+#else
+void Thread::initStackCheck_() {}
+
+void Thread::initStackCheckWithCurrentStackPointer_() {}
+#endif
 
 SEAD_SINGLETON_DISPOSER_IMPL(ThreadMgr)
 
@@ -274,6 +290,7 @@ void ThreadMgr::quitAndWaitDoneMultipleThread(Thread** threads, s32 num, bool is
     waitDoneMultipleThread(threads, num);
 }
 
+#ifdef SEAD_DEBUG
 void ThreadMgr::checkCurrentThreadStackOverFlow(const char* source_file, s32 source_line)
 {
     if (!ThreadMgr::instance())
@@ -297,4 +314,11 @@ void ThreadMgr::checkCurrentThreadStackPointerOverFlow(const char* source_file, 
     if (Thread* thread = ThreadMgr::instance()->getCurrentThread())
         thread->checkStackPointerOverFlow(source_file, source_line);
 }
+#else
+void ThreadMgr::checkCurrentThreadStackOverFlow(const char*, s32) {}
+
+void ThreadMgr::checkCurrentThreadStackEndCorruption(const char*, s32) {}
+
+void ThreadMgr::checkCurrentThreadStackPointerOverFlow(const char*, s32) {}
+#endif
 }  // namespace sead

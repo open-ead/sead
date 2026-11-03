@@ -57,6 +57,7 @@ void CoreInfo::configure()
 
 void CoreInfo::dump()
 {
+    #ifdef SEAD_DEBUG
     system::Print("* num cores %d\n", sNumCores);
     for (u32 i = 0; i < sNumCores; ++i)
     {
@@ -65,6 +66,7 @@ void CoreInfo::dump()
     }
     system::Print("all mask : %x\n", u32(getMaskAll()));
     system::Print("all sub mask : %x\n", u32(getMaskSubAll()));
+    #endif
 }
 
 u32 CoreInfo::getPlatformMask(CoreId id)

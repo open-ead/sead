@@ -43,18 +43,19 @@ void CalendarTime::Month::setValueOneOrigin(u32 m)
 
 s32 CalendarTime::Month::addSelf(u32 rhs)
 {
-    const s32 val = (s32(rhs) + mValue + -1) % 12;
-    mValue = val + 1;
+    const s32 value = s32(rhs) + mValue - 1;
+    const s32 year = value / 12;
+    mValue = value % 12 + 1;
     SEAD_ASSERT(1 <= mValue && mValue <= 12);
-    return val;
+    return year;
 }
 
 s32 CalendarTime::Month::subSelf(u32 rhs)
 {
-    const s32 val = (mValue - s32(rhs) % 12 + 12 - 1) % 12u;
-    mValue = val + 1;
+    const s32 year = (mValue - s32(rhs) - 13) / 12;
+    mValue = (mValue + 11 - rhs % 12) % 12 + 1;
     SEAD_ASSERT(1 <= mValue && mValue <= 12);
-    return val;
+    return year;
 }
 
 s32 CalendarTime::Month::sub(CalendarTime::Month rhs) const
@@ -142,6 +143,7 @@ CalendarTime::Time::Time(const CalendarTime::Hour& h, const CalendarTime::Minute
 CalendarTime::CalendarTime(const CalendarTime::Date& date, const CalendarTime::Time& time)
     : mDate(date), mTime(time)
 {
+    mDate.calcWeek();
 }
 
 CalendarTime::CalendarTime(const CalendarTime::Year& y, const CalendarTime::Month& m,

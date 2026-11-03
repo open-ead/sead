@@ -29,7 +29,6 @@ NinFileDeviceBase::NinFileDeviceBase(const SafeString& name, const SafeString& m
 {
 }
 
-// NON_MATCHING: inverted branching for should_set_size
 FileDevice* NinFileDeviceBase::doOpen_(FileHandle* handle, const SafeString& path,
                                        FileDevice::FileOpenFlag flag)
 {
@@ -52,7 +51,7 @@ FileDevice* NinFileDeviceBase::doOpen_(FileHandle* handle, const SafeString& pat
     bool should_set_size = true;
     if ((flag | cFileOpenFlag_ReadWrite) == cFileOpenFlag_Create)
     {
-        bool is_file = false;
+        u32 is_file = false;
         nn::fs::DirectoryEntryType type;
         const auto result = nn::fs::GetEntryType(&type, fs_path.cstr());
         if (result.IsSuccess())
@@ -69,14 +68,14 @@ FileDevice* NinFileDeviceBase::doOpen_(FileHandle* handle, const SafeString& pat
             return nullptr;
         }
 
-        should_set_size = flag == cFileOpenFlag_Create || !is_file;
-        if (flag == cFileOpenFlag_Create || !is_file)
+        if (flag == cFileOpenFlag_Create)
         {
-            if (is_file)
+            if (is_file != 0)
             {
                 mLastError = nn::fs::ResultPathAlreadyExists();
                 return nullptr;
             }
+
             const auto create_result = nn::fs::CreateFile(fs_path.cstr(), 0);
             if (create_result.IsFailure())
             {
@@ -86,6 +85,22 @@ FileDevice* NinFileDeviceBase::doOpen_(FileHandle* handle, const SafeString& pat
                           create_result.GetInnerValueForDebug(), fs_path.cstr());
                 mLastError = create_result;
                 return nullptr;
+            }
+        }
+        else
+        {
+            if (is_file == 1)
+            {
+                should_set_size = false;
+            }
+            else
+            {
+                const auto create_result = nn::fs::CreateFile(fs_path.cstr(), 0);
+                if (create_result.IsFailure())
+                {
+                    mLastError = create_result;
+                    return nullptr;
+                }
             }
         }
     }

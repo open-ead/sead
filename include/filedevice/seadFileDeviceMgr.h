@@ -11,6 +11,7 @@
 #include <filedevice/seadMainFileDevice.h>
 #include <heap/seadDisposer.h>
 #include <prim/seadSafeString.h>
+#include <seadVersion.h>
 
 namespace sead
 {
@@ -72,7 +73,11 @@ private:
 #elif defined(NNSDK)
     u8* mRomCache = nullptr;
     bool mMountedHost = false;
+#if SEAD_VERSION == SEAD_VERSION_SMO
+    bool mMountedSd;
+#else
     bool mMountedSd = false;
+#endif
 #endif
 };
 
