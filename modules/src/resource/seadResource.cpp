@@ -38,6 +38,7 @@ void DirectResource::create(u8* buffer, u32 bufferSize, u32 allocSize, bool allo
 }
 
 IndirectResource::IndirectResource() = default;
+IndirectResource::~IndirectResource() = default;
 
 void IndirectResource::create(sead::ReadStream* stream, u32 size, sead::Heap* heap)
 {

@@ -609,8 +609,9 @@ const MathCalcCommon<f32>::LogSample MathCalcCommon<f32>::cLogTbl[256 + 1]{
     {0.6931471824645996, 0.0019512200960889459},
 };
 
+// NON_MATCHING: Reg swap https://decomp.me/scratch/dTo1i
 template <typename T>
-T MathCalcCommon<T>::gcd(T x, T y)
+T gcdImpl_(T x, T y)
 {
     if (x == 0 || y == 0)
         return 0;
@@ -627,17 +628,36 @@ T MathCalcCommon<T>::gcd(T x, T y)
 }
 
 template <typename T>
-T MathCalcCommon<T>::lcm(T x, T y)
+T lcmImpl_(T x, T y)
 {
     if (x == 0 || y == 0)
         return 0;
-    return x / gcd(x, y) * y;
+    return x / gcdImpl_(x, y) * y;
 }
 
-template s32 MathCalcCommon<s32>::gcd(s32 x, s32 y);
-template s32 MathCalcCommon<s32>::lcm(s32 x, s32 y);
-template u32 MathCalcCommon<u32>::gcd(u32 x, u32 y);
-template u32 MathCalcCommon<u32>::lcm(u32 x, u32 y);
+template <>
+s32 MathCalcCommon<s32>::gcd(s32 x, s32 y)
+{
+    return gcdImpl_(x, y);
+}
+
+template <>
+s32 MathCalcCommon<s32>::lcm(s32 x, s32 y)
+{
+    return lcmImpl_(x, y);
+}
+
+template <>
+u32 MathCalcCommon<u32>::gcd(u32 x, u32 y)
+{
+    return gcdImpl_(x, y);
+}
+
+template <>
+u32 MathCalcCommon<u32>::lcm(u32 x, u32 y)
+{
+    return lcmImpl_(x, y);
+}
 
 template <>
 u32 MathCalcCommon<f32>::atanIdx_(f32 t)
@@ -684,9 +704,28 @@ f32 MathCalcCommon<f32>::logTable(f32 x)
     return cLogTbl[index].log_val + (cLogTbl[index].log_delta * rest) + (more * ln2());
 }
 
-template s64 MathCalcCommon<s64>::gcd(s64 x, s64 y);
-template s64 MathCalcCommon<s64>::lcm(s64 x, s64 y);
-template u64 MathCalcCommon<u64>::gcd(u64 x, u64 y);
-template u64 MathCalcCommon<u64>::lcm(u64 x, u64 y);
+template <>
+s64 MathCalcCommon<s64>::gcd(s64 x, s64 y)
+{
+    return gcdImpl_(x, y);
+}
+
+template <>
+s64 MathCalcCommon<s64>::lcm(s64 x, s64 y)
+{
+    return lcmImpl_(x, y);
+}
+
+template <>
+u64 MathCalcCommon<u64>::gcd(u64 x, u64 y)
+{
+    return gcdImpl_(x, y);
+}
+
+template <>
+u64 MathCalcCommon<u64>::lcm(u64 x, u64 y)
+{
+    return lcmImpl_(x, y);
+}
 
 }  // namespace sead
